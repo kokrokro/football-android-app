@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorLightGray2">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8sp"
+            android:orientation="horizontal">
+            <ImageView
+                android:id="@+id/userClubInvLogo"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="14dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="15sp"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/invClubTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:padding="4dp"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:text="@string/tournamentCommandTitle1"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/invClubCoach"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:padding="4dp"
+                    android:textSize="13sp"
+                    android:gravity="start"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:text="@string/coach"/>
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+                <Button
+                    android:id="@+id/invClubButtonCancel"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:fontFamily="@font/manrope_regular"
+                    android:textSize="13sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonCancel"/>
+                <Button
+                    android:id="@+id/invClubButtonOk"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="@font/manrope_regular"
+                    android:layout_width="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/buttonOk"/>
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_gravity="end"
+                android:layout_marginTop="5dp"
+                android:layout_height="1dp"
+                android:background="@color/colorLightGray" />
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

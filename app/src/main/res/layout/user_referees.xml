@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/userClubScroll"
+        android:layout_marginTop="5sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_marginBottom="8dp"-->
+                    <!--android:layout_marginTop="8dp"-->
+                    <!--android:fontFamily="@font/manrope_semibold"-->
+                    <!--android:paddingStart="13dp"-->
+                    <!--android:text="@string/referees"-->
+                    <!--android:textColor="@color/colorBottomNavigationUnChecked"-->
+                    <!--android:textSize="14sp" />-->
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewReferees"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+    <!--android:id="@+id/addCommandButton"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="end|bottom"-->
+    <!--android:layout_marginBottom="25dp"-->
+    <!--android:layout_marginEnd="25dp"-->
+    <!--android:src="@drawable/ic_add"-->
+    <!--app:backgroundTint="@color/colorPrimary" />-->
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/colorWhite">
+    <TextView
+        android:id="@+id/matchEventsHalf"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/manrope_semibold"
+        android:paddingBottom="8dp"
+        android:paddingStart="13dp"
+        android:paddingTop="8dp"
+        android:text="@string/fouls"
+        android:textColor="@color/colorBottomNavigationUnChecked"
+        android:textSize="14sp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewHalfEvents"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_gravity="end"
+        android:layout_height="8sp"
+        android:background="@color/colorLightGray2" />
+</LinearLayout>

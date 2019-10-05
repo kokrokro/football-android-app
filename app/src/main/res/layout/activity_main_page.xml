@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:scrollbars="vertical"
+    tools:context=".home.activity.MainPage">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!---->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@color/colorWhite"-->
+        <!--android:orientation="vertical">-->
+        <TextView
+            android:id="@+id/textNews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/manrope_semibold"
+            android:paddingTop="8sp"
+            android:text="@string/title_news2"
+            android:textColor="@color/colorLightGrayForText"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+        <!--<View-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="3dp"-->
+        <!--android:layout_gravity="bottom"-->
+        <!--android:layout_marginTop="13dp"-->
+        <!--android:background="@color/colorLightGray2" />-->
+        <!--</LinearLayout>-->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMainNews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textNews" />
+
+        <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+        <View
+            android:id="@+id/divider1"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorLightGray2"
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewMainNews" />
+
+        <Button
+            android:id="@+id/showAllNews"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/underline_shape"
+            android:fontFamily="@font/manrope_regular"
+            android:text="@string/showAllNews"
+            android:textColor="@color/colorDarkGray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider1" />
+        <!--</RelativeLayout>-->
+
+        <!--android:textColor="@color/colorDarkGray"-->
+
+        <!--<ImageView-->
+        <!--android:id="@+id/mainPageAds"-->
+        <!--android:layout_marginTop="20dp"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="160dp" />-->
+
+
+        <View
+            android:id="@+id/divider2"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:layout_gravity="end"
+            android:background="@color/colorLightGray2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/showAllNews" />
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:paddingTop="8sp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:background="@color/colorWhite"-->
+        <!--android:orientation="vertical">-->
+        <TextView
+            android:id="@+id/textAds"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/manrope_semibold"
+            android:text="@string/title_ads2"
+            android:textColor="@color/colorLightGrayForText"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider2" />
+        <!--</LinearLayout>-->
+        <!--<RelativeLayout-->
+        <!--android:id="@+id/mainPageAdsLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="220dp"-->
+        <!--android:background="@color/colorWhite"/>-->
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewMainAds"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textAds" />
+
+
+        <!--<RelativeLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+
+
+        <View
+            android:id="@+id/divider3"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorLightGray2"
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewMainAds" />
+
+        <Button
+            android:id="@+id/showAllAds"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/underline_shape"
+            android:fontFamily="@font/manrope_regular"
+            android:text="@string/showAllAds"
+            android:textColor="@color/colorDarkGray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider3" />
+        <!--</RelativeLayout>-->
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@color/colorLightGray2"
+            app:layout_constraintTop_toBottomOf="@id/showAllAds" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

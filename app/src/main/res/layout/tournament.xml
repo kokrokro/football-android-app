@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+    android:id="@+id/tournamentButtonShow"
+    android:layout_marginTop="5sp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorLightGray">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"
+        android:orientation="vertical">
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:orientation="horizontal">
+            <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/colorWhite">-->
+
+
+            <ImageView
+                android:id="@+id/tournamentStatusImg"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="14dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_con" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14sp"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tournamentTitle"
+                    android:layout_width="256dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="@string/tournamentTitle"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tournamentStatusFinish"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="@string/tournamentStatusFinish"
+                    android:textColor="@color/colorGray"
+                    android:paddingTop="3sp"
+                    android:paddingBottom="3sp"
+                    android:textSize="10sp"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tournamentDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="@string/tournamentDate"
+                    android:paddingTop="5sp"
+                    android:paddingBottom="3sp"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tournamentCommandNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:paddingTop="3sp"
+                    android:paddingBottom="3sp"
+                    android:text="@string/tournamentCommandNum"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="12sp" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+        <View
+            android:id="@+id/tournamentLine"
+            android:layout_width="270dp"
+            android:layout_height="1dp"
+            android:layout_gravity="end"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="13dp"
+            android:background="@color/colorLightGray" />
+    </LinearLayout>
+
+
+    <!--</android.support.v7.widget.CardView>-->
+
+</RelativeLayout>

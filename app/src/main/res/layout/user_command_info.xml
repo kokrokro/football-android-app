@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorWhite"
+        tools:context=".user.activity.UserCommandInfo"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/profileAppbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarUserCommandInfo"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="top"
+                android:background="@color/colorLightGray2"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_scrollFlags="snap|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="18sp"
+                    android:gravity="center_horizontal"
+                    android:visibility="visible">
+
+                    <ImageButton
+                        android:id="@+id/userCommandSave"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_tick" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="@string/changeCommand"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/userCommandClose"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_close8" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp">
+            <!--android:paddingStart="18dp"-->
+            <!--android:paddingEnd="18dp"-->
+            <TextView
+                android:id="@+id/userCommandPlayersStructureText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_semibold"
+                android:paddingBottom="8dp"
+                android:paddingStart="13dp"
+                android:textColor="@color/colorBottomNavigationUnChecked"
+                android:textSize="14sp"
+                android:text="@string/structure" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+                <Button
+                    android:id="@+id/userCommandPlayerButton"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless"
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="@font/manrope_regular"
+                    android:layout_width="wrap_content"
+                    android:textSize="13sp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/addPlayer"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewUserCommandPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+            <View
+                android:id="@+id/userCommandPlayersLine"
+                android:layout_width="match_parent"
+                android:layout_gravity="end"
+                android:layout_marginTop="8sp"
+                android:layout_height="8sp"
+                android:visibility="gone"
+                android:background="@color/colorLightGray2" />
+
+            <TextView
+                android:id="@+id/userCommandPlayersInvText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_semibold"
+                android:paddingBottom="8dp"
+                android:paddingStart="13dp"
+                android:paddingTop="8dp"
+                android:textColor="@color/colorBottomNavigationUnChecked"
+                android:textSize="14sp"
+                android:text="@string/playersInv" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewUserCommandPlayersInv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+<!--</LinearLayout>-->

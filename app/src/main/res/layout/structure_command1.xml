@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/editProtocolCoordinatorLayout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".user.activity.StructureCommand1"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <androidx.appcompat.widget.Toolbar
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorLightGray2"
+            android:layout_gravity="top"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_collapseMode="pin"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="18sp"
+                android:gravity="center_horizontal"
+                android:visibility="visible">
+
+                <ImageButton
+                    android:id="@+id/editProtocolCommand1Save"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_tick" />
+
+                <TextView
+                    android:id="@+id/command1Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:fontFamily="@font/manrope_regular"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:text="@string/editProtocol"
+                    android:textSize="16sp" />
+
+                <ImageButton
+                    android:id="@+id/editProtocolCommand1Back"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_arrow_back" />
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <!--android:layout_height="wrap_content"-->
+        <LinearLayout
+            android:layout_marginTop="15sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+
+            <!--<TextView-->
+                <!--android:id="@+id/editProtocolCommand1"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:fontFamily="@font/manrope_semibold"-->
+                <!--android:paddingBottom="8dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:text="@string/participants"-->
+                <!--android:textColor="@color/colorBottomNavigationUnChecked"-->
+                <!--android:textSize="14sp" />-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal">-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:fontFamily="@font/manrope_regular"-->
+                <!--android:gravity="start"-->
+                <!--android:textColor="@color/colorLightGrayForText"-->
+                <!--android:textSize="12sp"-->
+                <!--android:paddingEnd="5sp"-->
+                <!--android:text="@string/representative"/>-->
+            <!--<TextView-->
+                <!--android:id="@+id/confirmProtocolCommand1Representative"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:fontFamily="@font/manrope_regular"-->
+                <!--android:textColor="@color/colorBottomNavigationUnChecked"-->
+                <!--android:gravity="center_vertical|bottom"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:textSize="13sp"-->
+                <!--android:text="@string/representative"/>-->
+            <!--</LinearLayout>-->
+            <!--android:layout_marginTop="20sp"-->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewConfirmProtocolCommand1"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!--</LinearLayout>-->

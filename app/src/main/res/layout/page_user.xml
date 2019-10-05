@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/ic_back_v4"
+    tools:context=".user.activity.UserPage">
+
+    <!--android:background="@drawable/ic_back_v3"-->
+    <!--android:background="@drawable/ic_back"-->
+
+    <!--android:background="@color/colorWhite"-->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="55dp"
+        android:orientation="vertical"
+        android:paddingEnd="5sp"
+        android:paddingStart="5sp">
+
+        <!--<android.support.v7.widget.CardView-->
+        <!--android:layout_width="365dp"-->
+        <!--android:layout_height="306dp"-->
+        <!--android:layout_gravity="center_horizontal"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--app:cardBackgroundColor = "@color/colorWhite">-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:orientation="vertical"
+            android:layout_marginBottom="15sp"
+            android:paddingEnd="25dp"
+            android:paddingStart="25dp">
+
+            <ImageView
+                android:id="@+id/imgLogo"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="40sp"
+                android:visibility="invisible"
+                android:src="@drawable/ic_logo2"
+                />
+
+            <!--android:src="@drawable/ic_logo2"-->
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:fontFamily="@font/manrope_regular"-->
+                <!--android:gravity="start"-->
+                <!--android:paddingStart="4sp"-->
+                <!--android:text="@string/loginProfile"-->
+                <!--android:textColor="@color/colorLightGrayForText"-->
+                <!--android:textSize="12sp" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20sp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="5sp"
+                    android:src="@drawable/ic_account2" />
+
+                <EditText
+                    android:id="@+id/loginLog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:hint="@string/login"
+                    android:inputType="text"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorTabUnChecked"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+            <!--<TextView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:fontFamily="@font/manrope_regular"-->
+                <!--android:gravity="start"-->
+                <!--android:paddingStart="4sp"-->
+                <!--android:text="@string/passProfile"-->
+                <!--android:textColor="@color/colorLightGrayForText"-->
+                <!--android:textSize="12sp" />-->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20sp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="25sp"
+                    android:layout_height="25sp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="5sp"
+                    android:src="@drawable/ic_key2" />
+
+                <EditText
+                    android:id="@+id/passwordLog"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:hint="@string/pass"
+                    android:inputType="textPassword"
+                    android:textColor="@color/colorWhite"
+                    android:textColorHint="@color/colorTabUnChecked"
+                    android:textSize="15sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+        <!--</android.support.v7.widget.CardView>-->
+
+
+        <!--<Button-->
+        <!--<TextView-->
+        <!--android:id="@+id/logInForget"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:paddingTop="5sp"-->
+        <!--android:paddingBottom="5sp"-->
+        <!--android:layout_marginEnd="17sp"-->
+        <!--android:layout_gravity="center_vertical|end"-->
+        <!--android:fontFamily="@font/manrope_regular"-->
+        <!--android:text="Забыли пароль?"-->
+        <!--android:clickable="true"-->
+        <!--android:textSize="13sp"-->
+        <!--android:textColor="@color/colorLightGrayForText" />-->
+
+        <Button
+            android:id="@+id/logInButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_marginTop="25sp"
+            android:layout_width="200dp"
+            android:layout_height="38dp"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/manrope_semibold"
+            android:text="@string/login_button"
+            android:textColor="@color/colorWhite"
+            />
+
+        <!--android:textColor="@color/colorPrimary"-->
+
+        <!--<Button-->
+        <TextView
+            android:id="@+id/registration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
+            android:layout_marginBottom="10sp"
+            android:clickable="true"
+            android:fontFamily="@font/manrope_regular"
+            android:paddingBottom="5sp"
+            android:paddingTop="5sp"
+            android:text="@string/reg_button"
+            android:textColor="@color/colorTabUnChecked"
+            android:textSize="13sp" />
+        <!--colorLightGrayForText-->
+        <!--android:textColor="@color/colorTabUnChecked"-->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="5sp"
+            android:fontFamily="@font/manrope_regular"
+            android:gravity="center_horizontal"
+            android:padding="5sp"
+            android:text="@string/agreement"
+            android:textColor="@color/colorTabUnChecked"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+</RelativeLayout>

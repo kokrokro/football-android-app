@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:padding="8sp">
+
+    <androidx.cardview.widget.CardView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorWhite"
+            android:orientation="vertical">
+
+            <ru.nikartm.support.ImageBadgeView
+                android:id="@+id/ibv_icon"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                app:ibv_fixedBadgeRadius="8dp"
+                app:ibv_badgeBackground="@drawable/ic_check2"
+                app:ibv_badgePosition="bottom_right"
+                app:ibv_showCounter="false"
+                app:ibv_visibleBadge="false" />
+
+
+            <TextView
+                android:id="@+id/eventTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5sp"
+                android:fontFamily="@font/manrope_regular"
+                android:gravity="center_horizontal|center_vertical"
+                android:padding="3dp"
+                android:layout_gravity="center_horizontal"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>

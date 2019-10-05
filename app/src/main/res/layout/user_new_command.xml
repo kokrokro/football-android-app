@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".user.activity.NewCommand"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/profileAppbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarClub"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorLightGray2"
+                android:layout_gravity="top"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="18sp"
+                    android:gravity="center_horizontal"
+                    android:visibility="visible">
+
+                    <ImageButton
+                        android:id="@+id/newCommandSave"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_tick" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/manrope_regular"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:text="@string/createCommand"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/newCommandClose"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_close8" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!--<android.support.v4.widget.NestedScrollView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
+        <!--&gt;-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="35sp"
+            android:paddingStart="18dp"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:gravity="start"
+                android:paddingStart="4sp"
+                android:text="@string/commandTitle"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/newCommandTitle"
+                style="@style/MyEditText"
+
+                android:layout_marginEnd="18dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/commandTitle2"
+                android:inputType="text|textCapSentences" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:gravity="start"
+                android:paddingStart="4sp"
+                android:text="@string/tournament"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/newCommandTournamentSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="34dp"
+                android:padding="0dp"
+                android:layout_marginEnd="4dp"
+                android:popupTheme="@android:style/ThemeOverlay.Material.Light"
+                android:backgroundTint="@color/colorPrimary"
+                android:spinnerMode="dialog"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_marginStart="6sp"
+                android:layout_marginEnd="18sp"
+                android:layout_height="1dp"
+                android:layout_marginBottom="20sp"
+                android:background="@color/colorLightGray"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:gravity="start"
+                android:paddingStart="6sp"
+                android:text="@string/club2"
+                android:popupBackground="#ffffff"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp" />
+
+
+            <Spinner
+                android:id="@+id/newCommandClubSpinner"
+                android:layout_width="match_parent"
+                android:padding="0dp"
+                android:layout_marginEnd="4dp"
+                android:layout_height="34dp"
+                android:popupTheme="@android:style/ThemeOverlay.Material.Light"
+                android:backgroundTint="@color/colorPrimary"
+                android:spinnerMode="dialog" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_marginStart="6sp"
+                android:layout_marginEnd="18sp"
+                android:layout_height="1dp"
+                android:layout_marginBottom="20sp"
+                android:background="@color/colorLightGray"
+                />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentStart="true"
+                    android:fontFamily="@font/manrope_regular"
+                    android:gravity="center_horizontal"
+                    android:layout_marginBottom="8sp"
+                    android:layout_marginEnd="18sp"
+                    android:text="@string/commandRules"
+                    android:textColor="@color/colorLightGrayForText"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+        </LinearLayout>
+
+    <!--</android.support.v4.widget.NestedScrollView>-->
+</LinearLayout>

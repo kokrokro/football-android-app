@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/colorWhite"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_marginBottom="50sp"
+    android:background="@color/colorWhite"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorLightGray2"
+        android:orientation="vertical">
+        <!--android:background="@color/colorPrimary">-->
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorLightGray2"
+            app:elevation="0dp">
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="18sp"
+                android:layout_marginStart="18sp"
+                android:visibility="visible"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <TextView
+                    android:id="@+id/tournamentInfoTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
+                    android:maxLines="2"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/manrope_bold"
+                    android:gravity="center_horizontal"
+                    android:padding="5sp"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+            <!--</android.support.v7.widget.Toolbar>-->
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tournamentInfoTab"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_collapseMode="pin"
+            app:tabIndicatorColor="@color/colorPrimary"
+            app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
+            app:tabTextAppearance="@style/CustomTabTextSize"
+            app:tabTextColor="@color/colorLightGrayForText">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tournamentInfoTimetable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tournamentInfoTimetable" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tournamentInfoCommand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tournamentInfoCommand" />
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/tournamentInfoPlayers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/tournamentInfoPlayers" />
+        </com.google.android.material.tabs.TabLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/tournamentInfoViewPager"
+            android:layout_width="match_parent"
+            android:background="@color/colorWhite"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/tournamentInfoTabCommandAbbrev"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="25dp"
+        android:src="@drawable/ic_question"
+        app:backgroundTint="@color/colorPrimary" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/playersInfoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="25dp"
+        android:layout_marginEnd="25dp"
+        android:src="@drawable/ic_question"
+        app:backgroundTint="@color/colorPrimary" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/playoffLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentStart="true"
+    android:layout_centerVertical="true"
+    android:orientation="vertical"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:orientation="horizontal">
+    <!--android:background="@color/colorLightGray"-->
+
+    <LinearLayout
+        android:layout_width="35sp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/commandNum"
+            android:textSize="15sp"
+            android:fontFamily="@font/manrope_regular"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:textColor="@color/colorBottomNavigationUnChecked" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="5sp"
+        android:layout_weight="1">
+
+    <TextView
+        android:id="@+id/commandTitle"
+        android:fontFamily="@font/manrope_regular"
+        android:layout_width="150sp"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textSize="14sp"
+        android:focusable="true"
+        android:clickable="true"
+        android:textColor="@color/colorPrimaryDark" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5sp"
+        android:layout_marginEnd="8sp"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/commandScoreGame"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="@color/colorBottomNavigationUnChecked" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8sp"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/commandScoreDifference"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="@color/colorBottomNavigationUnChecked" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8sp"
+        android:layout_marginEnd="8sp"
+        android:layout_gravity="center">
+
+        <TextView
+            android:id="@+id/commandScorePoint"
+            android:textSize="14sp"
+            android:fontFamily="@font/manrope_regular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:textColor="@color/colorBottomNavigationUnChecked" />
+    </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

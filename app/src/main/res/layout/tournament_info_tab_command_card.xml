@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:layout_marginBottom="8sp">
+
+    <!--<android.support.v7.widget.CardView-->
+        <!--android:id="@+id/cv"-->
+        <!--android:layout_width="340dp"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentTop="true"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_marginBottom="5dp">-->
+
+        <LinearLayout
+            android:id="@+id/cv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/colorWhite"
+            >
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="42dp"
+                android:divider="@drawable/empty_tall_divider"
+                android:orientation="vertical"
+                android:showDividers="middle">
+
+
+                <TextView
+                    android:id="@+id/groupTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:paddingBottom="8dp"
+                    android:paddingStart="13dp"
+                    android:paddingTop="8dp"
+                    android:text="Группа А"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="35sp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="№"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="5sp"
+                    android:layout_weight="1">
+                <TextView
+                    android:fontFamily="@font/manrope_regular"
+                    android:textSize="14sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:text="Команда" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:fontFamily="@font/manrope_regular"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:gravity="end"
+                        android:text="И" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_gravity="center"
+                    >
+                    <TextView
+                        android:fontFamily="@font/manrope_regular"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:gravity="end"
+                        android:text="РМ" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:fontFamily="@font/manrope_regular"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:gravity="end"
+                        android:text="О" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorLightGray" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tournamentInfoTabCommandCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <View
+                android:id="@+id/tournamentCommandCardLine"
+                android:layout_width="match_parent"
+                android:layout_gravity="end"
+                android:layout_marginTop="30sp"
+                android:layout_height="8sp"
+                android:background="@color/colorLightGray2" />
+        </LinearLayout>
+    <!--</android.support.v7.widget.CardView>-->
+
+</RelativeLayout>

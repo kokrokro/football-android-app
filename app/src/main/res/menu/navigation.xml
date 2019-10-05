@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_home"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_tournament"
+        android:icon="@drawable/ic_cup"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_club"
+        android:icon="@drawable/ic_club"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_players"
+        android:icon="@drawable/ic_players"
+        android:title=""
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/navigation_user"
+        android:icon="@drawable/ic_user"
+        android:title=""
+        app:showAsAction="ifRoom" />
+    <!--<item-->
+    <!--android:id="@+id/navigation_home"-->
+    <!--android:icon="@drawable/ic_home"-->
+    <!--android:title="@string/title_home"-->
+    <!--app:showAsAction="always|withText" />-->
+
+    <!--<item-->
+    <!--android:id="@+id/navigation_tournament"-->
+    <!--android:icon="@drawable/ic_cup"-->
+    <!--android:title="@string/title_tournament"-->
+    <!--app:showAsAction="always|withText"/>-->
+
+    <!--<item-->
+    <!--android:id="@+id/navigation_club"-->
+    <!--android:icon="@drawable/ic_club"-->
+    <!--android:title="@string/title_club"-->
+    <!--app:showAsAction="always|withText"/>-->
+    <!--<item-->
+    <!--android:id="@+id/navigation_players"-->
+    <!--android:icon="@drawable/ic_players"-->
+    <!--android:title="@string/title_players"-->
+    <!--app:showAsAction="always|withText"-->
+    <!--/>-->
+    <!--<item-->
+    <!--android:id="@+id/navigation_user"-->
+    <!--android:icon="@drawable/ic_user"-->
+    <!--android:title="@string/title_user"-->
+    <!--app:showAsAction="always|withText"-->
+    <!--/>-->
+
+</menu>

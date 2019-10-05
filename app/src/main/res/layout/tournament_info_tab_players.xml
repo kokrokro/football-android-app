@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:tag="players"
+    android:background="@color/colorWhite">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/tournamentPlayersEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="65sp"
+        android:orientation="vertical">
+        <ImageView
+            android:layout_marginTop="45sp"
+            android:layout_marginBottom="45sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:src="@drawable/ic_empty1"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:layout_marginBottom="15sp"
+            android:fontFamily="@font/manrope_regular"
+            android:textColor="@color/colorBottomNavigationUnChecked"
+            android:text="@string/empty"
+            android:layout_gravity="center_horizontal"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="25sp"
+            android:paddingStart="25sp"
+            android:gravity="center_horizontal"
+            android:textSize="16sp"
+            android:textColor="@color/colorLightGrayForText"
+            android:fontFamily="@font/manrope_regular"
+            android:text="@string/not_league_players"
+            android:layout_gravity="center_horizontal"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/mainview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <LinearLayout
+            android:paddingTop="5sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical">
+
+
+
+            <Spinner
+                android:id="@+id/playersSpinner"
+                android:layout_marginTop="5sp"
+                android:layout_marginStart="8sp"
+                android:theme="@style/ThemeOverlay.AppCompat.Light"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20sp"
+                android:spinnerMode="dropdown"
+                />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/white_back"
+                    android:layout_marginBottom="10dp"
+                    android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5sp"
+                        android:layout_marginBottom="8sp"
+                        android:orientation="horizontal"
+                        android:paddingStart="62dp"
+                        android:paddingEnd="8dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginEnd="5sp"
+                            android:layout_weight="1">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="start"
+                                android:text="@string/commandPlayer"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="25dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5sp"
+                            android:layout_marginEnd="8sp"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="И"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="25dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8sp"
+                            android:layout_marginEnd="8sp"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="Г"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="25dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8sp"
+                            android:layout_marginEnd="8sp"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="ЖК"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+
+                        <LinearLayout
+                            android:layout_width="25dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8sp"
+                            android:layout_marginEnd="8sp"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="end"
+                                android:text="КК"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/colorLightGray" />
+                </LinearLayout>
+
+
+
+                <androidx.core.widget.NestedScrollView
+                    android:id="@+id/tournamentInfoPlayersScroll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorWhite">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:orientation="vertical">
+
+
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerViewTournamentPlayers"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+
+                    </LinearLayout>
+                </androidx.core.widget.NestedScrollView>
+                </LinearLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+    </LinearLayout>
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/playersInfoButton"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="end|bottom"-->
+        <!--android:layout_marginBottom="25dp"-->
+        <!--android:layout_marginEnd="20dp"-->
+        <!--app:backgroundTint="@color/colorPrimary"-->
+        <!--android:src="@drawable/ic_question" />-->
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

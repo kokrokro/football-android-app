@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:tag="command"
+    android:id="@+id/tournamentInfoFragment"
+    android:background="@color/colorWhite"
+    >
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/tournamentInfoCommandScroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <!--add card with group-->
+            <LinearLayout
+                android:id="@+id/tournamentInfoTabCommandEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="65sp"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_marginTop="45sp"
+                    android:layout_marginBottom="45sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:src="@drawable/ic_empty1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="15sp"
+                    android:fontFamily="@font/manrope_regular"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:text="@string/empty"
+                    android:layout_gravity="center_horizontal"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="25sp"
+                    android:paddingStart="25sp"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorLightGrayForText"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="@string/not_league_commands"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tournamentInfoTabCommand"
+                android:paddingTop="5sp"
+                android:paddingBottom="8sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+            <LinearLayout
+                android:id="@+id/commandsPlayoff"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="35sp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="№"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:textSize="14sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="5sp"
+                    android:layout_weight="1">
+                    <TextView
+                        android:fontFamily="@font/manrope_regular"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:text="Команда" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:fontFamily="@font/manrope_regular"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:gravity="end"
+                        android:text="И" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_gravity="center"
+                    >
+                    <TextView
+                        android:fontFamily="@font/manrope_regular"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:gravity="end"
+                        android:text="РМ" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="25dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8sp"
+                    android:layout_marginEnd="8sp"
+                    android:layout_gravity="center">
+                    <TextView
+                        android:fontFamily="@font/manrope_regular"
+                        android:textSize="14sp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:gravity="end"
+                        android:text="О" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/colorLightGray" />
+        </LinearLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/tournamentInfoTabCommandPlayoff"
+                android:paddingTop="5sp"
+                android:paddingBottom="8sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:id="@+id/tournamentInfoTabCommandAbbrev"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="end|bottom"-->
+        <!--android:layout_marginBottom="25dp"-->
+        <!--android:layout_marginEnd="25dp"-->
+        <!--android:src="@drawable/ic_question"-->
+        <!--app:backgroundTint="@color/colorPrimary" />-->
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

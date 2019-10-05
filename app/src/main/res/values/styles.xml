@@ -1,11 +1,102 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+    <!--<style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">-->
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/colorTornamentInfoGray</item> <!-- status bar color-->
         <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="searchAutoCompleteTextView">@style/SearchViewStyle</item>-->
+        <item name="searchViewStyle">@style/MySearchViewStyle</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>--><!-- status bar transparent-->
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+    </style>
+
+    <style name="MyToolbar" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/colorNewsDate</item>
+    </style>
+    <style name="SwitchCompatStyle" parent="AppTheme">
+        <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+    <style name="MySearchViewStyle" parent="Widget.AppCompat.Light.SearchView">
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <item name="android:textColorSecondary">@android:color/darker_gray</item>
+        <!-- Background for the search query section (e.g. EditText) -->
+        <!--<item name="queryBackground">...</item>-->
+        <!-- Background for the actions section (e.g. voice, submit) -->
+        <item name="submitBackground">@color/colorBottomNavigationUnChecked</item>
+        <!-- Close button icon -->
+        <item name="closeIcon">@color/colorBottomNavigationUnChecked</item>
+        <!-- Search button icon -->
+        <!-- Go/commit button icon -->
+        <item name="goIcon">@color/colorBottomNavigationUnChecked</item>
+        <!-- Voice search button icon -->
+        <!--<item name="voiceIcon">...</item>-->
+        <!--&lt;!&ndash; Commit icon shown in the query suggestion row &ndash;&gt;-->
+        <!--<item name="commitIcon">...</item>-->
+        <!--&lt;!&ndash; Layout for query suggestion rows &ndash;&gt;-->
+        <!--<item name="suggestionRowLayout">...</item>-->
+    </style>
+    <style name="MyProgressDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:textColor">@color/colorLightGrayForText</item>
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+
+    <style name="DrawerTextStyle" parent="AppTheme">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="MyEditText" parent="@android:style/TextAppearance">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/colorBottomNavigationUnChecked</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColorHint">@color/colorLightGrayForText</item>
+        <item name="android:layout_marginBottom">20sp</item>
+        <item name="android:fontFamily">@font/manrope_regular</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <!--<item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>-->
+        <!--<item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>-->
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="Widget.AppCompat.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
+    </style>
+
+    <style name="SplashScreenTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
+
+    <style name="DarkTextColor" parent="AppTheme">
+        <item name="android:textColor">@color/colorBottomNavigationUnChecked</item>
+    </style>
+    <style name="CustomTabTextSize" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@color/colorLightGrayForText</item>
+        <item name="android:textSize">11sp</item>
+    </style>
+
+    <style name="SpinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:background">@color/colorWhite</item>
+        <item name="android:textColor">@color/colorBottomNavigationUnChecked</item>
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:paddingStart">15dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
+    <style name="AbbreviationText" parent="AppTheme">
+        <item name="android:textColor">@color/colorBottomNavigationUnChecked</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="android:padding">5sp</item>
     </style>
 
 </resources>

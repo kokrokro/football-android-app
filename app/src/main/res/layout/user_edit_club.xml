@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:tools="http://schemas.android.com/tools"-->
+    <!--android:orientation="vertical"-->
+    <!--android:background="@color/colorWhite"-->
+    <!--android:focusable="true"-->
+    <!--android:focusableInTouchMode="true"-->
+    <!--tools:context=".web.activity.UserEditClub">-->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    tools:context=".user.activity.UserCommandInfo"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/editClubAppbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbarEditClub"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorLightGray2"
+                android:layout_gravity="top"
+                android:minHeight="?attr/actionBarSize"
+                app:layout_collapseMode="pin"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="18sp"
+                    android:gravity="center_horizontal"
+                    android:visibility="visible">
+
+                    <ImageButton
+                        android:id="@+id/userEditClubSave"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_tick" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:fontFamily="@font/manrope_regular"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:text="@string/editClub"
+                        android:textSize="16sp" />
+
+                    <ImageButton
+                        android:id="@+id/userEditClubClose"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/transparent"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/ic_close8" />
+                </RelativeLayout>
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+        <LinearLayout
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+            <ImageButton
+                android:id="@+id/userEditClubLogo"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="15dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:src="@drawable/ic_add_photo"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="5dp"
+                android:layout_height="1dp"
+                android:background="@color/colorWhite"
+                />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:paddingStart="4sp"
+                android:gravity="start"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp"
+                android:text="@string/title"/>
+            <EditText
+                android:id="@+id/userEditClubTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyEditText"
+                android:hint="@string/title2"
+                android:inputType="text|textCapSentences"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:paddingStart="4sp"
+                android:layout_marginBottom="15sp"
+                android:gravity="start"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp"
+                android:text="@string/desc"/>
+            <EditText
+                android:id="@+id/userEditClubDesc"
+                android:layout_width="match_parent"
+                android:gravity="top"
+                android:layout_height="wrap_content"
+                android:textColorHint="@color/colorLightGrayForText"
+                android:textColor="@color/colorBottomNavigationUnChecked"
+                android:textSize="13sp"
+                android:padding="5sp"
+                android:fontFamily="@font/manrope_regular"
+                android:lines="4"
+                android:background="@drawable/edittext_bg"
+                android:hint="@string/desc2"
+                android:inputType="textMultiLine|textCapSentences"/>
+        </LinearLayout>
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_gravity="end"-->
+                <!--android:layout_marginTop="30sp"-->
+                <!--android:layout_height="8sp"-->
+                <!--android:background="@color/colorLightGray2" />-->
+            <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:fontFamily="@font/manrope_semibold"-->
+                <!--android:paddingBottom="8dp"-->
+                <!--android:paddingStart="13dp"-->
+                <!--android:paddingTop="8dp"-->
+                <!--android:textColor="@color/colorBottomNavigationUnChecked"-->
+                <!--android:textSize="14sp"-->
+                <!--android:text="@string/commandInfoMembers"/>-->
+
+        <!--<LinearLayout-->
+            <!--android:paddingStart="18dp"-->
+            <!--android:paddingEnd="18dp"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:orientation="vertical"-->
+            <!--&gt;-->
+
+
+            <!--<android.support.v7.widget.RecyclerView-->
+                <!--android:id="@+id/recyclerViewEditClub"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--app:layout_behavior="@string/appbar_scrolling_view_behavior" />-->
+
+        <!--</LinearLayout>-->
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+<!--</LinearLayout>-->

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FullScreenImage"
+    android:background="@color/colorBottomNavigationUnChecked">
+
+    <ImageView
+        android:id="@+id/fullScreenImg"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:maxHeight="400dp"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerInside"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_gravity="center_vertical|end"
+        android:orientation="horizontal">
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="20sp"
+        android:layout_gravity="center_vertical|end"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_button_arrow2" />
+
+    <Button
+        android:id="@+id/fullScreenImgBtn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_gravity="end"
+        android:fontFamily="@font/manrope_semibold"
+        android:text="@string/back"
+        android:textColor="@color/colorPrimary" />
+    </LinearLayout>
+
+
+</RelativeLayout>
