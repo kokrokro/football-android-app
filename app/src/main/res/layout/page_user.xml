@@ -81,9 +81,9 @@
                     android:textColorHint="@color/colorTabUnChecked"
                     android:textSize="15sp" />
 
-            </LinearLayout>
+                </LinearLayout>
 
-            <!--<TextView-->
+                <!--<TextView-->
                 <!--android:layout_width="match_parent"-->
                 <!--android:layout_height="wrap_content"-->
                 <!--android:fontFamily="@font/manrope_regular"-->
@@ -117,26 +117,9 @@
                     android:textColorHint="@color/colorTabUnChecked"
                     android:textSize="15sp" />
 
+                </LinearLayout>
+
             </LinearLayout>
-
-        </LinearLayout>
-        <!--</android.support.v7.widget.CardView>-->
-
-
-        <!--<Button-->
-        <!--<TextView-->
-        <!--android:id="@+id/logInForget"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:paddingTop="5sp"-->
-        <!--android:paddingBottom="5sp"-->
-        <!--android:layout_marginEnd="17sp"-->
-        <!--android:layout_gravity="center_vertical|end"-->
-        <!--android:fontFamily="@font/manrope_regular"-->
-        <!--android:text="Забыли пароль?"-->
-        <!--android:clickable="true"-->
-        <!--android:textSize="13sp"-->
-        <!--android:textColor="@color/colorLightGrayForText" />-->
 
         <Button
             android:id="@+id/logInButton"
