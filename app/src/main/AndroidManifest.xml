@@ -42,7 +42,7 @@
         <activity
             android:name="baikal.web.footballapp.PersonalActivity"
             android:label="@string/title_activity_personal"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity android:name="baikal.web.footballapp.home.activity.FullscreenNewsActivity"
