@@ -12,11 +12,24 @@
         <!--<item name="android:windowTranslucentStatus">true</item>--><!-- status bar transparent-->
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
         <!-- enable window content transitions -->
-        <item name="android:windowActivityTransitions">true</item>
 
         <!-- specify enter and exit transitions -->
-        <item name="android:windowEnterTransition">@anim/change_image_transform</item>
 
+
+    </style>
+    <style name="AppTheme_transition" parent="Theme.MaterialComponents.NoActionBar.Bridge">
+        <!--<style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">-->
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorTornamentInfoGray</item> <!-- status bar color-->
+        <item name="colorAccent">@color/colorAccent</item>
+        <!--<item name="searchAutoCompleteTextView">@style/SearchViewStyle</item>-->
+        <item name="searchViewStyle">@style/MySearchViewStyle</item>
+        <!--<item name="android:windowTranslucentStatus">true</item>--><!-- status bar transparent-->
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+        <!-- enable window content transitions -->
+        <!-- specify enter and exit transitions -->
+        <item name="android:windowEnterTransition">@anim/change_image_transform</item>
     </style>
 
     <style name="MyToolbar" parent="AppTheme">

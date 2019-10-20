@@ -11,5 +11,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/splash"
         android:foregroundGravity="center"
+        android:padding="16dp"
+        android:scaleType="fitCenter"
         android:src="@drawable/ic_logo" />
 </LinearLayout>
