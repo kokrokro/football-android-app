@@ -131,7 +131,7 @@ public class ProtocolEdit extends AppCompatActivity {
                     case "2 судья":
                         referees.set(2, referee.getPerson());
                         break;
-                    case "Хронометрист":
+                    case "хронометрист":
                         referees.set(3, referee.getPerson());
                         break;
                     default:

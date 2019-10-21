@@ -79,7 +79,7 @@ public class MatchResponsiblePersons extends AppCompatActivity {
                         textReferee3.setText(str);
                         setImage.setImage(this, imageReferee3, personList.get(i).getPhoto());
                         break;
-                    case "Хронометрист":
+                    case "хронометрист":
                         str = checkName.check(personList.get(i).getSurname(), personList.get(i).getName(), personList.get(i).getLastname());
                         textReferee4.setText(str);
                         setImage.setImage(this, imageReferee4, personList.get(i).getPhoto());

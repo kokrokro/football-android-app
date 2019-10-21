@@ -15,7 +15,7 @@ public class Match implements Serializable {
     private String date;
     @SerializedName("stage")
     @Expose
-    private Integer stage;
+    private String stage;
     @SerializedName("played")
     @Expose
     private Boolean played;
@@ -84,11 +84,11 @@ public class Match implements Serializable {
         this.date = date;
     }
 
-    public Integer getStage() {
+    public String getStage() {
         return stage;
     }
 
-    public void setStage(Integer stage) {
+    public void setStage(String stage) {
         this.stage = stage;
     }
 

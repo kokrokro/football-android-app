@@ -88,7 +88,7 @@ public class EditTimeTable extends AppCompatActivity {
                         case "3 судья":
                             countReferees.set(2, referee.getPerson());
                             break;
-                        case "Хронометрист":
+                        case "хронометрист":
                             countReferees.set(3, referee.getPerson());
                             break;
                         default:
@@ -211,7 +211,7 @@ public class EditTimeTable extends AppCompatActivity {
                         type = "3 судья";
                         break;
                     case 3:
-                        type = "Хронометрист";
+                        type = "хронометрист";
                         break;
                     default:
                         break;

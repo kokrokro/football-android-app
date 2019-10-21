@@ -194,7 +194,7 @@ public class ResponsiblePersons extends AppCompatActivity {
                     type = "2 судья";
                     break;
                 case 3:
-                    type = "Хронометрист";
+                    type = "хронометрист";
                     break;
                 default:
                     break;

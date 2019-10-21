@@ -216,7 +216,7 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
                                 holder.textReferee3.setText(str);
                                 holder.textReferee3.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
                                 break;
-                            case "Хронометрист":
+                            case "хронометрист":
                                 str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
                                 holder.textReferee4.setText(str);
                                 holder.textReferee4.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
