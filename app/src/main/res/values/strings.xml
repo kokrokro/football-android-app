@@ -142,4 +142,6 @@
         <item>по количеству ЖК</item>
         <item>по количеству КК</item>
     </string-array>
+    <string name="splash">splash</string>
+    <string name="createTournament">Создание турнира</string>
 </resources>

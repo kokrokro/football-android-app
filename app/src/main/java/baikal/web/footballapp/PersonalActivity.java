@@ -4,10 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
+import android.transition.Slide;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -143,6 +147,7 @@ public class PersonalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setAnimation();
         setContentView(R.layout.activity_personal);
 
         //     FragmentManager.enableDebugLogging(true);
@@ -402,6 +407,15 @@ public class PersonalActivity extends AppCompatActivity {
 
     private void showToast(String str) {
         this.runOnUiThread(() -> Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show());
+    }
+
+    public void setAnimation() {
+        Slide slide = new Slide();
+        slide.setSlideEdge(Gravity.LEFT);
+        slide.setDuration(400);
+        slide.setInterpolator(new DecelerateInterpolator());
+        getWindow().setExitTransition(slide);
+        getWindow().setEnterTransition(slide);
     }
 }
 

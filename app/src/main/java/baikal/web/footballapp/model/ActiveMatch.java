@@ -18,7 +18,7 @@ public class ActiveMatch implements Serializable {
     private String date;
     @SerializedName("stage")
     @Expose
-    private Boolean stage;
+    private String stage;
     @SerializedName("played")
     @Expose
     private Boolean played;
@@ -105,11 +105,11 @@ public class ActiveMatch implements Serializable {
         this.penalty = penalty;
     }
 
-    public Boolean getStage() {
+    public String getStage() {
         return stage;
     }
 
-    public void setStage(Boolean stage) {
+    public void setStage(String stage) {
         this.stage = stage;
     }
 

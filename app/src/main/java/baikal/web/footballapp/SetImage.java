@@ -1,6 +1,7 @@
 package baikal.web.footballapp;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -21,16 +22,27 @@ public class SetImage {
         RequestOptions.errorOf(R.drawable.ic_logo2);
         requestOptions.override(500, 500);
         requestOptions.priority(Priority.HIGH);
+
         try {
+
             if (logo != null) {
-                uriPic += "/" + logo;
-                URL url = new URL(uriPic);
-                Glide.with(context)
-                        .asBitmap()
-                        .load(url)
-                        .apply(requestOptions)
-                        .into(imageView);
+                if (logo.equals("R.drawable.ic_logo2")) {
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(R.drawable.ic_logo2)
+                            .apply(requestOptions)
+                            .into(imageView);
+                }
+                else {
+                    uriPic += "/" + logo;
+                    Glide.with(context)
+                            .asBitmap()
+                            .load(uriPic)
+                            .apply(requestOptions)
+                            .into(imageView);
+                }
             } else {
+
                 Glide.with(context)
                         .asBitmap()
                         .load(R.drawable.ic_logo2)

@@ -159,7 +159,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
                                 holder.referee3.setText(str);
                                 holder.switch3.setVisibility(View.GONE);
                                 break;
-                            case "Хронометрист":
+                            case "хронометрист":
                                 str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
                                 holder.referee4.setText(str);
                                 holder.switch4.setVisibility(View.GONE);
@@ -200,7 +200,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
         });
 
         holder.switch4.setOnCheckedChangeListener(
-                (buttonView, isChecked) -> mListener.onClickSwitch(match.getId(), person.getId(), isChecked, "Хронометрист", position));
+                (buttonView, isChecked) -> mListener.onClickSwitch(match.getId(), person.getId(), isChecked, "хронометрист", position));
         holder.switch4.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 holder.switch4.getParent().requestDisallowInterceptTouchEvent(true);

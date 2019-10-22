@@ -54,7 +54,7 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
         PersonTeams personTeams = list.get(position);
 //        final League league = personTeams.getLeague();
         League league = null;
-        for (League league1 : PersonalActivity.tournaments){
+        for (League league1 : activity.tournaments){
             if (league1.getId().equals(personTeams.getLeague())){
                 league = league1;
                 break;

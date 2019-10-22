@@ -67,8 +67,10 @@ public class RVOngoingTournamentAdapter extends RecyclerView.Adapter<RVOngoingTo
             }
         }
         SetImage setImage = new SetImage();
-        setImage.setImage(context.getActivity(), holder.image, clubLeague.getLogo());
-
+        if (clubLeague != null)
+            setImage.setImage(context.getActivity(), holder.image, clubLeague.getLogo());
+        else
+            setImage.setImage(context.getActivity(), holder.image, "R.drawable.ic_logo2");
         String str = league.getTourney() +". "+ league.getName();
         holder.textTitle.setText(str);
         DateToString dateToString = new DateToString();

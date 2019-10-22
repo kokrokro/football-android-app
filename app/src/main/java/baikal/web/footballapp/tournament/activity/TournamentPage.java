@@ -62,7 +62,7 @@ public class TournamentPage extends Fragment {
         scroller = view.findViewById(R.id.scrollerLeague);
         progressBar =view.findViewById(R.id.progresLeague);
         GetAllReferees();
-        GetAllTournaments("5", "0");
+        GetAllTournaments("20", "0");
         try {
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);

@@ -67,6 +67,7 @@ public class AuthoUser extends Fragment {
     private DrawerLayout drawer;
     private Person person;
     public static FloatingActionButton fab;
+    public static FloatingActionButton fabT;
     //adapters
     public static RVInvitationAdapter adapterInv;
     public static RVUserCommandAdapter adapterCommand;
@@ -145,8 +146,6 @@ public class AuthoUser extends Fragment {
 
             SetImage setImage = new SetImage();
             setImage.setImage(getActivity(), buttonOpenProfile, person.getPhoto());
-
-
             m = nvDrawer.getMenu();
             for (int i = 0; i < m.size(); i++) {
                 MenuItem mi = m.getItem(i);
@@ -172,13 +171,12 @@ public class AuthoUser extends Fragment {
                     if (person.getType().equals("player") && (i == 6 || i == 4 || i == 5)) {
                         m.getItem(i).setVisible(false);
                     }
-                    if (person.getType().equals("referee") && (i == 6 || i == 4 || i == 0 || i == 1 || i == 2 || i == 3)) {
+                    if (person.getType().equals("referee") && (i == 6 || i == 4)) {
                         m.getItem(i).setVisible(false);
                     }
-                    if (person.getType().equals("mainReferee") && (i == 0 || i == 1 || i == 2 || i == 3 || i == 5)) {
+                    if (person.getType().equals("mainReferee") && (i == 5)) {
                         m.getItem(i).setVisible(false);
                     }
-
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
                 }
@@ -198,7 +196,7 @@ public class AuthoUser extends Fragment {
 
             if (person.getType().equals("referee")) {
                 this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches).show(myMatches).commit();
-                categoryTitle.setText(getActivity().getText(R.string.matches));
+                categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
             }
             if (person.getType().equals("player")) {
                 this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment).show(defaultFragment).commit();
@@ -278,7 +276,6 @@ public class AuthoUser extends Fragment {
     }
 
     private void selectDrawerItem(MenuItem menuItem) {
-
         switch (menuItem.getItemId()) {
             case R.id.nav_default_fragment:
                 try {
@@ -287,7 +284,7 @@ public class AuthoUser extends Fragment {
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.title_tournament));
-                    fab.setVisibility(View.INVISIBLE);
+                    fab.setVisibility(View.VISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
 
                 } catch (Exception e) {
