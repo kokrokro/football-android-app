@@ -4,16 +4,20 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.User;
 
 import org.json.JSONException;
@@ -28,8 +32,13 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -47,7 +56,7 @@ public class RegistrationUser extends AppCompatActivity {
     private static ImageButton imageSave;
     private final PersonalInfo personalInfo = new PersonalInfo();
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
-
+    private List<Region> regions = new ArrayList<Region>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
@@ -55,6 +64,25 @@ public class RegistrationUser extends AppCompatActivity {
         setContentView(R.layout.registration_user);
         imageClose = findViewById(R.id.registrationClose);
         imageSave = findViewById(R.id.registrationSave);
+        Controller
+                .getApi()
+                .getRegions().enqueue(new Callback<List<Region>>() {
+            @Override
+            public void onResponse(Call<List<Region>> call, Response<List<Region>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        regions.clear();
+                        regions.addAll(response.body());
+                        Log.d("sfdsdf",String.valueOf(response.body().size()));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Region>> call, Throwable t) {
+                Log.e("ERROR: ", t.getMessage());
+            }
+        });
         imageClose.setOnClickListener(v -> finish());
         imageSave.setOnClickListener(v -> {
 //                getSupportFragmentManager().beginTransaction().replace(R.id.pageContainer, authoUser).addToBackStack(null).commit();
@@ -86,25 +114,19 @@ public class RegistrationUser extends AppCompatActivity {
         String login = PersonalInfo.textLogin.getText().toString();
         String password = PersonalInfo.textPassword.getText().toString();
         String DOB = PersonalInfo.textDOB.getText().toString();
+        String region = PersonalInfo.textRegion.getText().toString();
 //        Bitmap photo = ((BitmapDrawable)drawable).getBitmap();
         Bitmap photo = PersonalInfo.myBitmap;
         String type = "player";
         Map<String, RequestBody> map = new HashMap<>();
-        DateFormat format = new SimpleDateFormat("dd MMMM yyyy", new Locale("ru"));
-        try {
-            Date date = format.parse(DOB);
-
-            RequestBody requestDOB = RequestBody.create(MediaType.parse("text/plain"), date.toString());
-            map.put("birthdate", requestDOB);
-//            DateTimeFormatter dtf = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-//            DOB.format(dtf);
-        } catch (ParseException e) { e.printStackTrace(); }
         RequestBody requestType = RequestBody.create(MediaType.parse("text/plain"), type);
         RequestBody requestName = RequestBody.create(MediaType.parse("text/plain"), name);
         RequestBody requestSurname = RequestBody.create(MediaType.parse("text/plain"), surName);
         RequestBody requestPatronymic = RequestBody.create(MediaType.parse("text/plain"), patronymic);
         RequestBody requestLogin = RequestBody.create(MediaType.parse("text/plain"), login);
         RequestBody requestPass = RequestBody.create(MediaType.parse("text/plain"), password);
+        RequestBody requestDOB = RequestBody.create(MediaType.parse("text/plain"),DOB);
+        RequestBody requestRegion = RequestBody.create(MediaType.parse("text/plain"),"5dae8412114fa120e5524deb");
         if (photo == null){
             photo = BitmapFactory.decodeResource(getResources(), R.drawable.ic_logo2);
             log.info("INFO: photo is null");
@@ -137,6 +159,8 @@ public class RegistrationUser extends AppCompatActivity {
             map.put("lastname", requestPatronymic);
             map.put("login", requestLogin);
             map.put("password", requestPass);
+            map.put("region", requestRegion);
+            map.put("birthdate",requestDOB);
 //            map.put("photo", requestFile);
             Call<User> call2 = Controller.getApi().signUp(map, body);
             call2.enqueue(new Callback<User>() {
@@ -151,6 +175,7 @@ public class RegistrationUser extends AppCompatActivity {
                             //response.body() have your LoginResult fields and methods  (baikal you have to access error then try like this response.body().getError() )
 //                            String msg = response.body().getMessage();
                             User user = response.body();
+                            Log.d("dfdF_________", response.body().toString());
                             Person person = response.body().getUser();
 //                            Intent resultIntent = new Intent();
 //                            Bundle bundle = new Bundle();

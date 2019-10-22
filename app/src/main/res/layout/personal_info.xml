@@ -93,6 +93,23 @@
                 android:gravity="start"
                 android:textColor="@color/colorLightGrayForText"
                 android:textSize="12sp"
+                android:text="@string/region"/>
+            <EditText
+                android:id="@+id/registrationInfoRegion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyEditText"
+                android:hint="@string/region"
+                android:inputType="text|textCapWords"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:paddingStart="4sp"
+                android:gravity="start"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp"
                 android:text="@string/loginProfile"/>
             <EditText
                 android:id="@+id/registrationInfoLogin"
@@ -148,6 +165,7 @@
                 android:layout_height="1dp"
                 android:background="@color/colorLightGray"
                 />
+
 
 
         </LinearLayout>

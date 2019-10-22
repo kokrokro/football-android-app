@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.PorterDuff;
+import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class PersonalInfo extends Fragment {
     public static EditText textName;
     public static EditText textSurname;
     public static EditText textPatronymic;
+    public static EditText textRegion;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         view = inflater.inflate(R.layout.personal_info, container, false);
@@ -62,12 +64,21 @@ public class PersonalInfo extends Fragment {
         textLogin = view.findViewById(R.id.registrationInfoLogin);
         textPassword = view.findViewById(R.id.registrationInfoPassword);
         textDOB = view.findViewById(R.id.registrationInfoDOB);
+        textRegion = view.findViewById(R.id.registrationInfoRegion);
         textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         textName.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 textName.getBackground().clearColorFilter();
             } else {
                 textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+            }
+        });
+        textRegion.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+        textRegion.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                textRegion.getBackground().clearColorFilter();
+            } else {
+                textRegion.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
             }
         });
         textSurname.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);

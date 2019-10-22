@@ -1,5 +1,8 @@
 package baikal.web.footballapp.user.activity;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.net.sip.SipSession;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
@@ -27,6 +32,7 @@ import java.util.List;
 public class OngoingTournamentFragment extends Fragment{
     private final Logger log = LoggerFactory.getLogger(OngoingTournamentFragment.class);
     private static RVOngoingTournamentAdapter adapter;
+    private static FloatingActionButton fab;
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view;
@@ -70,6 +76,10 @@ public class OngoingTournamentFragment extends Fragment{
         }
         }catch (NullPointerException e){}
         log.info("INFO: OngoingTournament onCreateView");
+        AuthoUser.fab.setOnClickListener(v->{
+            Intent intent = new Intent(getActivity(),AddTournament.class );
+            startActivity(intent);
+        });
         return view;
     }
 
