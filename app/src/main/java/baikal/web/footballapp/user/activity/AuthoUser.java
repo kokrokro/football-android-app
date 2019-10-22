@@ -67,6 +67,7 @@ public class AuthoUser extends Fragment {
     private DrawerLayout drawer;
     private Person person;
     public static FloatingActionButton fab;
+    public static FloatingActionButton fabT;
     //adapters
     public static RVInvitationAdapter adapterInv;
     public static RVUserCommandAdapter adapterCommand;
@@ -283,7 +284,7 @@ public class AuthoUser extends Fragment {
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.title_tournament));
-                    fab.setVisibility(View.INVISIBLE);
+                    fab.setVisibility(View.VISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
 
                 } catch (Exception e) {
