@@ -39,6 +39,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name="baikal.web.footballapp.protocol.ProtocolPage"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="baikal.web.footballapp.PersonalActivity"
             android:label="@string/title_activity_personal"
