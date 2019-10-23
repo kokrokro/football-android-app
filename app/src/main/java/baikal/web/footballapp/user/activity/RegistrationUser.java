@@ -56,7 +56,6 @@ public class RegistrationUser extends AppCompatActivity {
     private static ImageButton imageSave;
     private final PersonalInfo personalInfo = new PersonalInfo();
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
-    private List<Region> regions = new ArrayList<Region>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
@@ -64,25 +63,7 @@ public class RegistrationUser extends AppCompatActivity {
         setContentView(R.layout.registration_user);
         imageClose = findViewById(R.id.registrationClose);
         imageSave = findViewById(R.id.registrationSave);
-        Controller
-                .getApi()
-                .getRegions().enqueue(new Callback<List<Region>>() {
-            @Override
-            public void onResponse(Call<List<Region>> call, Response<List<Region>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null) {
-                        regions.clear();
-                        regions.addAll(response.body());
-                        Log.d("sfdsdf",String.valueOf(response.body().size()));
-                    }
-                }
-            }
 
-            @Override
-            public void onFailure(Call<List<Region>> call, Throwable t) {
-                Log.e("ERROR: ", t.getMessage());
-            }
-        });
         imageClose.setOnClickListener(v -> finish());
         imageSave.setOnClickListener(v -> {
 //                getSupportFragmentManager().beginTransaction().replace(R.id.pageContainer, authoUser).addToBackStack(null).commit();
@@ -101,6 +82,7 @@ public class RegistrationUser extends AppCompatActivity {
             SignUp();
 
         });
+
 //        fragmentManager.beginTransaction().add(R.id.registrationViewPager, phoneVerification, "phoneVerification").commit();
 //        fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").hide(personalInfo).commit();
         fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").show(personalInfo).commit();
@@ -114,7 +96,7 @@ public class RegistrationUser extends AppCompatActivity {
         String login = PersonalInfo.textLogin.getText().toString();
         String password = PersonalInfo.textPassword.getText().toString();
         String DOB = PersonalInfo.textDOB.getText().toString();
-        String region = PersonalInfo.textRegion.getText().toString();
+        String region = PersonalInfo.regionsId.get(PersonalInfo.spinnerRegion.getSelectedItemPosition());
 //        Bitmap photo = ((BitmapDrawable)drawable).getBitmap();
         Bitmap photo = PersonalInfo.myBitmap;
         String type = "player";
@@ -126,7 +108,7 @@ public class RegistrationUser extends AppCompatActivity {
         RequestBody requestLogin = RequestBody.create(MediaType.parse("text/plain"), login);
         RequestBody requestPass = RequestBody.create(MediaType.parse("text/plain"), password);
         RequestBody requestDOB = RequestBody.create(MediaType.parse("text/plain"),DOB);
-        RequestBody requestRegion = RequestBody.create(MediaType.parse("text/plain"),"5dae8412114fa120e5524deb");
+        RequestBody requestRegion = RequestBody.create(MediaType.parse("text/plain"),region);
         if (photo == null){
             photo = BitmapFactory.decodeResource(getResources(), R.drawable.ic_logo2);
             log.info("INFO: photo is null");

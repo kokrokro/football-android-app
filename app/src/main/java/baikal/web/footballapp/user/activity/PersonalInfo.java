@@ -18,18 +18,29 @@ import android.provider.MediaStore;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
+
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Region;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,13 +58,15 @@ public class PersonalInfo extends Fragment {
     private final ArrayList permissionsRejected = new ArrayList();
     private final ArrayList permissions = new ArrayList();
     private final static int ALL_PERMISSIONS_RESULT = 107;
-
+    public static List<Region> regions = new ArrayList<Region>();
+    public static ArrayList <String> regionsId = new ArrayList<String>();
+    private ArrayList<String> regionsName = new ArrayList<String>();
     public static EditText textLogin;
     public static EditText textPassword;
     public static EditText textName;
     public static EditText textSurname;
     public static EditText textPatronymic;
-    public static EditText textRegion;
+    public static Spinner spinnerRegion;
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         view = inflater.inflate(R.layout.personal_info, container, false);
@@ -64,8 +77,44 @@ public class PersonalInfo extends Fragment {
         textLogin = view.findViewById(R.id.registrationInfoLogin);
         textPassword = view.findViewById(R.id.registrationInfoPassword);
         textDOB = view.findViewById(R.id.registrationInfoDOB);
-        textRegion = view.findViewById(R.id.registrationInfoRegion);
-        textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+        spinnerRegion = view.findViewById(R.id.regionEditSpinner);
+        Controller
+                .getApi()
+                .getRegions().enqueue(new Callback<List<Region>>() {
+            @Override
+            public void onResponse(Call<List<Region>> call, Response<List<Region>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        regions.clear();
+                        regions.addAll(response.body());
+                        for(Region reg: regions){
+                            regionsName.add(reg.getName());
+                            regionsId.add(reg.getId());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Region>> call, Throwable t) {
+                Log.e("ERROR: ", t.getMessage());
+            }
+        });
+
+        ArrayAdapter<String> adapterRegion = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item,regionsName);
+        spinnerRegion.setAdapter(adapterRegion);
+        spinnerRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinnerRegion.setSelection(position,true);
+             }
+
+              @Override
+               public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+                });
+                textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         textName.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 textName.getBackground().clearColorFilter();
@@ -73,12 +122,12 @@ public class PersonalInfo extends Fragment {
                 textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
             }
         });
-        textRegion.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
-        textRegion.setOnFocusChangeListener((v, hasFocus) -> {
+        spinnerRegion.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+        spinnerRegion.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
-                textRegion.getBackground().clearColorFilter();
+                spinnerRegion.getBackground().clearColorFilter();
             } else {
-                textRegion.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+                spinnerRegion.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
             }
         });
         textSurname.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);

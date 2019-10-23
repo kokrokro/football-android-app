@@ -5,10 +5,10 @@
     android:ellipsize="end"
     android:maxLines="1"
     android:layout_height="wrap_content"
-    android:paddingStart="6sp"
+    android:paddingStart="10sp"
     android:fontFamily="@font/manrope_regular"
     android:gravity="start"
     android:textColor="@color/colorBottomNavigationUnChecked"
-    android:textSize="14sp" />
+    android:textSize="20sp" />
 
     <!--</LinearLayout>-->
