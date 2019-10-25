@@ -1,5 +1,6 @@
 package baikal.web.footballapp.user.activity;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -86,8 +87,23 @@ public class RegistrationUser extends AppCompatActivity {
 //        fragmentManager.beginTransaction().add(R.id.registrationViewPager, phoneVerification, "phoneVerification").commit();
 //        fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").hide(personalInfo).commit();
         fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").show(personalInfo).commit();
+
+        personalInfo.setParentContext(this);
     }
 
+    public void showAlertDialogButtonClicked() {
+//        View view
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("My title");
+//        builder.setMessage("This is my message.");
+//
+//        builder.setPositiveButton("OK", null);
+//
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
+
+        Toast.makeText(getBaseContext(), "Выберете регион", Toast.LENGTH_SHORT);
+    }
 
     private void SignUp() {
         String name = PersonalInfo.textName.getText().toString();
@@ -96,7 +112,11 @@ public class RegistrationUser extends AppCompatActivity {
         String login = PersonalInfo.textLogin.getText().toString();
         String password = PersonalInfo.textPassword.getText().toString();
         String DOB = PersonalInfo.textDOB.getText().toString();
-        String region = PersonalInfo.regionsId.get(PersonalInfo.spinnerRegion.getSelectedItemPosition());
+        String region = "";
+        if (PersonalInfo.spinnerRegion.getSelectedItemPosition() == -1)
+            showAlertDialogButtonClicked();
+        else
+            region = PersonalInfo.regionsId.get(PersonalInfo.spinnerRegion.getSelectedItemPosition());
 //        Bitmap photo = ((BitmapDrawable)drawable).getBitmap();
         Bitmap photo = PersonalInfo.myBitmap;
         String type = "player";

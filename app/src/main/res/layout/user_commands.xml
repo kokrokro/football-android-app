@@ -88,14 +88,15 @@
 
 
                 </LinearLayout>
+
                 <View
                     android:id="@+id/userCommandsLine"
                     android:layout_width="match_parent"
+                    android:layout_height="12sp"
                     android:layout_gravity="end"
                     android:layout_marginTop="8sp"
-                    android:layout_height="8sp"
-                    android:visibility="gone"
-                    android:background="@color/colorLightGray2" />
+                    android:background="@color/colorLightGray2"
+                    android:visibility="gone" />
                 <TextView
                     android:id="@+id/userCommandsText"
                     android:layout_width="wrap_content"

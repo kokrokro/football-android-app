@@ -3,6 +3,7 @@ package baikal.web.footballapp.user.activity;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -15,6 +16,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+
+import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AlertDialog;
@@ -24,11 +27,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import baikal.web.footballapp.user.adapter.SpinnerRegionAdapter;
+import androidx.core.content.ContextCompat.*;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -67,6 +74,11 @@ public class PersonalInfo extends Fragment {
     public static EditText textSurname;
     public static EditText textPatronymic;
     public static Spinner spinnerRegion;
+    private Context ParentContext;
+    private SpinnerRegionAdapter adapterRegion;
+
+
+
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         view = inflater.inflate(R.layout.personal_info, container, false);
@@ -78,6 +90,13 @@ public class PersonalInfo extends Fragment {
         textPassword = view.findViewById(R.id.registrationInfoPassword);
         textDOB = view.findViewById(R.id.registrationInfoDOB);
         spinnerRegion = view.findViewById(R.id.regionEditSpinner);
+        adapterRegion = new SpinnerRegionAdapter (this.getContext(), R.layout.spinner_item, regions);
+
+        adapterRegion.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+
+
+        spinnerRegion.setAdapter(adapterRegion);
+
         Controller
                 .getApi()
                 .getRegions().enqueue(new Callback<List<Region>>() {
@@ -92,6 +111,13 @@ public class PersonalInfo extends Fragment {
                             regionsId.add(reg.getId());
                         }
                     }
+                    if (regions.size() > 0)
+                        spinnerRegion.setSelection(0);
+
+                    Log.d("____________________", String.valueOf(regions.size()) + " " + regionsName.get(0));
+
+                    adapterRegion.notifyDataSetChanged();
+                    spinnerRegion.setSelection(0);
                 }
             }
 
@@ -101,20 +127,21 @@ public class PersonalInfo extends Fragment {
             }
         });
 
-        ArrayAdapter<String> adapterRegion = new ArrayAdapter<String>(getActivity(),R.layout.spinner_item,regionsName);
-        spinnerRegion.setAdapter(adapterRegion);
+
+
         spinnerRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
              public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                spinnerRegion.setSelection(position,true);
+                Region rg = (Region) parent.getItemAtPosition(position);
+                Toast.makeText(getParentContext(), "Выбран регион: " + rg.getName(), Toast.LENGTH_LONG).show();
              }
 
-              @Override
-               public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+             @Override
+             public void onNothingSelected(AdapterView<?> parent) {
+             }
                 });
-                textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+
+        textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         textName.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 textName.getBackground().clearColorFilter();
@@ -453,5 +480,13 @@ public class PersonalInfo extends Fragment {
 
             }
         }
+    }
+
+    public Context getParentContext() {
+        return ParentContext;
+    }
+
+    public void setParentContext(Context parentContext) {
+        ParentContext = parentContext;
     }
 }
