@@ -135,30 +135,48 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_regular"
                 android:gravity="start"
-                android:paddingStart="6sp"
-                android:text="@string/club2"
-                android:popupBackground="#ffffff"
+                android:paddingStart="4sp"
+                android:text="@string/trainer"
                 android:textColor="@color/colorLightGrayForText"
                 android:textSize="12sp" />
+            <EditText
+                android:id="@+id/newCommandNumber"
+                style="@style/MyEditText"
+                android:layout_marginEnd="18dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/numberTrainer"
+                android:inputType="phone" />
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:fontFamily="@font/manrope_regular"-->
+<!--                android:gravity="start"-->
+<!--                android:paddingStart="6sp"-->
+<!--                android:text="@string/club2"-->
+<!--                android:popupBackground="#ffffff"-->
+<!--                android:textColor="@color/colorLightGrayForText"-->
+<!--                android:textSize="12sp" />-->
 
 
-            <Spinner
-                android:id="@+id/newCommandClubSpinner"
-                android:layout_width="match_parent"
-                android:padding="0dp"
-                android:layout_marginEnd="4dp"
-                android:layout_height="34dp"
-                android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-                android:backgroundTint="@color/colorPrimary"
-                android:spinnerMode="dialog" />
-            <View
-                android:layout_width="match_parent"
-                android:layout_marginStart="6sp"
-                android:layout_marginEnd="18sp"
-                android:layout_height="1dp"
-                android:layout_marginBottom="20sp"
-                android:background="@color/colorLightGray"
-                />
+<!--            <Spinner-->
+<!--                android:id="@+id/newCommandClubSpinner"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:padding="0dp"-->
+<!--                android:layout_marginEnd="4dp"-->
+<!--                android:layout_height="34dp"-->
+<!--                android:popupTheme="@android:style/ThemeOverlay.Material.Light"-->
+<!--                android:backgroundTint="@color/colorPrimary"-->
+<!--                android:spinnerMode="dialog" />-->
+<!--            <View-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_marginStart="6sp"-->
+<!--                android:layout_marginEnd="18sp"-->
+<!--                android:layout_height="1dp"-->
+<!--                android:layout_marginBottom="20sp"-->
+<!--                android:background="@color/colorLightGray"-->
+<!--                />-->
 
             <RelativeLayout
                 android:layout_width="match_parent"

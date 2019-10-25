@@ -141,4 +141,6 @@
     <string name="splash">splash</string>
     <string name="createTournament">Создание турнира</string>
     <string name="region">Регион</string>
+    <string name="trainer">Тренер</string>
+    <string name="numberTrainer">Номер тренера</string>
 </resources>

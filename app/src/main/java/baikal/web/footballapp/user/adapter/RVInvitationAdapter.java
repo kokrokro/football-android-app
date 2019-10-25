@@ -83,7 +83,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
         PendingTeamInvite pendingTeamInvite = list.get(position);
         League league = null;
         Person person = null;
-        Club club = null;
+       // Club club = null;
         for (League tournament : PersonalActivity.tournaments) {
             if (tournament.getId().equals(pendingTeamInvite.getLeague())) {
                 league = tournament;
@@ -101,13 +101,13 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                     }
 
                 }
-                for (Club clubs : PersonalActivity.allClubs) {
-                    if (team.getClub().equals(clubs.getId())) {
-                        club = clubs;
-                        break;
-                    }
-
-                }
+//                for (Club clubs : PersonalActivity.allClubs) {
+//                    if (team.getClub().equals(clubs.getId())) {
+//                        club = clubs;
+//                        break;
+//                    }
+//
+//                }
                 break;
             }
         }
@@ -126,34 +126,34 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
         str += team.getName();
         holder.textCommand.setText(str);
 
-        uriPic += "/" + club.getLogo();
-        try {
-            URL url = new URL(uriPic);
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.optionalCircleCrop();
-            requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-            requestOptions.error(R.drawable.ic_logo2);
-            requestOptions.override(500, 500);
-            requestOptions.priority(Priority.HIGH);
-//            Glide.with(context)
-            Glide.with(holder.image.getContext())
-                    .asBitmap()
-                    .load(url)
-                    .apply(requestOptions)
-                    .into(holder.image);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        final String finalUriPic = uriPic;
-        holder.image.setOnClickListener(v -> {
-            if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {
-                Intent intent = new Intent(activity, FullScreenImage.class);
-//                    Intent intent = new Intent(context, FullScreenImage.class);
-                intent.putExtra("player_photo", finalUriPic);
-                activity.startActivity(intent);
-//                    context.startActivity(intent);
-            }
-        });
+        //uriPic += "/" + club.getLogo();
+//        try {
+//            URL url = new URL(uriPic);
+//            RequestOptions requestOptions = new RequestOptions();
+//            requestOptions.optionalCircleCrop();
+//            requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
+//            requestOptions.error(R.drawable.ic_logo2);
+//            requestOptions.override(500, 500);
+//            requestOptions.priority(Priority.HIGH);
+////            Glide.with(context)
+//            Glide.with(holder.image.getContext())
+//                    .asBitmap()
+//                    .load(url)
+//                    .apply(requestOptions)
+//                    .into(holder.image);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//        final String finalUriPic = uriPic;
+//        holder.image.setOnClickListener(v -> {
+//            if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {
+//                Intent intent = new Intent(activity, FullScreenImage.class);
+////                    Intent intent = new Intent(context, FullScreenImage.class);
+//                intent.putExtra("player_photo", finalUriPic);
+//                activity.startActivity(intent);
+////                    context.startActivity(intent);
+//            }
+//        });
 
         final League finalLeague = league;
         final Team finalTeam = team;

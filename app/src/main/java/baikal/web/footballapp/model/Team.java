@@ -7,7 +7,12 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Team implements Serializable {
-
+    @SerializedName("creatorPhone")
+    @Expose
+    private String creatorPhone;
+    @SerializedName("trainer")
+    @Expose
+    private String trainer;
     @SerializedName("status")
     @Expose
     private String status;
@@ -56,6 +61,14 @@ public class Team implements Serializable {
     @SerializedName("name")
     @Expose
     private String name;
+
+    public String getTrainer() { return trainer;    }
+
+    public void setTrainer(String trainer) { this.trainer = trainer;    }
+
+    public String getCreatorPhone(){ return this.creatorPhone;}
+
+    public void setCreatorPhone(String creatorPhone) { this.creatorPhone = creatorPhone;    }
 
     public String getStatus() {
         return status;
