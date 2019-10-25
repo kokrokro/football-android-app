@@ -6,7 +6,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Person implements Serializable {
-
+    @SerializedName("region")
+    @Expose
+    private String region;
     @SerializedName("surname")
     @Expose
     private String surname;
@@ -65,6 +67,10 @@ public class Person implements Serializable {
     @SerializedName("pendingTeamInvites")
     @Expose
     private List<PendingTeamInvite> pendingTeamInvites = null;
+
+    public String getRegion() { return region; }
+
+    public void setRegion(String region) { this.region = region;  }
 
     public String getSurname() {
         return surname;

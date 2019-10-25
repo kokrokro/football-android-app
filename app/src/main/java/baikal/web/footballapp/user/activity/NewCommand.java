@@ -54,6 +54,7 @@ public class NewCommand extends AppCompatActivity {
     private Spinner spinnerClubs;
     private Team team;
     private EditText textTitle;
+    private EditText number;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,28 +71,29 @@ public class NewCommand extends AppCompatActivity {
         imageSave = findViewById(R.id.newCommandSave);
         textTitle = findViewById(R.id.newCommandTitle);
         spinnerTournament = findViewById(R.id.newCommandTournamentSpinner);
+        number = findViewById(R.id.newCommandNumber);
 //        spinnerLeague = (Spinner) findViewById(R.id.newCommandLeagueSpinner);
-        spinnerClubs = findViewById(R.id.newCommandClubSpinner);
+        //spinnerClubs = findViewById(R.id.newCommandClubSpinner);
 
         spinnerTournament.setPopupBackgroundResource(R.color.colorWhite);
 
 
-        Drawable spinnerDrawable = spinnerClubs.getBackground().getConstantState().newDrawable();
+       // Drawable spinnerDrawable = spinnerClubs.getBackground().getConstantState().newDrawable();
 
 
-        spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        //spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
 
 
-        spinnerClubs.setBackground(spinnerDrawable);
+       // spinnerClubs.setBackground(spinnerDrawable);
 
 
-        spinnerDrawable = spinnerTournament.getBackground().getConstantState().newDrawable();
+       // spinnerDrawable = spinnerTournament.getBackground().getConstantState().newDrawable();
 
 
-        spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        //spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
 
 
-        spinnerTournament.setBackground(spinnerDrawable);
+        //spinnerTournament.setBackground(spinnerDrawable);
         SpinnerTournamentAdapter adapterTournament = new SpinnerTournamentAdapter(this, R.layout.spinner_item, allTournaments);
         spinnerTournament.setAdapter(adapterTournament);
 //        spinnerTournament.setPopupBackgroundResource(R.color.colorWhite);
@@ -106,21 +108,21 @@ public class NewCommand extends AppCompatActivity {
         });
 //        adapterTournament.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        adapterTournament.setDropDownViewResource(R.layout.spinner_item);
-        SpinnerClubAdapter adapterClub = new SpinnerClubAdapter(this, R.layout.spinner_item, allClubs);
-
-
-
-
-        adapterClub.setDropDownViewResource(R.layout.spinner_dropdown);
-        spinnerClubs.setAdapter(adapterClub);
-        spinnerClubs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                itemClub = (Club) parent.getItemAtPosition(pos);
-            }
-
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+//        SpinnerClubAdapter adapterClub = new SpinnerClubAdapter(this, R.layout.spinner_item, allClubs);
+//
+//
+//
+//
+//        adapterClub.setDropDownViewResource(R.layout.spinner_dropdown);
+//        spinnerClubs.setAdapter(adapterClub);
+//        spinnerClubs.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+//                itemClub = (Club) parent.getItemAtPosition(pos);
+//            }
+//
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }
+//        });
         textTitle.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         textTitle.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
@@ -146,16 +148,19 @@ public class NewCommand extends AppCompatActivity {
                 league = league1;
             }
         }
-        String club = itemClub.getId();
+        String numberTrainer  = number.getText().toString();
+        //String club = itemClub.getId();
         String creator = SaveSharedPreference.getObject().getUser().getId();
         RequestBody request = RequestBody.create(MediaType.parse("text/plain"), tournament);
         map.put("_id", request);
-        request = RequestBody.create(MediaType.parse("text/plain"), club);
-        map.put("club", request);
+       // request = RequestBody.create(MediaType.parse("text/plain"), club);
+        //map.put("club", request);
         request = RequestBody.create(MediaType.parse("text/plain"), creator);
         map.put("creator", request);
         request = RequestBody.create(MediaType.parse("text/plain"), name);
         map.put("name", request);
+        request = RequestBody.create(MediaType.parse("text/plain"), numberTrainer);
+        map.put("creatorPhone", request);
         Call<AddTeam> call = Controller.getApi().addTeam(token, map);
         log.info("INFO: load and parse json-file");
         final League finalLeague = league;

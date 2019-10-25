@@ -187,7 +187,4 @@ public class UserCommands extends Fragment {
         log.info("INFO: UserCommands onDestroy");
         super.onDestroy();
     }
-
-
-
 }

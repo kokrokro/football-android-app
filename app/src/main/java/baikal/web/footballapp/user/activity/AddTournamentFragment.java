@@ -1,27 +1,44 @@
 package baikal.web.footballapp.user.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.fragment.app.Fragment;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import baikal.web.footballapp.R;
 
-public class AddTournament extends AppCompatActivity {
+/**
+ * A simple {@link Fragment} subclass.
+ */
+public class AddTournamentFragment extends Fragment {
+
+
+    public AddTournamentFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_tournament);
-        WebView webView = (WebView) findViewById(R.id.webViewTournament);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        final View view;
+        view = inflater.inflate(R.layout.fragment_add_tournament, container, false);
+        // Inflate the layout for this fragment
+
+        WebView webView = view.findViewById(R.id.webViewTournament1);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.loadUrl("https://football.bwadm.ru");
-        webView.setWebViewClient(new MyWebViewClient());
+        webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true); //check the documentation for info about dbpath
         webSettings.setMinimumFontSize(1);
@@ -29,7 +46,7 @@ public class AddTournament extends AppCompatActivity {
         webSettings.setSupportZoom(false);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
-
+        return view;
     }
     private class MyWebViewClient extends WebViewClient {
         @Override
@@ -44,4 +61,5 @@ public class AddTournament extends AppCompatActivity {
             return true;
         }
     }
+
 }

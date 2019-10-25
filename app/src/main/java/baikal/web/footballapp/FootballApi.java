@@ -15,6 +15,7 @@ import baikal.web.footballapp.model.Matches;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.RefereeRequestList;
+import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
 import baikal.web.footballapp.model.SetRefereeList;
 import baikal.web.footballapp.model.SignIn;
@@ -22,6 +23,7 @@ import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.User;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.Observable;
@@ -175,5 +177,7 @@ public interface FootballApi {
     @POST("/api/clubs/edit")
     Call<DataClub> editClub(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
 
+    @GET("/api/crud/region")
+    Call<List<Region>> getRegions();
 }
 
