@@ -86,7 +86,7 @@ public class AuthoUser extends Fragment {
     public static ImageButton buttonOpenProfile;
     public static TextView textName;
     private final InvitationFragment firstFragment = new InvitationFragment();
-    private final OngoingTournamentFragment defaultFragment = new OngoingTournamentFragment();
+    private final AddTournamentFragment defaultFragment = new AddTournamentFragment();
     private final UserClubs secondFragment = new UserClubs();
     private final TimeTableFragment timeTableFragment = new TimeTableFragment();
     private final RefereeFragment refereeFragment = new RefereeFragment();
@@ -284,7 +284,7 @@ public class AuthoUser extends Fragment {
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.title_tournament));
-                    fab.setVisibility(View.VISIBLE);
+                    fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
 
                 } catch (Exception e) {
