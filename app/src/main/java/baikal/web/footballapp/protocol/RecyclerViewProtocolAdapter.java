@@ -29,8 +29,8 @@ public class RecyclerViewProtocolAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position, @NonNull List<Object> payloads) {
-        super.onBindViewHolder(holder, position, payloads);
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
     }
 
     @Override
@@ -39,16 +39,16 @@ public class RecyclerViewProtocolAdapter extends RecyclerView.Adapter<RecyclerVi
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-        final View line;
-        final ImageView imageLogo;
-        final TextView textTitle;
-        final LinearLayout buttonShow;
+//        final View line;
+//        final ImageView imageLogo;
+//        final TextView textTitle;
+//        final LinearLayout buttonShow;
         ViewHolder(View item) {
             super(item);
-            line = item.findViewById(R.id.clubLine);
-            imageLogo = item.findViewById(R.id.clubLogo);
-            textTitle = item.findViewById(R.id.clubTitle);
-            buttonShow = item.findViewById(R.id.clubButtonShow);
+//            line = item.findViewById(R.id.clubLine);
+//            imageLogo = item.findViewById(R.id.clubLogo);
+//            textTitle = item.findViewById(R.id.clubTitle);
+//            buttonShow = item.findViewById(R.id.clubButtonShow);
         }
     }
 
