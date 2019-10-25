@@ -76,10 +76,10 @@ public class OngoingTournamentFragment extends Fragment{
         }
         }catch (NullPointerException e){}
         log.info("INFO: OngoingTournament onCreateView");
-        AuthoUser.fab.setOnClickListener(v->{
-            Intent intent = new Intent(getActivity(),AddTournament.class );
-            startActivity(intent);
-        });
+//        AuthoUser.fab.setOnClickListener(v->{
+//            Intent intent = new Intent(getActivity(),AddTournament.class );
+//            startActivity(intent);
+//        });
         return view;
     }
 
