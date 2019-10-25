@@ -97,9 +97,7 @@ public class PersonalInfo extends Fragment {
 
         spinnerRegion.setAdapter(adapterRegion);
 
-        Controller
-                .getApi()
-                .getRegions().enqueue(new Callback<List<Region>>() {
+        Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
             @Override
             public void onResponse(Call<List<Region>> call, Response<List<Region>> response) {
                 if (response.isSuccessful()) {
@@ -114,16 +112,17 @@ public class PersonalInfo extends Fragment {
                     if (regions.size() > 0)
                         spinnerRegion.setSelection(0);
 
-                    Log.d("____________________", String.valueOf(regions.size()) + " " + regionsName.get(0));
-
                     adapterRegion.notifyDataSetChanged();
                     spinnerRegion.setSelection(0);
+                } else {
+                    Toast.makeText(getParentContext(), "Ошибка при загрузке регионов", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<List<Region>> call, Throwable t) {
                 Log.e("ERROR: ", t.getMessage());
+                Toast.makeText(getParentContext(), "Ошибка при загрузке регионов", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -133,7 +132,6 @@ public class PersonalInfo extends Fragment {
             @Override
              public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Region rg = (Region) parent.getItemAtPosition(position);
-                Toast.makeText(getParentContext(), "Выбран регион: " + rg.getName(), Toast.LENGTH_LONG).show();
              }
 
              @Override
