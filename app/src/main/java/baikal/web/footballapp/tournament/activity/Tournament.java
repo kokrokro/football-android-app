@@ -16,6 +16,7 @@ import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
 
 import org.slf4j.Logger;
@@ -60,9 +61,13 @@ public class Tournament extends Fragment {
                 fabPlayers.hide();
             }
 
-            String str;
-
-            str = league.getTourney() + ". " + league.getName();
+            String str = "";
+            for(Tourney t: PersonalActivity.allTourneys){
+                if(league.getTourney().equals(t.getId())){
+                    str = t.getName();
+                }
+            }
+            str +=". " + league.getName();
             textTitle.setText(str);
             tabLayout.setupWithViewPager(viewPager);
             setupViewPager(viewPager, league);
