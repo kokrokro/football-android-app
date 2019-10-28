@@ -61,6 +61,7 @@ public class Tournament extends Fragment {
             }
 
             String str;
+
             str = league.getTourney() + ". " + league.getName();
             textTitle.setText(str);
             tabLayout.setupWithViewPager(viewPager);

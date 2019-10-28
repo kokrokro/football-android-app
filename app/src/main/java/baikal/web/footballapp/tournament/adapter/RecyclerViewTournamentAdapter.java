@@ -19,6 +19,7 @@ import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 
 import org.slf4j.Logger;
@@ -33,13 +34,15 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
     private final List<League> tournaments;
     private final PersonalActivity activity;
     private final ListAdapterListener mListener;
+    private final List<Tourney> tourneys;
     private ProgressBar progressBar;
     //    public RecyclerViewTournamentAdapter(Context context){
-    public RecyclerViewTournamentAdapter(Activity activity, TournamentPage context, List<League> tournaments, ListAdapterListener mListener){
+    public RecyclerViewTournamentAdapter(Activity activity, TournamentPage context, List<League> tournaments, ListAdapterListener mListener, List<Tourney> tourneys){
         this.tournaments = tournaments;
         this.activity = (PersonalActivity) activity;
         this.context = context;
         this.mListener = mListener;
+        this.tourneys = tourneys;
     }
 
     public interface ListAdapterListener {
@@ -62,8 +65,13 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
         String str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
         holder.textDate.setText(str);
         holder.textDate.setText(str);
-
-        str = league.getTourney() + ". " + league.getName();
+        String tourneyName = "";
+        for(Tourney t : tourneys){
+            if(league.getTourney().equals(t.getId())){
+                tourneyName = t.getName();
+            }
+        }
+        str = tourneyName + ". " + league.getName();
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + league.getMaxTeams();
         holder.textCommandNum.setText(str);

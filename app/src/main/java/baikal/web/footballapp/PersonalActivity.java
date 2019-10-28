@@ -327,6 +327,7 @@ public class PersonalActivity extends AppCompatActivity {
                         ,
                         this::getError
                 );
+        allTourneys = new ArrayList<>();
         Controller.getApi().getTourneys().enqueue(new Callback<List<Tourney>>() {
             @Override
             public void onResponse(Call<List<Tourney>> call, Response<List<Tourney>> response) {
@@ -343,6 +344,7 @@ public class PersonalActivity extends AppCompatActivity {
                 Log.e("ERROR: ", t.getMessage());
             }
         });
+
     }
 
     private void getError(Throwable error) {

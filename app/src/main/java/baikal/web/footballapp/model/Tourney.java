@@ -7,6 +7,9 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Tourney implements Serializable {
+    @SerializedName("_id")
+    @Expose
+    private String id;
     @SerializedName("creator")
     @Expose
     private String creator;
@@ -215,5 +218,13 @@ public class Tourney implements Serializable {
 
     public void setTransferEnd(String transferEnd) {
         this.transferEnd = transferEnd;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -67,7 +67,7 @@ public class TournamentPage extends Fragment {
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RecyclerViewTournamentAdapter(getActivity(), TournamentPage.this, PersonalActivity.tournaments, leagueId -> showTournamentInfo(leagueId));
+            adapter = new RecyclerViewTournamentAdapter(getActivity(), TournamentPage.this, PersonalActivity.tournaments, leagueId -> showTournamentInfo(leagueId),PersonalActivity.allTourneys);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             log.error("ERROR: ", e);
