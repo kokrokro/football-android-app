@@ -21,6 +21,7 @@ import baikal.web.footballapp.model.SetRefereeList;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tournaments;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 
 import java.util.List;
@@ -179,5 +180,8 @@ public interface FootballApi {
 
     @GET("/api/crud/region")
     Call<List<Region>> getRegions();
+
+    @GET("/api/crud/tourney")
+    Call<List<Tourney>> getTourneys();
 }
 

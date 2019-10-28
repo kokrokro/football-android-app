@@ -43,6 +43,7 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Tournaments;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 import baikal.web.footballapp.user.activity.AuthoUser;
@@ -51,7 +52,10 @@ import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.HttpException;
+import retrofit2.Response;
 
 public class PersonalActivity extends AppCompatActivity {
     public static final List<Person> allPlayers = new ArrayList<>();
@@ -67,6 +71,7 @@ public class PersonalActivity extends AppCompatActivity {
     private static final Fragment fragmentMain = new MainPage();
     public static List<League> tournaments = new ArrayList<>();
     public static List<Club> allClubs = new ArrayList<>();
+    public static List<Tourney> allTourneys = new ArrayList<>();
     //    Fragment active = fragmentHome;
     public static Fragment active = fragmentMain;
     private static Context contextBase;
@@ -280,7 +285,8 @@ public class PersonalActivity extends AppCompatActivity {
                         showSnack();
                     } else {
                         String str = "Отсутствует интернет соединение";
-                        showToast(str);
+                        if(App.wasInBackground)
+                            showToast(str);
                     }
                 });
     }
@@ -316,11 +322,27 @@ public class PersonalActivity extends AppCompatActivity {
         Controller.getApi().getAllTournaments("32575", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
+                //.repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
                 .subscribe(PersonalActivity::saveData
                         ,
                         this::getError
                 );
+        Controller.getApi().getTourneys().enqueue(new Callback<List<Tourney>>() {
+            @Override
+            public void onResponse(Call<List<Tourney>> call, Response<List<Tourney>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        allTourneys.clear();
+                        allTourneys.addAll(response.body());
+                    }
+                }
+
+            }
+            @Override
+            public void onFailure(Call<List<Tourney>> call, Throwable t) {
+                Log.e("ERROR: ", t.getMessage());
+            }
+        });
     }
 
     private void getError(Throwable error) {
