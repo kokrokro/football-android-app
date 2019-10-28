@@ -131,6 +131,10 @@
     <string name="not_matches">Пока нет утвержденных матчей</string>
     <string name="not_coming_match">На этой неделе нет матчей</string>
     <string name="not_event">В этом матче еще ничего не произошло</string>
+    <string name="title_protocol">Протокол</string>
+
+
+
     <string name="commandRules">Для участия в турнире команда должна включать минимум 5 игроков. Добавить игроков можно в разделе \"Игроки\" или в разделе \"Команды\" профиля.</string>
     <string-array name="spinnerItem">
         <item>по проведенным матчам</item>

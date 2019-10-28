@@ -85,6 +85,7 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         holder.textLeague.setText(str);
         SetImage setImage = new SetImage();
         Team team1 = match.getTeamOne();
+        System.out.println("team1 = " + team1);
         Team team2 = match.getTeamTwo();
                 str = team1.getName();
                 holder.textCommandTitle1.setText(str);

@@ -23,6 +23,7 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.News_;
+import baikal.web.footballapp.protocol.ProtocolPage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +89,10 @@ public class FullscreenNewsActivity extends AppCompatActivity {
             }
 
             button.setOnClickListener(v -> finish());
+
+
+            Intent intent2 = new Intent(this, ProtocolPage.class);
+            startActivity(intent2);
 
         }
         catch (Exception t){
