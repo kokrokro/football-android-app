@@ -93,7 +93,7 @@ public class PersonalActivity extends AppCompatActivity {
                             active = fragmentMain;
                             return true;
                         case R.id.navigation_tournament:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, fragmentTournament).addToBackStack(TOURNAMENT).commit();
+                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new TournamentPage()).addToBackStack(TOURNAMENT).commit();
                             active = fragmentTournament;
                             return true;
                         case R.id.navigation_club:
@@ -140,7 +140,7 @@ public class PersonalActivity extends AppCompatActivity {
     private AdvertisingFragment dialogFragment;
 
     public PersonalActivity() {
-        fragmentTournament = new TournamentPage(fragmentManager);
+        fragmentTournament = new TournamentPage();
     }
 
     public static void saveData(Tournaments tournaments1) {
@@ -368,14 +368,17 @@ public class PersonalActivity extends AppCompatActivity {
             }
             if (error instanceof SocketTimeoutException) {
                 str = "Неполадки на сервере. Попробуйте позже.";
+                if(App.wasInBackground)
                 Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
             }
             if (error instanceof ConnectException) {
                 str = "Отсутствует соединение.";
+                if(App.wasInBackground)
                 Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
             }
         } catch (ClassCastException n) {
             str = "Неполадки на сервере. Попробуйте позже.";
+            if(App.wasInBackground)
             Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
         }
 

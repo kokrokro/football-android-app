@@ -49,6 +49,8 @@ public interface FootballApi {
     @GET("/api/news")
     Call<News> getAllNews(@Query("limit") String limit, @Query("offset") String offset);
 
+    @GET("/api/crud/news")
+    Call<News> getAllNews2(@Query("limit") String limit, @Query("offset") String offset);
 
     //get all news
     @GET("/api/announce")

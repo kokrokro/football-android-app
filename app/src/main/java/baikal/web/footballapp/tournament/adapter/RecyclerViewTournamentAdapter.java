@@ -21,6 +21,7 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
+import baikal.web.footballapp.tournament.activity.TournamentsFragment;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,14 +31,12 @@ import java.util.List;
 
 public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<RecyclerViewTournamentAdapter.ViewHolder>{
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
-    private final TournamentPage context;
+    private final TournamentsFragment context;
     private final List<League> tournaments;
     private final PersonalActivity activity;
     private final ListAdapterListener mListener;
     private final List<Tourney> tourneys;
-    private ProgressBar progressBar;
-    //    public RecyclerViewTournamentAdapter(Context context){
-    public RecyclerViewTournamentAdapter(Activity activity, TournamentPage context, List<League> tournaments, ListAdapterListener mListener, List<Tourney> tourneys){
+    public RecyclerViewTournamentAdapter(Activity activity, TournamentsFragment context, List<League> tournaments, ListAdapterListener mListener, List<Tourney> tourneys){
         this.tournaments = tournaments;
         this.activity = (PersonalActivity) activity;
         this.context = context;
@@ -153,8 +152,8 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
 
 
     public void dataChanged(List<League> allPlayers1){
-        tournaments.clear();
-        tournaments.addAll(allPlayers1);
+        //tournaments.clear();
+        //tournaments.addAll(allPlayers1);
         notifyDataSetChanged();
     }
 
