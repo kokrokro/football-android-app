@@ -67,6 +67,13 @@ public class Person implements Serializable {
     @SerializedName("pendingTeamInvites")
     @Expose
     private List<PendingTeamInvite> pendingTeamInvites = null;
+    @SerializedName("favouriteTourney")
+    @Expose
+    private List<Tourney> favouriteTourney = null;
+
+    public List<Tourney> getFavouriteTourney() {  return favouriteTourney;    }
+
+    public void setFavouriteTourney(List<Tourney> favouriteTourney) {  this.favouriteTourney = favouriteTourney; }
 
     public String getRegion() { return region; }
 

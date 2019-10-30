@@ -69,10 +69,7 @@ public interface FootballApi {
 //    Call<Clubs> getAllClubs();
 
 
-    //get all tournaments
-    @GET("/api/leagues/all")
-    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
-//    Call<Tournaments> getAllTournaments();
+
 
 
     //get tournament's info
@@ -100,7 +97,12 @@ public interface FootballApi {
     @GET("/api/getusers")
     Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
 
-
+    @GET("/api/crud/tourney")
+    Observable<Tourney> getTourneys(@Query("name") String name);
+    //get all tournaments
+    @GET("/api/leagues/all")
+    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
+    //    Call<Tournaments> getAllTournaments();
     //edit web
     @Multipart
     @POST("/api/editPlayerInfo")

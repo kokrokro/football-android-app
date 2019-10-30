@@ -147,4 +147,5 @@
     <string name="region">Регион</string>
     <string name="trainer">Тренер</string>
     <string name="numberTrainer">Номер тренера</string>
+    <string name="searchTourneys">Поиск по турнирам</string>
 </resources>

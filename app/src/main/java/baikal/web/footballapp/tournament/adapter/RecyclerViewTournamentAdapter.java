@@ -2,10 +2,12 @@ package baikal.web.footballapp.tournament.adapter;
 
 import android.app.Activity;
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -31,12 +33,12 @@ import java.util.List;
 
 public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<RecyclerViewTournamentAdapter.ViewHolder>{
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
-    private final TournamentsFragment context;
+    private final Fragment context;
     private final List<League> tournaments;
     private final PersonalActivity activity;
     private final ListAdapterListener mListener;
     private final List<Tourney> tourneys;
-    public RecyclerViewTournamentAdapter(Activity activity, TournamentsFragment context, List<League> tournaments, ListAdapterListener mListener, List<Tourney> tourneys){
+    public RecyclerViewTournamentAdapter(Activity activity, Fragment context, List<League> tournaments, ListAdapterListener mListener, List<Tourney> tourneys){
         this.tournaments = tournaments;
         this.activity = (PersonalActivity) activity;
         this.context = context;
@@ -62,7 +64,6 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
         if (league.getStatus().equals("Finished")) {status = true;}
         DateToString dateToString = new DateToString();
         String str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
-        holder.textDate.setText(str);
         holder.textDate.setText(str);
         String tourneyName = "";
         for(Tourney t : tourneys){
