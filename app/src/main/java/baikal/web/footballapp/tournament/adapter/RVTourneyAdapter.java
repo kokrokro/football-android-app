@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,6 +53,14 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
         holder.textCommandNum.setText(str);
+        holder.favBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                } else {
+                }
+            }
+        });
     }
 
     @Override
@@ -65,6 +76,7 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         final TextView textStatusFinish;
         final View view;
         final RelativeLayout imageButton;
+        final CheckBox favBtn;
         ViewHolder(View itemView) {
             super(itemView);
             view = itemView.findViewById(R.id.tourneyLine);
@@ -73,6 +85,7 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
 //                    // item clicked
 //                }
 //            });
+            favBtn = itemView.findViewById(R.id.like_button_cb);
             textCommandNum = itemView.findViewById(R.id.tourneyTeamNumber);
             textDate = itemView.findViewById(R.id.tourneyDate);
             textTitle = itemView.findViewById(R.id.tourneyTitle);

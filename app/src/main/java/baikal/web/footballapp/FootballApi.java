@@ -98,7 +98,7 @@ public interface FootballApi {
     Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
 
     @GET("/api/crud/tourney")
-    Observable<List<Tourney>> getTourneys(@Query("name") String name);
+    Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
     //get all tournaments
     @GET("/api/leagues/all")
     Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);

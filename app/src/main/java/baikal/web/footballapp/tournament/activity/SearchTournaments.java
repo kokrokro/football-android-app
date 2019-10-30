@@ -135,7 +135,7 @@ public class SearchTournaments extends Fragment {
         if (name.equals("")) {
             saveAllData(PersonalActivity.allTourneys);
         } else {
-            Controller.getApi().getTourneys(name).subscribeOn(Schedulers.io())
+            Controller.getApi().getTourneys(name,null).subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(this::saveAllData
                             ,
@@ -193,7 +193,7 @@ public class SearchTournaments extends Fragment {
 
             saveAllData(PersonalActivity.allTourneys);
         } else {
-            Controller.getApi().getTourneys(search)
+            Controller.getApi().getTourneys(search,null)
                     .subscribeOn(Schedulers.io())
 //                .doOnSubscribe(__ -> showDialog())
 //                .doOnTerminate(this::hideDialog)
