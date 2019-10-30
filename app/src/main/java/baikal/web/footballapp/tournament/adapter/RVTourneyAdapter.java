@@ -17,24 +17,22 @@ import java.util.List;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 
 public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.ViewHolder> {
     private List<Tourney> tourneys = new ArrayList<>();
     private PersonalActivity activity;
-    private ListAdapterListener mListener;
+    //private ListAdapterListener mListener;
 
-    public RVTourneyAdapter(List<Tourney> tourneys, Activity activity, ListAdapterListener mListener){
+    public RVTourneyAdapter(List<Tourney> tourneys, Activity activity){
         this.tourneys = tourneys;
         this.activity = (PersonalActivity) activity;
-        this.mListener = mListener;
+        //this.mListener = mListener;
 
     }
-    public interface ListAdapterListener {
-        void onClickSwitch(String leagueId);
-    }
+//    public interface ListAdapterListener {
+//        void onClickSwitch(String leagueId);
+//    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -86,8 +84,8 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         }
     }
     public void dataChanged(List<Tourney> tourneys){
-        this.tourneys.clear();
-        this.tourneys.addAll(tourneys);
+//        this.tourneys.clear();
+//        this.tourneys.addAll(tourneys);
         notifyDataSetChanged();
     }
 }

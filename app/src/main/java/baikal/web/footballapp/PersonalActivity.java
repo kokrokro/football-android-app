@@ -328,7 +328,7 @@ public class PersonalActivity extends AppCompatActivity {
                         this::getError
                 );
         allTourneys = new ArrayList<>();
-        Controller.getApi().getTourneys().enqueue(new Callback<List<Tourney>>() {
+        Controller.getApi().getAllTourneys().enqueue(new Callback<List<Tourney>>() {
             @Override
             public void onResponse(Call<List<Tourney>> call, Response<List<Tourney>> response) {
                 if (response.isSuccessful()) {

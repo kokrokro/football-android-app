@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,11 +38,16 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Tournaments;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
+import baikal.web.footballapp.tournament.adapter.RVTourneyAdapter;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,13 +61,14 @@ public class SearchTournaments extends Fragment {
     private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
     private SearchView searchView;
     private ProgressBar progressBar;
-    private static RecyclerViewTournamentAdapter adapter;
+    private static RVTourneyAdapter adapter;
     private final List<Person> result = new ArrayList<>();
     private ProgressDialog mProgressDialog;
     private final List<Person> people = new ArrayList<>();
     private final List<Person> allPeople = new ArrayList<>();
     private NestedScrollView scroller;
     private final List<League> tournaments= new ArrayList<>();
+    private List<Tourney> tourneyList = new ArrayList<>();
     public SearchTournaments() {
         // Required empty public constructor
     }
@@ -87,26 +94,27 @@ public class SearchTournaments extends Fragment {
         icon.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
         ImageView searchViewClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
-        GetAllTournaments("20", "0");
+        tourneyList = new ArrayList<>(PersonalActivity.allTourneys);
         try {
             recyclerView = view.findViewById(R.id.recyclerViewSearch);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RecyclerViewTournamentAdapter(getActivity(), SearchTournaments.this, PersonalActivity.tournaments, leagueId -> showTournamentInfo(leagueId), PersonalActivity.allTourneys);
+
+            adapter = new RVTourneyAdapter(tourneyList, getActivity());
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
-        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                offset++;
-                int temp = limit*offset;
-                if (temp<=count) {
-                    String str = String.valueOf(temp);
-                    GetAllTournaments("10", str);
-                }
-            }
-        });
+//        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+//            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+//                offset++;
+//                int temp = limit*offset;
+//                if (temp<=count) {
+//                    String str = "";
+//                    GetAllTournaments(str);
+//                }
+//            }
+//        });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -115,30 +123,38 @@ public class SearchTournaments extends Fragment {
             }
             @Override
             public boolean onQueryTextChange(String newText) {
+                    SearchTournaments(newText);
                 return false;
             }
         });
         return view;
     }
     @SuppressLint("CheckResult")
-    private void GetAllTournaments(String limit, String offset) {
-        Controller.getApi().getAllTournaments(limit, offset)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveAllData
-                        ,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
+    private void GetAllTournaments(String name) {
+
+        if (name.equals("")) {
+            saveAllData(PersonalActivity.allTourneys);
+        } else {
+            Controller.getApi().getTourneys(name).subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::saveAllData
+                            ,
+                            error -> {
+                                CheckError checkError = new CheckError();
+                                checkError.checkError(getActivity(), error);
+                            }
+                    );
+        }
+
+
     }
 
-    private void saveAllData(Tournaments tournaments1) {
-        count = tournaments1.getCount();
-        tournaments.addAll(tournaments.size(), tournaments1.getLeagues());
-        List<League> list = new ArrayList<>(tournaments);
-        //adapter.dataChanged(list);
+    private void saveAllData(List<Tourney> tourneys) {
+        count = tourneys.size();
+        Log.d("_____", String.valueOf(count));
+        this.tourneyList.clear();
+        this.tourneyList.addAll(tourneys);
+        adapter.dataChanged(tourneyList);
     }
     @SuppressLint("CheckResult")
     private void showTournamentInfo(String leagueId){
@@ -172,17 +188,23 @@ public class SearchTournaments extends Fragment {
     private void SearchTournaments(String search){
 //        PersonalActivity.people.clear();
 //        String type = "player";
-//        Controller.getApi().getAllTournaments(type, search, "32575", "0")
-//                .subscribeOn(Schedulers.io())
+        Log.d("_____",search);
+        if (search.equals("")) {
+
+            saveAllData(PersonalActivity.allTourneys);
+        } else {
+            Controller.getApi().getTourneys(search)
+                    .subscribeOn(Schedulers.io())
 //                .doOnSubscribe(__ -> showDialog())
 //                .doOnTerminate(this::hideDialog)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(this::saveAllData,
-//                        error -> {
-//                            CheckError checkError = new CheckError();
-//                            checkError.checkError(getActivity(), error);
-//                        }
-//                );
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(this::saveAllData,
+                            error -> {
+                                CheckError checkError = new CheckError();
+                                checkError.checkError(getActivity(), error);
+                            }
+                    );
+        }
 
     }
     private void showDialog() {
