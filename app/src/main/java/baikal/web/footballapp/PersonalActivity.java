@@ -42,6 +42,7 @@ import baikal.web.footballapp.model.Clubs;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
@@ -81,6 +82,7 @@ public class PersonalActivity extends AppCompatActivity {
     private final Fragment fragmentClub = new ClubPage();
     private final Fragment fragmentPlayers = new PlayersPage();
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
+    public static List<Region> regions = new ArrayList<>();
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -298,10 +300,29 @@ public class PersonalActivity extends AppCompatActivity {
         GetAllPlayers();
         //all clubs
         GetAllClubs();
+        GetAllRegions();
         if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
             log.error("REFRESH USER");
             RefreshUser();
         }
+    }
+
+    private void GetAllRegions() {
+        Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
+            @Override
+            public void onResponse(Call<List<Region>> call, Response<List<Region>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        regions.clear();
+                        regions.addAll(response.body());
+                    }
+            }}
+
+            @Override
+            public void onFailure(Call<List<Region>> call, Throwable t) {
+
+            }
+        });
     }
 
     @SuppressLint("CheckResult")

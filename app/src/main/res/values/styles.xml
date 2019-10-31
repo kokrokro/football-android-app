@@ -29,7 +29,12 @@
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
         <!-- enable window content transitions -->
         <!-- specify enter and exit transitions -->
-        <item name="android:windowEnterTransition">@anim/change_image_transform</item>
+<!--        <item name="android:windowEnterTransition">@anim/change_image_transform</item>-->
+<!--        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>-->
+    </style>
+    <style name="PauseDialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_out_right</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
     </style>
 
     <style name="MyToolbar" parent="AppTheme">
