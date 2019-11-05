@@ -55,9 +55,9 @@ public class DialogRegion extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity(),R.style.DialogTheme);
         alertDialogBuilder.setTitle("Выберите регион");
-        alertDialogBuilder.setSingleChoiceItems(regions.toArray(new CharSequence[regions.size()]), -1, new DialogInterface.OnClickListener() {
+        alertDialogBuilder.setItems(regions.toArray(new CharSequence[regions.size()]), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 pos = i;
@@ -66,6 +66,7 @@ public class DialogRegion extends DialogFragment {
                 dialogInterface.dismiss();
             }
         });
+        //alertDialogBuilder.setView(R.layout.dialog);
         return alertDialogBuilder.create();
     }
 }

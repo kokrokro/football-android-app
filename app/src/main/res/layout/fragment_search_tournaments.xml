@@ -22,7 +22,7 @@ tools:context=".PersonalActivity">
         <androidx.appcompat.widget.SearchView
             android:id="@+id/searchView"
             android:layout_width="0dp"
-            android:layout_weight="10"
+            android:layout_weight="1"
             app:actionViewClass="android.support.v7.widget.SearchView"
             android:layout_height="?attr/actionBarSize"
             app:layout_collapseMode="pin"
@@ -31,10 +31,12 @@ tools:context=".PersonalActivity">
 
         <ImageButton
             android:id="@+id/filterRegionButton"
-            android:layout_width="0dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
             android:background="@drawable/ic_filter"
+            android:layout_marginRight="10dp"
             >
 
         </ImageButton>

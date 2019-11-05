@@ -75,7 +75,6 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         final TextView textCommandNum;
         final TextView textStatusFinish;
         final View view;
-        final RelativeLayout imageButton;
         final CheckBox favBtn;
         ViewHolder(View itemView) {
             super(itemView);
@@ -90,7 +89,6 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
             textDate = itemView.findViewById(R.id.tourneyDate);
             textTitle = itemView.findViewById(R.id.tourneyTitle);
             textStatusFinish = itemView.findViewById(R.id.tourneyFinish);
-            imageButton = itemView.findViewById(R.id.tournamentShow);
 
 
 //            mProgressDialog.setIndeterminate(true);

@@ -153,29 +153,9 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         });
         return view;
     }
-    @SuppressLint("CheckResult")
-    private void GetAllTournaments(String name) {
-
-        if (name.equals("")) {
-            saveAllData(PersonalActivity.allTourneys);
-        } else {
-            Controller.getApi().getTourneys(name,null).subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::saveAllData
-                            ,
-                            error -> {
-                                CheckError checkError = new CheckError();
-                                checkError.checkError(getActivity(), error);
-                            }
-                    );
-        }
-
-
-    }
 
     private void saveAllData(List<Tourney> tourneys) {
         count = tourneys.size();
-        Log.d("_____", String.valueOf(count));
         this.tourneyList.clear();
         this.tourneyList.addAll(tourneys);
         adapter.dataChanged(tourneyList);
