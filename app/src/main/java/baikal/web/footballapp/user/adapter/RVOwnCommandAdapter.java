@@ -20,6 +20,7 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.user.activity.UserCommandInfo;
 import baikal.web.footballapp.user.activity.UserCommands;
 
@@ -60,6 +61,13 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
                 break;
             }
         }
+        String nameTourney = league.getName();
+        for(Tourney tr : activity.allTourneys){
+            if(tr.getId().equals(nameTourney)){
+                nameTourney = tr.getName();
+                break;
+            }
+        }
         String teamId = personTeams.getTeam();
         Team teamLeague = null;
         for (Team team: league.getTeams()){
@@ -77,7 +85,7 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
         holder.textCommandTitle.setText(str);
 
 
-        str = league.getTourney() + ". " + league.getName();
+        str = nameTourney + ". " + league.getName();
         holder.textTournamentTitle.setText(str);
 
 

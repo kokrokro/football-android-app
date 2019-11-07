@@ -242,6 +242,7 @@ public class UserInfo extends AppCompatActivity {
                 map.put("login", request);
                 request = RequestBody.create(MediaType.parse("text/plain"), person.getId());
                 map.put("_id", request);
+
                 DateFormat format = new SimpleDateFormat("dd MMMM yyyy", new Locale("ru"));
                 try {
                     Date date = format.parse(DOB);

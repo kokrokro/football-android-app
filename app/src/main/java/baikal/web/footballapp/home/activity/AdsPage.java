@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,7 +89,7 @@ public class AdsPage extends Fragment {
         Controller.getApi().getAllAnnounce(limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
+                //.repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
                 .subscribe(this::saveData
                         ,
                         error -> {
@@ -98,9 +100,10 @@ public class AdsPage extends Fragment {
 
     }
 
-    private void saveData(Announces matches) {
-        count = matches.getCount();
-        allNews.addAll(allNews.size(), matches.getAnnounces());
+    private void saveData(List<Announce> matches) {
+        count = matches.size();
+        allNews.clear();
+        allNews.addAll( matches);
         List<Announce> list = new ArrayList<>(allNews);
         adapter.dataChanged(list);
     }

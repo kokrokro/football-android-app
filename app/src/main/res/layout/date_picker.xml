@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@color/colorWhite">
-<com.ycuwq.datepicker.date.DatePicker
+<com.ycuwq.datepicker.tourney.DatePicker
     android:background="@color/colorWhite"
     android:id="@+id/datePicker"
     app:wheelCurtainBorderColor="@color/colorWhite"

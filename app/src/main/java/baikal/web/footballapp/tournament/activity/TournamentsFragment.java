@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,7 @@ public class TournamentsFragment extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.fragment_tournaments, container, false);
         scroller = view.findViewById(R.id.scrollerLeague);
-        GetAllTournaments("20", "0");
+        GetAllTournaments("10", "0");
         try {
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);
@@ -87,7 +88,7 @@ public class TournamentsFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void GetAllTournaments(String limit, String offset) {
-        Controller.getApi().getAllTournaments(limit, offset)
+        Controller.getApi().getAllLeagues(limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::saveAllData
@@ -99,9 +100,10 @@ public class TournamentsFragment extends Fragment {
                 );
     }
 
-    private void saveAllData(Tournaments tournaments1) {
-        count = tournaments1.getCount();
-        tournaments.addAll(tournaments.size(), tournaments1.getLeagues());
+    private void saveAllData(List<League> tournaments1) {
+        count += tournaments1.size();
+        Log.d("couuuunt leagues", " "+ tournaments1.size());
+        tournaments.addAll(tournaments.size(), tournaments1);
         List<League> list = new ArrayList<>(tournaments);
         adapter.dataChanged(list);
     }

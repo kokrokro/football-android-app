@@ -115,7 +115,7 @@ public class PlayerAddToTeam extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void SearchUsers(String search) {
         String type = "player";
-        Controller.getApi().getAllUsers(type, search, "32575", "0")
+        Controller.getApi().getAllPersons(type, search, "32575", "0")
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(__ -> showDialog())
                 .doOnTerminate(this::hideDialog)
@@ -128,10 +128,10 @@ public class PlayerAddToTeam extends AppCompatActivity {
                 );
     }
 
-    private void savePlayers(People people) {
-        adapter.dataChanged(people.getPeople());
+    private void savePlayers(List<Person> people) {
+        adapter.dataChanged(people);
         result.clear();
-        result.addAll(people.getPeople());
+        result.addAll(people);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class PlayerAddToTeam extends AppCompatActivity {
     private void getAllPlayers(String limit, String offset) {
         CheckError checkError = new CheckError();
         String type = "player";
-        Controller.getApi().getAllUsers(type, null, limit, offset)
+        Controller.getApi().getAllPersons(type, null, limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::saveAllPlayers,
@@ -160,9 +160,9 @@ public class PlayerAddToTeam extends AppCompatActivity {
                 );
     }
 
-    private void saveAllPlayers(People peopleList) {
-        count = peopleList.getCount();
-        people.addAll(people.size(), peopleList.getPeople());
+    private void saveAllPlayers(List<Person> peopleList) {
+        count = peopleList.size();
+        people.addAll(people.size(), peopleList);
         List<Person> list = new ArrayList<>(people);
         allPeople.clear();
         allPeople.addAll(people);

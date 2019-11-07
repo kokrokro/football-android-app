@@ -145,9 +145,9 @@ public class PersonalActivity extends AppCompatActivity {
         fragmentTournament = new TournamentPage();
     }
 
-    public static void saveData(Tournaments tournaments1) {
+    public static void saveData(List<League> tournaments1) {
         tournaments.clear();
-        tournaments.addAll(tournaments1.getLeagues());
+        tournaments.addAll(tournaments1);
 //        TournamentPage.adapter.dataChanged(tournaments1.getLeagues());
     }
 
@@ -340,7 +340,7 @@ public class PersonalActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void GetAllTournaments() {
         tournaments = new ArrayList<>();
-        Controller.getApi().getAllTournaments("32575", "0")
+        Controller.getApi().getAllLeagues("32575", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 //.repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
@@ -383,6 +383,8 @@ public class PersonalActivity extends AppCompatActivity {
                         break;
                     case 522:
                         str = "Отсутствует соединение";
+                    case 410:
+                        str = "Wrong api request";
                     default:
                         break;
                 }
@@ -406,11 +408,12 @@ public class PersonalActivity extends AppCompatActivity {
 
     }
 
-    private void savePlayers(People people1) {
+    private void savePlayers(List<Person> people1) {
         people.clear();
         AllPeople.clear();
         allPlayers.clear();
-        allPlayers.addAll(people1.getPeople());
+        Log.d("Persons count", String.valueOf(people1.size()));
+        allPlayers.addAll(people1);
         people.addAll(allPlayers);
         AllPeople.addAll(allPlayers);
 //        PlayersPage.adapter.notifyDataSetChanged();
@@ -420,7 +423,7 @@ public class PersonalActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void GetAllPlayers() {
         String type = "player";
-        Controller.getApi().getAllUsers(type, null, "32575", "0")
+        Controller.getApi().getAllPersons(type, null, "32575", "0")
                 .subscribeOn(Schedulers.io())
 //                .doOnSubscribe(__ -> showDialog())
 //                .doOnTerminate(__ ->hideDialog())

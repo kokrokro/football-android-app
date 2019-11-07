@@ -25,6 +25,17 @@ public class News_ implements Serializable {
     @SerializedName("updatedAt")
     @Expose
     private String updatedAt;
+    @SerializedName("tourney")
+    @Expose
+    private String tourney;
+
+    public String getTourney() {
+        return tourney;
+    }
+
+    public void setTourney(String tourney) {
+        this.tourney = tourney;
+    }
 
     public String getId() {
         return id;

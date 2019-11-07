@@ -38,7 +38,7 @@ public class RecyclerViewAdsAdapter extends RecyclerView.Adapter<RecyclerViewAds
         String str = ads.get(position).getContent();
         holder.textTitle.setText(str);
         DateToString dateToString = new DateToString();
-        str = ads.get(position).getDate();
+        //str = ads.get(position).getTourney();
         holder.textDate.setText(dateToString.ChangeDate(str));
         if (position==(ads.size()-1)){
             holder.line.setVisibility(View.INVISIBLE);

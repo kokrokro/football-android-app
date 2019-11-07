@@ -435,7 +435,7 @@ public class AuthoUser extends Fragment {
 
     @SuppressLint("CheckResult")
     private void refreshTournaments() {
-            Controller.getApi().getAllTournaments("32575", "0")
+            Controller.getApi().getAllLeagues("32575", "0")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(PersonalActivity::saveData
@@ -563,7 +563,7 @@ public class AuthoUser extends Fragment {
     @SuppressLint("CheckResult")
     private void GetAllReferees() {
         String type = "referee";
-        Controller.getApi().getAllUsers(type, null, "32575", "0")
+        Controller.getApi().getAllPersons(type, null, "32575", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
@@ -575,9 +575,9 @@ public class AuthoUser extends Fragment {
                 );
     }
 
-    private void saveReferees(People people) {
+    private void saveReferees(List<Person> people) {
         allReferees.clear();
-        allReferees.addAll(people.getPeople());
+        allReferees.addAll(people);
     }
 
     @Override

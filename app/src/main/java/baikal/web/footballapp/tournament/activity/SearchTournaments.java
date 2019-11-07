@@ -78,6 +78,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private List<Region> regions = new ArrayList<>();
     private List<String> regionsId = new ArrayList<>();
     private List<String> regionsNames = new ArrayList<>();
+    private List<Tourney> favTourneys = new ArrayList<>();
     public SearchTournaments() {
         // Required empty public constructor
     }
@@ -115,20 +116,19 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            adapter = new RVTourneyAdapter(tourneyList, getActivity());
+            //Log.d("tourneyys",""+TournamentPage.favTourneys.size());
+            adapter = new RVTourneyAdapter(tourneyList, getActivity(), TournamentPage.favTourneys);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
-        filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        filter.setOnClickListener(v-> {
                 FragmentManager fm = getChildFragmentManager();
                 DialogRegion dialogRegion =  new DialogRegion(regionsNames);
 
                 dialogRegion.show(fm, "fragment_edit_name");
             }
-        });
+        );
 //        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 //            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 //                offset++;
@@ -160,20 +160,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         this.tourneyList.addAll(tourneys);
         adapter.dataChanged(tourneyList);
     }
-    @SuppressLint("CheckResult")
-    private void showTournamentInfo(String leagueId){
-        Controller.getApi().getLeagueInfo(leagueId)
-                .subscribeOn(Schedulers.io())
-//                .doOnTerminate(()->progressBarHide())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveData
-                        ,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
-    }
     private void saveData(GetLeagueInfo getLeagueInfo) {
         LeagueInfo tournament1 = getLeagueInfo.getLeagueInfo();
         Bundle bundle = new Bundle();
@@ -193,7 +179,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
 //        PersonalActivity.people.clear();
 //        String type = "player";
         if (search!=null && search.equals("")) {
-
             saveAllData(PersonalActivity.allTourneys);
         } else {
 
@@ -210,17 +195,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
                     );
         }
 
-    }
-    private void showDialog() {
-
-        if (mProgressDialog != null && !mProgressDialog.isShowing())
-            mProgressDialog.show();
-    }
-
-    private void hideDialog() {
-
-        if (mProgressDialog != null && mProgressDialog.isShowing())
-            mProgressDialog.dismiss();
     }
 
     @Override

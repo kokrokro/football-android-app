@@ -62,7 +62,7 @@ public class DatePicker extends DatePickerDialogFragment {
         catch (Exception e){
         }
 
-//        datePicker.setDate(Integer.parseInt(date[2]), months.get("дек."),Integer.parseInt(date[0]));
+//        datePicker.setTourney(Integer.parseInt(date[2]), months.get("дек."),Integer.parseInt(date[0]));
         Calendar cal = Calendar.getInstance();
         cal.set(Calendar.YEAR, 2019);
         cal.set(Calendar.MONTH, 0);
