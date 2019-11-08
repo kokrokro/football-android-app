@@ -4,6 +4,8 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,86 +35,87 @@ import java.util.List;
 
 public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<RecyclerViewTournamentAdapter.ViewHolder>{
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
-    private final Fragment context;
+    //private final Fragment context;
     private final List<League> tournaments;
     private final PersonalActivity activity;
-    private final ListAdapterListener mListener;
+    //private final ListAdapterListener mListener;
     private final List<Tourney> tourneys;
-    public RecyclerViewTournamentAdapter(Activity activity, Fragment context, List<League> tournaments, ListAdapterListener mListener, List<Tourney> tourneys){
+    public RecyclerViewTournamentAdapter(Activity activity,List<League> tournaments, List<Tourney> tourneys){
         this.tournaments = tournaments;
         this.activity = (PersonalActivity) activity;
-        this.context = context;
-        this.mListener = mListener;
+       // this.context = context;
+        //this.mListener = mListener;
         this.tourneys = tourneys;
     }
-
-    public interface ListAdapterListener {
-        void onClickSwitch(String leagueId);
-    }
+//    public interface ListAdapterListener {
+//        void onClickSwitch(String leagueId);
+//    }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tournament, parent, false);
+
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         boolean status = false;
+
         final League league = tournaments.get(position);
         if (league.getStatus().equals("Finished")) {status = true;}
         DateToString dateToString = new DateToString();
         String str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
         holder.textDate.setText(str);
-        String tourneyName = "";
-        for(Tourney t : tourneys){
-            if(league.getTourney().equals(t.getId())){
-                tourneyName = t.getName();
-            }
-        }
-        str = tourneyName + ". " + league.getName();
+//        String tourneyName = "";
+//        for(Tourney t : tourneys){
+//            if(league.getTourney().equals(t.getId())){
+//                tourneyName = t.getName();
+//            }
+//        }
+        str =  league.getName();
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + league.getMaxTeams();
         holder.textCommandNum.setText(str);
-        if (status){
-            holder.textStatusFinish.setVisibility(View.VISIBLE);
-            Glide.with(context)
-                    .asBitmap()
-                    .load(R.drawable.ic_fin)
-                    .apply(new RequestOptions()
-                            .format(DecodeFormat.PREFER_ARGB_8888)
-                            .priority(Priority.HIGH))
-                    .into(holder.imageView);
-        }
-        else {
-            Glide.with(context)
-                    .asBitmap()
-                    .load(R.drawable.ic_con)
-                    .apply(new RequestOptions()
-                            .format(DecodeFormat.PREFER_ARGB_8888)
-                            .priority(Priority.HIGH))
-                    .into(holder.imageView);}
-
-        holder.imageButton.setOnClickListener(v -> {
-
-            try {
-//                showTournamentInfo(league.getId());
-                mListener.onClickSwitch(league.getId());
-            }catch (Exception e){
-                log.error("ERROR: " , e);
-            }
-
-
-//                fragmentManager.beginTransaction().replace(context.getId(), new Tournament()).commit();
-
-//                            Intent intent = new Intent(activity, Tornament.class);
-//                            String title = "Some title";
-//                            Bundle bundle = new Bundle();
-//                            bundle.putString("TOURNAMENT", title);
-//                            intent.putExtra("TOURNAMENT", bundle);
-//                            context.startActivity(intent);
-        });
+//        if (status){
+//            holder.textStatusFinish.setVisibility(View.VISIBLE);
+//            Glide.with(context)
+//                    .asBitmap()
+//                    .load(R.drawable.ic_fin)
+//                    .apply(new RequestOptions()
+//                            .format(DecodeFormat.PREFER_ARGB_8888)
+//                            .priority(Priority.HIGH))
+//                    .into(holder.imageView);
+//        }
+//        else {
+//            Glide.with(context)
+//                    .asBitmap()
+//                    .load(R.drawable.ic_con)
+//                    .apply(new RequestOptions()
+//                            .format(DecodeFormat.PREFER_ARGB_8888)
+//                            .priority(Priority.HIGH))
+//                    .into(holder.imageView);}
+//
+//        holder.imageButton.setOnClickListener(v -> {
+//
+//            try {
+////                showTournamentInfo(league.getId());
+//                mListener.onClickSwitch(league.getId());
+//            }catch (Exception e){
+//                log.error("ERROR: " , e);
+//            }
+//
+//
+////                fragmentManager.beginTransaction().replace(context.getId(), new Tournament()).commit();
+//
+////                            Intent intent = new Intent(activity, Tornament.class);
+////                            String title = "Some title";
+////                            Bundle bundle = new Bundle();
+////                            bundle.putString("TOURNAMENT", title);
+////                            intent.putExtra("TOURNAMENT", bundle);
+////                            context.startActivity(intent);
+//        });
         if (position==tournaments.size()-1){
             holder.view.setVisibility(View.INVISIBLE);
         }
@@ -128,7 +131,6 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
         final TextView textDate;
         final TextView textCommandNum;
         final TextView textStatusFinish;
-        final ImageView imageView;
         final View view;
         final RelativeLayout imageButton;
         ViewHolder(View itemView) {
@@ -143,7 +145,6 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
             textDate = itemView.findViewById(R.id.tournamentDate);
             textTitle = itemView.findViewById(R.id.tournamentTitle);
             textStatusFinish = itemView.findViewById(R.id.tournamentStatusFinish);
-            imageView = itemView.findViewById(R.id.tournamentStatusImg);
             imageButton = itemView.findViewById(R.id.tournamentButtonShow);
 
 

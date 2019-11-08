@@ -57,6 +57,7 @@ public class TournamentPage extends Fragment {
     public static final List<Person> referees = new ArrayList<>();
     public static List<String> favTourneys = new ArrayList<>();
     public static String token;
+    public static String id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -72,7 +73,7 @@ public class TournamentPage extends Fragment {
         User user = SaveSharedPreference.getObject();
         Person person = user.getUser();
          token = user.getToken();
-
+        id = person.getId();
         favTourneys = person.getFavouriteTourney();
 
        // Log.d("tourneyys",""+user.getToken());

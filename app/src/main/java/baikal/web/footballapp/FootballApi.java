@@ -18,6 +18,7 @@ import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.RefereeRequestList;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
@@ -107,11 +108,13 @@ public interface FootballApi {
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
     //get all tournaments
-    @GET("/api/leagues/all")
-    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
-    //    Call<Tournaments> getAllTournaments();
+//    @GET("/api/leagues/all")
+//    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
+//    //    Call<Tournaments> getAllTournaments();
     @GET("/api/crud/league?_populate=matches?_populate=stages")
     Observable<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
+    @GET("/api/crud/league?_populate=matches?_populate=stages")
+    Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
     //edit web
     @Multipart
     @POST("/api/editPlayerInfo")
@@ -123,7 +126,8 @@ public interface FootballApi {
     @POST("/api/editPlayerInfo")
     Call<EditProfile> editProfileText(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
-
+    @GET("/api/crud/person?_populate=favoriteTourney&_select=favoriteTourney")
+    Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);
 
     //edit match protocol event and playerList
     @POST("/api/matches/changeProtocol")

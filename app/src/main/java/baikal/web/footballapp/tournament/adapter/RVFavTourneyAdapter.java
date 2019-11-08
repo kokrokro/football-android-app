@@ -7,64 +7,59 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.EditProfile;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.activity.Tournament;
+import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
-import baikal.web.footballapp.user.activity.UserInfo;
 import okhttp3.MediaType;
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.ViewHolder> {
-    private List<Tourney> tourneys ;
+public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapter.ViewHolder> {
+    private List<Tourney> tourneys;
     private PersonalActivity activity;
-    private  List<String> favTourneys;
+    private List<ArrayList<League>> favLeagues;
     final Logger log = LoggerFactory.getLogger(TournamentPage.class);
     //private ListAdapterListener mListener;
 
-    public RVTourneyAdapter(List<Tourney> tourneys, Activity activity, List<String> favTourneys){
+    public RVFavTourneyAdapter(List<Tourney> tourneys, Activity activity, List<ArrayList<League>> favLeagues){
         this.tourneys = tourneys;
         this.activity = (PersonalActivity) activity;
-        this.favTourneys = favTourneys;
+        this.favLeagues = favLeagues;
         //this.mListener = mListener;
 
     }
-//    public interface ListAdapterListener {
+    //    public interface ListAdapterListener {
 //        void onClickSwitch(String leagueId);
 //    }
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tourney, parent, false);
-        return new ViewHolder(view);
+    public RVFavTourneyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.fav_tourney, parent, false);
+        return new RVFavTourneyAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RVFavTourneyAdapter.ViewHolder holder, int position) {
         final Tourney tourney = tourneys.get(position);
         final String id = tourney.getId();
         DateToString dateToString = new DateToString();
@@ -73,38 +68,9 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         str = tourney.getName();
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
-
         holder.textCommandNum.setText(str);
-        holder.favBtn.setChecked(favTourneys.contains(id));
-        holder.favBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    favTourneys.add(id);
-//                    List<MultipartBody.Part> favTourneysNew = new ArrayList<>();
-//                    favTourneysNew.add(MultipartBody.Part.createFormData("favouriteTourney", id));
-                   List<RequestBody> favTourneyNew = new ArrayList<>();
-                    for(int i = 0; i < favTourneys.size(); i++){
-                       favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneys.get(i)));
-                    }
-
-                    Controller.getApi().editPlayerInfo(TournamentPage.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
-                        @Override
-                        public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<EditProfile> call, Throwable t) {
-                            Log.d("response","FAAAAAIL");
-                        }
-                    });
-
-                } else {
-
-                }
-            }
-        });
+        holder.rvLeagues.setLayoutManager(new LinearLayoutManager(activity));
+        holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys ));
     }
 
     @Override
@@ -119,7 +85,7 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         final TextView textCommandNum;
         final TextView textStatusFinish;
         final View view;
-        final CheckBox favBtn;
+        final RecyclerView rvLeagues;
         ViewHolder(View itemView) {
             super(itemView);
             view = itemView.findViewById(R.id.tourneyLine);
@@ -128,12 +94,11 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
 //                    // item clicked
 //                }
 //            });
-            favBtn = itemView.findViewById(R.id.like_button_cb);
             textCommandNum = itemView.findViewById(R.id.tourneyTeamNumber);
             textDate = itemView.findViewById(R.id.tourneyDate);
             textTitle = itemView.findViewById(R.id.tourneyTitle);
             textStatusFinish = itemView.findViewById(R.id.tourneyFinish);
-
+            rvLeagues = itemView.findViewById(R.id.recyclerViewFavLeagues);
 
 //            mProgressDialog.setIndeterminate(true);
         }
