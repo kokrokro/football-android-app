@@ -80,8 +80,9 @@ public interface FootballApi {
 
 
     //get tournament's info
-    @GET("/api/leagues/league/{id}")
-    Observable<GetLeagueInfo> getLeagueInfo(@Path("id") String id);
+    //@GET("/api/leagues/league/{id}")
+    @GET("/api/crud/league")
+    Observable<GetLeagueInfo> getLeagueInfo(@Query("_id") String id);
 //    Call<GetLeagueInfo> getLeagueInfo(@Path("id") String id);
 
 

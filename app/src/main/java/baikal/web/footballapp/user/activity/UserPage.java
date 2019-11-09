@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +100,7 @@ public class UserPage extends Fragment {
                 PersonalActivity.allPlayers.add(person);
                 PersonalActivity.people.add(person);
                 PersonalActivity.AllPeople.add(person);
-                PlayersPage.adapter.notifyDataSetChanged();
+//                PlayersPage.adapter.notifyDataSetChanged();
 //                AuthoUser authoUser = new AuthoUser();
 //                Bundle bundle = new Bundle();
 //                bundle.putSerializable("person", web);
@@ -115,6 +116,9 @@ public class UserPage extends Fragment {
 //                int color = data.getIntExtra("color", Color.WHITE);
             }
         } else {
+            if (requestCode == REQUEST_CODE_REGISTRATION) {
+
+            }
             log.error("ERROR: onActivityResult");
         }
     }

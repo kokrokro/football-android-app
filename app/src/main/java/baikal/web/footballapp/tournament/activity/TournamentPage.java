@@ -53,7 +53,6 @@ import io.reactivex.schedulers.Schedulers;
 @SuppressLint("ValidFragment")
 public class TournamentPage extends Fragment {
     private TabLayout tabLayout;
-    private static RecyclerViewTournamentAdapter adapter;
     public static final List<Person> referees = new ArrayList<>();
     public static List<String> favTourneys = new ArrayList<>();
     public static String token;

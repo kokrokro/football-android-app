@@ -2,6 +2,8 @@ package baikal.web.footballapp.user.activity;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +11,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.ColorDrawable;
 import android.media.effect.Effect;
 import android.net.Uri;
 import android.os.Build;
@@ -29,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -52,7 +57,9 @@ import retrofit2.Response;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import static android.Manifest.permission.CAMERA;
 
@@ -76,6 +83,7 @@ public class PersonalInfo extends Fragment {
     public static Spinner spinnerRegion;
     private Context ParentContext;
     private SpinnerRegionAdapter adapterRegion;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
 
 
@@ -188,11 +196,42 @@ public class PersonalInfo extends Fragment {
                 textPassword.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
             }
         });
-        textDOB.setOnClickListener(v -> {
-            textDOB.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
-            DatePicker datePicker1 = new DatePicker();
-            datePicker1.show(getActivity().getSupportFragmentManager(), "DatePickerDialogFragment");
+
+        textDOB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar c = Calendar.getInstance();
+
+                int year = c.get(Calendar.YEAR);
+                int month = c.get(Calendar.MONTH);
+                int day = c.get(Calendar.DAY_OF_MONTH);
+
+                Locale locale = getResources().getConfiguration().locale;
+                Locale.setDefault(locale);
+
+                DatePickerDialog dialog = new DatePickerDialog(ParentContext, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
+
+//                baikal.web.footballapp.user.activity.DatePicker dp = new baikal.web.footballapp.user.activity.DatePicker();
+//
+//                dialog
+                dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
+                dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                dialog.show();
+            }
         });
+
+        mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                textDOB.setText(dayOfMonth + "." + month + "." + year);
+                textDOB.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
+            }
+        };
+//        textDOB.setOnClickListener(v -> {
+//            textDOB.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
+//            DatePicker datePicker1 = new DatePicker();
+//            datePicker1.show(getActivity().getSupportFragmentManager(), "DatePickerDialogFragment");
+//        });
 
         buttonPhoto.setOnClickListener(v -> startActivityForResult(getPickImageChooserIntent(), 200));
         permissions.add(CAMERA);

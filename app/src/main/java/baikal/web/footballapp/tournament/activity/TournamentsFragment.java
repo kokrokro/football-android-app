@@ -35,7 +35,7 @@ import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
+//import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 import baikal.web.footballapp.tournament.adapter.RVFavTourneyAdapter;
 import baikal.web.footballapp.tournament.adapter.RVTourneyAdapter;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;

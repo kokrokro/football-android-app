@@ -70,7 +70,6 @@ public class RegistrationUser extends AppCompatActivity {
 //                getSupportFragmentManager().beginTransaction().replace(R.id.pageContainer, authoUser).addToBackStack(null).commit();
 
 
-
 //                FragmentManager fragmentManager = getSupportFragmentManager();
 //
 //                fragmentManager.beginTransaction().replace(R.id.pageContainer, authoUser).addToBackStack(null).commit();

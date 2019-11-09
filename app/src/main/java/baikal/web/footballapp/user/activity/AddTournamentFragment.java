@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +40,7 @@ public class AddTournamentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.d("USER_TOURNAMENT", "loading web view...");
         final View view;
         view = inflater.inflate(R.layout.fragment_add_tournament, container, false);
         WebView webView = view.findViewById(R.id.webViewTournament1);
@@ -46,6 +48,7 @@ public class AddTournamentFragment extends Fragment {
         webSettings.setJavaScriptEnabled(true);
 
         webView.loadUrl("https://football.bwadm.ru");
+//        webView.loadUrl("https://footballapi.ibb.su");
         webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
        // webView.clearCache(true);
         webSettings.setDomStorageEnabled(true);

@@ -26,7 +26,7 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
+//import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
