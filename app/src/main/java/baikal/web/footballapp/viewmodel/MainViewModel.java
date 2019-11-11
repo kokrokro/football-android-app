@@ -36,7 +36,6 @@ public class MainViewModel extends ViewModel {
                         }
                     }
                 }
-
             }
 
             @Override

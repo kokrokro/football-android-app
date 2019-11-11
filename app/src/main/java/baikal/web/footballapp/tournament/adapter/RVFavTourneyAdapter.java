@@ -69,7 +69,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
         holder.textCommandNum.setText(str);
-        holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
+//        holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
         holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys ));
     }
 

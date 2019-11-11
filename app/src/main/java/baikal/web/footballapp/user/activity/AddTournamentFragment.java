@@ -48,7 +48,6 @@ public class AddTournamentFragment extends Fragment {
         webSettings.setJavaScriptEnabled(true);
 
         webView.loadUrl("https://football.bwadm.ru");
-//        webView.loadUrl("https://footballapi.ibb.su");
         webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
        // webView.clearCache(true);
         webSettings.setDomStorageEnabled(true);
@@ -60,12 +59,14 @@ public class AddTournamentFragment extends Fragment {
         webSettings.setAllowContentAccess(true);
        // getContext().deleteDatabase(webSettings.getDatabasePath());
 
+
         return view;
     }
     private class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             if ("https://football.bwadm.ru".equals(Uri.parse(url).getHost())) {
+
                 return false;
             }
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));

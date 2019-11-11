@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -106,6 +107,7 @@ public class AuthoUser extends Fragment {
         fm = this.getChildFragmentManager().beginTransaction();
     }
 
+    @SuppressLint("RestrictedApi")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -275,6 +277,7 @@ public class AuthoUser extends Fragment {
                 });
     }
 
+    @SuppressLint("RestrictedApi")
     private void selectDrawerItem(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_default_fragment:
@@ -282,6 +285,7 @@ public class AuthoUser extends Fragment {
                     setItemColor(1);
                     clearItemColor(1);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
+//                    Log.d("defaultFragment", "defaultFragment on click in menu...");
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.title_tournament));
                     fab.setVisibility(View.INVISIBLE);
