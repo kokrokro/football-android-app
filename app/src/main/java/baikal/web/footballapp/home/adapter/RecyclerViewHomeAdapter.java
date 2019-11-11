@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +64,7 @@ public class RecyclerViewHomeAdapter extends RecyclerView.Adapter<RecyclerViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView textDate;
         final TextView textTitle;
-        final LinearLayout imageButtonShow;
+        final ConstraintLayout imageButtonShow;
         final View line;
         ViewHolder(View itemView) {
             super(itemView);

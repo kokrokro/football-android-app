@@ -97,7 +97,6 @@
         android:background="@color/colorLightGray" />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFavLeagues"
-        android:paddingTop="8sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

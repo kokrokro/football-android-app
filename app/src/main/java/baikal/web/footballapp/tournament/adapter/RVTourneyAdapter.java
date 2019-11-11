@@ -88,7 +88,7 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
                        favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneys.get(i)));
                     }
 
-                    Controller.getApi().editPlayerInfo(TournamentPage.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
+                    Controller.getApi().editPlayerInfo(TournamentPage.id,TournamentPage.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
                         @Override
                         public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
 

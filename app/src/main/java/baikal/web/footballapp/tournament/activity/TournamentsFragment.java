@@ -74,10 +74,10 @@ public class TournamentsFragment extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.fragment_tournaments, container, false);
         scroller = view.findViewById(R.id.scrollerLeague);
+        //GetAllTournaments("10","0");
         try {
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             Controller.getApi().getFavTourneysByPerson(TournamentPage.id).enqueue(new Callback<List<PersonPopulate>>() {
                 @Override
                 public void onResponse(Call<List<PersonPopulate>> call, Response<List<PersonPopulate>> response) {
@@ -85,6 +85,7 @@ public class TournamentsFragment extends Fragment {
                         if (response.body() != null) {
                             favTourney.clear();
                             favTourney.addAll(response.body().get(0).getFavouriteTourney());
+                            adapter.notifyDataSetChanged();
                         }
                         }
                 }
@@ -94,30 +95,17 @@ public class TournamentsFragment extends Fragment {
 
                 }
             });
-            int i =0;
             for (String tr : TournamentPage.favTourneys){
-                 List<League> leagues = new ArrayList<>();
-                Controller.getApi().getLeaguesByTourney(tr).enqueue(new Callback<List<League>>() {
-                    @Override
-                    public void onResponse(Call<List<League>> call, Response<List<League>> response) {
-                        if (response.isSuccessful()) {
-                            if (response.body() != null)
-                            {
-                                leagues.addAll(response.body());
-                            }
-                            }
-                        }
+                 getFavLeagues(tr,new MyCallback(){
+                     @Override
+                     public void onDataGot(List<League> leagues){
 
-                    @Override
-                    public void onFailure(Call<List<League>> call, Throwable t) {
-
-                    }
-                });
-                favLeague.add(new ArrayList<>());
-                favLeague.get(i).addAll(leagues);
-                i++;
+                         favLeague.add(new ArrayList<>(leagues));
+                     }
+                 });
             }
-            adapter = new RVFavTourneyAdapter(favTourney,getActivity() , favLeague);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague);
             recyclerView.setAdapter(adapter);
             //adapter = new RecyclerViewTournamentAdapter(getActivity(), TournamentsFragment.this, PersonalActivity.tournaments, leagueId -> showTournamentInfo(leagueId), PersonalActivity.allTourneys);
             //recyclerView.setAdapter(adapter);
@@ -136,28 +124,45 @@ public class TournamentsFragment extends Fragment {
 //        });
         return view;
     }
-//
-//    @SuppressLint("CheckResult")
-//    private void GetAllTournaments(String limit, String offset) {
-//        Controller.getApi().getAllLeagues(limit, offset )
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(this::saveAllData
-//                        ,
-//                        error -> {
-//                            CheckError checkError = new CheckError();
-//                            checkError.checkError(getActivity(), error);
-//                        }
-//                );
-//    }
+    private void getFavLeagues(String tr, MyCallback callback){
+        List<League> leagues = new ArrayList<>();
+        Controller.getApi().getLeaguesByTourney(tr).enqueue(new Callback<List<League>>() {
+            @Override
+            public void onResponse(Call<List<League>> call, Response<List<League>> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null)
+                    {
+                        leagues.addAll(response.body());
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<List<League>> call, Throwable t) {
+            }
+        });
+        callback.onDataGot(leagues);
+    }
+    @SuppressLint("CheckResult")
+    private void GetAllTournaments(String limit, String offset) {
+        Controller.getApi().getAllLeagues(limit, offset )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::saveAllData
+                        ,
+                        error -> {
+                            CheckError checkError = new CheckError();
+                            checkError.checkError(getActivity(), error);
+                        }
+                );
+    }
 
-//    private void saveAllData(List<League> tournaments1) {
-//        count += tournaments1.size();
-//        Log.d("couuuunt leagues", " "+ tournaments1.size());
-//        tournaments.addAll(tournaments.size(), tournaments1);
-//        List<League> list = new ArrayList<>(tournaments);
-//        adapter.dataChanged(list);
-//    }
+    private void saveAllData(List<League> tournaments1) {
+        count += tournaments1.size();
+       // Log.d("couuuunt leagues", " "+ tournaments1.size());
+        tournaments.addAll(tournaments.size(), tournaments1);
+        List<League> list = new ArrayList<>(tournaments);
+       // adapter.dataChanged(list);
+    }
 
     @SuppressLint("CheckResult")
     private void showTournamentInfo(String leagueId){
@@ -188,6 +193,9 @@ public class TournamentsFragment extends Fragment {
         }
         PersonalActivity.active = tournament;
     }
+    public interface MyCallback {
 
+        void onDataGot(List<League> leagues);
+    }
 
 }

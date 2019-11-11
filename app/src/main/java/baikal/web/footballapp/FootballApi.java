@@ -44,6 +44,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
@@ -114,15 +115,15 @@ public interface FootballApi {
 //    //    Call<Tournaments> getAllTournaments();
     @GET("/api/crud/league?_populate=matches?_populate=stages")
     Observable<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
-    @GET("/api/crud/league?_populate=matches?_populate=stages")
+    @GET("/api/crud/league")
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
     //edit web
     @Multipart
     @POST("/api/editPlayerInfo")
     Call<EditProfile> editProfile(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
     @Multipart
-    @POST("/api/editPlayerInfo")
-    Call<EditProfile> editPlayerInfo(@Header("auth") String authorization, @Part("favoriteTourney") List<RequestBody> favoriteTourney);
+    @PATCH("/api/crud/person/{id}")
+    Call<EditProfile> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Part("favoriteTourney") List<RequestBody> favoriteTourney);
     //edit web profile
     @POST("/api/editPlayerInfo")
     Call<EditProfile> editProfileText(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);

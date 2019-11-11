@@ -44,6 +44,7 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
         this.tournaments = tournaments;
         this.activity = (PersonalActivity) activity;
        // this.context = context;
+
         //this.mListener = mListener;
         this.tourneys = tourneys;
     }
@@ -55,16 +56,15 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.tournament, parent, false);
-
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        boolean status = false;
+       // boolean status = false;
 
         final League league = tournaments.get(position);
-        if (league.getStatus().equals("Finished")) {status = true;}
+       // if (league.getStatus().equals("Finished")) {status = true;}
         DateToString dateToString = new DateToString();
         String str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
         holder.textDate.setText(str);

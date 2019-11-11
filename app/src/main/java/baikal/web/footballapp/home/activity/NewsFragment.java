@@ -28,6 +28,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NewsFragment extends Fragment {
     Logger log = LoggerFactory.getLogger(NewsFragment.class);
@@ -47,6 +50,7 @@ public class NewsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewHome);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        GetAllNews("10","0");
         try {
             adapter = new RecyclerViewHomeAdapter(getActivity(), NewsFragment.this , allNews);
             recyclerView.setAdapter(adapter);
@@ -57,7 +61,7 @@ public class NewsFragment extends Fragment {
                 int temp = limit*offset;
                 if (temp<=count) {
                     String str = String.valueOf(temp);
-//                    GetAllNews("5", str);
+                    GetAllNews("5", str);
                 }
             }
         });
@@ -79,22 +83,30 @@ public class NewsFragment extends Fragment {
                 });
     }
 
-//    @SuppressLint("CheckResult")
-//    private void GetAllNews(String limit, String offset){
-//        Controller.getApi().getAllNews(limit, offset)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-//                .subscribe(this::saveData
-//                        ,
-//                        error -> {
-//                            CheckError checkError = new CheckError();
-//                            checkError.checkError(getActivity(), error);
-//                        }
-//                );
-//
-//    }
-//
+    @SuppressLint("CheckResult")
+    private void GetAllNews(String limit, String offset){
+        Controller.getApi().getAllNewsCrud(limit, offset).enqueue(new Callback<List<News_>>() {
+            @Override
+            public void onResponse(Call<List<News_>> call, Response<List<News_>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        allNews.clear();
+                        allNews.addAll(response.body());
+                        adapter.notifyDataSetChanged();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<News_>> call, Throwable t) {
+//                CheckError checkError = new CheckError();
+//                checkError.checkError(getActivity(), t);
+            }
+        });
+
+    }
+
 //    private void saveData(News matches) {
 //        count = matches.getCount();
 //        allNews.addAll(allNews.size(), matches.getNews());
