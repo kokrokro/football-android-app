@@ -10,45 +10,57 @@ public class ActiveMatch implements Serializable {
     @SerializedName("_id")
     @Expose
     private String id;
-    @SerializedName("autoGoal")
-    @Expose
-    private String autoGoal;
     @SerializedName("date")
     @Expose
     private String date;
-    @SerializedName("stage")
+    @SerializedName("round")
     @Expose
-    private String stage;
-    @SerializedName("played")
-    @Expose
-    private Boolean played;
+    private String round;
     @SerializedName("tour")
     @Expose
     private String tour;
-    @SerializedName("playersList")
+    @SerializedName("group")
     @Expose
-    private List<Object> playersList = null;
+    private String group;
     @SerializedName("place")
     @Expose
     private String place;
-    @SerializedName("league")
+    @SerializedName("playersList")
     @Expose
-    private String league;
+    private List<String> playersList = null;
+    @SerializedName("played")
+    @Expose
+    private Boolean played;
+    @SerializedName("winner")
+    @Expose
+    private String winner;
+    @SerializedName("score")
+    @Expose
+    private String score;
+    @SerializedName("fouls")
+    @Expose
+    private String fouls;
+    @SerializedName("autoGoal")
+    @Expose
+    private String autoGoal;
     @SerializedName("teamOne")
     @Expose
     private Team teamOne;
     @SerializedName("teamTwo")
     @Expose
     private Team teamTwo;
+    @SerializedName("stage")
+    @Expose
+    private String stage;
+    @SerializedName("league")
+    @Expose
+    private String league;
     @SerializedName("events")
     @Expose
     private List<Event> events = null;
-    @SerializedName("score")
+    @SerializedName("referees")
     @Expose
-    private String score;
-    @SerializedName("referries")
-    @Expose
-    private List<Object> referries = null;
+    private List<Referee> referees = null;
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -58,13 +70,9 @@ public class ActiveMatch implements Serializable {
     @SerializedName("__v")
     @Expose
     private Integer v;
-
-    @SerializedName("penalty")
+    @SerializedName("leagueID")
     @Expose
-    private String penalty;
-    @SerializedName("referees")
-    @Expose
-    private List<Referee> referees = null;
+    private String leagueID;
 
     public String getId() {
         return id;
@@ -74,35 +82,12 @@ public class ActiveMatch implements Serializable {
         this.id = id;
     }
 
-    public String getScore() {
-        return score;
-    }
-
-    public void setScore(String score) {
-        this.score = score;
-    }
-
     public String getDate() {
         return date;
     }
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getAutoGoal() {
-        return autoGoal;
-    }
-
-    public void setAutoGoal(String autoGoal) {
-        this.autoGoal = autoGoal;
-    }
-    public String getPenalty() {
-        return penalty;
-    }
-
-    public void setPenalty(String penalty) {
-        this.penalty = penalty;
     }
 
     public String getStage() {
@@ -129,11 +114,11 @@ public class ActiveMatch implements Serializable {
         this.tour = tour;
     }
 
-    public List<Object> getPlayersList() {
+    public List<String> getPlayersList() {
         return playersList;
     }
 
-    public void setPlayersList(List<Object> playersList) {
+    public void setPlayersList(List<String> playersList) {
         this.playersList = playersList;
     }
 
@@ -177,13 +162,11 @@ public class ActiveMatch implements Serializable {
         this.events = events;
     }
 
-    public List<Object> getReferries() {
-        return referries;
+    public List<Referee> getReferees() {
+        return referees;
     }
 
-    public void setReferries(List<Object> referries) {
-        this.referries = referries;
-    }
+    public void setReferees(List<Referee> referees) { this.referees = referees; }
 
     public String getCreatedAt() {
         return createdAt;
@@ -209,12 +192,50 @@ public class ActiveMatch implements Serializable {
         this.v = v;
     }
 
-    public List<Referee> getReferees() {
-        return referees;
+    public String getScore() {
+        return score;
     }
 
-    public void setReferees(List<Referee> referees) {
-        this.referees = referees;
+    public void setScore(String score) {
+        this.score = score;
     }
 
+    public String getAutoGoal() {
+        return autoGoal;
+    }
+
+    public void setAutoGoal(String autoGoal) {
+        this.autoGoal = autoGoal;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
+    }
+
+    public String getLeagueID() { return leagueID; }
+
+    public void setLeagueID(String leagueID) { this.leagueID = leagueID; }
+
+    public String getRound() { return round; }
+
+    public void setRound(String round) { this.round = round; }
+
+    public String getGroup() { return group; }
+
+    public void setGroup(String group) { this.group = group; }
+
+    public String getFouls() { return fouls; }
+
+    public void setFouls(String fouls) { this.fouls = fouls; }
+
+    public String getPenalty ()
+    {
+        String ans = "";
+
+        return ans;
+    }
 }

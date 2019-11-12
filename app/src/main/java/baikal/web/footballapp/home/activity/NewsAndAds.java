@@ -137,8 +137,8 @@ public class NewsAndAds extends Fragment {
                 );
     }
 
-    private void saveAds(Announces matches) {
-        announces.addAll(announces.size(), matches.getAnnounces());
+    private void saveAds(List<Announce> matches) {
+        announces.addAll(announces.size(), matches);
         List<Announce> list = new ArrayList<>(announces);
         adsAdapter.dataChanged(list);
     }

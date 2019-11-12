@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -82,7 +83,8 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
             if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                 offset++;
                 int temp = limit*offset;
-                if (temp<=count && result.size()==0) {
+                Log.d("scrooool________", String.valueOf(temp)+"count" +count+" result size " + result.size());
+                if (temp<=count && result.size()== 0) {
                     String str = String.valueOf(temp);
                     getAllPlayers("10", str);
                 }
@@ -133,7 +135,7 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
     private void SearchUsers(String search){
 //        PersonalActivity.people.clear();
         String type = "player";
-        Controller.getApi().getAllUsers(type, search, "32575", "0")
+        Controller.getApi().getAllPersons(type, search, "32575", "0")
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(__ -> showDialog())
                 .doOnTerminate(this::hideDialog)
@@ -147,9 +149,9 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
 
     }
 
-    private void savePlayers(People people) {
+    private void savePlayers(List<Person> people) {
         result.clear();
-        result.addAll(people.getPeople());
+        result.addAll(people);
         adapter.dataChanged(result);
     }
 
@@ -177,7 +179,7 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
     private void getAllPlayers(String limit, String offset) {
         CheckError checkError = new CheckError();
         String type = "player";
-        Controller.getApi().getAllUsers(type, null, limit, offset)
+        Controller.getApi().getAllPersons(type, null, limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::saveAllPlayers,
@@ -185,9 +187,9 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
                 );
     }
 
-    private void saveAllPlayers(People peopleList) {
-        count = peopleList.getCount();
-        people.addAll(people.size(), peopleList.getPeople());
+    private void saveAllPlayers(List<Person> peopleList) {
+        count += peopleList.size();
+        people.addAll(people.size(), peopleList);
         List<Person> list = new ArrayList<>(people);
         allPeople.clear();
         allPeople.addAll(people);

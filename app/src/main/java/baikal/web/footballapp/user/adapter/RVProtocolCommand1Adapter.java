@@ -123,7 +123,6 @@ public class RVProtocolCommand1Adapter extends RecyclerView.Adapter<RVProtocolCo
         final Person finalPlayer = player;
         holder.switchCompat.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
-                    // TODO: handle your switch toggling logic here
                     mListener.onClickSwitch(position, finalPlayer.getId(), isChecked);
                 });
         holder.switchCompat.setOnTouchListener((v, event) -> {

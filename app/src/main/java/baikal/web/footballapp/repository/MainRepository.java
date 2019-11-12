@@ -10,11 +10,11 @@ import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 
 public class MainRepository {
-    public LiveData<List<News_>> getNews(String limit, String offset, retrofit2.Callback<News> callback) {
+    public LiveData<List<News_>> getNews(String limit, String offset, retrofit2.Callback<List<News_>> callback) {
         MutableLiveData<List<News_>> returnNews = new MutableLiveData<>();
         Controller
                 .getApi()
-                .getAllNews(limit, offset)
+                .getAllNewsCrud(limit, offset)
                 .enqueue(callback);
         return returnNews;
     }

@@ -1,6 +1,7 @@
 package baikal.web.footballapp.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -67,13 +68,13 @@ public class Person implements Serializable {
     @SerializedName("pendingTeamInvites")
     @Expose
     private List<PendingTeamInvite> pendingTeamInvites = null;
-    @SerializedName("favouriteTourney")
+    @SerializedName("favoriteTourney")
     @Expose
-    private List<Tourney> favouriteTourney = null;
+    private List<String> favoriteTourney = new ArrayList<>();
 
-    public List<Tourney> getFavouriteTourney() {  return favouriteTourney;    }
+    public List<String> getFavouriteTourney() {  return favoriteTourney;    }
 
-    public void setFavouriteTourney(List<Tourney> favouriteTourney) {  this.favouriteTourney = favouriteTourney; }
+    public void setFavouriteTourney(List<String> favouriteTourney) {  this.favoriteTourney = favouriteTourney; }
 
     public String getRegion() { return region; }
 

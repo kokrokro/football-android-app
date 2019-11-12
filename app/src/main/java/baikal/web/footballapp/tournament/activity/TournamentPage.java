@@ -25,6 +25,7 @@ import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.home.activity.ComingMatches;
 import baikal.web.footballapp.home.activity.FullscreenNewsActivity;
 import baikal.web.footballapp.home.activity.NewsAndAds;
@@ -34,6 +35,8 @@ import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Tournaments;
+import baikal.web.footballapp.model.Tourney;
+import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;
 
 import org.slf4j.Logger;
@@ -50,20 +53,30 @@ import io.reactivex.schedulers.Schedulers;
 @SuppressLint("ValidFragment")
 public class TournamentPage extends Fragment {
     private TabLayout tabLayout;
-    private static RecyclerViewTournamentAdapter adapter;
     public static final List<Person> referees = new ArrayList<>();
+    public static List<String> favTourneys = new ArrayList<>();
+    public static String token;
+    public static String id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
 
         view = inflater.inflate(R.layout.page_tournament, container, false);
-        GetAllReferees();
+//        GetAllReferees();
         tabLayout = view.findViewById(R.id.tournamentsTabLayout);
         ViewPager viewPager;
         viewPager = view.findViewById(R.id.tournamentsPager);
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
+        User user = SaveSharedPreference.getObject();
+        Person person = user.getUser();
+         token = user.getToken();
+        id = person.getId();
+        favTourneys = person.getFavouriteTourney();
+
+       // Log.d("tourneyys",""+user.getToken());
+//        Log.d("__________",String.valueOf(favTourneys.size()));
         setCustomFont();
         return view;
     }
@@ -104,7 +117,7 @@ public class TournamentPage extends Fragment {
     @SuppressLint("CheckResult")
     private void GetAllReferees() {
         String type = "referee";
-        Controller.getApi().getAllUsers(type, null, "32575", "0")
+        Controller.getApi().getAllPersons(type, null, "32575", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 //.repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
@@ -116,8 +129,8 @@ public class TournamentPage extends Fragment {
                 );
     }
 
-    private void saveReferees(People people) {
+    private void saveReferees(List<Person> people) {
         referees.clear();
-        referees.addAll(people.getPeople());
+        referees.addAll(people);
     }
 }

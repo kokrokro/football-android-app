@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class Announce {
 
-    @SerializedName("date")
+    @SerializedName("tourney")
     @Expose
-    private String date;
+    private String tourney;
     @SerializedName("_id")
     @Expose
     private String id;
@@ -18,12 +18,12 @@ public class Announce {
     @Expose
     private Integer v;
 
-    public String getDate() {
-        return date;
+    public String getTourney() {
+        return tourney;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setTourney(String tourney) {
+        this.tourney = tourney;
     }
 
     public String getId() {

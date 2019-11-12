@@ -1,3 +1,19 @@
+/*
+
+        888b    888  .d88888b. 88888888888      8888888 888b    888      888     888  .d8888b.  8888888888
+        8888b   888 d88P" "Y88b    888            888   8888b   888      888     888 d88P  Y88b 888
+        88888b  888 888     888    888            888   88888b  888      888     888 Y88b.      888
+        888Y88b 888 888     888    888            888   888Y88b 888      888     888  "Y888b.   8888888
+        888 Y88b888 888     888    888            888   888 Y88b888      888     888     "Y88b. 888
+        888  Y88888 888     888    888            888   888  Y88888      888     888       "888 888
+        888   Y8888 Y88b. .d88P    888            888   888   Y8888      Y88b. .d88P Y88b  d88P 888
+        888    Y888  "Y88888P"     888          8888888 888    Y888       "Y88888P"   "Y8888P"  8888888888
+
+*/
+
+
+
+
 package baikal.web.footballapp.user.activity;
 
 import android.app.Dialog;
@@ -108,8 +124,6 @@ public class DatePicker extends DatePickerDialogFragment {
             dismiss();
         });
 
-
-
         builder.setView(view);
         // Create the AlertDialog object and return it
         return builder.create();
@@ -126,3 +140,16 @@ public class DatePicker extends DatePickerDialogFragment {
 //        mDatePicker.setShowCurtain(false);
 //    }
 }
+
+/*
+
+        888b    888  .d88888b. 88888888888      8888888 888b    888      888     888  .d8888b.  8888888888
+        8888b   888 d88P" "Y88b    888            888   8888b   888      888     888 d88P  Y88b 888
+        88888b  888 888     888    888            888   88888b  888      888     888 Y88b.      888
+        888Y88b 888 888     888    888            888   888Y88b 888      888     888  "Y888b.   8888888
+        888 Y88b888 888     888    888            888   888 Y88b888      888     888     "Y88b. 888
+        888  Y88888 888     888    888            888   888  Y88888      888     888       "888 888
+        888   Y8888 Y88b. .d88P    888            888   888   Y8888      Y88b. .d88P Y88b  d88P 888
+        888    Y888  "Y88888P"     888          8888888 888    Y888       "Y88888P"   "Y8888P"  8888888888
+
+*/

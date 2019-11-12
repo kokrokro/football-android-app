@@ -91,8 +91,8 @@ public class FullscreenNewsActivity extends AppCompatActivity {
             button.setOnClickListener(v -> finish());
 
 
-            Intent intent2 = new Intent(this, ProtocolPage.class);
-            startActivity(intent2);
+           // Intent intent2 = new Intent(this, ProtocolPage.class);
+           // startActivity(intent2);
 
         }
         catch (Exception t){

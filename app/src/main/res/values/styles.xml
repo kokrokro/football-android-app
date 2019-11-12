@@ -12,7 +12,8 @@
         <!--<item name="android:windowTranslucentStatus">true</item>--><!-- status bar transparent-->
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
         <!-- enable window content transitions -->
-
+        <item name="android:textColorAlertDialogListItem">@color/colorLightGrayForText</item>
+        <item name="alertDialogStyle">@style/DialogTheme</item>
         <!-- specify enter and exit transitions -->
 
 
@@ -29,7 +30,12 @@
         <!--<item name="android:windowTranslucentNavigation">true</item>-->
         <!-- enable window content transitions -->
         <!-- specify enter and exit transitions -->
-        <item name="android:windowEnterTransition">@anim/change_image_transform</item>
+<!--        <item name="android:windowEnterTransition">@anim/change_image_transform</item>-->
+<!--        <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>-->
+    </style>
+    <style name="PauseDialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_out_right</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
     </style>
 
     <style name="MyToolbar" parent="AppTheme">
@@ -61,6 +67,16 @@
         <item name="android:textColor">@color/colorLightGrayForText</item>
         <item name="android:fontFamily">@font/manrope_regular</item>
         <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:background">@color/colorWhite</item>
+    </style>
+    <style name="DialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
+        <item name="android:textColor">@color/colorLightGrayForText</item>
+        <item name="android:textColorPrimary">@color/colorLightGrayForText</item>
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="colorAccent">@color/colorPrimary</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorLightGrayForText</item>
+        <item name="android:textColorSecondary">@color/colorLightGrayForText</item>
+
         <item name="android:background">@color/colorWhite</item>
     </style>
 

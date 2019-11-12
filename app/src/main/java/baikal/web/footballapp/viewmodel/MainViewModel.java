@@ -25,22 +25,21 @@ public class MainViewModel extends ViewModel {
     }
 
     private void loadData(String limit, String offset) {
-        new MainRepository().getNews(limit, offset, new Callback<News>() {
+        new MainRepository().getNews(limit, offset, new Callback<List<News_>>() {
             @Override
-            public void onResponse(Call<News> call, Response<News> response) {
+            public void onResponse(Call<List<News_>> call, Response<List<News_>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        List<News_> news = response.body().getNews();
+                        List<News_> news = response.body();
                         if (news != null){
                             newsData.setValue(news);
                         }
                     }
                 }
-
             }
 
             @Override
-            public void onFailure(Call<News> call, Throwable t) {
+            public void onFailure(Call<List<News_>> call, Throwable t) {
 
             }
         })

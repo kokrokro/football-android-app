@@ -3,7 +3,7 @@
 
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tournamentShow"
+
     android:layout_marginTop="5sp"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -14,6 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/tourneyShow"
         android:background="@color/colorWhite"
         android:paddingBottom="13sp">
 
@@ -85,21 +86,6 @@
 
         </LinearLayout>
 
-
-        <CheckBox
-            android:id="@+id/like_button_cb"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/like_button_background"
-            android:button="@null"
-            android:checked="false"
-            android:foregroundGravity="center_vertical"
-            android:gravity="center"
-            android:visibility="visible" />
-
     </RelativeLayout>
 
 
@@ -110,6 +96,10 @@
         android:layout_gravity="end"
         android:layout_marginBottom="5dp"
         android:background="@color/colorLightGray" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewFavLeagues"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <!--</android.support.v7.widget.CardView>-->
 

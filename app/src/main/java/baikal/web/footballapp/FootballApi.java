@@ -3,6 +3,7 @@ package baikal.web.footballapp;
 import baikal.web.footballapp.model.ActiveMatches;
 import baikal.web.footballapp.model.AddTeam;
 import baikal.web.footballapp.model.Advertisings;
+import baikal.web.footballapp.model.Announce;
 import baikal.web.footballapp.model.Announces;
 import baikal.web.footballapp.model.Clubs;
 import baikal.web.footballapp.model.DataClub;
@@ -11,9 +12,13 @@ import baikal.web.footballapp.model.EditCommandResponse;
 import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.EditProtocolBody;
 import baikal.web.footballapp.model.GetLeagueInfo;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Matches;
 import baikal.web.footballapp.model.News;
+import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.People;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.RefereeRequestList;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
@@ -24,6 +29,7 @@ import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +44,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
+import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.PartMap;
@@ -50,12 +57,11 @@ public interface FootballApi {
     Call<News> getAllNews(@Query("limit") String limit, @Query("offset") String offset);
 
     @GET("/api/crud/news")
-    Call<News> getAllNews2(@Query("limit") String limit, @Query("offset") String offset);
+    Call<List<News_>> getAllNewsCrud(@Query("_limit") String limit, @Query("_offset") String offset);
 
     //get all news
-    @GET("/api/announce")
-    Observable<Announces> getAllAnnounce(@Query("limit") String limit, @Query("offset") String offset);
-
+    @GET("/api/crud/announce")
+    Observable<List<Announce>> getAllAnnounce(@Query("_limit") String limit, @Query("_offset") String offset);
 
     //get advertising
     @GET("/api/ads")
@@ -73,8 +79,9 @@ public interface FootballApi {
 
 
     //get tournament's info
-    @GET("/api/leagues/league/{id}")
-    Observable<GetLeagueInfo> getLeagueInfo(@Path("id") String id);
+    //@GET("/api/leagues/league/{id}")
+    @GET("/api/crud/league")
+    Observable<GetLeagueInfo> getLeagueInfo(@Query("_id") String id);
 //    Call<GetLeagueInfo> getLeagueInfo(@Path("id") String id);
 
 
@@ -96,24 +103,31 @@ public interface FootballApi {
     //get players type==player
     @GET("/api/getusers")
     Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
-
+    @GET("/api/crud/person")
+    Observable<List<Person> >getAllPersons(@Query("type") String type, @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
     //get all tournaments
-    @GET("/api/leagues/all")
-    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
-    //    Call<Tournaments> getAllTournaments();
+//    @GET("/api/leagues/all")
+//    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
+//    //    Call<Tournaments> getAllTournaments();
+    @GET("/api/crud/league?_populate=matches?_populate=stages")
+    Observable<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
+    @GET("/api/crud/league")
+    Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
     //edit web
     @Multipart
     @POST("/api/editPlayerInfo")
     Call<EditProfile> editProfile(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
-
-
+    @Multipart
+    @PATCH("/api/crud/person/{id}")
+    Call<EditProfile> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Part("favoriteTourney") List<RequestBody> favoriteTourney);
     //edit web profile
     @POST("/api/editPlayerInfo")
     Call<EditProfile> editProfileText(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
-
+    @GET("/api/crud/person?_populate=favoriteTourney&_select=favoriteTourney")
+    Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);
 
     //edit match protocol event and playerList
     @POST("/api/matches/changeProtocol")

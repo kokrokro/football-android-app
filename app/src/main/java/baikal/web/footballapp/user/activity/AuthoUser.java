@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -106,6 +107,7 @@ public class AuthoUser extends Fragment {
         fm = this.getChildFragmentManager().beginTransaction();
     }
 
+    @SuppressLint("RestrictedApi")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -275,6 +277,7 @@ public class AuthoUser extends Fragment {
                 });
     }
 
+    @SuppressLint("RestrictedApi")
     private void selectDrawerItem(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.nav_default_fragment:
@@ -282,6 +285,7 @@ public class AuthoUser extends Fragment {
                     setItemColor(1);
                     clearItemColor(1);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
+//                    Log.d("defaultFragment", "defaultFragment on click in menu...");
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.title_tournament));
                     fab.setVisibility(View.INVISIBLE);
@@ -435,7 +439,7 @@ public class AuthoUser extends Fragment {
 
     @SuppressLint("CheckResult")
     private void refreshTournaments() {
-            Controller.getApi().getAllTournaments("32575", "0")
+            Controller.getApi().getAllLeagues("32575", "0")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(PersonalActivity::saveData
@@ -563,7 +567,7 @@ public class AuthoUser extends Fragment {
     @SuppressLint("CheckResult")
     private void GetAllReferees() {
         String type = "referee";
-        Controller.getApi().getAllUsers(type, null, "32575", "0")
+        Controller.getApi().getAllPersons(type, null, "32575", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
@@ -575,9 +579,9 @@ public class AuthoUser extends Fragment {
                 );
     }
 
-    private void saveReferees(People people) {
+    private void saveReferees(List<Person> people) {
         allReferees.clear();
-        allReferees.addAll(people.getPeople());
+        allReferees.addAll(people);
     }
 
     @Override
