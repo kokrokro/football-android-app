@@ -211,9 +211,6 @@ public class PersonalInfo extends Fragment {
 
                 DatePickerDialog dialog = new DatePickerDialog(ParentContext, android.R.style.Theme_Holo_Light_Dialog_MinWidth, mDateSetListener, year, month, day);
 
-//                baikal.web.footballapp.user.activity.DatePicker dp = new baikal.web.footballapp.user.activity.DatePicker();
-//
-//                dialog
                 dialog.getDatePicker().setMaxDate(c.getTimeInMillis());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();

@@ -40,9 +40,6 @@ public class Match implements Serializable {
     @SerializedName("events")
     @Expose
     private List<Event> events = null;
-    @SerializedName("referries")
-    @Expose
-    private List<Object> referries = null;
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -154,14 +151,6 @@ public class Match implements Serializable {
 
     public void setEvents(List<Event> events) {
         this.events = events;
-    }
-
-    public List<Object> getReferries() {
-        return referries;
-    }
-
-    public void setReferries(List<Object> referries) {
-        this.referries = referries;
     }
 
     public String getCreatedAt() {

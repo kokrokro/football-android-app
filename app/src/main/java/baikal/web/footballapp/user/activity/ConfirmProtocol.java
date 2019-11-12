@@ -5,6 +5,7 @@ import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirm_protocol);
         fab = findViewById(R.id.confirmProtocolButtonShowScore);
+//        fab.setActivated(true);
         buttonCommand1 = findViewById(R.id.confirmProtocolCommand1ButtonShow);
         buttonCommand2 = findViewById(R.id.confirmProtocolCommand2ButtonShow);
         buttonReferees = findViewById(R.id.confirmProtocolRefereesButtonShow);
@@ -71,6 +73,27 @@ public class ConfirmProtocol extends AppCompatActivity {
             String str;
             ActiveMatch match = (ActiveMatch) getIntent().getExtras().getSerializable("CONFIRMPROTOCOL");
             HashMap<String, Team> teams = getTeams(match);
+            fab.setOnClickListener(v -> {
+                try {
+                    List<Event> list = new ArrayList<>();
+                    for (PlayerEvent playerEvent : playerEvents) {
+                        list.add(playerEvent.getEvent());
+                    }
+                    TeamTitleClubLogoMatchEvents playerEv = getPlayerEvent(list, match, teams.get("TeamOne"), teams.get("TeamTwo"));
+                    Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("PROTOCOLMATCH", match);
+                    bundle.putSerializable("PROTOCOLEVENTS", playerEv);
+                    intent.putExtras(bundle);
+
+                    Log.d("ConfirmProtocol.java", "trying to enter to worl protocol...");
+
+                    startActivity(intent);
+                } catch (Exception e) {
+                    log.error("ERROR", e);
+                }
+            });
+
             str = teams.get("TeamOne").getName();
             textTitle1.setText(str);
             str = teams.get("TeamTwo").getName();
@@ -82,19 +105,6 @@ public class ConfirmProtocol extends AppCompatActivity {
                 playerEvents = new ArrayList<>();
             }
             imageSave.setOnClickListener(v -> confirmProtocol(match.getId()));
-            fab.setOnClickListener(v -> {
-                List<Event> list = new ArrayList<>();
-                for (PlayerEvent playerEvent : playerEvents) {
-                    list.add(playerEvent.getEvent());
-                }
-                TeamTitleClubLogoMatchEvents playerEv = getPlayerEvent(list, match, teams.get("TeamOne"), teams.get("TeamTwo"));
-                Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("PROTOCOLMATCH", match);
-                bundle.putSerializable("PROTOCOLEVENTS", playerEv);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            });
             buttonCommand1.setOnClickListener(v -> {
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
@@ -123,7 +133,9 @@ public class ConfirmProtocol extends AppCompatActivity {
                 Intent intent = new Intent(ConfirmProtocol.this, MatchEvents.class);
                 startActivity(intent);
             });
-        } catch (NullPointerException e) {
+        } catch (Exception e) {
+            log.error("ERROR", e);
+            Log.d("ConfirmProtocol.java", "132");
         }
     }
 
@@ -134,7 +146,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                 .map(responseBody -> {
                     if (!responseBody.isSuccessful()) {
                         String srt = responseBody.errorBody().string();
-                        log.error(srt);
+                        log.error(srt + " 141");
                         showToast(srt);
                     }
                     if (responseBody.errorBody() != null) {
@@ -183,7 +195,7 @@ public class ConfirmProtocol extends AppCompatActivity {
 
     private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, ActiveMatch match, Team team1, Team team2) {
 
-        log.error(match.getId());
+        log.error(match.getId() + " 190");
         List<PlayerEvent> playerEvents1 = new ArrayList<>();
         String teamOne = team1.getName();
         String teamTwo = team2.getName();
@@ -239,7 +251,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(str);
             String str1 = jsonObject.getString("message");
-            log.error(str);
+            log.error(str + " 246");
             this.runOnUiThread(() -> Toast.makeText(ConfirmProtocol.this, str1, Toast.LENGTH_SHORT).show());
         } catch (JSONException e) {
             e.printStackTrace();

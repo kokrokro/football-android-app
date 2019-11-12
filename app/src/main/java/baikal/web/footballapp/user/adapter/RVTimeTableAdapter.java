@@ -86,7 +86,6 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         holder.textLeague.setText(str);
         SetImage setImage = new SetImage();
         Team team1 = match.getTeamOne();
-        System.out.println("team1 = " + team1);
         Team team2 = match.getTeamTwo();
 
         try {
@@ -133,7 +132,7 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
             }
         } catch (Exception e) {
             log.error("ERROR", e);
-            Toast.makeText(this.activity, e.toString(), Toast.LENGTH_LONG);
+//            Toast.makeText(this.activity, e.toString(), Toast.LENGTH_LONG);
         }
 
 

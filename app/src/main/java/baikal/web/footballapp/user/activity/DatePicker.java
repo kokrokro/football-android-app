@@ -124,8 +124,6 @@ public class DatePicker extends DatePickerDialogFragment {
             dismiss();
         });
 
-
-
         builder.setView(view);
         // Create the AlertDialog object and return it
         return builder.create();
