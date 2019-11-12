@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -73,15 +74,11 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         holder.textCommandNum.setText(str);
        holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
         holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys ));
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mListener!=null){
-                    if(favLeagues.get(position).size()>0)
-                    mListener.onClick(favLeagues.get(position).get(0).getId());
-                }
-            }
-        });
+        if(favLeagues.get(position).size()>0){
+           String leagueId =  favLeagues.get(position).get(0).getId();
+            holder.bind(leagueId, mListener);
+        }
+
     }
 
     @Override
@@ -97,7 +94,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         final TextView textStatusFinish;
         final View view;
         final RecyclerView rvLeagues;
-        final LinearLayout linearLayout;
+        final RelativeLayout linearLayout;
         ViewHolder(View itemView) {
             super(itemView);
             view = itemView.findViewById(R.id.tourneyLine);
@@ -107,6 +104,13 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             textStatusFinish = itemView.findViewById(R.id.tourneyFinish);
             rvLeagues = itemView.findViewById(R.id.recyclerViewFavLeagues);
             linearLayout = itemView.findViewById(R.id.tourneyShow);
+        }
+        public void bind(String id, final Listener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onClick(id);
+                }
+            });
         }
     }
     public void dataChanged(List<Tourney> tourneys){

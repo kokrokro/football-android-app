@@ -3,7 +3,7 @@
 
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/tourneyShow"
+
     android:layout_marginTop="5sp"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -14,6 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/tourneyShow"
         android:background="@color/colorWhite"
         android:paddingBottom="13sp">
 
