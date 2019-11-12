@@ -41,14 +41,10 @@ public class PlayerInv extends AppCompatActivity {
         setContentView(R.layout.player_inv);
         imageClose = findViewById(R.id.playerInvClose);
         recyclerView = findViewById(R.id.recyclerViewPlayerInv);
-//        imageSave = (ImageButton) findViewById(R.id.playerInvSave);
-//        spinnerCommands = (Spinner) findViewById(R.id.playerInvSpinner);
-        try{
+        try {
             Intent intent = getIntent();
             person = (Person) intent.getExtras().getSerializable("PLAYERINV");
             personId = person.getId();
-//            Person creator = AuthoUser.web.getUser();
-//            for (PersonTeams personTeams : AuthoUser.personOngoingLeagues){
             for (PersonTeams personTeams : AuthoUser.personOwnCommand){
                 League league = null;
                 for (League league1 : PersonalActivity.tournaments){
@@ -57,15 +53,12 @@ public class PlayerInv extends AppCompatActivity {
                         break;
                     }
                 }
-//                League league = personTeams.getLeague();
                 for (Team team: league.getTeams()){
-//                    if (team.getCreator().equals(creator.getId()) && team.getStatus().equals("Pending")
                     if (team.getStatus().equals("Pending")
                             && team.getCreator().equals(SaveSharedPreference.getObject().getUser().getId())){
                         PersonTeams personTeams1 = new PersonTeams();
                         personTeams1.setTeam(team.getId());
                         personTeams1.setLeague(league.getId());
-//                        personTeams1.setId("000");
                         teams.add(personTeams1);
                     }
                 }
@@ -73,31 +66,10 @@ public class PlayerInv extends AppCompatActivity {
             adapter = new RVPlayerInvAdapter(this, teams);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//            SpinnerCommandAdapter adapter = new SpinnerCommandAdapter(this,R.layout.spinner_item, teams);
-//            spinnerCommands.setAdapter(adapter);
-//            spinnerCommands.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    itemTeam = (Team) parent.getItemAtPosition(pos);
-//                }
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
 
-        }catch (Exception e){ log.error("ERROR: ", e);}
+        } catch(Exception e){ log.error("ERROR: ", e);}
 
         imageClose.setOnClickListener(v -> finish());
-//        imageSave.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                try{
-//
-//                        addPlayer(person.getId());
-//
-//
-//                }catch (Exception e){ log.error("ERROR: ", e);}
-//
-//            }
-//        });
 
 
     }

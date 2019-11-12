@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
+import baikal.web.footballapp.registration.RegistrationUserActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,17 +42,14 @@ import static android.app.Activity.RESULT_OK;
 
 
 public class UserPage extends Fragment {
-    private static Person person;
     public static boolean auth;
     private static AuthoUser authoUser;
     private final Logger log = LoggerFactory.getLogger(UserPage.class);
-    private boolean check = false;
     private final int REQUEST_CODE_REGISTRATION = 256;
     private EditText textLogin;
     private EditText textPass;
     private static User user;
-    SharedPreferences.Editor prefsEditor ;
-    SharedPreferences mPrefs;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -81,8 +79,8 @@ public class UserPage extends Fragment {
         });
         logIn.setOnClickListener(v -> SignIn());
         textReg.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), RegistrationUser.class);
-            startActivityForResult(intent, REQUEST_CODE_REGISTRATION);
+            Intent intent = new Intent(getActivity(), RegistrationUserActivity.class);
+            startActivity(intent);
         });
         return view;
     }
@@ -100,19 +98,11 @@ public class UserPage extends Fragment {
                 PersonalActivity.people.add(person);
                 PersonalActivity.AllPeople.add(person);
                 PlayersPage.adapter.notifyDataSetChanged();
-//                AuthoUser authoUser = new AuthoUser();
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("person", web);
-//                authoUser.setArguments(bundle);
                 SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser).hide(PersonalActivity.active).show(authoUser).commit();
                 fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser, "AUTHOUSERPAGE").hide(this).show(authoUser).commit();
                 PersonalActivity.active = authoUser;
-//                auth = true;
-//                fragmentManager.beginTransaction().replace(((ViewGroup)getView().getParent()).getId(), new AuthoUser()).addToBackStack(null).commit();
-//                int color = data.getIntExtra("color", Color.WHITE);
             }
         } else {
             log.error("ERROR: onActivityResult");
@@ -120,7 +110,6 @@ public class UserPage extends Fragment {
     }
 
 
-    //    public Boolean SignIn(){
     private void SignIn() {
         String login = textLogin.getText().toString();
         String password = textPass.getText().toString();
@@ -135,29 +124,16 @@ public class UserPage extends Fragment {
                     if (response.body() == null) {
                         log.error("ERROR: body is null");
                     } else {
-                        String token = response.body().getToken();
-                        check = true;
                         log.info("INFO: body is not null");
-
                         //all is ok
-//                        Person person = response.body().getUser();
                         user = response.body();
-                        person = response.body().getUser();
                         try {
                             authoUser = new AuthoUser();
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable("person", web);
-//                            authoUser.setArguments(bundle);
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                             fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser).hide(PersonalActivity.active).show(authoUser).commit();
                             PersonalActivity.active = authoUser;
-//                            auth = true;
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                             SaveSharedPreference.saveObject(user);
-//                            SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-////                            SharedPreferences.Editor prefsEditor = settings.edit();
-////                            prefsEditor.putString("userId", web.getToken());
-////                            prefsEditor.commit();
 
                         } catch (Exception e) {
                             Toast.makeText(getActivity(), "Ошибка!", Toast.LENGTH_LONG).show();
@@ -185,7 +161,6 @@ public class UserPage extends Fragment {
             }
         });
 
-//        return check;
     }
 
 

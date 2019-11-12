@@ -137,7 +137,7 @@ public class PersonalInfo extends Fragment {
              @Override
              public void onNothingSelected(AdapterView<?> parent) {
              }
-                });
+        });
 
         textName.getBackground().setColorFilter(getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         textName.setOnFocusChangeListener((v, hasFocus) -> {
