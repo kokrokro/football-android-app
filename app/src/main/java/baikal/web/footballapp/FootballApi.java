@@ -63,8 +63,6 @@ public interface FootballApi {
     @GET("/api/crud/announce")
     Observable<List<Announce>> getAllAnnounce(@Query("_limit") String limit, @Query("_offset") String offset);
 
-    @GET("/api/crud/announce")
-    Observable <List<Announce>> getAnnounce(@Query("limit") String limit, @Query("offset") String offset);
     //get advertising
     @GET("/api/ads")
     Observable<Advertisings> getAdvertising(@Query("limit") String limit, @Query("offset") String offset);

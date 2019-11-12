@@ -61,7 +61,7 @@ public class TournamentsFragment extends Fragment {
     private int count = 0;
     private int offset = 0;
     private final int limit = 5;
-    public static List<ArrayList<League>> favLeague = new ArrayList<>( );
+    public static List<List<League>> favLeague = new ArrayList<>( );
     private static List<Tourney> favTourney = new ArrayList<>();
 
     @SuppressLint("ValidFragment")
@@ -85,6 +85,16 @@ public class TournamentsFragment extends Fragment {
                         if (response.body() != null) {
                             favTourney.clear();
                             favTourney.addAll(response.body().get(0).getFavouriteTourney());
+
+                            for (String tr : TournamentPage.favTourneys){
+                                getFavLeagues(tr,new MyCallback(){
+                                    @Override
+                                    public void onDataGot(List<League> leagues){
+
+                                        favLeague.add(leagues);
+                                    }
+                                });
+                            }
                             adapter.notifyDataSetChanged();
                         }
                         }
@@ -95,17 +105,15 @@ public class TournamentsFragment extends Fragment {
 
                 }
             });
-            for (String tr : TournamentPage.favTourneys){
-                 getFavLeagues(tr,new MyCallback(){
-                     @Override
-                     public void onDataGot(List<League> leagues){
 
-                         favLeague.add(new ArrayList<>(leagues));
-                     }
-                 });
-            }
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague);
+            RVFavTourneyAdapter.Listener listener = new RVFavTourneyAdapter.Listener() {
+                @Override
+                public void onClick(String id) {
+                    showTournamentInfo(id);
+                }
+            };
+            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
             recyclerView.setAdapter(adapter);
             //adapter = new RecyclerViewTournamentAdapter(getActivity(), TournamentsFragment.this, PersonalActivity.tournaments, leagueId -> showTournamentInfo(leagueId), PersonalActivity.allTourneys);
             //recyclerView.setAdapter(adapter);

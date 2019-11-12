@@ -116,9 +116,6 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
 ////                            intent.putExtra("TOURNAMENT", bundle);
 ////                            context.startActivity(intent);
 //        });
-        if (position==tournaments.size()-1){
-            holder.view.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
