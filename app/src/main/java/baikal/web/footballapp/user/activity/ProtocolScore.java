@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
+import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
@@ -50,7 +51,7 @@ public class ProtocolScore extends AppCompatActivity{
             Intent arguments = getIntent();
             TeamTitleClubLogoMatchEvents playerEvents = (TeamTitleClubLogoMatchEvents) Objects.requireNonNull(arguments.getExtras()).getSerializable("PROTOCOLEVENTS");
 //            ActiveMatch match = (ActiveMatch) arguments.getExtras().getSerializable("PROTOCOLMATCH");
-            Match match = (Match) arguments.getExtras().getSerializable("PROTOCOLMATCH");
+            ActiveMatch match = (ActiveMatch) arguments.getExtras().getSerializable("PROTOCOLMATCH");
             int i = 0;
             if (playerEvents.getPlayerEvents()!=null) {
                 for (PlayerEvent playerEvent : playerEvents.getPlayerEvents()) {
@@ -115,8 +116,8 @@ public class ProtocolScore extends AppCompatActivity{
         }
     }
 
-        private  void setScore(TeamTitleClubLogoMatchEvents playerEvents, Match match){
-//    private  void setScore(TeamTitleClubLogoMatchEvents playerEvents, ActiveMatch match){
+//        private  void setScore(TeamTitleClubLogoMatchEvents playerEvents, Match match){
+    private  void setScore(TeamTitleClubLogoMatchEvents playerEvents, ActiveMatch match){
         ImageView image1 = findViewById(R.id.scoreCommand1Logo);
         ImageView image2 = findViewById(R.id.scoreCommand2Logo);
         TextView text1 = findViewById(R.id.scoreCommand1Title);
@@ -141,8 +142,8 @@ public class ProtocolScore extends AppCompatActivity{
 
 
     }
-//    private  void setPenalty(TeamTitleClubLogoMatchEvents playerEvents, ActiveMatch match){
-    private  void setPenalty(TeamTitleClubLogoMatchEvents playerEvents, Match match){
+    private  void setPenalty(TeamTitleClubLogoMatchEvents playerEvents, ActiveMatch match){
+//    private  void setPenalty(TeamTitleClubLogoMatchEvents playerEvents, Match match){
         ImageView image1 = findViewById(R.id.penaltyCommand1Logo);
         ImageView image2 = findViewById(R.id.penaltyCommand2Logo);
         TextView text1 = findViewById(R.id.penaltyCommand1Title);
@@ -157,8 +158,8 @@ public class ProtocolScore extends AppCompatActivity{
         setImage.setImage(image1.getContext(), image1, playerEvents.getClubLogo1());
         setImage.setImage(image2.getContext(), image2, playerEvents.getClubLogo2());
     }
-//    private  void setAutoGoal(TeamTitleClubLogoMatchEvents playerEvents, ActiveMatch match){
-    private  void setAutoGoal(TeamTitleClubLogoMatchEvents playerEvents, Match match){
+    private  void setAutoGoal(TeamTitleClubLogoMatchEvents playerEvents, ActiveMatch match){
+//    private  void setAutoGoal(TeamTitleClubLogoMatchEvents playerEvents, Match match){
         ImageView image1 = findViewById(R.id.ownGoalsFoulsCommand1Logo);
         ImageView image2 = findViewById(R.id.ownGoalsFoulsCommand2Logo);
         TextView text1 = findViewById(R.id.ownGoalsFoulsCommand1Title);
