@@ -55,8 +55,8 @@ public class NewsAndAds extends Fragment {
 
 
         MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        checkConnection();
-
+        //checkConnection();
+        GetAllAds();
 
 
         final Button btnNews = view.findViewById(R.id.showAllNews);
