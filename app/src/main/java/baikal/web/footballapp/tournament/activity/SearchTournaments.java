@@ -78,7 +78,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private List<Region> regions = new ArrayList<>();
     private List<String> regionsId = new ArrayList<>();
     private List<String> regionsNames = new ArrayList<>();
-    private List<Tourney> favTourneys = new ArrayList<>();
     public SearchTournaments() {
         // Required empty public constructor
     }
@@ -107,6 +106,8 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
         tourneyList = new ArrayList<>(PersonalActivity.allTourneys);
         regions = new ArrayList<>(PersonalActivity.regions);
+        Log.d("reeedion size",regions.size()+"");
+
         for( Region reg : regions){
             regionsId.add(reg.getId());
             regionsNames.add(reg.getName());

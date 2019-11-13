@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,6 +40,7 @@ import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.tournament.adapter.RVFavTourneyAdapter;
 import baikal.web.footballapp.tournament.adapter.RVTourneyAdapter;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;
+import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -63,6 +65,7 @@ public class TournamentsFragment extends Fragment {
     private final int limit = 5;
     public static List<List<League>> favLeague = new ArrayList<>( );
     private static List<Tourney> favTourney = new ArrayList<>();
+    private static List<String> favTourneyId = new ArrayList<>();
 
     @SuppressLint("ValidFragment")
     public TournamentsFragment( ) {
@@ -84,36 +87,50 @@ public class TournamentsFragment extends Fragment {
                     showTournamentInfo(id);
                 }
             };
-            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
-            Controller.getApi().getFavTourneysByPerson(TournamentPage.id).enqueue(new Callback<List<PersonPopulate>>() {
-                @Override
-                public void onResponse(Call<List<PersonPopulate>> call, Response<List<PersonPopulate>> response) {
-                    if (response.isSuccessful()) {
-                        if (response.body() != null) {
-                            favTourney.clear();
-                            favTourney.addAll(response.body().get(0).getFavouriteTourney());
 
+            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
+            MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+            mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
+                favTourney.clear();
+                favTourney.addAll(tourneys);
+                for (Tourney tr : tourneys){
+                    favTourneyId.add(tr.getId());
+                }
+                for (String tr : favTourneyId){
+                    getFavLeagues(tr,new MyCallback(){
+                        @Override
+                        public void onDataGot(List<League> leagues){
+
+                            favLeague.add(leagues);
                             adapter.notifyDataSetChanged();
 
                         }
-                        }
+                    });
                 }
 
-                @Override
-                public void onFailure(Call<List<PersonPopulate>> call, Throwable t) {
 
-                }
             });
-            for (String tr : TournamentPage.favTourneys){
-                getFavLeagues(tr,new MyCallback(){
-                    @Override
-                    public void onDataGot(List<League> leagues){
 
-                        favLeague.add(leagues);
+//            Controller.getApi().getFavTourneysByPerson(TournamentPage.id).enqueue(new Callback<List<PersonPopulate>>() {
+//                @Override
+//                public void onResponse(Call<List<PersonPopulate>> call, Response<List<PersonPopulate>> response) {
+//                    if (response.isSuccessful()) {
+//                        if (response.body() != null) {
+//                            favTourney.clear();
+//                            favTourney.addAll(response.body().get(0).getFavouriteTourney());
+//
+//                            adapter.notifyDataSetChanged();
+//
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<List<PersonPopulate>> call, Throwable t) {
+//
+//                }
+//            });
 
-                    }
-                });
-            }
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
             recyclerView.setAdapter(adapter);

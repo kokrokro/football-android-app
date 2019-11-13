@@ -83,7 +83,8 @@ public class PersonalActivity extends AppCompatActivity {
     private final Fragment fragmentPlayers = new PlayersPage();
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
     public static List<Region> regions = new ArrayList<>();
-
+    public static String id ;
+    public static boolean status;
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -116,11 +117,13 @@ public class PersonalActivity extends AppCompatActivity {
                             //                        active = UserPage.authoUser;
                             //                    }
 
-                            if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
+                            if (status) {
                                 log.debug("ЗАРЕГАН");
                                 log.debug("-------------");
                                 log.debug(SaveSharedPreference.getObject().getToken());
                                 log.debug("-------------");
+                                id = SaveSharedPreference.getObject().getUser().getId();
+                                Log.d("User ID: ", id);
 //                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                 //     ft.detach(authoUser).attach(authoUser).commit();
                                 //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
@@ -156,9 +159,12 @@ public class PersonalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setAnimation();
         setContentView(R.layout.activity_personal);
-
+        status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
         //     FragmentManager.enableDebugLogging(true);
-
+        if (status) {
+            log.debug(SaveSharedPreference.getObject().getToken());
+            id = SaveSharedPreference.getObject().getUser().getId();
+        }
         mProgressDialog = new ProgressDialog(this);
 
         mProgressDialog.setIndeterminate(true);

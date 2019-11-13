@@ -83,26 +83,23 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
                     favTourneys.add(id);
 //                    List<MultipartBody.Part> favTourneysNew = new ArrayList<>();
 //                    favTourneysNew.add(MultipartBody.Part.createFormData("favouriteTourney", id));
-                   List<RequestBody> favTourneyNew = new ArrayList<>();
-                    for(int i = 0; i < favTourneys.size(); i++){
-                       favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneys.get(i)));
-                    }
-
-                    Controller.getApi().editPlayerInfo(TournamentPage.id,TournamentPage.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
-                        @Override
-                        public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
-
-                        }
-
-                        @Override
-                        public void onFailure(Call<EditProfile> call, Throwable t) {
-                            Log.d("response","FAAAAAIL");
-                        }
-                    });
 
                 } else {
-
+                    favTourneys.remove(id);
                 }
+                List<RequestBody> favTourneyNew = new ArrayList<>();
+                for(int i = 0; i < favTourneys.size(); i++){
+                    favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneys.get(i)));
+                }
+                Controller.getApi().editPlayerInfo(TournamentPage.id,TournamentPage.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
+                    @Override
+                    public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<EditProfile> call, Throwable t) {
+                    }
+                });
             }
         });
     }
