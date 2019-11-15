@@ -26,15 +26,22 @@ import java.util.concurrent.TimeUnit;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.home.adapter.RecyclerViewMainAdsAdapter;
 import baikal.web.footballapp.home.adapter.RecyclerViewMainNewsAdapter;
 import baikal.web.footballapp.model.Announce;
 import baikal.web.footballapp.model.Announces;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News_;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NewsAndAds extends Fragment {
     private final Logger log = LoggerFactory.getLogger(MainPage.class);
@@ -46,7 +53,6 @@ public class NewsAndAds extends Fragment {
     private List<News_> allNews = new ArrayList<>();
     private RecyclerViewMainNewsAdapter newsAdapter;
     private RecyclerViewMainAdsAdapter adsAdapter;
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -57,7 +63,6 @@ public class NewsAndAds extends Fragment {
         MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
         //checkConnection();
         GetAllAds();
-
 
         final Button btnNews = view.findViewById(R.id.showAllNews);
         final Button btnAds = view.findViewById(R.id.showAllAds);
@@ -96,10 +101,10 @@ public class NewsAndAds extends Fragment {
         }
 
         mainViewModel.getNews("2","0").observe(this, news_ -> {
-            Log.d("News and ads", "data is changed size " + news_.size());
-            for (int i = 0; i < news_.size(); i++) {
-                Log.d("News and ads", news_.get(i).getCaption());
-            }
+//            Log.d("News and ads", "data is changed size " + news_.size());
+//            for (int i = 0; i < news_.size(); i++) {
+//                Log.d("News and ads", news_.get(i).getCaption());
+//            }
             newsAdapter.dataChanged(news_);
         });
 

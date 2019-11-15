@@ -93,6 +93,7 @@ public class TournamentsFragment extends Fragment {
             mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
                 favTourney.clear();
                 favTourney.addAll(tourneys);
+                favTourneyId.clear();
                 for (Tourney tr : tourneys){
                     favTourneyId.add(tr.getId());
                 }
@@ -100,13 +101,12 @@ public class TournamentsFragment extends Fragment {
                     getFavLeagues(tr,new MyCallback(){
                         @Override
                         public void onDataGot(List<League> leagues){
-
                             favLeague.add(leagues);
-                            adapter.notifyDataSetChanged();
 
                         }
                     });
                 }
+                adapter.notifyDataSetChanged();
 
 
             });

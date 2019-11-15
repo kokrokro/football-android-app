@@ -1,5 +1,6 @@
 package baikal.web.footballapp;
 
+import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.ActiveMatches;
 import baikal.web.footballapp.model.AddTeam;
 import baikal.web.footballapp.model.Advertisings;
@@ -13,6 +14,7 @@ import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.EditProtocolBody;
 import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Matches;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
@@ -66,7 +68,10 @@ public interface FootballApi {
     //get advertising
     @GET("/api/ads")
     Observable<Advertisings> getAdvertising(@Query("limit") String limit, @Query("offset") String offset);
-
+    @GET("/api/crud/league?status=started&_select=_id")
+    Call<List<League>> getStartedLeagues();
+    @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
+    Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
 
 
     //get all clubs
@@ -115,6 +120,8 @@ public interface FootballApi {
     Observable<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/league")
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
+    @GET("/api/crud/match?_sort=date")
+    Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
     //edit web
     @Multipart
     @POST("/api/editPlayerInfo")
@@ -128,6 +135,8 @@ public interface FootballApi {
 
     @GET("/api/crud/person?_populate=favoriteTourney&_select=favoriteTourney")
     Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);
+    @GET("/api/crud/person?_select=favoriteTourney")
+    Call<List<Person> >getFavTourneysId(@Query("_id") String id);
 
     //edit match protocol event and playerList
     @POST("/api/matches/changeProtocol")

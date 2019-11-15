@@ -116,7 +116,7 @@ public class PersonalActivity extends AppCompatActivity {
                             //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
                             //                        active = UserPage.authoUser;
                             //                    }
-
+                            status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
                             if (status) {
                                 log.debug("ЗАРЕГАН");
                                 log.debug("-------------");
