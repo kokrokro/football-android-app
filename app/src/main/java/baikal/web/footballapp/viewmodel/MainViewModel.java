@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
@@ -20,20 +21,25 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainViewModel extends ViewModel {
-    private MutableLiveData<List<News_>> newsData;
-    private MutableLiveData<List<Tourney>> favTourney;
+    private MutableLiveData<List<News_>> newsData = null;
+    private MutableLiveData<List<Tourney>> favTourney = null;
+    private MutableLiveData<List<League>> favLeagues= null;
+
+
+
     public LiveData<List<News_>> getNews(String limit, String offset) {
         if (newsData == null) {
             newsData = new MutableLiveData<>();
-            loadData(limit, offset);
+
         }
+        loadData(limit, offset);
         return newsData;
     }
     public LiveData<List<Tourney>> getFavTourney(String id){
         if(favTourney == null){
             favTourney = new MutableLiveData<>();
-            loadTourneys(id);
         }
+        loadTourneys(id);
         return favTourney;
     }
     private void loadTourneys(String id){

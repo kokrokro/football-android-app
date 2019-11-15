@@ -72,9 +72,10 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
         holder.textCommandNum.setText(str);
-       holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
+        holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
         holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys ));
         if(favLeagues.get(position).size()>0){
+
            String leagueId =  favLeagues.get(position).get(0).getId();
             holder.bind(leagueId, mListener);
         }
@@ -87,7 +88,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         return tourneys.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView textTitle;
         final TextView textDate;
         final TextView textCommandNum;
@@ -95,6 +96,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         final View view;
         final RecyclerView rvLeagues;
         final RelativeLayout linearLayout;
+
         ViewHolder(View itemView) {
             super(itemView);
             view = itemView.findViewById(R.id.tourneyLine);
@@ -105,11 +107,10 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             rvLeagues = itemView.findViewById(R.id.recyclerViewFavLeagues);
             linearLayout = itemView.findViewById(R.id.tourneyShow);
         }
+
         public void bind(String id, final Listener listener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    listener.onClick(id);
-                }
+            linearLayout.setOnClickListener(v -> {
+                listener.onClick(id);
             });
         }
     }

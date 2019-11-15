@@ -28,6 +28,7 @@ import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.EditProfile;
+import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.tournament.activity.Tournament;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
@@ -91,7 +92,7 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
                 for(int i = 0; i < favTourneys.size(); i++){
                     favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneys.get(i)));
                 }
-                Controller.getApi().editPlayerInfo(TournamentPage.id,TournamentPage.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
+                Controller.getApi().editPlayerInfo(PersonalActivity.id,PersonalActivity.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
                     @Override
                     public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
                     }

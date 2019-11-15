@@ -59,7 +59,7 @@ public class RegistrationUser extends AppCompatActivity {
     }
 
     public void showAlertDialogButtonClicked() {
-        Toast.makeText(getBaseContext(), "Выберете регион", Toast.LENGTH_SHORT);
+        Toast.makeText(getBaseContext(), "Выберите регион", Toast.LENGTH_SHORT);
     }
 
     private void SignUp() {
