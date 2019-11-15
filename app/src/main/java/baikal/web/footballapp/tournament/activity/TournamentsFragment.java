@@ -69,7 +69,6 @@ public class TournamentsFragment extends Fragment {
 
     @SuppressLint("ValidFragment")
     public TournamentsFragment( ) {
-        //this.fragmentManager = fragmentManager;
     }
 
     @Override
@@ -77,7 +76,6 @@ public class TournamentsFragment extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.fragment_tournaments, container, false);
         scroller = view.findViewById(R.id.scrollerLeague);
-        //GetAllTournaments("10","0");
         try {
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);
@@ -88,7 +86,7 @@ public class TournamentsFragment extends Fragment {
                 }
             };
 
-            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
+
             MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
             mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
                 favTourney.clear();
@@ -96,46 +94,20 @@ public class TournamentsFragment extends Fragment {
                 favTourneyId.clear();
                 for (Tourney tr : tourneys){
                     favTourneyId.add(tr.getId());
-                }
-                for (String tr : favTourneyId){
-                    getFavLeagues(tr,new MyCallback(){
-                        @Override
-                        public void onDataGot(List<League> leagues){
-                            favLeague.add(leagues);
-
-                        }
+                    getFavLeagues(tr.getId(),leagues -> {
+                        favLeague.add(leagues);
                     });
                 }
-                adapter.notifyDataSetChanged();
+                adapter.dataChanged(tourneys);
+                Log.d("____________","0"+tourneys.size());
 
 
             });
-
-//            Controller.getApi().getFavTourneysByPerson(TournamentPage.id).enqueue(new Callback<List<PersonPopulate>>() {
-//                @Override
-//                public void onResponse(Call<List<PersonPopulate>> call, Response<List<PersonPopulate>> response) {
-//                    if (response.isSuccessful()) {
-//                        if (response.body() != null) {
-//                            favTourney.clear();
-//                            favTourney.addAll(response.body().get(0).getFavouriteTourney());
-//
-//                            adapter.notifyDataSetChanged();
-//
-//                        }
-//                    }
-//                }
-//
-//                @Override
-//                public void onFailure(Call<List<PersonPopulate>> call, Throwable t) {
-//
-//                }
-//            });
-
+            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
+            recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            recyclerView.setAdapter(adapter);
-            //adapter = new RecyclerViewTournamentAdapter(getActivity(), TournamentsFragment.this, PersonalActivity.tournaments, leagueId -> showTournamentInfo(leagueId), PersonalActivity.allTourneys);
-            //recyclerView.setAdapter(adapter);
+
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
@@ -168,27 +140,6 @@ public class TournamentsFragment extends Fragment {
             }
         });
         callback.onDataGot(leagues);
-    }
-    @SuppressLint("CheckResult")
-    private void GetAllTournaments(String limit, String offset) {
-        Controller.getApi().getAllLeagues(limit, offset )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveAllData
-                        ,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
-    }
-
-    private void saveAllData(List<League> tournaments1) {
-        count += tournaments1.size();
-       // Log.d("couuuunt leagues", " "+ tournaments1.size());
-        tournaments.addAll(tournaments.size(), tournaments1);
-        List<League> list = new ArrayList<>(tournaments);
-       // adapter.dataChanged(list);
     }
 
     @SuppressLint("CheckResult")

@@ -13,6 +13,7 @@ import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,6 +48,7 @@ import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
 import baikal.web.footballapp.tournament.adapter.RVTourneyAdapter;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;
+import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -59,9 +61,9 @@ import retrofit2.Response;
 public class SearchTournaments extends Fragment implements DialogRegion.mListener {
     private static final String TAG = "Search_tournaments";
     private RecyclerView recyclerView;
-    private int count = 0;
-    private int offset = 0;
-    private final int limit = 10;
+//    private int count = 0;
+//    private int offset = 0;
+//    private final int limit = 10;
     //    RecyclerViewPlayersAdapter adapter;
     private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
     private SearchView searchView;
@@ -72,12 +74,13 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private final List<Person> people = new ArrayList<>();
     private final List<Person> allPeople = new ArrayList<>();
     private NestedScrollView scroller;
-    private final List<League> tournaments= new ArrayList<>();
+//    private final List<League> tournaments= new ArrayList<>();
     private List<Tourney> tourneyList = new ArrayList<>();
     private ImageButton filter;
     private List<Region> regions = new ArrayList<>();
     private List<String> regionsId = new ArrayList<>();
     private List<String> regionsNames = new ArrayList<>();
+    private List<String> favTourneysId = new ArrayList<>();
     public SearchTournaments() {
         // Required empty public constructor
     }
@@ -106,8 +109,14 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
         tourneyList = new ArrayList<>(PersonalActivity.allTourneys);
         regions = new ArrayList<>(PersonalActivity.regions);
-        Log.d("reeedion size",regions.size()+"");
-
+        MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
+            favTourneysId.clear();
+            for(Tourney tr :tourneys){
+                favTourneysId.add(tr.getId());
+            }
+            adapter.notifyDataSetChanged();
+        });
         for( Region reg : regions){
             regionsId.add(reg.getId());
             regionsNames.add(reg.getName());
@@ -116,9 +125,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
             recyclerView = view.findViewById(R.id.recyclerViewSearch);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-            //Log.d("tourneyys",""+TournamentPage.favTourneys.size());
-            adapter = new RVTourneyAdapter(tourneyList, getActivity(), TournamentPage.favTourneys);
+            adapter = new RVTourneyAdapter(tourneyList, getActivity(), favTourneysId);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             log.error("ERROR: ", e);
@@ -156,25 +163,25 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     }
 
     private void saveAllData(List<Tourney> tourneys) {
-        count = tourneys.size();
+//        count = tourneys.size();
         this.tourneyList.clear();
         this.tourneyList.addAll(tourneys);
         adapter.dataChanged(tourneyList);
     }
-    private void saveData(GetLeagueInfo getLeagueInfo) {
-        LeagueInfo tournament1 = getLeagueInfo.getLeagueInfo();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("TOURNAMENTINFO", tournament1);
-        Tournament tournament = new Tournament();
-        tournament.setArguments(bundle);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        try{
-            fragmentManager.beginTransaction().add(R.id.pageContainer, tournament, "LEAGUEINFO").commit();
-        }catch (Exception e){
-            log.error("ERROR: ", e);
-        }
-        PersonalActivity.active = tournament;
-    }
+//    private void saveData(GetLeagueInfo getLeagueInfo) {
+//        LeagueInfo tournament1 = getLeagueInfo.getLeagueInfo();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("TOURNAMENTINFO", tournament1);
+//        Tournament tournament = new Tournament();
+//        tournament.setArguments(bundle);
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        try{
+//            fragmentManager.beginTransaction().add(R.id.pageContainer, tournament, "LEAGUEINFO").commit();
+//        }catch (Exception e){
+//            log.error("ERROR: ", e);
+//        }
+//        PersonalActivity.active = tournament;
+//    }
     @SuppressLint("CheckResult")
     private void SearchTournaments(String search, String region){
 //        PersonalActivity.people.clear();

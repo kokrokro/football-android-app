@@ -84,6 +84,7 @@ public class PersonalActivity extends AppCompatActivity {
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
     public static List<Region> regions = new ArrayList<>();
     public static String id ;
+    public static String token;
     public static boolean status;
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -162,8 +163,9 @@ public class PersonalActivity extends AppCompatActivity {
         status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
         //     FragmentManager.enableDebugLogging(true);
         if (status) {
-            log.debug(SaveSharedPreference.getObject().getToken());
+            //log.debug(SaveSharedPreference.getObject().getToken());
             id = SaveSharedPreference.getObject().getUser().getId();
+            token = SaveSharedPreference.getObject().getToken();
         }
         mProgressDialog = new ProgressDialog(this);
 

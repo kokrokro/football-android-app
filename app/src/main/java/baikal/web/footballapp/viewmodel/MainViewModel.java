@@ -26,17 +26,18 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<League>> favLeagues= null;
 
 
+
     public LiveData<List<News_>> getNews(String limit, String offset) {
         if (newsData == null) {
             newsData = new MutableLiveData<>();
-            loadData(limit, offset);
+
         }
+        loadData(limit, offset);
         return newsData;
     }
     public LiveData<List<Tourney>> getFavTourney(String id){
         if(favTourney == null){
             favTourney = new MutableLiveData<>();
-
         }
         loadTourneys(id);
         return favTourney;
