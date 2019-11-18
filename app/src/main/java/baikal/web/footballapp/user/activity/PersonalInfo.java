@@ -224,7 +224,7 @@ public class PersonalInfo extends Fragment {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                DateFormat format = new SimpleDateFormat("dd MMMM yyyy", new Locale("ru"));
+                DateFormat format = new SimpleDateFormat("dd.MM.yyyy", new Locale("ru"));
                 Calendar c = Calendar.getInstance();
                 c.set(year, month, dayOfMonth);
                 Date d = c.getTime();

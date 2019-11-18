@@ -49,6 +49,11 @@ public class UserPage extends Fragment {
     private EditText textPass;
     private static User user;
 
+    public void resetLoginPassEditText() {
+        textLogin.setText("");
+        textPass.setText("");
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -133,6 +138,7 @@ public class UserPage extends Fragment {
                             PersonalActivity.active = authoUser;
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                             SaveSharedPreference.saveObject(user);
+                            resetLoginPassEditText();
 
                         } catch (Exception e) {
                             Toast.makeText(getActivity(), "Ошибка!", Toast.LENGTH_LONG).show();
