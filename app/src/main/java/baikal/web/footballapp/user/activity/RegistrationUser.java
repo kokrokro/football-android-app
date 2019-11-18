@@ -52,7 +52,7 @@ public class RegistrationUser extends AppCompatActivity {
 
         imageClose.setOnClickListener(v -> finish());
         imageSave.setOnClickListener(v -> SignUp());
-
+        Log.d("REGISTRATION USER: ", "LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
         fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").show(personalInfo).commit();
 
         personalInfo.setParentContext(this);
