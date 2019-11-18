@@ -102,6 +102,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/manrope_regular"
             android:paddingStart="4sp"
+            android:paddingEnd="4sp"
             android:gravity="start"
             android:textColor="@color/colorLightGrayForText"
             android:textSize="12sp"
@@ -118,6 +119,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/manrope_regular"
             android:paddingStart="4sp"
+            android:paddingEnd="4sp"
             android:gravity="start"
             android:textColor="@color/colorLightGrayForText"
             android:textSize="12sp"
@@ -134,6 +136,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/manrope_regular"
             android:paddingStart="4sp"
+            android:paddingEnd="4sp"
             android:gravity="start"
             android:textColor="@color/colorLightGrayForText"
             android:textSize="12sp"
@@ -150,6 +153,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/manrope_regular"
             android:paddingStart="4sp"
+            android:paddingEnd="4sp"
             android:gravity="start"
             android:textColor="@color/colorLightGrayForText"
             android:textSize="12sp"
@@ -161,36 +165,43 @@
             style="@style/MyEditText"
             android:hint="@string/login"
             android:inputType="text"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="false"
             android:fontFamily="@font/manrope_regular"
-            android:paddingStart="4sp"
             android:gravity="start"
+            android:paddingStart="4sp"
+            android:paddingEnd="4sp"
+            android:text="@string/DOBProfile"
             android:textColor="@color/colorLightGrayForText"
-            android:textSize="12sp"
-            android:text="@string/DOBProfile"/>
+            android:textSize="12sp" />
+
         <TextView
             android:id="@+id/userInfoDOB"
-            android:clickable="true"
-            android:paddingStart="4sp"
             android:layout_width="match_parent"
-            android:gravity="center_vertical|bottom"
             android:layout_height="34dp"
+
             android:fontFamily="@font/manrope_regular"
+            android:gravity="start"
+            android:paddingStart="4sp"
+            android:paddingEnd="4sp"
+            android:text="@string/DOB"
             android:textAllCaps="false"
-            android:textSize="15sp"
-            android:textColor="@color/colorBottomNavigationUnChecked"
-            android:text="@string/DOB"/>
+
+            android:textSize="15sp" />
+
         <View
+            android:id="@+id/DOB"
             android:layout_width="match_parent"
-            android:paddingStart="5sp"
-            android:paddingEnd="5sp"
-            android:layout_marginTop="4sp"
             android:layout_height="1dp"
+            android:layout_marginTop="4sp"
             android:layout_marginBottom="25sp"
             android:background="@color/colorLightGray"
-            />
+            android:clickable="false"
+            android:paddingStart="5sp"
+            android:paddingEnd="5sp" />
 
 
     </LinearLayout>

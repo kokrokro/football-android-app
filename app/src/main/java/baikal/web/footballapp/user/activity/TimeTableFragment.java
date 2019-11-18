@@ -77,17 +77,17 @@ public class TimeTableFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void getActiveMatches(String limit, String offset) {
-        Controller.getApi().getActiveMatches(limit, offset, false)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveData
-                        ,
-                        error -> {
-                            layout.setVisibility(View.VISIBLE);
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
+//        Controller.getApi().getActiveMatches(limit, offset, false)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(this::saveData
+//                        ,
+//                        error -> {
+//                            layout.setVisibility(View.VISIBLE);
+//                            CheckError checkError = new CheckError();
+//                            checkError.checkError(getActivity(), error);
+//                        }
+//                );
     }
 
     private void saveData(ActiveMatches matches1) {

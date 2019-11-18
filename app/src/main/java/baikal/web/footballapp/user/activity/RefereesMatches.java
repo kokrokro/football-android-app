@@ -104,19 +104,19 @@ public class RefereesMatches extends AppCompatActivity {
     }
     @SuppressLint("CheckResult")
     private void getActiveMatches(String limit, String offset) {
-        Controller.getApi().getActiveMatches(limit, offset, false)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(this::saveData
-                        ,
-                        error -> {
-                            layout.setVisibility(View.VISIBLE);
-                            log.error("ERROR: ", error);
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(this, error);
-                        }
-                );
+//        Controller.getApi().getActiveMatches(limit, offset, false)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
+//                .subscribe(this::saveData
+//                        ,
+//                        error -> {
+//                            layout.setVisibility(View.VISIBLE);
+//                            log.error("ERROR: ", error);
+//                            CheckError checkError = new CheckError();
+//                            checkError.checkError(this, error);
+//                        }
+//                );
     }
 
     private void saveData(ActiveMatches matches1) {
