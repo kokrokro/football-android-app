@@ -103,7 +103,7 @@ public class ComingMatches extends Fragment {
                         getActiveMatches();
                     }
                 });
-}
+    }
     @SuppressLint("CheckResult")
     private void getActiveMatches() {
         Controller.getApi().getComingMatches()
@@ -120,16 +120,16 @@ public class ComingMatches extends Fragment {
     }
     private void saveData(ActiveMatches matches1) {
         try {
-        List<ActiveMatch> result;
-        result = matches1.getMatches();
-        if (result.size() != 0) {
-            layout.setVisibility(View.GONE);
-            adapter.dataChanged(result);
-            matches.clear();
-            matches.addAll(result);
-        } else {
-            layout.setVisibility(View.VISIBLE);
-        }
+            List<ActiveMatch> result;
+            result = matches1.getMatches();
+            if (result.size() != 0) {
+                layout.setVisibility(View.GONE);
+                adapter.dataChanged(result);
+                matches.clear();
+                matches.addAll(result);
+            } else {
+                layout.setVisibility(View.VISIBLE);
+            }
         }catch (Exception e){
             log.error("ERROR: ", e);
         }

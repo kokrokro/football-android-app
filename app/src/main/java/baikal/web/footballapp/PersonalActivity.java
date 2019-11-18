@@ -324,7 +324,7 @@ public class PersonalActivity extends AppCompatActivity {
                         regions.clear();
                         regions.addAll(response.body());
                     }
-            }}
+                }}
 
             @Override
             public void onFailure(Call<List<Region>> call, Throwable t) {
@@ -400,17 +400,17 @@ public class PersonalActivity extends AppCompatActivity {
             if (error instanceof SocketTimeoutException) {
                 str = "Неполадки на сервере. Попробуйте позже.";
                 if(App.wasInBackground)
-                Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
             }
             if (error instanceof ConnectException) {
                 str = "Отсутствует соединение.";
                 if(App.wasInBackground)
-                Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
             }
         } catch (ClassCastException n) {
             str = "Неполадки на сервере. Попробуйте позже.";
             if(App.wasInBackground)
-            Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
         }
 
 

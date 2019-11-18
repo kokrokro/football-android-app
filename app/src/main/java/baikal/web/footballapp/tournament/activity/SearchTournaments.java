@@ -65,7 +65,7 @@ import retrofit2.Response;
 public class SearchTournaments extends Fragment implements DialogRegion.mListener {
     private static final String TAG = "Search_tournaments";
     private RecyclerView recyclerView;
-//    private int count = 0;
+    //    private int count = 0;
 //    private int offset = 0;
 //    private final int limit = 10;
     //    RecyclerViewPlayersAdapter adapter;
@@ -75,7 +75,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private static RVTourneyAdapter adapter;
     private ProgressDialog mProgressDialog;
     private NestedScrollView scroller;
-//    private final List<League> tournaments= new ArrayList<>();
+    //    private final List<League> tournaments= new ArrayList<>();
     private List<Tourney> tourneyList = new ArrayList<>();
     private ImageButton filter;
     private List<Region> regions = new ArrayList<>();
@@ -128,38 +128,38 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             adapter = new RVTourneyAdapter(tourneyList, getActivity(), favTourneysId, (id,isChecked)-> {
 //                favTourneys.clear();
-                        if (isChecked) {
-                            favTourneysId.add(id);
-                        } else {
-                            favTourneysId.remove(id);
+                if (isChecked) {
+                    favTourneysId.add(id);
+                } else {
+                    favTourneysId.remove(id);
 
-                        }
-                        Log.d("checked", isChecked+" "+id);
-                        List<RequestBody> favTourneyNew = new ArrayList<>();
-                        for(int i = 0; i < favTourneysId.size(); i++){
-                            favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneysId.get(i)));
-                        }
-                        Controller.getApi().editPlayerInfo(PersonalActivity.id,PersonalActivity.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
-                            @Override
-                            public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
-                            }
+                }
+                Log.d("checked", isChecked+" "+id);
+                List<RequestBody> favTourneyNew = new ArrayList<>();
+                for(int i = 0; i < favTourneysId.size(); i++){
+                    favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneysId.get(i)));
+                }
+                Controller.getApi().editPlayerInfo(PersonalActivity.id,PersonalActivity.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
+                    @Override
+                    public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
+                    }
 
-                            @Override
-                            public void onFailure(Call<EditProfile> call, Throwable t) {
-                            }
-                        });
-                        mainViewModel.setFavTourneysId(favTourneysId);
-                    });
+                    @Override
+                    public void onFailure(Call<EditProfile> call, Throwable t) {
+                    }
+                });
+                mainViewModel.setFavTourneysId(favTourneysId);
+            });
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
         filter.setOnClickListener(v-> {
-                FragmentManager fm = getChildFragmentManager();
-                DialogRegion dialogRegion =  new DialogRegion(regionsNames);
+                    FragmentManager fm = getChildFragmentManager();
+                    DialogRegion dialogRegion =  new DialogRegion(regionsNames);
 
-                dialogRegion.show(fm, "fragment_edit_name");
-            }
+                    dialogRegion.show(fm, "fragment_edit_name");
+                }
         );
 //        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 //            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
@@ -192,7 +192,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         this.tourneyList.addAll(tourneys);
         adapter.dataChanged(tourneyList);
     }
-//    private void saveData(GetLeagueInfo getLeagueInfo) {
+    //    private void saveData(GetLeagueInfo getLeagueInfo) {
 //        LeagueInfo tournament1 = getLeagueInfo.getLeagueInfo();
 //        Bundle bundle = new Bundle();
 //        bundle.putSerializable("TOURNAMENTINFO", tournament1);
