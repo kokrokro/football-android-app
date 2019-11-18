@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-import baikal.web.footballapp.registration.RegistrationUserActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -79,7 +78,7 @@ public class UserPage extends Fragment {
         });
         logIn.setOnClickListener(v -> SignIn());
         textReg.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), RegistrationUserActivity.class);
+            Intent intent = new Intent(getActivity(), RegistrationUser.class);
             startActivity(intent);
         });
         return view;

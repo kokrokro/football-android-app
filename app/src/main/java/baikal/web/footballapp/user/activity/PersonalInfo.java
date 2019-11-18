@@ -56,8 +56,12 @@ import retrofit2.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
@@ -220,7 +224,11 @@ public class PersonalInfo extends Fragment {
         mDateSetListener = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                textDOB.setText(dayOfMonth + "." + month + "." + year);
+                DateFormat format = new SimpleDateFormat("dd MMMM yyyy", new Locale("ru"));
+                Calendar c = Calendar.getInstance();
+                c.set(year, month, dayOfMonth);
+                Date d = c.getTime();
+                textDOB.setText(format.format(d));
                 textDOB.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
             }
         };
