@@ -51,7 +51,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         this.mListener = mListener;
 
     }
-     public interface Listener {
+    public interface Listener {
         void onClick(String id);
     }
     @NonNull
@@ -76,7 +76,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys ));
         if(favLeagues.get(position).size()>0){
 
-           String leagueId =  favLeagues.get(position).get(0).getId();
+            String leagueId =  favLeagues.get(position).get(0).getId();
             holder.bind(leagueId, mListener);
         }
 
