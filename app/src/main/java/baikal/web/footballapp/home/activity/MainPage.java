@@ -47,7 +47,7 @@ public class MainPage extends Fragment {
             @Override
             public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
                 if (response.isSuccessful()){
-                    if (response.body() != null) {
+                    if (response.body() != null && response.body().size()>0) {
                         favTourneysId.clear();
                         favTourneysId.addAll(response.body().get(0).getFavouriteTourney());
                         String s="";

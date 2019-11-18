@@ -23,6 +23,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -37,6 +38,7 @@ import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
@@ -51,6 +53,8 @@ import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,10 +73,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private SearchView searchView;
     private ProgressBar progressBar;
     private static RVTourneyAdapter adapter;
-    private final List<Person> result = new ArrayList<>();
     private ProgressDialog mProgressDialog;
-    private final List<Person> people = new ArrayList<>();
-    private final List<Person> allPeople = new ArrayList<>();
     private NestedScrollView scroller;
 //    private final List<League> tournaments= new ArrayList<>();
     private List<Tourney> tourneyList = new ArrayList<>();
@@ -125,7 +126,30 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
             recyclerView = view.findViewById(R.id.recyclerViewSearch);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RVTourneyAdapter(tourneyList, getActivity(), favTourneysId);
+            adapter = new RVTourneyAdapter(tourneyList, getActivity(), favTourneysId, (id,isChecked)-> {
+//                favTourneys.clear();
+                        if (isChecked) {
+                            favTourneysId.add(id);
+                        } else {
+                            favTourneysId.remove(id);
+
+                        }
+                        Log.d("checked", isChecked+" "+id);
+                        List<RequestBody> favTourneyNew = new ArrayList<>();
+                        for(int i = 0; i < favTourneysId.size(); i++){
+                            favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneysId.get(i)));
+                        }
+                        Controller.getApi().editPlayerInfo(PersonalActivity.id,PersonalActivity.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
+                            @Override
+                            public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
+                            }
+
+                            @Override
+                            public void onFailure(Call<EditProfile> call, Throwable t) {
+                            }
+                        });
+                        mainViewModel.setFavTourneysId(favTourneysId);
+                    });
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
             log.error("ERROR: ", e);

@@ -45,18 +45,19 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
     private PersonalActivity activity;
     private  List<String> favTourneys;
     final Logger log = LoggerFactory.getLogger(TournamentPage.class);
-    //private ListAdapterListener mListener;
+    private MyListener mListener;
 
-    public RVTourneyAdapter(List<Tourney> tourneys, Activity activity, List<String> favTourneys){
+    public RVTourneyAdapter(List<Tourney> tourneys, Activity activity, List<String> favTourneys, MyListener mListener){
         this.tourneys = tourneys;
         this.activity = (PersonalActivity) activity;
         this.favTourneys = favTourneys;
-        //this.mListener = mListener;
+        this.mListener = mListener;
 
     }
 //    public interface ListAdapterListener {
 //        void onClickSwitch(String leagueId);
 //    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -77,31 +78,9 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
 
         holder.textCommandNum.setText(str);
         holder.favBtn.setChecked(favTourneys.contains(id));
-        holder.favBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    favTourneys.add(id);
-//                    List<MultipartBody.Part> favTourneysNew = new ArrayList<>();
-//                    favTourneysNew.add(MultipartBody.Part.createFormData("favouriteTourney", id));
 
-                } else {
-                    favTourneys.remove(id);
-                }
-                List<RequestBody> favTourneyNew = new ArrayList<>();
-                for(int i = 0; i < favTourneys.size(); i++){
-                    favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneys.get(i)));
-                }
-                Controller.getApi().editPlayerInfo(PersonalActivity.id,PersonalActivity.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
-                    @Override
-                    public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
-                    }
-
-                    @Override
-                    public void onFailure(Call<EditProfile> call, Throwable t) {
-                    }
-                });
-            }
+        holder.favBtn.setOnCheckedChangeListener((v,c)-> {
+            mListener.onClick(id,c);
         });
     }
 
@@ -137,8 +116,12 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         }
     }
     public void dataChanged(List<Tourney> tourneys){
-//        this.tourneys.clear();
-//        this.tourneys.addAll(tourneys);
+        this.tourneys.clear();
+        this.tourneys.addAll(tourneys);
         notifyDataSetChanged();
+    }
+    public interface MyListener {
+
+        void onClick(String id,Boolean isChecked);
     }
 }

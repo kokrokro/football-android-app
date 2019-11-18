@@ -85,27 +85,31 @@ public class TournamentsFragment extends Fragment {
                     showTournamentInfo(id);
                 }
             };
-
-
             MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
             mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
                 favTourney.clear();
                 favTourney.addAll(tourneys);
                 favTourneyId.clear();
+                favLeague.clear();
                 for (Tourney tr : tourneys){
                     favTourneyId.add(tr.getId());
                     getFavLeagues(tr.getId(),leagues -> {
                         favLeague.add(leagues);
                     });
                 }
+//                mainViewModel.getFavLeagues().observe(this, leagues ->{
+//                    favLeague.clear();
+//                    favLeague.addAll(leagues);
+//                });
+                mainViewModel.setFavTourneysId(favTourneyId);
+                adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
+                recyclerView.setAdapter(adapter);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                 adapter.dataChanged(tourneys);
-                Log.d("____________","0"+tourneys.size());
 
 
             });
-            adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
 
 
         } catch (Exception e) {
@@ -123,6 +127,7 @@ public class TournamentsFragment extends Fragment {
 //        });
         return view;
     }
+
     private void getFavLeagues(String tr, MyCallback callback){
         List<League> leagues = new ArrayList<>();
         Controller.getApi().getLeaguesByTourney(tr).enqueue(new Callback<List<League>>() {
