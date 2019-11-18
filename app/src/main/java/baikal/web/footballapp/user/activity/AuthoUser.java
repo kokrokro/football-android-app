@@ -282,8 +282,8 @@ public class AuthoUser extends Fragment {
         switch (menuItem.getItemId()) {
             case R.id.nav_default_fragment:
                 try {
-                    setItemColor(1);
-                    clearItemColor(1);
+                   // setItemColor(1);
+                   // clearItemColor(1);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
 //                    Log.d("defaultFragment", "defaultFragment on click in menu...");
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
@@ -297,8 +297,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_first_fragment:
                 try {
-                    setItemColor(0);
-                    clearItemColor(0);
+                    //setItemColor(0);
+                    //clearItemColor(0);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.invitation));
@@ -310,8 +310,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_second_fragment:
                 try {
-                    setItemColor(2);
-                    clearItemColor(2);
+//                    setItemColor(2);
+//                    clearItemColor(2);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment).show(secondFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment).show(secondFragment).commit();
 //                    , "CLUBFRAGMENT"
@@ -343,8 +343,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_command_fragment:
                 try {
-                    setItemColor(3);
-                    clearItemColor(3);
+//                    setItemColor(3);
+//                    clearItemColor(3);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, commands).show(commands).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, commands).show(commands).commit();
                     categoryTitle.setText(getActivity().getText(R.string.commands));
@@ -356,8 +356,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_third_fragment:
                 try {
-                    setItemColor(5);
-                    clearItemColor(5);
+//                    setItemColor(5);
+//                    clearItemColor(5);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
                     categoryTitle.setText(getActivity().getText(R.string.matches));
@@ -369,8 +369,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_referee_fragment:
                 try {
-                    setItemColor(6);
-                    clearItemColor(6);
+//                    setItemColor(6);
+//                    clearItemColor(6);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.referees));
@@ -382,8 +382,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_timetable_fragment:
                 try {
-                    setItemColor(4);
-                    clearItemColor(4);
+//                    setItemColor(4);
+//                    clearItemColor(4);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
