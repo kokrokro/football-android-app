@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.core.widget.NestedScrollView;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -47,6 +48,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
+import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -69,19 +71,19 @@ public class TournamentPage extends Fragment {
         viewPager = view.findViewById(R.id.tournamentsPager);
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
-        User user = SaveSharedPreference.getObject();
-        Person person = user.getUser();
-         token = user.getToken();
-        id = person.getId();
-        favTourneys = person.getFavouriteTourney();
 
-       // Log.d("tourneyys",""+user.getToken());
-//        Log.d("__________",String.valueOf(favTourneys.size()));
+        Person person = null;
+        if(PersonalActivity.status)
+        {
+            User user = SaveSharedPreference.getObject();
+            person  = user.getUser();
+            token = user.getToken();
+            favTourneys = person.getFavouriteTourney();
+        }
+
         setCustomFont();
         return view;
     }
-
-
     private void setupViewPager(ViewPager viewPager) {
 
         try {

@@ -1,25 +1,16 @@
 package baikal.web.footballapp.user.activity;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Region;
-import baikal.web.footballapp.model.User;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,19 +21,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Locale;
 import java.util.Map;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.User;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -51,12 +36,12 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RegistrationUser extends AppCompatActivity {
+
     private final Logger log = LoggerFactory.getLogger(RegistrationUser.class);
-    Fragment authoUser = new AuthoUser();
-    private boolean check = false;
     private static ImageButton imageSave;
     private final PersonalInfo personalInfo = new PersonalInfo();
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
@@ -66,42 +51,15 @@ public class RegistrationUser extends AppCompatActivity {
         imageSave = findViewById(R.id.registrationSave);
 
         imageClose.setOnClickListener(v -> finish());
-        imageSave.setOnClickListener(v -> {
-//                getSupportFragmentManager().beginTransaction().replace(R.id.pageContainer, authoUser).addToBackStack(null).commit();
+        imageSave.setOnClickListener(v -> SignUp());
 
-
-//                FragmentManager fragmentManager = getSupportFragmentManager();
-//
-//                fragmentManager.beginTransaction().replace(R.id.pageContainer, authoUser).addToBackStack(null).commit();
-
-
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.pageContainer, authoUser)
-//                        .show(authoUser)
-//                        .commit();
-            SignUp();
-
-        });
-
-//        fragmentManager.beginTransaction().add(R.id.registrationViewPager, phoneVerification, "phoneVerification").commit();
-//        fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").hide(personalInfo).commit();
         fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").show(personalInfo).commit();
 
         personalInfo.setParentContext(this);
     }
 
     public void showAlertDialogButtonClicked() {
-//        View view
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("My title");
-//        builder.setMessage("This is my message.");
-//
-//        builder.setPositiveButton("OK", null);
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-
-        Toast.makeText(getBaseContext(), "Выберете регион", Toast.LENGTH_SHORT);
+        Toast.makeText(getBaseContext(), "Выберите регион", Toast.LENGTH_SHORT);
     }
 
     private void SignUp() {
@@ -112,11 +70,12 @@ public class RegistrationUser extends AppCompatActivity {
         String password = PersonalInfo.textPassword.getText().toString();
         String DOB = PersonalInfo.textDOB.getText().toString();
         String region = "";
+
         if (PersonalInfo.spinnerRegion.getSelectedItemPosition() == -1)
             showAlertDialogButtonClicked();
         else
             region = PersonalInfo.regionsId.get(PersonalInfo.spinnerRegion.getSelectedItemPosition());
-//        Bitmap photo = ((BitmapDrawable)drawable).getBitmap();
+
         Bitmap photo = PersonalInfo.myBitmap;
         String type = "player";
         Map<String, RequestBody> map = new HashMap<>();
@@ -146,14 +105,8 @@ public class RegistrationUser extends AppCompatActivity {
             fos.write(bitmapdata);
             fos.flush();
             fos.close();
-            //        File file = new File(String.valueOf(PersonalInfo.picUri));
-            RequestBody requestFile =
-                    RequestBody.create(MediaType.parse("multipart/form-data"), file);
-
-            // MultipartBody.Part is used to send also the actual file name
-            MultipartBody.Part body =
-                    MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
-//            Call<LoginResult> call = Controller.getApi().postSignUp(new LoginData(login, password, type));
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+            MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
             map.put("type", requestType);
             map.put("name", requestName);
             map.put("surname", requestSurname);
@@ -162,7 +115,6 @@ public class RegistrationUser extends AppCompatActivity {
             map.put("password", requestPass);
             map.put("region", requestRegion);
             map.put("birthdate",requestDOB);
-//            map.put("photo", requestFile);
             Call<User> call2 = Controller.getApi().signUp(map, body);
             call2.enqueue(new Callback<User>() {
                 @Override
@@ -173,31 +125,14 @@ public class RegistrationUser extends AppCompatActivity {
                         if (response.body() == null) {
                             log.error("ERROR: body is null");
                         } else {
-                            //response.body() have your LoginResult fields and methods  (baikal you have to access error then try like this response.body().getError() )
-//                            String msg = response.body().getMessage();
                             User user = response.body();
                             Log.d("dfdF_________", response.body().toString());
                             Person person = response.body().getUser();
-//                            Intent resultIntent = new Intent();
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable("PERSONREGINFO", person);
-//                            resultIntent.putExtra("person", bundle);
-//                            setResult(Activity.RESULT_OK, resultIntent);
-//                            FragmentManager fragmentManager = getSupportFragmentManager();
-//                            fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser).hide(PersonalActivity.active).show(authoUser).commit();
-//                            PersonalActivity.active = authoUser;
                             UserPage.auth = true;
                             Intent intent = new Intent();
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable("PERSONREGINFO", person);
-//                            intent.putExtra("PERSONREGINFO", person);
                             intent.putExtra("PERSONREGINFO", user);
                             setResult(RESULT_OK, intent);
-                            check = true;
-                            //all is ok
                             finish();
-                            //post
-//                        }
                         }
                     }
                     else {
@@ -222,6 +157,6 @@ public class RegistrationUser extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
     }
+
 }

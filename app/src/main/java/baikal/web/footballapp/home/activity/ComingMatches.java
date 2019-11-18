@@ -22,17 +22,29 @@ import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.security.PublicKey;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Match;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ComingMatches extends Fragment {
     private final Logger log = LoggerFactory.getLogger(ComingMatches.class);
     private LinearLayout layout;
     private RVComingMatchesAdapter adapter;
-    private List<ActiveMatch> matches;
+    private List<ActiveMatch> matches = new ArrayList<>();
+    private List<String> leagues;
+    public ComingMatches( List<String> favLeagues){
+        this.leagues = favLeagues;
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -43,7 +55,31 @@ public class ComingMatches extends Fragment {
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matches = new ArrayList<>();
-        checkConnection();
+        //checkConnection();
+        Date now = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
+        String strDate =">="+sdf.format(now);
+        String query = "";
+        for(String l : leagues){
+            query+=","+l;
+        }
+        Controller.getApi().getUpcomingMatches(strDate, query, "20").enqueue(new Callback<List<ActiveMatch>>() {
+            @Override
+            public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        matches.clear();
+                        matches.addAll(response.body());
+                        adapter.notifyDataSetChanged();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
+
+            }
+        });
 
         try {
             adapter = new RVComingMatchesAdapter(getActivity(), matches);
@@ -67,7 +103,7 @@ public class ComingMatches extends Fragment {
                         getActiveMatches();
                     }
                 });
-}
+    }
     @SuppressLint("CheckResult")
     private void getActiveMatches() {
         Controller.getApi().getComingMatches()
@@ -84,16 +120,16 @@ public class ComingMatches extends Fragment {
     }
     private void saveData(ActiveMatches matches1) {
         try {
-        List<ActiveMatch> result;
-        result = matches1.getMatches();
-        if (result.size() != 0) {
-            layout.setVisibility(View.GONE);
-            adapter.dataChanged(result);
-            matches.clear();
-            matches.addAll(result);
-        } else {
-            layout.setVisibility(View.VISIBLE);
-        }
+            List<ActiveMatch> result;
+            result = matches1.getMatches();
+            if (result.size() != 0) {
+                layout.setVisibility(View.GONE);
+                adapter.dataChanged(result);
+                matches.clear();
+                matches.addAll(result);
+            } else {
+                layout.setVisibility(View.VISIBLE);
+            }
         }catch (Exception e){
             log.error("ERROR: ", e);
         }

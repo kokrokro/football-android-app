@@ -50,7 +50,7 @@ public class NewsFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewHome);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        GetAllNews("10","0");
+        GetAllNews("20","0");
         try {
             adapter = new RecyclerViewHomeAdapter(getActivity(), NewsFragment.this , allNews);
             recyclerView.setAdapter(adapter);

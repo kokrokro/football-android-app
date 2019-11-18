@@ -8,6 +8,8 @@ import java.util.List;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
+import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.Tourney;
 
 public class MainRepository {
     public LiveData<List<News_>> getNews(String limit, String offset, retrofit2.Callback<List<News_>> callback) {
@@ -15,6 +17,14 @@ public class MainRepository {
         Controller
                 .getApi()
                 .getAllNewsCrud(limit, offset)
+                .enqueue(callback);
+        return returnNews;
+    }
+    public LiveData<List<PersonPopulate>> getFavTourneys(String id, retrofit2.Callback<List<PersonPopulate>> callback) {
+        MutableLiveData<List<PersonPopulate>> returnNews = new MutableLiveData<>();
+        Controller
+                .getApi()
+                .getFavTourneysByPerson(id)
                 .enqueue(callback);
         return returnNews;
     }

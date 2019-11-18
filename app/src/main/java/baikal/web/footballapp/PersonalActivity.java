@@ -83,7 +83,9 @@ public class PersonalActivity extends AppCompatActivity {
     private final Fragment fragmentPlayers = new PlayersPage();
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
     public static List<Region> regions = new ArrayList<>();
-
+    public static String id ;
+    public static String token;
+    public static boolean status;
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -115,12 +117,14 @@ public class PersonalActivity extends AppCompatActivity {
                             //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
                             //                        active = UserPage.authoUser;
                             //                    }
-
-                            if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
+                            status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
+                            if (status) {
                                 log.debug("ЗАРЕГАН");
                                 log.debug("-------------");
                                 log.debug(SaveSharedPreference.getObject().getToken());
                                 log.debug("-------------");
+                                id = SaveSharedPreference.getObject().getUser().getId();
+                                Log.d("User ID: ", id);
 //                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                 //     ft.detach(authoUser).attach(authoUser).commit();
                                 //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
@@ -156,9 +160,13 @@ public class PersonalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setAnimation();
         setContentView(R.layout.activity_personal);
-
+        status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
         //     FragmentManager.enableDebugLogging(true);
-
+        if (status) {
+            //log.debug(SaveSharedPreference.getObject().getToken());
+            id = SaveSharedPreference.getObject().getUser().getId();
+            token = SaveSharedPreference.getObject().getToken();
+        }
         mProgressDialog = new ProgressDialog(this);
 
         mProgressDialog.setIndeterminate(true);
@@ -316,7 +324,7 @@ public class PersonalActivity extends AppCompatActivity {
                         regions.clear();
                         regions.addAll(response.body());
                     }
-            }}
+                }}
 
             @Override
             public void onFailure(Call<List<Region>> call, Throwable t) {
@@ -392,17 +400,17 @@ public class PersonalActivity extends AppCompatActivity {
             if (error instanceof SocketTimeoutException) {
                 str = "Неполадки на сервере. Попробуйте позже.";
                 if(App.wasInBackground)
-                Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
             }
             if (error instanceof ConnectException) {
                 str = "Отсутствует соединение.";
                 if(App.wasInBackground)
-                Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
             }
         } catch (ClassCastException n) {
             str = "Неполадки на сервере. Попробуйте позже.";
             if(App.wasInBackground)
-            Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
+                Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
         }
 
 
