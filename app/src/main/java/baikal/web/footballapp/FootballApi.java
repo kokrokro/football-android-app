@@ -73,7 +73,6 @@ public interface FootballApi {
     @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
     Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
 
-
     //get all clubs
     @GET("/api/clubs")
     Observable<Clubs> getAllClubs();

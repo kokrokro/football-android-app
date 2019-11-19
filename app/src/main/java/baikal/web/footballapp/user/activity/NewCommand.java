@@ -77,7 +77,10 @@ public class NewCommand extends AppCompatActivity {
 //        spinnerLeague = (Spinner) findViewById(R.id.newCommandLeagueSpinner);
         //spinnerClubs = findViewById(R.id.newCommandClubSpinner);
         trainer = findViewById(R.id.newCommandTrainer);
-        spinnerTournament.setPopupBackgroundResource(R.color.colorWhite);
+
+        try {
+            spinnerTournament.setPopupBackgroundResource(R.color.colorWhite);
+        } catch (Exception e) {}
 
         trainer.setOnClickListener(v->{
             Intent intent = new Intent(this, ChooseTrainer.class);
