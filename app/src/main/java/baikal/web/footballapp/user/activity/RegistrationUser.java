@@ -143,7 +143,6 @@ public class RegistrationUser extends AppCompatActivity {
                             log.error("ERROR: body is null");
                         } else {
                             User user = response.body();
-                            Log.d("dfdF_________", response.body().toString());
                             Person person = response.body().getUser();
                             UserPage.auth = true;
                             Intent intent = new Intent();

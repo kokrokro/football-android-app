@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -67,8 +68,12 @@ public class TournamentsFragment extends Fragment {
     private static List<Tourney> favTourney = new ArrayList<>();
     private static List<String> favTourneyId = new ArrayList<>();
 
+    public boolean isActive;
+    SearchTournaments st;
+
     @SuppressLint("ValidFragment")
     public TournamentsFragment( ) {
+        isActive = true;
     }
 
     @Override
