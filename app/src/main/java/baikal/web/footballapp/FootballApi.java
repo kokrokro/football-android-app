@@ -18,6 +18,8 @@ import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Matches;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
+import baikal.web.footballapp.model.Participation;
+import baikal.web.footballapp.model.ParticipationRequest;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
@@ -193,7 +195,10 @@ public interface FootballApi {
     @Multipart
     @POST("/api/team/acceptrequest")
     Call<User> playerInv(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
-
+    @GET("api/crud/team?_populate=players")
+    Call<List<Team>> getTeams(@Query("creator") String creator);
+    @GET("/api/participation_request")
+    Call<ParticipationRequest> getParticipation(@Query("team") String id);
 
     //get all player's teams
     @GET("/api/team/teamsbyid")

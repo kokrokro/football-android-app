@@ -60,6 +60,9 @@ import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -79,6 +82,7 @@ public class AuthoUser extends Fragment {
     public static final List<Person> allReferees = new ArrayList<>();
     public static List<PersonTeams> personOngoingLeagues;
     public static List<PersonTeams> personOwnCommand;
+    public static List<Team> createdTeams = new ArrayList<>();
     public static List<PersonTeams> personCommand;
     private List<PendingTeamInvite> pendingTeamInvites;
     public static List<PendingTeamInvite> pendingTeamInvitesList;
@@ -133,7 +137,21 @@ public class AuthoUser extends Fragment {
             pendingTeamInvitesList = new ArrayList<>();
             pendingTeamInvites = person.getPendingTeamInvites();
             invBadge = (TextView) nvDrawer.getMenu().findItem(R.id.nav_first_fragment).getActionView();
+            Controller.getApi().getTeams(PersonalActivity.id).enqueue(new Callback<List<Team>>() {
+                @Override
+                public void onResponse(Call<List<Team>> call, Response<List<Team>> response) {
+                    if(response.isSuccessful()){
+                        if(response.body()!=null){
+                            createdTeams.addAll(response.body());
+                        }
+                    }
+                }
 
+                @Override
+                public void onFailure(Call<List<Team>> call, Throwable t) {
+
+                }
+            });
 //            userGetType();
 
 

@@ -37,8 +37,8 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
     private final Logger log = LoggerFactory.getLogger(UserCommands.class);
     UserCommands context;
     private final PersonalActivity activity;
-    private final List<PersonTeams> list;
-    public RVOwnCommandAdapter (Activity activity, List<PersonTeams> list){
+    private final List<Team> list;
+    public RVOwnCommandAdapter (Activity activity, List<Team> list){
         this.activity = (PersonalActivity) activity;
 //        this.context = context;
         this.list = list;
@@ -52,7 +52,7 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RVOwnCommandAdapter.ViewHolder holder, int position) {
-        PersonTeams personTeams = list.get(position);
+        Team personTeams = list.get(position);
 //        final League league = personTeams.getLeague();
         League league = null;
         for (League league1 : activity.tournaments){
@@ -68,20 +68,20 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
                 break;
             }
         }
-        String teamId = personTeams.getTeam();
-        Team teamLeague = null;
-        for (Team team: league.getTeams()){
-            if (team.getId().equals(teamId)){
-                teamLeague = team;
-            }
-        }
+        String teamId = personTeams.getId();
+//        Team teamLeague = null;
+//        for (Team team: league.getTeams()){
+//            if (team.getId().equals(teamId)){
+//                teamLeague = team;
+//            }
+//        }
 //        Team team = personTeams.getTeam();
 //        holder.textTournamentTitle.setText();
         String title = "Команда: ";
         String date = "Начало: ";
         String transfer = "Трансферные периоды: ";
         String playersNum = "Количество игроков: ";
-        String str = title + teamLeague.getName();
+        String str = title + personTeams.getName();
         holder.textCommandTitle.setText(str);
 
 
@@ -102,7 +102,7 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
 
         str = transfer + transferBeginStr + "-" + transferEndStr;
         holder.textTransfer.setText(str);
-        List<Player> players = teamLeague.getPlayers();
+        List<Player> players = personTeams.getPlayers();
         List<Player> playerList = new ArrayList<>();
         for (Player player: players){
             if (player.getInviteStatus().equals("Approved") || player.getInviteStatus().equals("Accepted")){
@@ -115,23 +115,23 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
         if (position== (list.size() - 1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
-        final Team finalTeamLeague = teamLeague;
+        final Team finalTeamLeague = personTeams;
         League finalLeague = league;
 
-        if (teamLeague.getStatus().equals("Rejected")){
-            holder.textStatus.setText("Отклонена");
-            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
-            setListener(holder, finalTeamLeague, finalLeague);
-        }
-        if (teamLeague.getStatus().equals("Pending")){
-            holder.textStatus.setText("Ожидание");
-            setListener(holder, finalTeamLeague, finalLeague);
-        }
-        if (teamLeague.getStatus().equals("Approved")){
-            holder.textStatus.setText("Утверждена");
-            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
-//            holder.buttonShow.setVisibility(View.INVISIBLE);
-        }
+//        if (teamLeague.getStatus().equals("Rejected")){
+//            holder.textStatus.setText("Отклонена");
+//            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
+//            setListener(holder, finalTeamLeague, finalLeague);
+//        }
+//        if (teamLeague.getStatus().equals("Pending")){
+//            holder.textStatus.setText("Ожидание");
+//            setListener(holder, finalTeamLeague, finalLeague);
+//        }
+//        if (teamLeague.getStatus().equals("Approved")){
+//            holder.textStatus.setText("Утверждена");
+//            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
+////            holder.buttonShow.setVisibility(View.INVISIBLE);
+//        }
 
     }
 
@@ -180,8 +180,8 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
 
 
     public void dataChanged(List<PersonTeams> allPlayers1){
-        list.clear();
-        list.addAll(allPlayers1);
+//        list.clear();
+//        list.addAll(allPlayers1);
         notifyDataSetChanged();
     }
 }

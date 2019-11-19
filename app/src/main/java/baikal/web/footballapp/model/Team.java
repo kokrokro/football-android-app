@@ -65,6 +65,9 @@ public class Team implements Serializable {
     @Expose
     private String league;
 
+    public String getLeague(){ return league;}
+    public void setLeague(String league){this.league = league;}
+
     public String getTrainer() { return trainer;    }
 
     public void setTrainer(String trainer) { this.trainer = trainer;    }

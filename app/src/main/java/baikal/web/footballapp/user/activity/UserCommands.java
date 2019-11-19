@@ -17,10 +17,20 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.user.adapter.RVOwnCommandAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -33,6 +43,7 @@ public class UserCommands extends Fragment {
     private View line;
     private TextView textView;
     private TextView textView2;
+    private static List<Team> teams = new ArrayList<>();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,16 +69,18 @@ public class UserCommands extends Fragment {
         textView = view.findViewById(R.id.userCommandsText);
         textView2 = view.findViewById(R.id.userCommandsText2);
 
-
+        teams.addAll(AuthoUser.createdTeams);
         try{
+            RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
 
-        if (AuthoUser.personOwnCommand.size()==0){
+
+        if (teams.size()==0){
             linearOwnCommand.setVisibility(View.GONE);
         }
         if (AuthoUser.personCommand.size()==0){
             linearUserCommand.setVisibility(View.GONE);
         }
-        if (AuthoUser.personOwnCommand.size() != 0
+        if (teams.size() != 0
                 && AuthoUser.personCommand.size() != 0) {
             line.setVisibility(View.VISIBLE);
             textView.setVisibility(View.VISIBLE);
@@ -81,7 +94,8 @@ public class UserCommands extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
-        recyclerView2.setAdapter(AuthoUser.adapterOwnCommand);
+
+        recyclerView2.setAdapter(adapter);
         recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
         scrollStatus = false;
 
