@@ -109,7 +109,7 @@ public interface FootballApi {
     @GET("/api/getusers")
     Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
     @GET("/api/crud/person")
-    Observable<List<Person> >getAllPersons(@Query("type") String type, @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
+    Observable<List<Person> >getAllPersons( @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
     @GET("/api/crud/tourney")
@@ -180,8 +180,12 @@ public interface FootballApi {
 
     //create new team
     @Multipart
-    @POST("/api/leagues/addrequest")
-    Call<AddTeam> addTeam(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
+    @POST("/api/crud/team")
+    Call<Team> addTeam(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
+
+    @Multipart
+    @POST("/api/participation_request")
+    Call<Team> addTeamToLeague(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
     //edit team
     @POST("/api/team/edit")

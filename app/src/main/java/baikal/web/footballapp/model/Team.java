@@ -61,6 +61,9 @@ public class Team implements Serializable {
     @SerializedName("name")
     @Expose
     private String name;
+    @SerializedName("league")
+    @Expose
+    private String league;
 
     public String getTrainer() { return trainer;    }
 
