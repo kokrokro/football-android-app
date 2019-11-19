@@ -55,7 +55,7 @@ public class NewCommand extends AppCompatActivity {
     private Team team;
     private EditText textTitle;
     private EditText number;
-
+    private EditText trainer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +66,7 @@ public class NewCommand extends AppCompatActivity {
 
         allClubs.addAll(PersonalActivity.allClubs);
         allTournaments.addAll(PersonalActivity.tournaments);
+
         log.error(String.valueOf(allClubs.size()));
         imageClose = findViewById(R.id.newCommandClose);
         imageSave = findViewById(R.id.newCommandSave);
@@ -74,9 +75,13 @@ public class NewCommand extends AppCompatActivity {
         number = findViewById(R.id.newCommandNumber);
 //        spinnerLeague = (Spinner) findViewById(R.id.newCommandLeagueSpinner);
         //spinnerClubs = findViewById(R.id.newCommandClubSpinner);
-
+        trainer = findViewById(R.id.newCommandTrainer);
         spinnerTournament.setPopupBackgroundResource(R.color.colorWhite);
 
+        trainer.setOnClickListener(v->{
+            Intent intent = new Intent(this, ChooseTrainer.class);
+            startActivityForResult(intent, 1);
+        });
 
        // Drawable spinnerDrawable = spinnerClubs.getBackground().getConstantState().newDrawable();
 
@@ -152,7 +157,7 @@ public class NewCommand extends AppCompatActivity {
         //String club = itemClub.getId();
         String creator = SaveSharedPreference.getObject().getUser().getId();
         RequestBody request = RequestBody.create(MediaType.parse("text/plain"), tournament);
-        map.put("_id", request);
+        map.put("league", request);
        // request = RequestBody.create(MediaType.parse("text/plain"), club);
         //map.put("club", request);
         request = RequestBody.create(MediaType.parse("text/plain"), creator);
@@ -161,6 +166,10 @@ public class NewCommand extends AppCompatActivity {
         map.put("name", request);
         request = RequestBody.create(MediaType.parse("text/plain"), numberTrainer);
         map.put("creatorPhone", request);
+        request = RequestBody.create(MediaType.parse("text/plain"), trainer.getText().toString());
+        map.put("trainer", request);
+
+
         Call<AddTeam> call = Controller.getApi().addTeam(token, map);
         log.info("INFO: load and parse json-file");
         final League finalLeague = league;
@@ -217,5 +226,15 @@ public class NewCommand extends AppCompatActivity {
 //                finish();
             }
         });
+    }@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // Check which request we're responding to
+        if (requestCode == 1) {
+            // Make sure the request was successful
+            if (resultCode == RESULT_OK) {
+                trainer.setText(data.getData().toString());
+            }
+        }
     }
+
 }

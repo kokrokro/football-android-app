@@ -431,7 +431,7 @@ public class PersonalActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void GetAllPlayers() {
         String type = "player";
-        Controller.getApi().getAllPersons(type, null, "32575", "0")
+        Controller.getApi().getAllPersons( null, "32575", "0")
                 .subscribeOn(Schedulers.io())
 //                .doOnSubscribe(__ -> showDialog())
 //                .doOnTerminate(__ ->hideDialog())

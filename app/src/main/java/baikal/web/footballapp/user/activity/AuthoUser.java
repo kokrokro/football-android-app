@@ -567,7 +567,7 @@ public class AuthoUser extends Fragment {
     @SuppressLint("CheckResult")
     private void GetAllReferees() {
         String type = "referee";
-        Controller.getApi().getAllPersons(type, null, "32575", "0")
+        Controller.getApi().getAllPersons( null, "32575", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
