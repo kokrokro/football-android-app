@@ -32,6 +32,7 @@ import java.util.Objects;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.TimeToString;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.User;
 import okhttp3.MediaType;
@@ -73,19 +74,8 @@ public class RegistrationUser extends AppCompatActivity {
         String patronymic = PersonalInfo.textPatronymic.getText().toString();
         String login = PersonalInfo.textLogin.getText().toString();
         String password = PersonalInfo.textPassword.getText().toString();
-        String DOB = "";
+        String DOB = (new TimeToString()).TimeForServer(PersonalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
 
-        DateFormat formatParse = new SimpleDateFormat("dd.MM.yyyy", new Locale("ru"));
-        DateFormat formatForServer = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSSZ");
-
-        try {
-            Date d = formatParse.parse(PersonalInfo.textDOB.getText().toString());
-
-            DOB = formatForServer.format(d);
-        } catch (Exception e) {
-            log.error("RegistrationUser:", e);
-            DOB = formatParse.format(new Date());
-        }
         String region = "";
 
         if (PersonalInfo.spinnerRegion.getSelectedItemPosition() == -1)

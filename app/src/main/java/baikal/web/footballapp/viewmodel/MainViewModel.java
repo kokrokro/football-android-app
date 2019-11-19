@@ -81,6 +81,14 @@ public class MainViewModel extends ViewModel {
 
         return favTourney;
     }
+
+    public void setFavTourney(List<Tourney> favTourney) {
+        if (this.favTourney==null) {
+            this.favTourney = new MutableLiveData<>();
+        }
+        this.favTourney.setValue(favTourney);
+    }
+
     private void loadTourneys(String id){
         new MainRepository().getFavTourneys(id, new Callback<List<PersonPopulate>>() {
             @Override
@@ -104,13 +112,11 @@ public class MainViewModel extends ViewModel {
         new MainRepository().getNews(limit, offset, new Callback<List<News_>>() {
             @Override
             public void onResponse(Call<List<News_>> call, Response<List<News_>> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful())
                     if (response.body() != null) {
                         List<News_> news = response.body();
                         newsData.setValue(news);
-
                     }
-                }
             }
 
             @Override

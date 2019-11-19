@@ -73,11 +73,16 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
         holder.textCommandNum.setText(str);
         holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
-        holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys ));
-        if(favLeagues.get(position).size()>0){
 
-            String leagueId =  favLeagues.get(position).get(0).getId();
-            holder.bind(leagueId, mListener);
+        try {
+            holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys));
+            if (favLeagues.get(position).size() > 0) {
+
+                String leagueId = favLeagues.get(position).get(0).getId();
+                holder.bind(leagueId, mListener);
+            }
+        } catch (Exception e) {
+            log.error("RVFavTourneyAdapter: ", e);
         }
 
     }

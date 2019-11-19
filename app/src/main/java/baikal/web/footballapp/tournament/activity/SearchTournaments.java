@@ -51,6 +51,7 @@ import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
 import baikal.web.footballapp.tournament.adapter.RVTourneyAdapter;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
@@ -83,14 +84,10 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private List<String> regionsNames = new ArrayList<>();
     private List<String> favTourneysId = new ArrayList<>();
 
-    public boolean isActive;
-    TournamentsFragment tf;
-
     MainViewModel mainViewModel;
 
-    public SearchTournaments() {
-        isActive = false;
-    }
+    private TournamentPage tournamentPage;
+    public SearchTournaments(TournamentPage tournamentPage) { this.tournamentPage = tournamentPage; }
 
 
     @Override
@@ -179,19 +176,43 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     public void setFavTourneys ()
     {
         List<RequestBody> favTourneyNew = new ArrayList<>();
+
         for(int i = 0; i < favTourneysId.size(); i++){
             favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneysId.get(i)));
         }
         Controller.getApi().editPlayerInfo(PersonalActivity.id,PersonalActivity.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
             @Override
             public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
+                String tourneyIds = "";
+                for (String ft : favTourneysId)
+                    tourneyIds += "," + ft;
+                changeDataForTournamentFragment(tourneyIds);
             }
 
             @Override
             public void onFailure(Call<EditProfile> call, Throwable t) {
+                Log.d("SearchTournaments: ", "can\'t edit player info...");
             }
         });
-        mainViewModel.setFavTourneysId(favTourneysId);
+
+    }
+
+    private void changeDataForTournamentFragment (String tourneyIds)
+    {
+        Controller.getApi().getTourneysById(tourneyIds)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe( this::saveDataForTournamentFragment
+                        , error -> {
+                            Log.d("SearchTournaments: ", "error while getting tourneys by id (207):\n\t" + error.toString());
+                            CheckError checkError = new CheckError();
+                            checkError.checkError(getActivity(), error);
+                        }
+                );
+    }
+
+    private void saveDataForTournamentFragment (List<Tourney> tourneys) {
+        mainViewModel.setFavTourney(tourneys);
     }
 
     private void saveAllData(List<Tourney> tourneys) {
@@ -224,7 +245,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
 
     @Override
     public void onFinishEditDialog(int pos) {
-
         SearchTournaments(null,regionsId.get(pos));
     }
 }

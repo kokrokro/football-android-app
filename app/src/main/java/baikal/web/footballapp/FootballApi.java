@@ -75,7 +75,6 @@ public interface FootballApi {
     @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
     Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
 
-
     //get all clubs
     @GET("/api/clubs")
     Observable<Clubs> getAllClubs();
@@ -114,6 +113,8 @@ public interface FootballApi {
     Observable<List<Person> >getAllPersons( @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
+    @GET("/api/crud/tourney")
+    Observable<List<Tourney>> getTourneysById(@Query("_id") String id);
     //get all tournaments
 //    @GET("/api/leagues/all")
 //    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);

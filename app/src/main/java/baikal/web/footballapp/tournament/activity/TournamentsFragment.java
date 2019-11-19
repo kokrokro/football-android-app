@@ -68,13 +68,10 @@ public class TournamentsFragment extends Fragment {
     private static List<Tourney> favTourney = new ArrayList<>();
     private static List<String> favTourneyId = new ArrayList<>();
 
-    public boolean isActive;
-    SearchTournaments st;
-
+    private MainViewModel mainViewModel;
+    private TournamentPage tournamentPage;
     @SuppressLint("ValidFragment")
-    public TournamentsFragment( ) {
-        isActive = true;
-    }
+    public TournamentsFragment(TournamentPage tournamentPage) { this.tournamentPage = tournamentPage; }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -90,32 +87,32 @@ public class TournamentsFragment extends Fragment {
                     showTournamentInfo(id);
                 }
             };
-            MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+            mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
             mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
                 favTourney.clear();
                 favTourney.addAll(tourneys);
                 favTourneyId.clear();
                 favLeague.clear();
+
+                String tourneyIds = "";
+
                 for (Tourney tr : tourneys){
                     favTourneyId.add(tr.getId());
-                    getFavLeagues(tr.getId(),leagues -> {
-                        favLeague.add(leagues);
-                    });
+                    tourneyIds += "," + tr.getId();
                 }
-//                mainViewModel.getFavLeagues().observe(this, leagues ->{
-//                    favLeague.clear();
-//                    favLeague.addAll(leagues);
-//                });
-                mainViewModel.setFavTourneysId(favTourneyId);
-                adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
-                recyclerView.setAdapter(adapter);
-                recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                adapter.dataChanged(tourneys);
+
+                getFavLeagues(tourneyIds, leagues -> {
+                    favLeague.add(leagues);
+
+                    mainViewModel.setFavTourneysId(favTourneyId);
+                    adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    adapter.dataChanged(tourneys);
+                });
 
 
             });
-
-
 
         } catch (Exception e) {
             log.error("ERROR: ", e);
@@ -139,8 +136,7 @@ public class TournamentsFragment extends Fragment {
             @Override
             public void onResponse(Call<List<League>> call, Response<List<League>> response) {
                 if (response.isSuccessful()) {
-                    if (response.body() != null)
-                    {
+                    if (response.body() != null)  {
                         leagues.addAll(response.body());
                     }
                 }
@@ -183,8 +179,6 @@ public class TournamentsFragment extends Fragment {
         PersonalActivity.active = tournament;
     }
     public interface MyCallback {
-
         void onDataGot(List<League> leagues);
     }
-
 }

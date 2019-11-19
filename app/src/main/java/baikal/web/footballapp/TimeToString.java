@@ -1,5 +1,8 @@
 package baikal.web.footballapp;
 
+import android.util.Log;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,6 +10,18 @@ import java.util.Date;
 import java.util.Locale;
 
 public class TimeToString {
+    private static final DateFormat formatForServer = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+hh:mm");
+    public String TimeForServer (String str, String inputFormat, String locale)
+    {
+        DateFormat formatParse = new SimpleDateFormat(inputFormat, new Locale(locale));
+
+        try {
+            return formatForServer.format(formatParse.parse(str));
+        } catch (Exception e) {
+            Log.d("Time to string: ", e.toString());
+            return "";
+        }
+    }
     public String ChangeTime(String str)  {
             String dateDOB = "";
             try {
