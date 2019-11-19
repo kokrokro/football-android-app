@@ -76,7 +76,6 @@ public class MainViewModel extends ViewModel {
     public LiveData<List<Tourney>> getFavTourney(String id){
         if(favTourney == null){
             favTourney = new MutableLiveData<>();
-
         }
         loadTourneys(id);
 

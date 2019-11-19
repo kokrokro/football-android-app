@@ -1,6 +1,7 @@
 package baikal.web.footballapp.tournament.activity;
 
 import android.annotation.SuppressLint;
+import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
@@ -88,8 +89,11 @@ public class TournamentPage extends Fragment {
 
         try {
             ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(this.getChildFragmentManager());
-            adapter.addFragment(new TournamentsFragment(), "Турниры");
-            adapter.addFragment(new SearchTournaments(), "Поиск");
+            TournamentsFragment tf = new TournamentsFragment();
+            SearchTournaments sf = new SearchTournaments();
+
+            adapter.addFragment(tf, "Турниры");
+            adapter.addFragment(sf, "Поиск");
             viewPager.setAdapter(adapter);
         } catch (IllegalStateException e) {
         }

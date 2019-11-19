@@ -1,5 +1,10 @@
 package baikal.web.footballapp.tournament.adapter;
 
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -48,7 +53,14 @@ public class ViewPagerTournamentInfoAdapter extends FragmentPagerAdapter {
 //                .commit();
 //        log.info("INFO: position", position);
 //        log.info("INFO: position", mFragmentList.get(position).getTag());
+
         return mFragmentList.get(position);
+    }
+
+    @Override
+    public void finishUpdate(@NonNull ViewGroup container) {
+        super.finishUpdate(container);
+        Log.d("View pager Tournament info adapter", String.valueOf(123321));
     }
 
     @Override

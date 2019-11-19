@@ -21,8 +21,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
@@ -52,7 +58,6 @@ public class RegistrationUser extends AppCompatActivity {
 
         imageClose.setOnClickListener(v -> finish());
         imageSave.setOnClickListener(v -> SignUp());
-        Log.d("REGISTRATION USER: ", "LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
         fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").show(personalInfo).commit();
 
         personalInfo.setParentContext(this);
@@ -68,7 +73,19 @@ public class RegistrationUser extends AppCompatActivity {
         String patronymic = PersonalInfo.textPatronymic.getText().toString();
         String login = PersonalInfo.textLogin.getText().toString();
         String password = PersonalInfo.textPassword.getText().toString();
-        String DOB = PersonalInfo.textDOB.getText().toString();
+        String DOB = "";
+
+        DateFormat formatParse = new SimpleDateFormat("dd.MM.yyyy", new Locale("ru"));
+        DateFormat formatForServer = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss:SSSZ");
+
+        try {
+            Date d = formatParse.parse(PersonalInfo.textDOB.getText().toString());
+
+            DOB = formatForServer.format(d);
+        } catch (Exception e) {
+            log.error("RegistrationUser:", e);
+            DOB = formatParse.format(new Date());
+        }
         String region = "";
 
         if (PersonalInfo.spinnerRegion.getSelectedItemPosition() == -1)
@@ -126,7 +143,6 @@ public class RegistrationUser extends AppCompatActivity {
                             log.error("ERROR: body is null");
                         } else {
                             User user = response.body();
-                            Log.d("dfdF_________", response.body().toString());
                             Person person = response.body().getUser();
                             UserPage.auth = true;
                             Intent intent = new Intent();
@@ -140,8 +156,19 @@ public class RegistrationUser extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response.errorBody().string());
                             String str = "Ошибка! ";
                             str += jsonObject.getString("message");
-                            Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
-                            finish();
+
+                            if (str.contains("Не удалось создать пользователя")) {
+                                str = "Такой логин уже существует...";
+                                Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
+                            }
+                            else if (str.contains("Минимальная длина пароля - 6 символов")) {
+                                str = "Минимальная длина пароля - 6 символов";
+                                Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
+                            }
+                            else {
+                                Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
+                                finish();
+                            }
                         } catch (IOException | JSONException e) {
                             e.printStackTrace();
                         }
