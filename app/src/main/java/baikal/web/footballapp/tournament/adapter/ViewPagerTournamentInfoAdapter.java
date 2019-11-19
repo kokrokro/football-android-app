@@ -34,33 +34,7 @@ public class ViewPagerTournamentInfoAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-
-
-//        Fragment fragment = new TournamentTimeTableFragment() ;
-//        if (position == 1){
-//            fragment = new TournamentCommandFragment();
-//        } else if (position == 2){
-//            fragment = new TournamentPlayersFragment();
-//        }
-//        return fragment;
-//    }
-
-//        fm.beginTransaction()
-////                .replace(R.id.tournamentInfoViewPager, mFragmentList.get(position))
-//                .addToBackStack(null)
-//                .show(mFragmentList.get(position))
-////                    .hide(new TournamentCommandFragment())
-//                .commit();
-//        log.info("INFO: position", position);
-//        log.info("INFO: position", mFragmentList.get(position).getTag());
-
         return mFragmentList.get(position);
-    }
-
-    @Override
-    public void finishUpdate(@NonNull ViewGroup container) {
-        super.finishUpdate(container);
-        Log.d("View pager Tournament info adapter", String.valueOf(123321));
     }
 
     @Override

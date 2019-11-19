@@ -60,6 +60,7 @@ public class TournamentPage extends Fragment {
     public static List<String> favTourneys = new ArrayList<>();
     public static String token;
     public static String id;
+    private TournamentsFragment tournamentsFragment;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -86,14 +87,29 @@ public class TournamentPage extends Fragment {
         return view;
     }
     private void setupViewPager(ViewPager viewPager) {
+        tournamentsFragment = new TournamentsFragment(this);
+        SearchTournaments searchTournaments = new SearchTournaments(this);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0)
+                    searchTournaments.setFavTourneys();
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) { }
+        });
 
         try {
             ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(this.getChildFragmentManager());
-            TournamentsFragment tf = new TournamentsFragment();
-            SearchTournaments sf = new SearchTournaments();
 
-            adapter.addFragment(tf, "Турниры");
-            adapter.addFragment(sf, "Поиск");
+            adapter.addFragment(tournamentsFragment, "Турниры");
+            adapter.addFragment(searchTournaments, "Поиск");
             viewPager.setAdapter(adapter);
         } catch (IllegalStateException e) {
         }
