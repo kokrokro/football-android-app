@@ -179,7 +179,11 @@ public interface FootballApi {
     //create new team
     @Multipart
     @POST("/api/crud/team")
-    Call<AddTeam> addTeam(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
+    Call<Team> addTeam(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
+
+    @Multipart
+    @POST("/api/participation_request")
+    Call<Team> addTeamToLeague(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
     //edit team
     @POST("/api/team/edit")

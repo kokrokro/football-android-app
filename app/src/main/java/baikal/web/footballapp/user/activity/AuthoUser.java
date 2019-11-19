@@ -134,7 +134,7 @@ public class AuthoUser extends Fragment {
             pendingTeamInvites = person.getPendingTeamInvites();
             invBadge = (TextView) nvDrawer.getMenu().findItem(R.id.nav_first_fragment).getActionView();
 
-            userGetType(person.getType());
+//            userGetType();
 
 
             try {
@@ -152,33 +152,33 @@ public class AuthoUser extends Fragment {
             for (int i = 0; i < m.size(); i++) {
                 MenuItem mi = m.getItem(i);
                 try {
-                    if (person.getType().equals("player") && i==1) {
+                    if ( i==1) {
                         clearItemColor(i);
                         SpannableString s = new SpannableString(mi.getTitle());
                         s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
                         mi.setTitle(s);
                     }
-                    if (person.getType().equals("referee") && i==5) {
+                    if (i==5) {
                         clearItemColor(i);
                         SpannableString s = new SpannableString(mi.getTitle());
                         s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
                         mi.setTitle(s);
                     }
-                    if (person.getType().equals("mainReferee") && i==4) {
+                    if (i==4) {
                         clearItemColor(i);
                         SpannableString s = new SpannableString(mi.getTitle());
                         s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
                         mi.setTitle(s);
                     }
-                    if (person.getType().equals("player") && (i == 6 || i == 4 || i == 5)) {
-                        m.getItem(i).setVisible(false);
-                    }
-                    if (person.getType().equals("referee") && (i == 6 || i == 4)) {
-                        m.getItem(i).setVisible(false);
-                    }
-                    if (person.getType().equals("mainReferee") && (i == 5)) {
-                        m.getItem(i).setVisible(false);
-                    }
+//                    if (person.getType().equals("player") && (i == 6 || i == 4 || i == 5)) {
+//                        m.getItem(i).setVisible(false);
+//                    }
+//                    if (person.getType().equals("referee") && (i == 6 || i == 4)) {
+//                        m.getItem(i).setVisible(false);
+//                    }
+//                    if (person.getType().equals("mainReferee") && (i == 5)) {
+//                        m.getItem(i).setVisible(false);
+//                    }
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
                 }
@@ -195,26 +195,26 @@ public class AuthoUser extends Fragment {
                 applyFontToMenuItem(mi);
             }
 
-
-            if (person.getType().equals("referee")) {
+//
+//            if (person.getType().equals("referee")) {
                 this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches).show(myMatches).commit();
                 categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
-            }
-            if (person.getType().equals("player")) {
-                this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment).show(defaultFragment).commit();
-                categoryTitle.setText(getActivity().getText(R.string.title_tournament));
-            }
-            if (person.getType().equals("mainReferee")) {
-                this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment).show(timeTableFragment).commit();
-                categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
-            }
+//            }
+//            if (person.getType().equals("player")) {
+//                this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment).show(defaultFragment).commit();
+//                categoryTitle.setText(getActivity().getText(R.string.title_tournament));
+//            }
+//            if (person.getType().equals("mainReferee")) {
+//                this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment).show(timeTableFragment).commit();
+//                categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
+//            }
 
 
 
             //adapters
-            adapterInv = new RVInvitationAdapter(getActivity(), firstFragment, AuthoUser.pendingTeamInvitesList);
-            adapterCommand = new RVUserCommandAdapter(getActivity(), AuthoUser.personCommand);
-            adapterOwnCommand = new RVOwnCommandAdapter(getActivity(), AuthoUser.personOwnCommand);
+//            adapterInv = new RVInvitationAdapter(getActivity(), firstFragment, AuthoUser.pendingTeamInvitesList);
+//            adapterCommand = new RVUserCommandAdapter(getActivity(), AuthoUser.personCommand);
+//            adapterOwnCommand = new RVOwnCommandAdapter(getActivity(), AuthoUser.personOwnCommand);
 
         } catch (NullPointerException | IllegalStateException e) {
             log.error("ERROR: ", e);
@@ -282,8 +282,8 @@ public class AuthoUser extends Fragment {
         switch (menuItem.getItemId()) {
             case R.id.nav_default_fragment:
                 try {
-                   // setItemColor(1);
-                   // clearItemColor(1);
+                    setItemColor(1);
+                    clearItemColor(1);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
 //                    Log.d("defaultFragment", "defaultFragment on click in menu...");
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
@@ -297,8 +297,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_first_fragment:
                 try {
-                    //setItemColor(0);
-                    //clearItemColor(0);
+                    setItemColor(0);
+                    clearItemColor(0);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.invitation));
@@ -310,8 +310,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_second_fragment:
                 try {
-//                    setItemColor(2);
-//                    clearItemColor(2);
+                    setItemColor(2);
+                    clearItemColor(2);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment).show(secondFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment).show(secondFragment).commit();
 //                    , "CLUBFRAGMENT"
@@ -343,8 +343,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_command_fragment:
                 try {
-//                    setItemColor(3);
-//                    clearItemColor(3);
+                    setItemColor(3);
+                    clearItemColor(3);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, commands).show(commands).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, commands).show(commands).commit();
                     categoryTitle.setText(getActivity().getText(R.string.commands));
@@ -356,8 +356,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_third_fragment:
                 try {
-//                    setItemColor(5);
-//                    clearItemColor(5);
+                    setItemColor(5);
+                    clearItemColor(5);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
                     categoryTitle.setText(getActivity().getText(R.string.matches));
@@ -369,8 +369,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_referee_fragment:
                 try {
-//                    setItemColor(6);
-//                    clearItemColor(6);
+                    setItemColor(6);
+                    clearItemColor(6);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.referees));
@@ -382,8 +382,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_timetable_fragment:
                 try {
-//                    setItemColor(4);
-//                    clearItemColor(4);
+                    setItemColor(4);
+                    clearItemColor(4);
 //                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
@@ -508,9 +508,7 @@ public class AuthoUser extends Fragment {
     }
 
 
-    private void userGetType(String type) {
-        switch (type) {
-            case "player":
+    private void userGetType() {
                 for (PendingTeamInvite pendingTeamInvite : pendingTeamInvites) {
                     League league = null;
                     for (League tournament : PersonalActivity.tournaments) {
@@ -548,18 +546,10 @@ public class AuthoUser extends Fragment {
                     }
                 }
 
-                break;
-            case "referee":
                 GetAllReferees();
 
 //                this.getChildFragmentManager().beginTransaction().add(R.id.flContent, timeTableFragment).hide(timeTableFragment).commit();
-                break;
-            case "mainReferee":
-                GetAllReferees();
-                break;
-            default:
-                break;
-        }
+
     }
 
 

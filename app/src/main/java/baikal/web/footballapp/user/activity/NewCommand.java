@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -170,35 +171,55 @@ public class NewCommand extends AppCompatActivity {
         map.put("trainer", request);
 
 
-        Call<AddTeam> call = Controller.getApi().addTeam(token, map);
+        Call<Team> call = Controller.getApi().addTeam(token, map);
         log.info("INFO: load and parse json-file");
         final League finalLeague = league;
-        call.enqueue(new Callback<AddTeam>() {
+        call.enqueue(new Callback<Team>() {
             @Override
-            public void onResponse(Call<AddTeam> call, Response<AddTeam> response) {
+            public void onResponse(Call<Team> call, Response<Team> response) {
                 log.info("INFO: check response");
                 if (response.isSuccessful()) {
                     log.info("INFO: response isSuccessful");
                     if (response.body() == null) {
                         log.error("ERROR: body is null");
                     } else {
-                        team = response.body().getTeam();
-                        log.info(team.getName());
-                        PersonTeams personTeams = new PersonTeams();
-                        personTeams.setTeam(team.getId());
-                        finalLeague.getTeams().add(team);
-                        personTeams.setLeague(finalLeague.getId());
+                        team = response.body();
+                        Map<String, RequestBody> map = new HashMap<>();
+                        RequestBody request = RequestBody.create(MediaType.parse("text/plain"), tournament);
+                        map.put("league", request);
+                        request = RequestBody.create(MediaType.parse("text/plain"), team.getId());
+                        map.put("team",request);
+                        Controller.getApi().addTeamToLeague(token,map).enqueue(new Callback<Team>() {
+                            @Override
+                            public void onResponse(Call<Team> call, Response<Team> response) {
+                                if(response.isSuccessful()){
+                                    {
+                                        if(response.body()!=null){
+                                        }
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Team> call, Throwable t) {
+                                log.error(t.getMessage());
+                            }
+                        });
+//                        PersonTeams personTeams = new PersonTeams();
+//                        personTeams.setTeam(team.getId());
+//                        finalLeague.getTeams().add(team);
+//                        personTeams.setLeague(finalLeague.getId());
 //                        personTeams.setId("000");
-                        AuthoUser.personOwnCommand.add(personTeams);
-                        AuthoUser.personOngoingLeagues.add(personTeams);
+//                        AuthoUser.personOwnCommand.add(personTeams);
+//                        AuthoUser.personOngoingLeagues.add(personTeams);
 
 
-                        User user = SaveSharedPreference.getObject();
-                        Person person = user.getUser();
-                        List<PersonTeams> list = new ArrayList<>(person.getParticipation());
-                        list.add(personTeams);
-                        person.setParticipation(list);
-                        SaveSharedPreference.editObject(user);
+//                        User user = SaveSharedPreference.getObject();
+//                        Person person = user.getUser();
+//                        List<PersonTeams> list = new ArrayList<>(person.getParticipation());
+//                        list.add(personTeams);
+//                        person.setParticipation(list);
+//                        SaveSharedPreference.editObject(user);
 
 
 //                        UserCommands.adapterCommand.notifyDataSetChanged();
@@ -220,7 +241,7 @@ public class NewCommand extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<AddTeam> call, Throwable t) {
+            public void onFailure(Call<Team> call, Throwable t) {
                 log.error("ERROR: onResponse", t);
                 Toast.makeText(NewCommand.this, "Ошибка сервера.", Toast.LENGTH_LONG).show();
 //                finish();
