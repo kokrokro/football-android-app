@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-android:id="@+id/playersSort"
-android:layout_width="match_parent"
-android:ellipsize="end"
-android:maxLines="1"
-android:layout_height="40sp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/playersSort"
+    android:layout_width="match_parent"
+    android:ellipsize="end"
+    android:maxLines="1"
+    android:layout_height="40sp"
     android:paddingStart="10sp"
     android:paddingEnd="10sp"
-android:fontFamily="@font/manrope_regular"
-android:gravity="start"
-android:textColor="@color/colorBottomNavigationUnChecked"
-android:textSize="20sp" />
+    android:fontFamily="@font/manrope_regular"
+    android:gravity="start"
+    android:textColor="@color/colorBottomNavigationUnChecked"
+    android:background="@color/colorWhite"
+    android:textSize="20sp"
+    />
 
     <!--</LinearLayout>-->

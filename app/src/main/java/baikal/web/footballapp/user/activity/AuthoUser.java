@@ -292,9 +292,8 @@ public class AuthoUser extends Fragment {
                         Person person = user.getUser();
                         for (Club club1 : PersonalActivity.allClubs) {
                             String str = person.getClub();
-                            if (club1.getId().equals(str)) {
+                            if (club1.getId().equals(str))
                                 club = club1;
-                            }
                         }
                         final Club finalClub = club;
                         fab1.setOnClickListener(v -> {
@@ -388,25 +387,25 @@ public class AuthoUser extends Fragment {
         for (int i = 0; i < m.size(); i++) {
             if (i != itemColor){
                 MenuItem mi = m.getItem(i);
-            try {
-                SpannableString s = new SpannableString(mi.getTitle());
-                s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
-                mi.setTitle(s);
-            } catch (Exception e) {
-                log.error("ERROR: ", e);
-            }
-            //for aapplying a font to subMenu ...
-            SubMenu subMenu = mi.getSubMenu();
-            if (subMenu != null && subMenu.size() > 0) {
-                for (int j = 0; j < subMenu.size(); j++) {
-                    MenuItem subMenuItem = subMenu.getItem(j);
-                    applyFontToMenuItem(subMenuItem);
-                }
-            }
 
-            applyFontToMenuItem(mi);
+                try {
+                    SpannableString s = new SpannableString(mi.getTitle());
+                    s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
+                    mi.setTitle(s);
+                } catch (Exception e) {
+                    log.error("ERROR: ", e);
+                }
+                //for aapplying a font to subMenu ...
+                SubMenu subMenu = mi.getSubMenu();
+                if (subMenu != null && subMenu.size() > 0)
+                    for (int j = 0; j < subMenu.size(); j++) {
+                        MenuItem subMenuItem = subMenu.getItem(j);
+                        applyFontToMenuItem(subMenuItem);
+                    }
+
+                applyFontToMenuItem(mi);
+            }
         }
-    }
     }
 
     @SuppressLint("CheckResult")

@@ -4,7 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
@@ -36,6 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -47,17 +51,25 @@ import retrofit2.Response;
 
 public class EditTimeTable extends AppCompatActivity {
     private List<String> countReferees;
+    List<Person> referees = new ArrayList<>();
     private final Logger log = LoggerFactory.getLogger(EditTimeTable.class);
     private MatchPopulate match;
+
+    private SpinnerRefereeAdapter adapter1;
+    private SpinnerRefereeAdapter adapter2;
+    private SpinnerRefereeAdapter adapter3;
+    private SpinnerRefereeAdapter adapter4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
         ImageButton imageSave;
-        TextView spinnerReferee1;
-        TextView spinnerReferee2;
-        TextView spinnerReferee3;
-        TextView spinnerReferee4;
+
+        Spinner spinnerReferee1;
+        Spinner spinnerReferee2;
+        Spinner spinnerReferee3;
+        Spinner spinnerReferee4;
+
         FloatingActionButton fab;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_timetable);
@@ -70,21 +82,20 @@ public class EditTimeTable extends AppCompatActivity {
         spinnerReferee4 = findViewById(R.id.refereeEditMatchSpinnerReferee4);
 
         imageClose.setOnClickListener(v -> finish());
+
         countReferees = new ArrayList<>();
         countReferees.add("0");
         countReferees.add("0");
         countReferees.add("0");
         countReferees.add("0");
 
-            List<Person> referees = new ArrayList<>();
-            referees.add(null);
-            referees.addAll(1, AuthoUser.allReferees);
-            match = (MatchPopulate) getIntent().getExtras().getSerializable("MATCHCONFIRMPROTOCOLREFEREES");
+        referees.add(null);
+        referees.addAll(1, AuthoUser.allReferees);
+        match = (MatchPopulate) getIntent().getExtras().getSerializable("MATCHCONFIRMPROTOCOLREFEREES");
 
-        if (match.getPlayed()){
+        if (match.getPlayed())
             fab.hide();
-        }
-            match.getLeague();
+
         try {
             try{
                 for (Referee referee : match.getReferees()) {
@@ -110,90 +121,17 @@ public class EditTimeTable extends AppCompatActivity {
             for (Person person1 : AuthoUser.allReferees) {
                 allReferees.add(person1.getId());
             }
-            spinnerReferee1.setOnClickListener(v->{
-                spinnerReferee1.setText("5dd222d98701b2471e018bd3");
-            });
 
-//            SpinnerRefereeAdapter adapter = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee1.setAdapter(adapter);
-//            spinnerReferee1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(0, person.getId());
-//                    } else {
-//                        countReferees.set(0, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            SpinnerRefereeAdapter adapter1 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee2.setAdapter(adapter1);
-//            spinnerReferee2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(1, person.getId());
-//                    } else {
-//                        countReferees.set(1, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            SpinnerRefereeAdapter adapter2 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee3.setAdapter(adapter2);
-//            spinnerReferee3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(2, person.getId());
-//                    } else {
-//                        countReferees.set(2, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            SpinnerRefereeAdapter adapter3 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee4.setAdapter(adapter3);
-//            spinnerReferee4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(3, person.getId());
-//                    } else {
-//                        countReferees.set(3, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            for (int j = 0; j < countReferees.size(); j++) {
-//                if (countReferees.get(j) != null && !countReferees.get(j).equals("")) {
-//                    // count +1
-//                    int count = allReferees.indexOf(countReferees.get(j)) + 1;
-//                    switch (j) {
-//                        case 0:
-//                            spinnerReferee1.setSelection(count);
-//                            break;
-//                        case 1:
-//                            spinnerReferee2.setSelection(count);
-//                            break;
-//                        case 2:
-//                            spinnerReferee3.setSelection(count);
-//                            break;
-//                        case 3:
-//                            spinnerReferee4.setSelection(count);
-//                            break;
-//                    }
-//                }
-//            }
+            adapter1 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
+            adapter2 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
+            adapter3 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
+            adapter4 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
+
+            setUpSpinner(spinnerReferee1, adapter1);
+            setUpSpinner(spinnerReferee2, adapter2);
+            setUpSpinner(spinnerReferee3, adapter3);
+            setUpSpinner(spinnerReferee4, adapter4);
+
             imageSave.setOnClickListener(v -> refereeRequest());
             fab.setOnClickListener(v -> {
                 Intent intent = new Intent(EditTimeTable.this, ConfirmProtocol.class);
@@ -205,10 +143,61 @@ public class EditTimeTable extends AppCompatActivity {
         } catch (NullPointerException e) {
             log.error("ERROR: ", e);
         }
+
+        getAllPersonsForRef("20", "0");
+    }
+
+    private void setUpSpinner (Spinner spinnerRef, SpinnerRefereeAdapter adapter)
+    {
+        spinnerRef.setAdapter(adapter);
+        spinnerRef.setSelection(0);
+        spinnerRef.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                Person person = (Person) parent.getItemAtPosition(pos);
+                if (person != null)
+                    countReferees.set(0, person.getId());
+                else
+                    countReferees.set(0, null);
+            }
+
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        spinnerRef.getBackground().setColorFilter(getResources().getColor(R.color.colorWhite), PorterDuff.Mode.SRC_IN);
+        spinnerRef.setOnFocusChangeListener( (v, hasFocus) -> {
+                    if (hasFocus) {
+                        spinnerRef.getBackground().clearColorFilter();
+                    } else {
+                        spinnerRef.getBackground()
+                                .setColorFilter(getResources().getColor(R.color.colorWhite), PorterDuff.Mode.SRC_IN);
+                    }
+                }
+        );
+    }
+
+    private void updateReferees (List<Person> referees) {
+        this.referees.addAll(referees);
+        adapter1.notifyDataSetChanged();
+        adapter2.notifyDataSetChanged();
+        adapter3.notifyDataSetChanged();
+        adapter4.notifyDataSetChanged();
+    }
+
+    @SuppressLint("CheckResult")
+    private void getAllPersonsForRef(String limit, String offset) {
+        Controller.getApi().getAllPersons( null, limit, offset)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(this::updateReferees,
+                        error -> {
+                            log.error("EditTimeTable", error);
+                        }
+                );
     }
 
     @SuppressLint("CheckResult")
     private void refereeRequest() {
+        Log.d("Edit Time Table: ", "button save is clicked...");
         RefereeRequest ref = new RefereeRequest();
         ref.setPerson(PersonalActivity.id);
         ref.setType("firstReferee");
@@ -219,10 +208,15 @@ public class EditTimeTable extends AppCompatActivity {
         ref.setType("thirdReferee");
         refereeRequests.add(ref);
         ref.setType("timekeeper");
-       Controller.getApi().setReferees(match.getId(), PersonalActivity.token, refereeRequests).enqueue(new Callback<Match>() {
+        Controller.getApi().setReferees(match.getId(), PersonalActivity.token, refereeRequests).enqueue(new Callback<Match>() {
            @Override
            public void onResponse(Call<Match> call, Response<Match> response) {
-
+               try {
+                   Log.d("EDITTIMETABLE: ", response.toString());
+                   Log.d("EDITTIMETABLE: ", response.body().toString());
+               } catch (Exception e) {
+                   log.error("EDITTIMETABLE: ", e);
+               }
            }
 
            @Override

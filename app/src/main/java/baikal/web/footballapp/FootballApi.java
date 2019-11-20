@@ -108,8 +108,7 @@ public interface FootballApi {
 
     //get referees type==referee
     //get players type==player
-    @GET("/api/getusers")
-    Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
+
     @GET("/api/crud/person")
     Observable<List<Person> >getAllPersons( @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/tourney")

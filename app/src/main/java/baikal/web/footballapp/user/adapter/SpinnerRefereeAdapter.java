@@ -4,6 +4,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,21 +23,22 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class SpinnerRefereeAdapter extends ArrayAdapter<Person> {
-    Logger log = LoggerFactory.getLogger(NewCommand.class);
+    private final Logger log = LoggerFactory.getLogger(NewCommand.class);
     private final LayoutInflater inflater;
     private final Context context;
     private final List<Person> referees;
     private final int resource;
+
     public SpinnerRefereeAdapter(@NonNull Context context, int resource, List<Person> referees) {
         super(context, resource, referees);
         this.context = context;
-        inflater = LayoutInflater.from(context);
         this.referees = referees;
         this.resource = resource;
+        this.inflater = LayoutInflater.from(context);
     }
+
     @Override
-    public View getDropDownView(int position, @Nullable View convertView,
-                                @NonNull ViewGroup parent) {
+    public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         return createItemView(position, convertView, parent);
     }
 
@@ -49,25 +52,31 @@ public class SpinnerRefereeAdapter extends ArrayAdapter<Person> {
         final View view = inflater.inflate(resource, parent, false);
         Person referee = referees.get(position);
 
-//        View rowview = inflater.inflate(R.layout.spinner_item,null,true);
-
         TextView txtTitle = view.findViewById(R.id.playersSort);
         CheckName checkName = new CheckName();
         String str;
         try {
+            if (position == 0)
+                throw new NullPointerException();
+
             str = checkName.check(referee.getSurname(), referee.getName(), referee.getLastname());
             txtTitle.setText(str);
-        }catch (NullPointerException e){
+
+        } catch (NullPointerException e){
             str = "Не выбрано";
             txtTitle.setText(str);
             txtTitle.setTextColor(ContextCompat.getColor(context, R.color.colorBadge));
         }
 
-
-
 //        ImageView imageView = (ImageView) rowview.findViewById(R.id.icon);
 //        imageView.setImageResource(rowItem.getLogo());
 
         return view;
+    }
+
+    public void setData (List<Person> referees) {
+        this.referees.clear();
+        this.referees.addAll(referees);
+        notifyDataSetChanged();
     }
 }
