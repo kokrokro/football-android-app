@@ -1,11 +1,12 @@
 package baikal.web.footballapp.model;
 
-import java.io.Serializable;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Match implements Serializable {
+import java.io.Serializable;
+import java.util.List;
+
+public class MatchPopulate implements Serializable {
 
     @SerializedName("_id")
     @Expose
@@ -33,10 +34,10 @@ public class Match implements Serializable {
     private String league;
     @SerializedName("teamOne")
     @Expose
-    private String teamOne;
+    private Team teamOne;
     @SerializedName("teamTwo")
     @Expose
-    private String teamTwo;
+    private Team teamTwo;
     @SerializedName("events")
     @Expose
     private List<Event> events = null;
@@ -140,19 +141,19 @@ public class Match implements Serializable {
         this.league = league;
     }
 
-    public String getTeamOne() {
+    public Team getTeamOne() {
         return teamOne;
     }
 
-    public void setTeamOne(String teamOne) {
+    public void setTeamOne(Team teamOne) {
         this.teamOne = teamOne;
     }
 
-    public String getTeamTwo() {
+    public Team getTeamTwo() {
         return teamTwo;
     }
 
-    public void setTeamTwo(String teamTwo) {
+    public void setTeamTwo(Team teamTwo) {
         this.teamTwo = teamTwo;
     }
 

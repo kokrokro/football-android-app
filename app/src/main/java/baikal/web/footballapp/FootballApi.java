@@ -15,6 +15,7 @@ import baikal.web.footballapp.model.EditProtocolBody;
 import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Matches;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
@@ -23,6 +24,8 @@ import baikal.web.footballapp.model.ParticipationRequest;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.Referee;
+import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.RefereeRequestList;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
@@ -47,6 +50,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -57,9 +61,6 @@ import retrofit2.http.Query;
 
 public interface FootballApi {
     //get all news
-    @GET("/api/news")
-    Call<News> getAllNews(@Query("limit") String limit, @Query("offset") String offset);
-
     @GET("/api/crud/news")
     Call<List<News_>> getAllNewsCrud(@Query("_limit") String limit, @Query("_offset") String offset);
 
@@ -125,7 +126,12 @@ public interface FootballApi {
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
     @GET("/api/crud/match?_sort=date")
     Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
+    @GET("api/crud/match?_populate=teamOne+teamTwo")
+    Call<List<MatchPopulate>> getMatches(@Query("_id") String id);
     //edit web
+    @FormUrlEncoded
+    @PATCH("/api/crud/match/{id}")
+    Call<Match> setReferees(@Path("id") String id, @Header("auth") String authorization,@Field("referees[]") List<RefereeRequest> referees);
     @Multipart
     @POST("/api/editPlayerInfo")
     Call<EditProfile> editProfile(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
@@ -200,10 +206,12 @@ public interface FootballApi {
     Call<List<Team>> getTeams(@Query("creator") String creator);
     @GET("/api/participation_request")
     Call<ParticipationRequest> getParticipation(@Query("team") String id);
+    @GET("api/crud/league?_populate=matches")
+    Call<List<League>> getMainRefsLeagues(@Query("mainReferee") String mainRefId);
 
-    //get all player's teams
-    @GET("/api/team/teamsbyid")
-    Call<Team> getTeam(@Query("_id") String id);
+    @GET("/api/crud/team")
+    Call<List<Team>> getTeam(@Query("_id") String id);
+
 
     //add new club
     @Multipart

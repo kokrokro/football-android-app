@@ -97,7 +97,7 @@
                     android:textColor="@color/colorLightGrayForText"
                     android:textSize="12sp" />
 
-                <Spinner
+                <TextView
                     android:id="@+id/refereeEditMatchSpinnerReferee1"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
@@ -126,7 +126,7 @@
                     android:textColor="@color/colorLightGrayForText"
                     android:textSize="12sp" />
 
-                <Spinner
+                <TextView
                     android:id="@+id/refereeEditMatchSpinnerReferee2"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
@@ -155,7 +155,7 @@
                     android:textColor="@color/colorLightGrayForText"
                     android:textSize="12sp" />
 
-                <Spinner
+                <TextView
                     android:id="@+id/refereeEditMatchSpinnerReferee3"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"
@@ -184,7 +184,7 @@
                     android:textColor="@color/colorLightGrayForText"
                     android:textSize="12sp" />
 
-                <Spinner
+                <TextView
                     android:id="@+id/refereeEditMatchSpinnerReferee4"
                     android:layout_width="match_parent"
                     android:layout_height="34dp"

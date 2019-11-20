@@ -3,7 +3,9 @@ package baikal.web.footballapp.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class RefereeRequest {
+import java.io.Serializable;
+
+public class RefereeRequest implements Serializable {
     @SerializedName("type")
     @Expose
     private String type;

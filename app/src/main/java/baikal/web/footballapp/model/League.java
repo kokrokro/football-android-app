@@ -6,12 +6,15 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class League implements Serializable {
+    @SerializedName("creator")
+    @Expose
+    private String creator;
     @SerializedName("status")
     @Expose
     private String status;
     @SerializedName("matches")
     @Expose
-    private List<String> matches = null;
+    private List<Match> matches = null;
     @SerializedName("_id")
     @Expose
     private String id;
@@ -55,6 +58,7 @@ public class League implements Serializable {
     @Expose
     private List<Team> teams = null;
 
+
     public String getStatus() {
         return status;
     }
@@ -63,11 +67,11 @@ public class League implements Serializable {
         this.status = status;
     }
 
-    public List<String> getMatches() {
+    public List<Match> getMatches() {
         return matches;
     }
 
-    public void setMatches(List<String> matches) {
+    public void setMatches(List<Match> matches) {
         this.matches = matches;
     }
 
@@ -181,5 +185,13 @@ public class League implements Serializable {
 
     public void setTeams(List<Team> teams) {
         this.teams = teams;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }

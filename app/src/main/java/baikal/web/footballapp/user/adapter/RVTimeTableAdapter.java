@@ -6,6 +6,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +26,8 @@ import baikal.web.footballapp.TimeToString;
 import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.LeagueInfo;
+import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Referee;
@@ -43,11 +47,11 @@ import q.rorbin.badgeview.QBadgeView;
 public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.ViewHolder> {
     private final TimeTableFragment context;
     private final PersonalActivity activity;
-    private final List<ActiveMatch> matches;
+    private final List<MatchPopulate> matches;
     private LeagueInfo leagueInfo;
 
     private final Logger log = LoggerFactory.getLogger(TimeTableFragment.class);
-    public RVTimeTableAdapter(Activity activity, TimeTableFragment context, List<ActiveMatch> matches) {
+    public RVTimeTableAdapter(Activity activity, TimeTableFragment context, List<MatchPopulate> matches) {
         this.matches = matches;
         this.context = context;
         this.activity = (PersonalActivity) activity;
@@ -62,7 +66,7 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull RVTimeTableAdapter.ViewHolder holder, int position) {
-        ActiveMatch match = matches.get(position);
+        MatchPopulate match = matches.get(position);
         String str;
         str = match.getDate();
         DateToString dateToString = new DateToString();
@@ -91,11 +95,11 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         try {
             str = team1.getName();
             holder.textCommandTitle1.setText(str);
-            for (Club club : PersonalActivity.allClubs) {
-                if (club.getId().equals(team1.getClub())) {
-                    setImage.setImage(activity, holder.image1, club.getLogo());
-                }
-            }
+//            for (Club club : PersonalActivity.allClubs) {
+//                if (club.getId().equals(team1.getClub())) {
+//                    setImage.setImage(activity, holder.image1, club.getLogo());
+//                }
+//            }
             for (Player player : team1.getPlayers()) {
                 if (player.getActiveDisquals() != 0) {
                     new QBadgeView(activity)
@@ -112,11 +116,11 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
 
             str = team2.getName();
             holder.textCommandTitle2.setText(str);
-            for (Club club : PersonalActivity.allClubs) {
-                if (club.getId().equals(team2.getClub())) {
-                    setImage.setImage(activity, holder.image2, club.getLogo());
-                }
-            }
+//            for (Club club : PersonalActivity.allClubs) {
+//                if (club.getId().equals(team2.getClub())) {
+//                    setImage.setImage(activity, holder.image2, club.getLogo());
+//                }
+//            }
             for (Player player : team2.getPlayers()) {
                 if (player.getActiveDisquals() != 0) {
                     new QBadgeView(activity)
@@ -146,9 +150,9 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         }
         holder.textScore.setText(str);
         if (!str.equals("-")) {
-            List<ActiveMatch> list = new ArrayList<>(matches);
+            List<MatchPopulate> list = new ArrayList<>(matches);
             list.remove(match);
-            for (ActiveMatch match1 : list) {
+            for (MatchPopulate match1 : list) {
                 try {
                     str = match1.getScore();
                     if (!str.equals("")
@@ -172,14 +176,15 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
 
             }
         }
-        try {
-            str = match.getPenalty();
-            if (!str.equals("")) {
-                holder.textPenalty.setText(str);
-                holder.textPenalty.setVisibility(View.VISIBLE);
-            }
-        } catch (NullPointerException e) {
-        }
+//        try {
+//            str = match.getPenalty();
+//            if (!str.equals("")) {
+//                holder.textPenalty.setText(str);
+//                holder.textPenalty.setVisibility(View.VISIBLE);
+//            }
+//        }
+//        catch (NullPointerException e) {
+//        }
         holder.buttonEdit.setOnClickListener(v -> {
             Intent intent = new Intent(activity, EditTimeTable.class);
             Bundle bundle = new Bundle();
@@ -290,7 +295,7 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         }
     }
 
-    public void dataChanged(List<ActiveMatch> allPlayers1) {
+    public void dataChanged(List<MatchPopulate> allPlayers1) {
         matches.clear();
         matches.addAll(allPlayers1);
         notifyDataSetChanged();

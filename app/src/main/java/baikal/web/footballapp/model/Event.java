@@ -13,12 +13,15 @@ public class Event implements Serializable {
     @SerializedName("eventType")
     @Expose
     private String eventType;
-    @SerializedName("player")
+    @SerializedName("person")
     @Expose
     private String player;
     @SerializedName("time")
     @Expose
     private String time;
+    @SerializedName("team")
+    @Expose
+    private String team;
 
     public String getId() {
         return id;
@@ -52,4 +55,11 @@ public class Event implements Serializable {
         this.time = time;
     }
 
+    public String getTeam() {
+        return team;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
+    }
 }

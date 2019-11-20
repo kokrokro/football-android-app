@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,14 @@ import android.widget.LinearLayout;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.home.activity.ComingMatches;
 import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.ActiveMatches;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.user.adapter.RVTimeTableAdapter;
 
 import org.slf4j.Logger;
@@ -28,10 +35,13 @@ import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TimeTableFragment extends Fragment {
     private RVTimeTableAdapter adapter;
-    private final List<ActiveMatch> matches = new ArrayList<>();
+    private final List<MatchPopulate> matches = new ArrayList<>();
     private NestedScrollView scroller;
     private int count = 0;
     private final int limit = 10;
@@ -61,22 +71,40 @@ public class TimeTableFragment extends Fragment {
         } catch (NullPointerException e) {
             log.error("ERROR: ", e);
         }
-        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                offset++;
-                int temp = limit*offset;
-                if (temp<=count) {
-                    String str = String.valueOf(temp);
-                    getActiveMatches("10", str);
-                }
-            }
-        });
+//        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+//            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+//                offset++;
+//                int temp = limit*offset;
+//                if (temp<=count) {
+//                    String str = String.valueOf(temp);
+//                    getActiveMatches("10", str);
+//                }
+//            }
+//        });
 
         return view;
     }
 
     @SuppressLint("CheckResult")
     private void getActiveMatches(String limit, String offset) {
+        Controller.getApi().getMainRefsLeagues(PersonalActivity.id).enqueue(new Callback<List<League>>() {
+            @Override
+            public void onResponse(Call<List<League>> call, Response<List<League>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        saveData(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<League>> call, Throwable t) {
+                log.error(t.getMessage());
+                layout.setVisibility(View.VISIBLE);
+
+            }
+        });
+
 //        Controller.getApi().getActiveMatches(limit, offset, false)
 //                .subscribeOn(Schedulers.io())
 //                .observeOn(AndroidSchedulers.mainThread())
@@ -90,20 +118,50 @@ public class TimeTableFragment extends Fragment {
 //                );
     }
 
-    private void saveData(ActiveMatches matches1) {
-        count = matches1.getCount();
-        List<ActiveMatch> result;
-        result = matches1.getMatches();
-        if (result.size() != 0) {
-            matches.addAll(matches.size(), result);
-            List<ActiveMatch> list = new ArrayList<>(matches);
-            adapter.dataChanged(list);
-            layout.setVisibility(View.GONE);
+    private void saveData(List<League> leagueList) {
+        matches.clear();
+        String str="";
+        for(League l: leagueList){
+           for (Match m : l.getMatches()){
+               if(!m.getPlayed()){
+                   str+=","+m.getId();
+               }
+           }
+        }
+        Controller.getApi().getMatches(str).enqueue(new Callback<List<MatchPopulate>>() {
+            @Override
+            public void onResponse(Call<List<MatchPopulate>> call, Response<List<MatchPopulate>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        matches.addAll(response.body());
+                        adapter.notifyDataSetChanged();
+                        if (matches.size()==0){
+                            layout.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            }
 
-        }
-        if (matches.size()==0){
-            layout.setVisibility(View.VISIBLE);
-        }
+            @Override
+            public void onFailure(Call<List<MatchPopulate>> call, Throwable t) {
+
+            }
+        });
+
+
+
+//        count = matches1.getCount();
+//        List<ActiveMatch> result;
+//        result = matches1.getMatches();
+//        if (result.size() != 0) {
+//            matches.addAll(matches.size(), result);
+//            List<ActiveMatch> list = new ArrayList<>(matches);
+//            adapter.dataChanged(list);
+//            layout.setVisibility(View.GONE);
+//
+//        }
+
+
 //        else {
 //            layout.setVisibility(View.VISIBLE);
 //        }
