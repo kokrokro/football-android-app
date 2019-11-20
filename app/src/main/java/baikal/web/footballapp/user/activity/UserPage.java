@@ -83,6 +83,7 @@ public class UserPage extends Fragment {
         });
         logIn.setOnClickListener(v -> SignIn());
         textReg.setOnClickListener(v -> {
+            resetLoginPassEditText();
             Intent intent = new Intent(getActivity(), RegistrationUser.class);
             startActivity(intent);
         });
@@ -105,10 +106,12 @@ public class UserPage extends Fragment {
                 SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                authoUser.setFragmentManager(fragmentManager);
                 fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser, "AUTHOUSERPAGE").hide(this).show(authoUser).commit();
                 PersonalActivity.active = authoUser;
             }
         } else {
+            resetLoginPassEditText();
             log.error("ERROR: onActivityResult");
         }
     }
@@ -118,26 +121,30 @@ public class UserPage extends Fragment {
         String login = textLogin.getText().toString();
         String password = textPass.getText().toString();
         Call<User> call = Controller.getApi().signIn(new SignIn(login, password));
-        log.info("INFO: load and parse json-file");
+
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
-                log.info("INFO: check response");
+                log.info("UserPage: check response");
                 if (response.isSuccessful()) {
-                    log.info("INFO: response isSuccessful");
+                    log.info("UserPage : response isSuccessful");
                     if (response.body() == null) {
                         log.error("ERROR: body is null");
                     } else {
-                        log.info("INFO: body is not null");
+                        log.info("UserPage: body is not null");
                         //all is ok
                         user = response.body();
                         try {
                             authoUser = new AuthoUser();
                             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            authoUser.setFragmentManager(fragmentManager);
                             fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser).hide(PersonalActivity.active).show(authoUser).commit();
                             PersonalActivity.active = authoUser;
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                             SaveSharedPreference.saveObject(user);
+                            PersonalActivity.id = SaveSharedPreference.getObject().getUser().getId();
+                            PersonalActivity.token = user.getToken();
+
                             resetLoginPassEditText();
 
                         } catch (Exception e) {

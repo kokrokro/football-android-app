@@ -19,6 +19,7 @@ import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.home.activity.ComingMatches;
 import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.ActiveMatches;
@@ -55,6 +56,9 @@ public class TimeTableFragment extends Fragment {
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("Time Table Fragment: ", SaveSharedPreference.getObject().getUser().getId());
+        Log.d("Time Table Fragment: ", PersonalActivity.id);
+
         View view;
         RecyclerView recyclerView;
         view = inflater.inflate(R.layout.user_timetable, container, false);
@@ -71,16 +75,16 @@ public class TimeTableFragment extends Fragment {
         } catch (NullPointerException e) {
             log.error("ERROR: ", e);
         }
-//        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                offset++;
-//                int temp = limit*offset;
-//                if (temp<=count) {
-//                    String str = String.valueOf(temp);
-//                    getActiveMatches("10", str);
-//                }
-//            }
-//        });
+        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
+            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                offset++;
+                int temp = limit*offset;
+                if (temp<=count) {
+                    String str = String.valueOf(temp);
+                    getActiveMatches("10", str);
+                }
+            }
+        });
 
         return view;
     }
@@ -93,6 +97,7 @@ public class TimeTableFragment extends Fragment {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
                         saveData(response.body());
+                        Log.d("Time Table Fragment: ", "Leagues are received");
                     }
                 }
             }
@@ -133,6 +138,7 @@ public class TimeTableFragment extends Fragment {
             public void onResponse(Call<List<MatchPopulate>> call, Response<List<MatchPopulate>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
+                        Log.d("Time Table Fragment: ", "Success...");
                         matches.addAll(response.body());
                         adapter.notifyDataSetChanged();
                         if (matches.size()==0){
@@ -144,12 +150,14 @@ public class TimeTableFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<MatchPopulate>> call, Throwable t) {
-
+                log.error(t.getMessage());
+                layout.setVisibility(View.VISIBLE);
             }
         });
 
 
-
+//5dd222d98701b2471e018bd3
+//
 //        count = matches1.getCount();
 //        List<ActiveMatch> result;
 //        result = matches1.getMatches();

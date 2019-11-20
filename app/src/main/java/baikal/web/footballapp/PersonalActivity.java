@@ -62,75 +62,66 @@ public class PersonalActivity extends AppCompatActivity {
     public static final List<Person> allPlayers = new ArrayList<>();
     public static final List<Person> people = new ArrayList<>();
     public static final List<Person> AllPeople = new ArrayList<>();
-    public static final Fragment fragmentUser = new UserPage();
+
+    public static List<Tourney> allTourneys = new ArrayList<>();
+    public static List<League> tournaments = new ArrayList<>();
+    public static List<Region> regions = new ArrayList<>();
+    public static List<Club> allClubs = new ArrayList<>();
+
     private static final String MAIN = "MAIN_PAGE";
     private static final String TOURNAMENT = "TOURNAMENT_PAGE";
     private static final String CLUB = "CLUB_PAGE";
     private static final String PLAYERS = "PLAYERS_PAGE";
     private static final String USER = "USER_PAGE";
-    private static final AuthoUser authoUser = new AuthoUser();
-    private static final Fragment fragmentMain = new MainPage();
-    public static List<League> tournaments = new ArrayList<>();
-    public static List<Club> allClubs = new ArrayList<>();
-    public static List<Tourney> allTourneys = new ArrayList<>();
-    //    Fragment active = fragmentHome;
+
+    public static MainPage       fragmentMain = new MainPage();
+    public static TournamentPage fragmentTournament = new TournamentPage();
+    public static ClubPage       fragmentClub = new ClubPage();
+    public static PlayersPage    fragmentPlayers = new PlayersPage();
+    public static AuthoUser      authoUser = new AuthoUser();
+    public static UserPage       fragmentUser = new UserPage();
+
     public static Fragment active = fragmentMain;
-    private static Context contextBase;
+
     private static BottomNavigationView bottomNavigationView;
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
-    private final Fragment fragmentTournament;
-    private final Fragment fragmentClub = new ClubPage();
-    private final Fragment fragmentPlayers = new PlayersPage();
+
+
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
-    public static List<Region> regions = new ArrayList<>();
+
     public static String id ;
     public static String token;
     public static boolean status;
+
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
                     switch (item.getItemId()) {
                         case R.id.navigation_home:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new MainPage()).addToBackStack(MAIN).commit();
-                            active = fragmentMain;
+                            active = fragmentMain = new MainPage();
+                            fragmentManager.beginTransaction().replace(R.id.pageContainer, active).addToBackStack(MAIN).commit();
                             return true;
                         case R.id.navigation_tournament:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new TournamentPage()).addToBackStack(TOURNAMENT).commit();
-                            active = fragmentTournament;
+                            active = fragmentTournament = new TournamentPage();
+                            fragmentManager.beginTransaction().replace(R.id.pageContainer, active).addToBackStack(TOURNAMENT).commit();
                             return true;
                         case R.id.navigation_club:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new ClubPage()).addToBackStack(CLUB).commit();
-                            active = fragmentClub;
+                            active = fragmentClub = new ClubPage();
+                            fragmentManager.beginTransaction().replace(R.id.pageContainer, active).addToBackStack(CLUB).commit();
                             return true;
                         case R.id.navigation_players:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new PlayersPage()).addToBackStack(PLAYERS).commit();
-                            active = fragmentPlayers;
+                            active = fragmentPlayers = new PlayersPage();
+                            fragmentManager.beginTransaction().replace(R.id.pageContainer, active).addToBackStack(PLAYERS).commit();
                             return true;
                         case R.id.navigation_user:
-                            //                    if (!UserPage.auth){
-                            //                        fragmentManager.beginTransaction().hide(active).show(fragmentUser).addToBackStack(null).commit();
-                            //                        active = fragmentUser;
-                            //                    }
-                            //                    else{
-                            //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
-                            //                        active = UserPage.authoUser;
-                            //                    }
                             status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
                             if (status) {
-                                log.debug("ЗАРЕГАН");
-                                log.debug("-------------");
-                                log.debug(SaveSharedPreference.getObject().getToken());
-                                log.debug("-------------");
                                 id = SaveSharedPreference.getObject().getUser().getId();
-                                Log.d("User ID: ", id);
-//                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                //     ft.detach(authoUser).attach(authoUser).commit();
-                                //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
-                                fragmentManager.beginTransaction().replace(R.id.pageContainer, new AuthoUser()).addToBackStack(USER).commit();
-                                //                        active = UserPage.authoUser;
-                                active = authoUser;
+
+                                active = authoUser = new AuthoUser();
+                                authoUser.setFragmentManager(fragmentManager);
+                                fragmentManager.beginTransaction().replace(R.id.pageContainer, authoUser).addToBackStack(USER).commit();
                             } else {
                                 log.error("НЕ ЗАРЕГАН");
                                 fragmentManager.beginTransaction().replace(R.id.pageContainer, new UserPage()).addToBackStack(USER).commit();
@@ -141,13 +132,6 @@ public class PersonalActivity extends AppCompatActivity {
                     return false;
                 }
             };
-
-    private ProgressDialog mProgressDialog;
-    private AdvertisingFragment dialogFragment;
-
-    public PersonalActivity() {
-        fragmentTournament = new TournamentPage();
-    }
 
     public static void saveData(List<League> tournaments1) {
         tournaments.clear();
@@ -167,16 +151,13 @@ public class PersonalActivity extends AppCompatActivity {
             id = SaveSharedPreference.getObject().getUser().getId();
             token = SaveSharedPreference.getObject().getToken();
         }
-        mProgressDialog = new ProgressDialog(this);
+        ProgressDialog mProgressDialog = new ProgressDialog(this);
 
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Загрузка...");
 
-        contextBase = getApplicationContext();
-
         checkConnection();
         checkConnectionSingle();
-
 
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -186,19 +167,10 @@ public class PersonalActivity extends AppCompatActivity {
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
-//        fragmentManager.beginTransaction().add(R.id.pageContainer, fragmentHome, "1").commit();
-
 
         fragmentManager.beginTransaction().setReorderingAllowed(true)
-                .add(R.id.pageContainer, fragmentMain, "1")
-//                .add(R.id.pageContainer, fragmentTournament, "2").hide(fragmentTournament)
-//                .add(R.id.pageContainer, fragmentClub, "3").hide(fragmentClub)
-//                .add(R.id.pageContainer, fragmentPlayers, "4").hide(fragmentPlayers)
-//                .add(R.id.pageContainer, fragmentUser, "5").hide(fragmentUser)
-//                .add(R.id.pageContainer, authoUser, "6").hide(authoUser)
-                .commit();
+                .add(R.id.pageContainer, fragmentMain, "1").commit();
 
-        // bottomNavigationView.getChildAt(0);
         //set font
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/manrope_regular.otf");
         CustomTypefaceSpan typefaceSpan = new CustomTypefaceSpan("", tf);
@@ -274,7 +246,7 @@ public class PersonalActivity extends AppCompatActivity {
 
     private void showAds(Advertisings news) {
         if (news.getAds().size() != 0) {
-            dialogFragment = AdvertisingFragment.newInstance();
+            AdvertisingFragment dialogFragment = AdvertisingFragment.newInstance();
             Bundle args = new Bundle();
             args.putSerializable("ADVERTISING", (Serializable) news.getAds());
             dialogFragment.setArguments(args);

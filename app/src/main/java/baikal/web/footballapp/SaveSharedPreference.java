@@ -19,6 +19,7 @@ public class SaveSharedPreference {
     public  static  final String ID = "ID";
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences.Editor editor;
+    
     private static SharedPreferences getPreferences(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = sharedPreferences.edit();
