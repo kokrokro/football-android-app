@@ -43,9 +43,6 @@ public class TimeTableFragment extends Fragment {
     private RVTimeTableAdapter adapter;
     private final List<MatchPopulate> matches = new ArrayList<>();
     private NestedScrollView scroller;
-    private int count = 0;
-    private final int limit = 10;
-    private int offset = 0;
     private final Logger log = LoggerFactory.getLogger(TimeTableFragment.class);
     private LinearLayout layout;
 
@@ -67,7 +64,6 @@ public class TimeTableFragment extends Fragment {
         try {
             adapter = new RVTimeTableAdapter(getActivity(), this, matches);
             recyclerView.setAdapter(adapter);
-
         } catch (NullPointerException e) {
             log.error("ERROR: ", e);
         }

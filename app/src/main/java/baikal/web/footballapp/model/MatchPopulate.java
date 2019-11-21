@@ -28,7 +28,7 @@ public class MatchPopulate implements Serializable {
     private List<String> playersList = null;
     @SerializedName("place")
     @Expose
-    private String place;
+    private Stadium place;
     @SerializedName("league")
     @Expose
     private String league;
@@ -125,11 +125,11 @@ public class MatchPopulate implements Serializable {
         this.playersList = playersList;
     }
 
-    public String getPlace() {
+    public Stadium getPlace() {
         return place;
     }
 
-    public void setPlace(String place) {
+    public void setPlace(Stadium place) {
         this.place = place;
     }
 

@@ -24,6 +24,7 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Referee;
+import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.MyMatches;
 import baikal.web.footballapp.user.activity.PlayerAddToTeam;

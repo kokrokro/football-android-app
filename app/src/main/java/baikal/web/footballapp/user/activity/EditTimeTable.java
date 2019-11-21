@@ -209,17 +209,29 @@ public class EditTimeTable extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void refereeRequest() {
-        RefereeRequest ref = new RefereeRequest();
+        Referee ref = new Referee();
         ref.setPerson(PersonalActivity.id);
         ref.setType("firstReferee");
-        List<RefereeRequest> refereeRequests = new ArrayList<>(4);
+        List<Referee> refereeRequests = new ArrayList<>();
         refereeRequests.add(ref);
+        ref = new Referee();
+        ref.setPerson(PersonalActivity.id);
         ref.setType("secondReferee");
+        ref.setPerson(PersonalActivity.id);
         refereeRequests.add(ref);
+        ref = new Referee();
         ref.setType("thirdReferee");
+        ref.setPerson(PersonalActivity.id);
         refereeRequests.add(ref);
+        ref = new Referee();
         ref.setType("timekeeper");
-       Controller.getApi().setReferees(match.getId(), PersonalActivity.token, refereeRequests).enqueue(new Callback<Match>() {
+        ref.setPerson(PersonalActivity.id);
+        refereeRequests.add(ref);
+        Match newMatch = new Match();
+        newMatch.setReferees(refereeRequests);
+        Controller.getApi().
+               setReferees(match.getId(), PersonalActivity.token, newMatch)
+               .enqueue(new Callback<Match>() {
            @Override
            public void onResponse(Call<Match> call, Response<Match> response) {
 

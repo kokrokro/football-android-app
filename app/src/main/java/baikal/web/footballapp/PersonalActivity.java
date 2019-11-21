@@ -420,7 +420,6 @@ public class PersonalActivity extends AppCompatActivity {
         people.clear();
         AllPeople.clear();
         allPlayers.clear();
-        Log.d("Persons count", String.valueOf(people1.size()));
         allPlayers.addAll(people1);
         people.addAll(allPlayers);
         AllPeople.addAll(allPlayers);

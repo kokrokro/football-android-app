@@ -23,12 +23,10 @@ import android.webkit.WebViewClient;
 import java.util.HashMap;
 import java.util.Map;
 
+import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 public class AddTournamentFragment extends Fragment {
 
 
@@ -48,6 +46,7 @@ public class AddTournamentFragment extends Fragment {
         webSettings.setJavaScriptEnabled(true);
 
         webView.loadUrl("https://football.bwadm.ru");
+
         webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
        // webView.clearCache(true);
         webSettings.setDomStorageEnabled(true);
@@ -57,6 +56,7 @@ public class AddTournamentFragment extends Fragment {
         webSettings.setSupportZoom(false);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
+        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ PersonalActivity.token +"');", null);
        // getContext().deleteDatabase(webSettings.getDatabasePath());
 
 

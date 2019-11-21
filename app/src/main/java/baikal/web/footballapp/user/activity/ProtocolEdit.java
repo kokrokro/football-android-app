@@ -25,6 +25,7 @@ import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.Referee;
+import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
 import baikal.web.footballapp.model.User;

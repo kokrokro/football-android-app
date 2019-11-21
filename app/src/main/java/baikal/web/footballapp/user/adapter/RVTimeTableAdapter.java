@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
@@ -31,6 +32,7 @@ import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Referee;
+import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.EditTimeTable;
@@ -39,10 +41,14 @@ import baikal.web.footballapp.user.activity.TimeTableFragment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
 
 import q.rorbin.badgeview.QBadgeView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.ViewHolder> {
     private final TimeTableFragment context;
@@ -77,67 +83,90 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         } catch (NullPointerException e) {
             holder.textTime.setText(str);
         }
-        str = match.getPlace();
+        Stadium place = match.getPlace();
         try {
-            String[] stadium;
-            stadium = str.split(":", 1);
-            holder.textStadium.setText(stadium[0]);
-        } catch (NullPointerException e) {
-            holder.textStadium.setText(str);
+            str = place.getName();
+        }catch (NullPointerException e) {
+            holder.textStadium.setText("Неизвестно");
         }
+
+//        try {
+//            String[] stadium;
+//            stadium = str.split(":", 1);
+//            holder.textStadium.setText(stadium[0]);
+//        } catch (NullPointerException e) {
+//            holder.textStadium.setText(str);
+//        }
 
         str = match.getTour();
         holder.textLeague.setText(str);
-        SetImage setImage = new SetImage();
+//        SetImage setImage = new SetImage();
         Team team1 = match.getTeamOne();
         Team team2 = match.getTeamTwo();
 
-        try {
+//        try {
+        if(team1!=null){
             str = team1.getName();
             holder.textCommandTitle1.setText(str);
+        }
+        else {
+            holder.textCommandTitle1.setText("Не назначено");
+        }
+
+        if(team2!=null){
+            str = team2.getName();
+            holder.textCommandTitle2.setText(str);
+        }
+        else{
+            holder.textCommandTitle2.setText("Не назначено");
+        }
 //            for (Club club : PersonalActivity.allClubs) {
 //                if (club.getId().equals(team1.getClub())) {
 //                    setImage.setImage(activity, holder.image1, club.getLogo());
 //                }
 //            }
-            for (Player player : team1.getPlayers()) {
-                if (player.getActiveDisquals() != 0) {
-                    new QBadgeView(activity)
-                            .bindTarget(holder.image1)
-                            .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                            .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                            .setBadgeTextSize(5, true)
-                            .setBadgePadding(5, true)
-                            .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                            .setGravityOffset(-3, 1, true)
-                            .setBadgeNumber(3);
-                }
-            }
 
-            str = team2.getName();
-            holder.textCommandTitle2.setText(str);
+
+//            for (Player player : team1.getPlayers()) {
+//                if (player.getActiveDisquals() != 0) {
+//                    new QBadgeView(activity)
+//                            .bindTarget(holder.image1)
+//                            .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+//                            .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+//                            .setBadgeTextSize(5, true)
+//                            .setBadgePadding(5, true)
+//                            .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+//                            .setGravityOffset(-3, 1, true)
+//                            .setBadgeNumber(3);
+//                }
+//            }
+
+
+
 //            for (Club club : PersonalActivity.allClubs) {
 //                if (club.getId().equals(team2.getClub())) {
 //                    setImage.setImage(activity, holder.image2, club.getLogo());
 //                }
 //            }
-            for (Player player : team2.getPlayers()) {
-                if (player.getActiveDisquals() != 0) {
-                    new QBadgeView(activity)
-                            .bindTarget(holder.image2)
-                            .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                            .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                            .setBadgeTextSize(5, true)
-                            .setBadgePadding(5, true)
-                            .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                            .setGravityOffset(-3, 1, true)
-                            .setBadgeNumber(3);
-                }
-            }
-        } catch (Exception e) {
-            log.error("ERROR", e);
-//            Toast.makeText(this.activity, e.toString(), Toast.LENGTH_LONG);
-        }
+
+
+//            for (Player player : team2.getPlayers()) {
+//                if (player.getActiveDisquals() != 0) {
+//                    new QBadgeView(activity)
+//                            .bindTarget(holder.image2)
+//                            .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+//                            .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+//                            .setBadgeTextSize(5, true)
+//                            .setBadgePadding(5, true)
+//                            .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+//                            .setGravityOffset(-3, 1, true)
+//                            .setBadgeNumber(3);
+//                }
+//            }
+//        } catch (Exception e) {
+//            log.error("ERROR", e);
+//
+//        }
 
 
         try {
@@ -207,28 +236,29 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
             holder.textReferee4.setText(str);
             holder.textReferee4.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
 
+
         try{
             for (Referee referee : referees) {
-                log.error(String.valueOf(match.getReferees().size()));
-                for (Person person : AuthoUser.allReferees) {
+//                log.error(String.valueOf(match.getReferees().size()));
+                for (Person person : PersonalActivity.allPlayers) {
                     if (referee.getPerson().equals(person.getId())) {
                         switch (referee.getType()) {
-                            case "1 судья":
+                            case "firstReferee":
                                 str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
                                 holder.textReferee1.setText(str);
                                 holder.textReferee1.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
                                 break;
-                            case "2 судья":
+                            case "secondReferee":
                                 str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
                                 holder.textReferee2.setText(str);
                                 holder.textReferee2.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
                                 break;
-                            case "3 судья":
+                            case "thirdReferee":
                                 str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
                                 holder.textReferee3.setText(str);
                                 holder.textReferee3.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
                                 break;
-                            case "хронометрист":
+                            case "timekeeper":
                                 str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
                                 holder.textReferee4.setText(str);
                                 holder.textReferee4.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
@@ -247,7 +277,6 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         }
 
     }
-
     @Override
     public int getItemCount() {
         return matches.size();

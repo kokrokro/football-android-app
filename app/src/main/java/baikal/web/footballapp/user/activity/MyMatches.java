@@ -15,6 +15,7 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Referee;
+import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.user.adapter.RVMyMatchesAdapter;
 
 import org.slf4j.Logger;

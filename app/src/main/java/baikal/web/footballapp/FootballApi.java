@@ -126,12 +126,11 @@ public interface FootballApi {
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
     @GET("/api/crud/match?_sort=date")
     Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
-    @GET("api/crud/match?_populate=teamOne+teamTwo")
+    @GET("api/crud/match?_populate=teamOne+teamTwo+place")
     Call<List<MatchPopulate>> getMatches(@Query("_id") String id);
     //edit web
-    @FormUrlEncoded
     @PATCH("/api/crud/match/{id}")
-    Call<Match> setReferees(@Path("id") String id, @Header("auth") String authorization,@Field("referees[]") List<RefereeRequest> referees);
+    Call<Match> setReferees(@Path("id") String id, @Header("auth") String authorization,@Body Match match);
     @Multipart
     @POST("/api/editPlayerInfo")
     Call<EditProfile> editProfile(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
@@ -146,6 +145,9 @@ public interface FootballApi {
     Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);
     @GET("/api/crud/person?_select=favoriteTourney")
     Call<List<Person> >getFavTourneysId(@Query("_id") String id);
+
+    @GET("api/crud/person")
+    Call<List<Person>> getPerson(@Query("_id") String id);
 
     //edit match protocol event and playerList
     @POST("/api/matches/changeProtocol")
