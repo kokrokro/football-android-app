@@ -14,21 +14,15 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Controller {
-    //    public static final String BASE_URL = "https://footballapi.ibb.su";
     public static final String BASE_URL = "https://football.bw2api.ru";
-
     public Logger log = LoggerFactory.getLogger(Controller.class);
 
-
     public static FootballApi getApi() {
-
         OkHttpClient client = new OkHttpClient.Builder()
-//                .addInterceptor(chain -> )
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .build();
-
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -40,7 +34,6 @@ public class Controller {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-
 
         return retrofit.create(FootballApi.class);
     }
