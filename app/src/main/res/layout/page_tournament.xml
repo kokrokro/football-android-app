@@ -9,15 +9,10 @@
     android:orientation="vertical"
     tools:context=".PersonalActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/tournamentAppbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <!--android:layout_height="120dp"-->
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tournamentsTabLayout"
@@ -41,12 +36,13 @@
                 android:layout_height="wrap_content"/>
 
         </com.google.android.material.tabs.TabLayout>
-    </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/tournamentsPager"
         android:background="@color/colorWhite"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </LinearLayout>
 
 
 </LinearLayout>

@@ -177,6 +177,8 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         } catch (NullPointerException e) {
             str = "-";
         }
+
+        List<Person> refs = new ArrayList<>();
         holder.textScore.setText(str);
         if (!str.equals("-")) {
             List<MatchPopulate> list = new ArrayList<>(matches);
@@ -214,14 +216,8 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
 //        }
 //        catch (NullPointerException e) {
 //        }
-        holder.buttonEdit.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, EditTimeTable.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("MATCHCONFIRMPROTOCOLREFEREES", match);
-//            log.error(String.valueOf(match.getReferees().size()));
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-        });
+
+
         List<Referee> referees = match.getReferees();
         CheckName checkName = new CheckName();
 
@@ -242,7 +238,9 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
 //                log.error(String.valueOf(match.getReferees().size()));
                 for (Person person : PersonalActivity.allPlayers) {
                     if (referee.getPerson().equals(person.getId())) {
+                        refs.add(person);
                         switch (referee.getType()) {
+
                             case "firstReferee":
                                 str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
                                 holder.textReferee1.setText(str);
@@ -272,6 +270,14 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         }catch (Exception e){
             log.error("ERROR: ", e);
         }
+        holder.buttonEdit.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, EditTimeTable.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("MATCHCONFIRMPROTOCOLREFEREES", match);
+//            log.error(String.valueOf(match.getReferees().size()));
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        });
         if (position == (matches.size() - 1)) {
             holder.line.setVisibility(View.INVISIBLE);
         }

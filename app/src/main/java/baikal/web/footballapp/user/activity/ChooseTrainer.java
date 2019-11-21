@@ -117,10 +117,12 @@ public class ChooseTrainer extends AppCompatActivity {
             recyclerView = findViewById(R.id.recyclerViewPlayers);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new TrainerAdapter(this,  PersonalActivity.allPlayers, id -> {
+            adapter = new TrainerAdapter(this,  PersonalActivity.allPlayers,(id , name, surname) -> {
                 Intent data = new Intent();
 //---set the data to pass back---
                 data.setData(Uri.parse(id));
+                data.putExtra("name",name );
+                data.putExtra("surname", surname);
                 setResult(RESULT_OK, data);
 //---close the activity---
                 finish();

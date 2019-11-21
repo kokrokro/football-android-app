@@ -7,8 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,25 +51,29 @@ public class EditTimeTable extends AppCompatActivity {
     private List<String> countReferees;
     private final Logger log = LoggerFactory.getLogger(EditTimeTable.class);
     private MatchPopulate match;
-
+    private Button ref1;
+    private Button ref2;
+    private Button ref3;
+    private Button ref4;
+    private String ref1Id = null;
+    private String ref2Id = null;
+    private String ref3Id = null;
+    private String ref4Id = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
         ImageButton imageSave;
-        TextView spinnerReferee1;
-        TextView spinnerReferee2;
-        TextView spinnerReferee3;
-        TextView spinnerReferee4;
+
         FloatingActionButton fab;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_timetable);
         fab = findViewById(R.id.buttonMainRefereeShowProtocol);
         imageClose = findViewById(R.id.refereeEditMatchClose);
         imageSave = findViewById(R.id.refereeEditMatchSave);
-        spinnerReferee1 = findViewById(R.id.refereeEditMatchSpinnerReferee1);
-        spinnerReferee2 = findViewById(R.id.refereeEditMatchSpinnerReferee2);
-        spinnerReferee3 = findViewById(R.id.refereeEditMatchSpinnerReferee3);
-        spinnerReferee4 = findViewById(R.id.refereeEditMatchSpinnerReferee4);
+        ref1 = findViewById(R.id.refereeEditMatchSpinnerReferee1);
+        ref2 = findViewById(R.id.refereeEditMatchSpinnerReferee2);
+        ref3 = findViewById(R.id.refereeEditMatchSpinnerReferee3);
+        ref4 = findViewById(R.id.refereeEditMatchSpinnerReferee4);
 
         imageClose.setOnClickListener(v -> finish());
         countReferees = new ArrayList<>();
@@ -84,116 +90,85 @@ public class EditTimeTable extends AppCompatActivity {
         if (match.getPlayed()){
             fab.hide();
         }
-            match.getLeague();
-        try {
-            try{
-                for (Referee referee : match.getReferees()) {
-                    switch (referee.getType()) {
-                        case "1 судья":
-                            countReferees.set(0, referee.getPerson());
-                            break;
-                        case "2 судья":
-                            countReferees.set(1, referee.getPerson());
-                            break;
-                        case "3 судья":
-                            countReferees.set(2, referee.getPerson());
-                            break;
-                        case "хронометрист":
-                            countReferees.set(3, referee.getPerson());
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }catch(NullPointerException e){}
-            List<String> allReferees = new ArrayList<>();
-            for (Person person1 : AuthoUser.allReferees) {
-                allReferees.add(person1.getId());
-            }
-            spinnerReferee1.setOnClickListener(v->{
-                spinnerReferee1.setText("5dd222d98701b2471e018bd3");
-            });
+            for(Referee ref : match.getReferees()) {
+                switch (ref.getType()) {
+                    case "firstReferee":
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        ref1.setText(p.getSurname()+" "+ p.getName());
+                                        ref1Id = p.getId();
+                                    }
+                                }
+                            }
 
-//            SpinnerRefereeAdapter adapter = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee1.setAdapter(adapter);
-//            spinnerReferee1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(0, person.getId());
-//                    } else {
-//                        countReferees.set(0, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            SpinnerRefereeAdapter adapter1 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee2.setAdapter(adapter1);
-//            spinnerReferee2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(1, person.getId());
-//                    } else {
-//                        countReferees.set(1, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            SpinnerRefereeAdapter adapter2 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee3.setAdapter(adapter2);
-//            spinnerReferee3.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(2, person.getId());
-//                    } else {
-//                        countReferees.set(2, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            SpinnerRefereeAdapter adapter3 = new SpinnerRefereeAdapter(this, R.layout.spinner_item, referees);
-//            spinnerReferee4.setAdapter(adapter3);
-//            spinnerReferee4.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//                public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-//                    Person person = (Person) parent.getItemAtPosition(pos);
-//                    if (person != null) {
-//                        countReferees.set(3, person.getId());
-//                    } else {
-//                        countReferees.set(3, null);
-//                    }
-//                }
-//
-//                public void onNothingSelected(AdapterView<?> parent) {
-//                }
-//            });
-//            for (int j = 0; j < countReferees.size(); j++) {
-//                if (countReferees.get(j) != null && !countReferees.get(j).equals("")) {
-//                    // count +1
-//                    int count = allReferees.indexOf(countReferees.get(j)) + 1;
-//                    switch (j) {
-//                        case 0:
-//                            spinnerReferee1.setSelection(count);
-//                            break;
-//                        case 1:
-//                            spinnerReferee2.setSelection(count);
-//                            break;
-//                        case 2:
-//                            spinnerReferee3.setSelection(count);
-//                            break;
-//                        case 3:
-//                            spinnerReferee4.setSelection(count);
-//                            break;
-//                    }
-//                }
-//            }
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) {
+
+                            }
+                        });
+                    case "secondReferee":
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        ref2.setText(p.getSurname()+" "+ p.getName());
+                                        ref2Id = p.getId();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) {
+
+                            }
+                        });
+                    case "thirdReferee":
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        ref3.setText(p.getSurname()+" "+ p.getName());
+                                        ref3Id = p.getId();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) {
+
+                            }
+                        });
+                    case "timekeeper":
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        ref4.setText(p.getSurname()+" "+ p.getName());
+                                        ref4Id = p.getId();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) {
+
+                            }
+                        });
+
+                }
+            }
+
+            try{
             imageSave.setOnClickListener(v -> refereeRequest());
             fab.setOnClickListener(v -> {
                 Intent intent = new Intent(EditTimeTable.this, ConfirmProtocol.class);
@@ -209,24 +184,35 @@ public class EditTimeTable extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void refereeRequest() {
-        Referee ref = new Referee();
-        ref.setPerson(PersonalActivity.id);
-        ref.setType("firstReferee");
         List<Referee> refereeRequests = new ArrayList<>();
-        refereeRequests.add(ref);
-        ref = new Referee();
-        ref.setPerson(PersonalActivity.id);
-        ref.setType("secondReferee");
-        ref.setPerson(PersonalActivity.id);
-        refereeRequests.add(ref);
-        ref = new Referee();
-        ref.setType("thirdReferee");
-        ref.setPerson(PersonalActivity.id);
-        refereeRequests.add(ref);
-        ref = new Referee();
-        ref.setType("timekeeper");
-        ref.setPerson(PersonalActivity.id);
-        refereeRequests.add(ref);
+
+
+        if(ref1Id!=null){
+            Referee ref = new Referee();
+            ref.setPerson(ref1Id);
+            ref.setType("firstReferee");
+            refereeRequests.add(ref);
+        }
+        if(ref2Id!=null){
+            Referee ref = new Referee();
+            ref.setPerson(ref2Id);
+            ref.setType("secondReferee");
+            refereeRequests.add(ref);
+        }
+        if(ref3Id!=null){
+            Referee ref = new Referee();
+            ref.setPerson(ref3Id);
+            ref.setType("thirdReferee");
+            refereeRequests.add(ref);
+        }
+        if(ref4Id!=null){
+            Referee ref = new Referee();
+            ref.setPerson(ref4Id);
+            ref.setType("timekeeper");
+            refereeRequests.add(ref);
+        }
+
+
         Match newMatch = new Match();
         newMatch.setReferees(refereeRequests);
         Controller.getApi().
@@ -243,63 +229,25 @@ public class EditTimeTable extends AppCompatActivity {
                 log.error(t.getMessage());
            }
        });
-//        List<RefereeRequest> list = new ArrayList<>();
-//        for (int i = 0; i < countReferees.size(); i++) {
-//            if (countReferees.get(i) != null) {
-//                RefereeRequest refereeRequest = new RefereeRequest();
-//                String type = "";
-//                switch (i) {
-//                    case 0:
-//                        type = "1 судья";
-//                        break;
-//                    case 1:
-//                        type = "2 судья";
-//                        break;
-//                    case 2:
-//                        type = "3 судья";
-//                        break;
-//                    case 3:
-//                        type = "хронометрист";
-//                        break;
-//                    default:
-//                        break;
-//                }
-//                refereeRequest.setType(type);
-//                refereeRequest.setPerson(countReferees.get(i));
-//                list.add(refereeRequest);
-//            }
-//        }
-//        RefereeRequestList requestList = new RefereeRequestList();
-//        requestList.setRefereeRequest(list);
-//        requestList.setId(match.getId());
-//
-//
-//        CheckError checkError = new CheckError();
-//
-//                Controller.getApi().editProtocolReferees(SaveSharedPreference.getObject().getToken(), requestList)
-//                        .map(responseBody -> {
-////                            try {
-////                                return responseBody.body();
-////                            } catch (Exception e) {
-////                                responseBody.errorBody();
-////                                e.printStackTrace();
-////                            }
-//                            if (!responseBody.isSuccessful()){
-//                                String srt = responseBody.errorBody().string();
-//                                log.error(srt);
-//                                showToast(srt);
-////                                log.error(responseBody.message());
-//                            }
-//                            if (responseBody.errorBody()!=null){
-//                                checkError.checkHttpError(this, responseBody.errorBody().string());
-//                            }
-//                            return responseBody.body();
-//                        })
-//                        .subscribeOn(Schedulers.newThread())
-//                        .observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(this::saveData,
-//                                error -> checkError.checkError(this, error));
 
+    }
+    public void getReferee(View v){
+        if(v.getId() == ref1.getId()){
+            Intent intent = new Intent(this, ChooseTrainer.class);
+            startActivityForResult(intent, 1);
+        }
+        if(v.getId() == ref2.getId()){
+            Intent intent = new Intent(this, ChooseTrainer.class);
+            startActivityForResult(intent, 2);
+        }
+        if(v.getId() == ref3.getId()){
+            Intent intent = new Intent(this, ChooseTrainer.class);
+            startActivityForResult(intent, 3);
+        }
+        if(v.getId() == ref4.getId()){
+            Intent intent = new Intent(this, ChooseTrainer.class);
+            startActivityForResult(intent, 4);
+        }
     }
 
 
@@ -314,7 +262,32 @@ public class EditTimeTable extends AppCompatActivity {
         }
 
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String name = "";
+        String id = "";
 
+        if (resultCode == RESULT_OK) {
+              name =data.getStringExtra("surname")+" "+data.getStringExtra("name") ;
+              id = data.getData().toString();
+        }
+        if (requestCode == 1) {
+            ref1Id = id;
+            ref1.setText(name);
+        }
+        if (requestCode == 2) {
+            ref2.setText(name);
+            ref2Id = id;
+        }
+        if (requestCode == 3) {
+            ref3.setText(name);
+            ref3Id = id;
+        }
+        if (requestCode == 4) {
+            ref4.setText(name);
+            ref4Id = id;
+        }
+    }
 
     private void saveData(Matches matches) {
         String str;
