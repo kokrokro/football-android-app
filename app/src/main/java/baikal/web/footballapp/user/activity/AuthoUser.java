@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -105,6 +106,9 @@ public class AuthoUser extends Fragment {
     private final int REQUEST_CODE_CLUBEDIT = 276;
     private int clubOldIndex;
 
+    private FragmentManager fragmentManager;
+    private static final String USER = "USER_PAGE";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -169,65 +173,19 @@ public class AuthoUser extends Fragment {
             m = nvDrawer.getMenu();
             for (int i = 0; i < m.size(); i++) {
                 MenuItem mi = m.getItem(i);
-                try {
-                    if ( i==1) {
-                        clearItemColor(i);
-                        SpannableString s = new SpannableString(mi.getTitle());
-                        s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
-                        mi.setTitle(s);
-                    }
-                    if (i==5) {
-                        clearItemColor(i);
-                        SpannableString s = new SpannableString(mi.getTitle());
-                        s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
-                        mi.setTitle(s);
-                    }
-                    if (i==4) {
-                        clearItemColor(i);
-                        SpannableString s = new SpannableString(mi.getTitle());
-                        s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
-                        mi.setTitle(s);
-                    }
-//                    if (person.getType().equals("player") && (i == 6 || i == 4 || i == 5)) {
-//                        m.getItem(i).setVisible(false);
-//                    }
-//                    if (person.getType().equals("referee") && (i == 6 || i == 4)) {
-//                        m.getItem(i).setVisible(false);
-//                    }
-//                    if (person.getType().equals("mainReferee") && (i == 5)) {
-//                        m.getItem(i).setVisible(false);
-//                    }
-                } catch (Exception e) {
-                    log.error("ERROR: ", e);
-                }
 
-                //for aapplying a font to subMenu ...
+                //for applying a font to subMenu ...
                 SubMenu subMenu = mi.getSubMenu();
-                if (subMenu != null && subMenu.size() > 0) {
+                if (subMenu != null && subMenu.size() > 0)
                     for (int j = 0; j < subMenu.size(); j++) {
                         MenuItem subMenuItem = subMenu.getItem(j);
                         applyFontToMenuItem(subMenuItem);
                     }
-                }
-
                 applyFontToMenuItem(mi);
             }
 
-//
-//            if (person.getType().equals("referee")) {
-                this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches).show(myMatches).commit();
-                categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
-//            }
-//            if (person.getType().equals("player")) {
-//                this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment).show(defaultFragment).commit();
-//                categoryTitle.setText(getActivity().getText(R.string.title_tournament));
-//            }
-//            if (person.getType().equals("mainReferee")) {
-//                this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment).show(timeTableFragment).commit();
-//                categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
-//            }
-
-
+            this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches).show(myMatches).commit();
+            categoryTitle.setText(getActivity().getText(R.string.matches));
 
             //adapters
 //            adapterInv = new RVInvitationAdapter(getActivity(), firstFragment, AuthoUser.pendingTeamInvitesList);
@@ -302,8 +260,6 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(1);
                     clearItemColor(1);
-//                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
-//                    Log.d("defaultFragment", "defaultFragment on click in menu...");
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.title_tournament));
                     fab.setVisibility(View.INVISIBLE);
@@ -317,7 +273,6 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(0);
                     clearItemColor(0);
-//                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.invitation));
                     fab.setVisibility(View.INVISIBLE);
@@ -330,18 +285,15 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(2);
                     clearItemColor(2);
-//                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment).show(secondFragment).commit();
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment).show(secondFragment).commit();
-//                    , "CLUBFRAGMENT"
+                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment, "CLUBFRAGMENT").show(secondFragment).commit();
                     if (person.getClub() != null) {
                         fab1.setVisibility(View.VISIBLE);
                         Club club = null;
                         Person person = user.getUser();
                         for (Club club1 : PersonalActivity.allClubs) {
                             String str = person.getClub();
-                            if (club1.getId().equals(str)) {
+                            if (club1.getId().equals(str))
                                 club = club1;
-                            }
                         }
                         final Club finalClub = club;
                         fab1.setOnClickListener(v -> {
@@ -363,7 +315,6 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(3);
                     clearItemColor(3);
-//                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, commands).show(commands).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, commands).show(commands).commit();
                     categoryTitle.setText(getActivity().getText(R.string.commands));
                     fab.setVisibility(View.VISIBLE);
@@ -376,7 +327,6 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(5);
                     clearItemColor(5);
-//                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
                     categoryTitle.setText(getActivity().getText(R.string.matches));
                     fab.setVisibility(View.INVISIBLE);
@@ -389,7 +339,6 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(6);
                     clearItemColor(6);
-//                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.referees));
                     fab.setVisibility(View.INVISIBLE);
@@ -402,7 +351,6 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(4);
                     clearItemColor(4);
-//                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
                     fab.setVisibility(View.INVISIBLE);
@@ -415,15 +363,20 @@ public class AuthoUser extends Fragment {
                 SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), false);
                 SaveSharedPreference.saveObject(null);
 //                PersonalActivity.fragmentUser.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                getActivity().getSupportFragmentManager().beginTransaction().hide(this).show(PersonalActivity.fragmentUser).commit();
+
+                try {
+                    Fragment userPage = new UserPage();
+                    fragmentManager.beginTransaction().replace(R.id.pageContainer, userPage).addToBackStack(USER).show(userPage).commit();
+                } catch (Exception e) {
+                    log.error("AuthoUser: ", e);
+                    getActivity().getSupportFragmentManager().beginTransaction().show(PersonalActivity.fragmentUser).commit();
+                }
                 PersonalActivity.active = PersonalActivity.fragmentUser;
                 refreshTournaments();
                 log.info("INFO: AuthoUser onDestroy");
                 this.onDestroy();
                 break;
-
         }
-
 
         menuItem.setChecked(true);
         drawer.closeDrawers();
@@ -434,30 +387,30 @@ public class AuthoUser extends Fragment {
         for (int i = 0; i < m.size(); i++) {
             if (i != itemColor){
                 MenuItem mi = m.getItem(i);
-            try {
-                SpannableString s = new SpannableString(mi.getTitle());
-                s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
-                mi.setTitle(s);
-            } catch (Exception e) {
-                log.error("ERROR: ", e);
-            }
-            //for aapplying a font to subMenu ...
-            SubMenu subMenu = mi.getSubMenu();
-            if (subMenu != null && subMenu.size() > 0) {
-                for (int j = 0; j < subMenu.size(); j++) {
-                    MenuItem subMenuItem = subMenu.getItem(j);
-                    applyFontToMenuItem(subMenuItem);
-                }
-            }
 
-            applyFontToMenuItem(mi);
+                try {
+                    SpannableString s = new SpannableString(mi.getTitle());
+                    s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
+                    mi.setTitle(s);
+                } catch (Exception e) {
+                    log.error("ERROR: ", e);
+                }
+                //for aapplying a font to subMenu ...
+                SubMenu subMenu = mi.getSubMenu();
+                if (subMenu != null && subMenu.size() > 0)
+                    for (int j = 0; j < subMenu.size(); j++) {
+                        MenuItem subMenuItem = subMenu.getItem(j);
+                        applyFontToMenuItem(subMenuItem);
+                    }
+
+                applyFontToMenuItem(mi);
+            }
         }
-    }
     }
 
     @SuppressLint("CheckResult")
     private void refreshTournaments() {
-            Controller.getApi().getAllLeagues("32575", "0")
+            Controller.getApi().getAllLeagues("10", "0")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(PersonalActivity::saveData
@@ -574,8 +527,7 @@ public class AuthoUser extends Fragment {
 
     @SuppressLint("CheckResult")
     private void GetAllReferees() {
-        String type = "referee";
-        Controller.getApi().getAllPersons( null, "32575", "0")
+        Controller.getApi().getAllPersons( null, "15", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
@@ -639,5 +591,9 @@ public class AuthoUser extends Fragment {
             }
 
             applyFontToMenuItem(mi);
+    }
+
+    public void setFragmentManager (FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
     }
 }
