@@ -93,14 +93,15 @@ public class EditTimeTable extends AppCompatActivity {
             for(Referee ref : match.getReferees()) {
                 switch (ref.getType()) {
                     case "firstReferee":
+                        ref1Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
                             public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body() != null && response.body().size()>0) {
                                         Person p = response.body().get(0);
-                                        ref1.setText(p.getSurname()+" "+ p.getName());
-                                        ref1Id = p.getId();
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref1.setText(string);
                                     }
                                 }
                             }
@@ -111,14 +112,15 @@ public class EditTimeTable extends AppCompatActivity {
                             }
                         });
                     case "secondReferee":
+                        ref2Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
                             public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body() != null && response.body().size()>0) {
                                         Person p = response.body().get(0);
-                                        ref2.setText(p.getSurname()+" "+ p.getName());
-                                        ref2Id = p.getId();
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref2.setText(string);
                                     }
                                 }
                             }
@@ -129,14 +131,15 @@ public class EditTimeTable extends AppCompatActivity {
                             }
                         });
                     case "thirdReferee":
+                        ref3Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
                             public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body() != null && response.body().size()>0) {
                                         Person p = response.body().get(0);
-                                        ref3.setText(p.getSurname()+" "+ p.getName());
-                                        ref3Id = p.getId();
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref3.setText(string);
                                     }
                                 }
                             }
@@ -147,14 +150,15 @@ public class EditTimeTable extends AppCompatActivity {
                             }
                         });
                     case "timekeeper":
+                        ref4Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
                             public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
                                 if (response.isSuccessful()) {
                                     if (response.body() != null && response.body().size()>0) {
                                         Person p = response.body().get(0);
-                                        ref4.setText(p.getSurname()+" "+ p.getName());
-                                        ref4Id = p.getId();
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref4.setText(string);
                                     }
                                 }
                             }
