@@ -7,48 +7,31 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import baikal.web.footballapp.CheckName;
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.TimeToString;
-import baikal.web.footballapp.model.ActiveMatch;
-import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.LeagueInfo;
-import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.EditTimeTable;
 import baikal.web.footballapp.user.activity.TimeTableFragment;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.List;
-
-import q.rorbin.badgeview.QBadgeView;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.ViewHolder> {
     private final TimeTableFragment context;
@@ -73,19 +56,17 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
     @Override
     public void onBindViewHolder(@NonNull RVTimeTableAdapter.ViewHolder holder, int position) {
         MatchPopulate match = matches.get(position);
-        String str;
-        str = match.getDate();
+        String str = match.getDate();
         DateToString dateToString = new DateToString();
         holder.textDate.setText(dateToString.ChangeDate(str));
         try {
-            TimeToString timeToString = new TimeToString();
-            holder.textTime.setText(timeToString.ChangeTime(str));
+            holder.textTime.setText(dateToString.ChangeTime(str));
         } catch (NullPointerException e) {
             holder.textTime.setText(str);
         }
         Stadium place = match.getPlace();
         try {
-            str = place.getName();
+            holder.textStadium.setText(place.getName());
         }catch (NullPointerException e) {
             holder.textStadium.setText("Неизвестно");
         }
@@ -109,17 +90,15 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
             str = team1.getName();
             holder.textCommandTitle1.setText(str);
         }
-        else {
+        else
             holder.textCommandTitle1.setText("Не назначено");
-        }
 
         if(team2!=null){
             str = team2.getName();
             holder.textCommandTitle2.setText(str);
         }
-        else{
+        else
             holder.textCommandTitle2.setText("Не назначено");
-        }
 //            for (Club club : PersonalActivity.allClubs) {
 //                if (club.getId().equals(team1.getClub())) {
 //                    setImage.setImage(activity, holder.image1, club.getLogo());
@@ -270,19 +249,21 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         }catch (Exception e){
             log.error("ERROR: ", e);
         }
+
         holder.buttonEdit.setOnClickListener(v -> {
             Intent intent = new Intent(activity, EditTimeTable.class);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("MATCHCONFIRMPROTOCOLREFEREES", match);
+            bundle.putSerializable("MatchConfirmProtocolRefereesToEdit", match);
+            bundle.putInt("MatchIndex", position);
 //            log.error(String.valueOf(match.getReferees().size()));
             intent.putExtras(bundle);
             context.startActivity(intent);
         });
-        if (position == (matches.size() - 1)) {
-            holder.line.setVisibility(View.INVISIBLE);
-        }
 
+        if (position == (matches.size() - 1))
+            holder.line.setVisibility(View.INVISIBLE);
     }
+
     @Override
     public int getItemCount() {
         return matches.size();
@@ -335,8 +316,4 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         matches.addAll(allPlayers1);
         notifyDataSetChanged();
     }
-
-
-
-
 }

@@ -72,6 +72,23 @@ public class Person implements Serializable {
     @Expose
     private List<String> favoriteTourney = new ArrayList<>();
 
+    public String getSurnameWithInitials() {
+        String p1 = "";
+        String p2 = "";
+        String p3 = "";
+
+        if (surname != null)
+            p1 = surname;
+
+        if (name != null && name.length() > 0)
+            p2 = " " + name.substring(0,1) + ".";
+
+        if (lastname != null && lastname.length() > 0)
+            p3 = " " + lastname.substring(0,1) + ".";
+
+        return p1 + p2 + p3;
+    }
+
     public List<String> getFavouriteTourney() {  return favoriteTourney;    }
 
     public void setFavouriteTourney(List<String> favouriteTourney) {  this.favoriteTourney = favouriteTourney; }

@@ -2,11 +2,13 @@ package baikal.web.footballapp.user.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
@@ -17,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MatchResponsiblePersons extends AppCompatActivity {
+
+    private final CheckName checkName = new CheckName();
+    private final SetImage setImage = new SetImage();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,50 +51,28 @@ public class MatchResponsiblePersons extends AppCompatActivity {
         textReferee4 = findViewById(R.id.referee4Name);
         String str;
         try {
-            CheckName checkName = new CheckName();
-            SetImage setImage = new SetImage();
-            List<Referee> referees = (List<Referee>) getIntent().getExtras().getSerializable("CONFIRMPROTOCOLREFEREES");
+            ArrayList<CharSequence> referees =  getIntent().getExtras().getCharSequenceArrayList("CONFIRMPROTOCOLREFEREES");
+            Log.d("MatchResponsible: ", String.valueOf(referees.size()));
             List<Person> personList = new ArrayList<>();
-            for (Referee referee : referees) {
-                for (Person person : TournamentPage.referees) {
-                    if (referee.getPerson().equals(person.getId())) {
+            for (CharSequence referee : referees)
+                for (Person person : PersonalActivity.allPlayers)
+                    if (referee.equals(person.getId()))
                         personList.add(person);
-                    }
-                }
-            }
-            for (int i = 0; i < referees.size(); i++) {
-                switch (referees.get(i).getType()) {
-                    case "Инспектор":
-                        str = checkName.check(personList.get(i).getSurname(), personList.get(i).getName(), personList.get(i).getLastname());
-                        textInspector.setText(str);
-                        setImage.setImage(this, imageInspector, personList.get(i).getPhoto());
-                        break;
-                    case "1 судья":
-                        str = checkName.check(personList.get(i).getSurname(), personList.get(i).getName(), personList.get(i).getLastname());
-                        textReferee1.setText(str);
-                        setImage.setImage(this, imageReferee1, personList.get(i).getPhoto());
-                        break;
-                    case "2 судья":
-                        str = checkName.check(personList.get(i).getSurname(), personList.get(i).getName(), personList.get(i).getLastname());
-                        textReferee2.setText(str);
-                        setImage.setImage(this, imageReferee2, personList.get(i).getPhoto());
-                        break;
-                    case "3 судья":
-                        str = checkName.check(personList.get(i).getSurname(), personList.get(i).getName(), personList.get(i).getLastname());
-                        textReferee3.setText(str);
-                        setImage.setImage(this, imageReferee3, personList.get(i).getPhoto());
-                        break;
-                    case "хронометрист":
-                        str = checkName.check(personList.get(i).getSurname(), personList.get(i).getName(), personList.get(i).getLastname());
-                        textReferee4.setText(str);
-                        setImage.setImage(this, imageReferee4, personList.get(i).getPhoto());
-                        break;
-                    default:
-                        break;
-                }
-            }
-        } catch (NullPointerException e) {
+
+            setRefereesView(personList.get(0), textReferee1, imageReferee1);
+            setRefereesView(personList.get(1), textReferee2, imageReferee2);
+            setRefereesView(personList.get(2), textReferee3, imageReferee3);
+            setRefereesView(personList.get(3), textReferee4, imageReferee4);
+
+        } catch (Exception e) {
+            Log.d("MatchRespos: ", e.toString());
         }
         buttonBack.setOnClickListener(v -> finish());
+    }
+
+    void setRefereesView (Person person, TextView textView, ImageView imageView)
+    {
+        textView.setText(checkName.check(person.getSurname(), person.getName(), person.getLastname()));
+        setImage.setImage(this, imageView, person.getPhoto());
     }
 }

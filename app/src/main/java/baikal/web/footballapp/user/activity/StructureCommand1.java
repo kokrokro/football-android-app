@@ -10,6 +10,7 @@ import android.widget.TextView;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
@@ -39,7 +40,7 @@ public class StructureCommand1 extends AppCompatActivity {
         try{
             String str;
 //            ActiveMatch match = (ActiveMatch) getIntent().getExtras().getSerializable("CONFIRMPROTOCOLMATCH");
-            Match match = (Match) getIntent().getExtras().getSerializable("CONFIRMPROTOCOLMATCH");
+            MatchPopulate match = (MatchPopulate) getIntent().getExtras().getSerializable("CONFIRMPROTOCOLMATCH");
             Team team = (Team) getIntent().getExtras().getSerializable("CONFIRMPROTOCOLCOMMAND");
             str = team.getName();
             textCommandTitle.setText(str);

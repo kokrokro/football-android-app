@@ -16,7 +16,6 @@ import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.TimeToString;
 import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.LeagueInfo;
@@ -34,7 +33,6 @@ import q.rorbin.badgeview.QBadgeView;
 public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMatchesAdapter.ViewHolder> {
     private final RefereesMatches context;
     private final List<ActiveMatch> matches;
-    private LeagueInfo leagueInfo;
     private final Person person;
     public RVRefereesMatchesAdapter(RefereesMatches context, List<ActiveMatch> matches, Person person, ListAdapterListener mListener){
         this.context =  context;
@@ -62,8 +60,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
         DateToString dateToString = new DateToString();
         holder.textDate.setText(dateToString.ChangeDate(str));
         try {
-            TimeToString timeToString = new TimeToString();
-            holder.textTime.setText(timeToString.ChangeTime(str));
+            holder.textTime.setText(dateToString.ChangeTime(str));
         } catch (NullPointerException e) {
             holder.textTime.setText(str);
         }

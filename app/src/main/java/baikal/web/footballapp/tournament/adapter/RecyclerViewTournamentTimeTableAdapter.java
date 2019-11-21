@@ -18,7 +18,6 @@ import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.TimeToString;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Match;
@@ -64,8 +63,7 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
         DateToString dateToString = new DateToString();
         holder.textDate.setText(dateToString.ChangeDate(str));
         try {
-            TimeToString timeToString = new TimeToString();
-            holder.textTime.setText(timeToString.ChangeTime(str));
+            holder.textTime.setText(dateToString.ChangeTime(str));
         } catch (NullPointerException e) {
             holder.textTime.setText(str);
         }

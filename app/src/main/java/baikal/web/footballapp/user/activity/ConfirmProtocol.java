@@ -17,12 +17,13 @@ import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.PlayerEvent;
+import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
 
@@ -71,7 +72,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         imageClose.setOnClickListener(v -> finish());
         try {
             String str;
-            ActiveMatch match = (ActiveMatch) getIntent().getExtras().getSerializable("CONFIRMPROTOCOL");
+            MatchPopulate match = (MatchPopulate) getIntent().getExtras().getSerializable("CONFIRMPROTOCOL");
             HashMap<String, Team> teams = getTeams(match);
             fab.setOnClickListener(v -> {
                 try {
@@ -86,7 +87,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                     bundle.putSerializable("PROTOCOLEVENTS", playerEv);
                     intent.putExtras(bundle);
 
-                    Log.d("ConfirmProtocol.java", "trying to enter to worl protocol...");
+                    Log.d("ConfirmProtocol.java", "trying to enter to    worl protocol...");
 
                     startActivity(intent);
                 } catch (Exception e) {
@@ -124,7 +125,29 @@ public class ConfirmProtocol extends AppCompatActivity {
             buttonReferees.setOnClickListener(v -> {
                 Intent intent = new Intent(ConfirmProtocol.this, MatchResponsiblePersons.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("CONFIRMPROTOCOLREFEREES", (Serializable) match.getReferees());
+
+                ArrayList<CharSequence> refIds = new ArrayList<>();
+                refIds.add("");
+                refIds.add("");
+                refIds.add("");
+                refIds.add("");
+
+                for (Referee r : match.getReferees())
+                    switch (r.getType()) {
+                        case "firstReferee":
+                            refIds.set(0, r.getPerson());
+                            break;
+                        case "secondReferee":
+                            refIds.set(1, r.getPerson());
+                            break;
+                        case "thirdReferee":
+                            refIds.set(2, r.getPerson());
+                            break;
+                        case "timekeeper":
+                            refIds.set(3, r.getPerson());
+                    }
+
+                bundle.putCharSequenceArrayList("CONFIRMPROTOCOLREFEREES", refIds);
                 intent.putExtras(bundle);
                 startActivity(intent);
             });
@@ -165,7 +188,7 @@ public class ConfirmProtocol extends AppCompatActivity {
 
     }
 
-    private HashMap<String, Team> getTeams(ActiveMatch match) {
+    private HashMap<String, Team> getTeams(MatchPopulate match) {
         HashMap<String, Team> teams = new HashMap<>();
         ImageView image1 = findViewById(R.id.confirmProtocolCommand1Logo);
         ImageView image2 = findViewById(R.id.confirmProtocolCommand2Logo);
@@ -193,7 +216,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         return teams;
     }
 
-    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, ActiveMatch match, Team team1, Team team2) {
+    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, MatchPopulate match, Team team1, Team team2) {
 
         log.error(match.getId() + " 190");
         List<PlayerEvent> playerEvents1 = new ArrayList<>();

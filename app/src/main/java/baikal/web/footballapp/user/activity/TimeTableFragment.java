@@ -1,6 +1,7 @@
 package baikal.web.footballapp.user.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -67,16 +68,6 @@ public class TimeTableFragment extends Fragment {
         } catch (NullPointerException e) {
             log.error("ERROR: ", e);
         }
-//        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                offset++;
-//                int temp = limit*offset;
-//                if (temp<=count) {
-//                    String str = String.valueOf(temp);
-//                    getActiveMatches("10", str);
-//                }
-//            }
-//        });
 
         return view;
     }
@@ -86,44 +77,27 @@ public class TimeTableFragment extends Fragment {
         Controller.getApi().getMainRefsLeagues(PersonalActivity.id).enqueue(new Callback<List<League>>() {
             @Override
             public void onResponse(Call<List<League>> call, Response<List<League>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!=null){
+                if(response.isSuccessful())
+                    if(response.body()!=null)
                         saveData(response.body());
-                    }
-                }
             }
 
             @Override
             public void onFailure(Call<List<League>> call, Throwable t) {
                 log.error(t.getMessage());
                 layout.setVisibility(View.VISIBLE);
-
             }
         });
-
-//        Controller.getApi().getActiveMatches(limit, offset, false)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(this::saveData
-//                        ,
-//                        error -> {
-//                            layout.setVisibility(View.VISIBLE);
-//                            CheckError checkError = new CheckError();
-//                            checkError.checkError(getActivity(), error);
-//                        }
-//                );
     }
 
     private void saveData(List<League> leagueList) {
         matches.clear();
         String str="";
-        for(League l: leagueList){
-           for (Match m : l.getMatches()){
-               if(!m.getPlayed()){
+        for(League l: leagueList)
+           for (Match m : l.getMatches())
+               if(!m.getPlayed())
                    str+=","+m.getId();
-               }
-           }
-        }
+
         Controller.getApi().getMatches(str).enqueue(new Callback<List<MatchPopulate>>() {
             @Override
             public void onResponse(Call<List<MatchPopulate>> call, Response<List<MatchPopulate>> response) {
@@ -139,29 +113,20 @@ public class TimeTableFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<MatchPopulate>> call, Throwable t) {
-
-            }
+            public void onFailure(Call<List<MatchPopulate>> call, Throwable t) { }
         });
-
-
-
-//        count = matches1.getCount();
-//        List<ActiveMatch> result;
-//        result = matches1.getMatches();
-//        if (result.size() != 0) {
-//            matches.addAll(matches.size(), result);
-//            List<ActiveMatch> list = new ArrayList<>(matches);
-//            adapter.dataChanged(list);
-//            layout.setVisibility(View.GONE);
-//
-//        }
-
-
-//        else {
-//            layout.setVisibility(View.VISIBLE);
-//        }
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        int i = data.getExtras().getInt("MatchIndex", -1);
+
+        if (i==-1)
+            return;
+
+
+    }
 }

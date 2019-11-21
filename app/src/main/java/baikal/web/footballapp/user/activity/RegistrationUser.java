@@ -21,18 +21,12 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.TimeToString;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.User;
 import okhttp3.MediaType;
@@ -74,7 +68,7 @@ public class RegistrationUser extends AppCompatActivity {
         String patronymic = PersonalInfo.textPatronymic.getText().toString();
         String login = PersonalInfo.textLogin.getText().toString();
         String password = PersonalInfo.textPassword.getText().toString();
-        String DOB = (new TimeToString()).TimeForServer(PersonalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
+        String DOB = (new DateToString()).TimeForServer(PersonalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
 
         String region = "";
 
@@ -122,16 +116,16 @@ public class RegistrationUser extends AppCompatActivity {
             map.put("password", requestPass);
             map.put("region", requestRegion);
             map.put("birthdate",requestDOB);
-            Call<User> call2 = Controller.getApi().signUp(map, body);
-            call2.enqueue(new Callback<User>() {
+
+            Controller.getApi().signUp(map, body).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
                     log.info("INFO: check response");
                     if (response.isSuccessful()) {
                         log.info("INFO: response isSuccessful");
-                        if (response.body() == null) {
+                        if (response.body() == null)
                             log.error("ERROR: body is null");
-                        } else {
+                        else {
                             User user = response.body();
                             Person person = response.body().getUser();
                             UserPage.auth = true;

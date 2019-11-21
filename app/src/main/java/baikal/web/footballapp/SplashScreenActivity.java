@@ -9,17 +9,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import baikal.web.footballapp.model.Person;
-
 public class SplashScreenActivity extends AppCompatActivity {
     private static final long DELAY = 3000;
-    private boolean scheduled = false;
-    private Timer splashTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-        splashTimer = new Timer();
+        Timer splashTimer = new Timer();
         splashTimer.schedule(new TimerTask()
         {
             @Override
@@ -29,7 +26,6 @@ public class SplashScreenActivity extends AppCompatActivity {
                 startActivity(new Intent(SplashScreenActivity.this, PersonalActivity.class));
             }
         }, DELAY);
-        scheduled = true;
     }
 
 }

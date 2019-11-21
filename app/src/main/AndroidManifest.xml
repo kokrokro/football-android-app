@@ -28,9 +28,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".user.activity.ChooseTrainer"></activity>
-        <activity android:name=".user.activity.AddTournament" />
+        tools:ignore="GoogleAppIndexingWarning"
+        android:fullBackupContent="true">
+
         <activity
             android:name=".SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -42,6 +42,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".user.activity.ChooseTrainer" />
+        <activity android:name=".user.activity.AddTournament" />
+
         <activity
             android:name=".protocol.ProtocolPage"
             android:configChanges="orientation"
