@@ -26,9 +26,9 @@ import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.user.activity.ConfirmProtocol;
 import baikal.web.footballapp.user.activity.MyMatches;
 import baikal.web.footballapp.user.activity.PlayerAddToTeam;
-import baikal.web.footballapp.user.activity.ProtocolEdit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,7 +195,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             final String finalClub = club1;
             final String finalClub1 = club2;
             holder.button.setOnClickListener(v -> {
-                Intent intent = new Intent(activity, ProtocolEdit.class);
+                Intent intent = new Intent(activity, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
                 int count = MyMatches.matches.indexOf(match);
                 bundle.putSerializable("PROTOCOLMATCH", match);
@@ -204,8 +204,8 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
                 bundle.putString("PROTOCOLCLUB1", finalClub);
                 bundle.putString("PROTOCOLCLUB2", finalClub1);
                 bundle.putInt("MATCHPOSITION", count);
-                intent.putExtras(bundle);
-                context.startActivity(intent);
+//                intent.putExtras(bundle);
+//                context.startActivity(intent);
             });
         }
         if (position==(matches.size()-1)){

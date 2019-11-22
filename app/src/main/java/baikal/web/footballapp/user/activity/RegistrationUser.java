@@ -4,12 +4,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import org.json.JSONException;
@@ -27,7 +25,6 @@ import java.util.Map;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.User;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -39,45 +36,41 @@ import retrofit2.Response;
 public class RegistrationUser extends AppCompatActivity {
 
     private final Logger log = LoggerFactory.getLogger(RegistrationUser.class);
-    private static ImageButton imageSave;
-    private final PersonalInfo personalInfo = new PersonalInfo();
+    private final PersonalInfo personalInfo = new PersonalInfo(this);
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        ImageButton imageClose;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.registration_user);
-        imageClose = findViewById(R.id.registrationClose);
-        imageSave = findViewById(R.id.registrationSave);
+        ImageButton imageClose = findViewById(R.id.registrationClose);
+        ImageButton imageSave = findViewById(R.id.registrationSave);
 
         imageClose.setOnClickListener(v -> finish());
         imageSave.setOnClickListener(v -> SignUp());
         fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").show(personalInfo).commit();
-
-        personalInfo.setParentContext(this);
     }
 
     public void showAlertDialogButtonClicked() {
-        Toast.makeText(getBaseContext(), "Выберите регион", Toast.LENGTH_SHORT);
+        Toast.makeText(getBaseContext(), "Выберите регион", Toast.LENGTH_SHORT).show();
     }
 
     private void SignUp() {
-        String name = PersonalInfo.textName.getText().toString();
-        String surName = PersonalInfo.textSurname.getText().toString();
-        String patronymic = PersonalInfo.textPatronymic.getText().toString();
-        String login = PersonalInfo.textLogin.getText().toString();
-        String password = PersonalInfo.textPassword.getText().toString();
-        String DOB = (new DateToString()).TimeForServer(PersonalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
+        String name = personalInfo.textName.getText().toString();
+        String surName = personalInfo.textSurname.getText().toString();
+        String patronymic = personalInfo.textPatronymic.getText().toString();
+        String login = personalInfo.textLogin.getText().toString();
+        String password = personalInfo.textPassword.getText().toString();
+        String DOB = (new DateToString()).TimeForServer(personalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
 
         String region = "";
 
-        if (PersonalInfo.spinnerRegion.getSelectedItemPosition() == -1)
+        if (personalInfo.spinnerRegion.getSelectedItemPosition() == -1)
             showAlertDialogButtonClicked();
         else
-            region = PersonalInfo.regionsId.get(PersonalInfo.spinnerRegion.getSelectedItemPosition());
+            region = personalInfo.regionsId.get(personalInfo.spinnerRegion.getSelectedItemPosition());
 
-        Bitmap photo = PersonalInfo.myBitmap;
+
         String type = "player";
         Map<String, RequestBody> map = new HashMap<>();
         RequestBody requestType = RequestBody.create(MediaType.parse("text/plain"), type);
@@ -88,6 +81,17 @@ public class RegistrationUser extends AppCompatActivity {
         RequestBody requestPass = RequestBody.create(MediaType.parse("text/plain"), password);
         RequestBody requestDOB = RequestBody.create(MediaType.parse("text/plain"),DOB);
         RequestBody requestRegion = RequestBody.create(MediaType.parse("text/plain"),region);
+
+        map.put("type", requestType);
+        map.put("name", requestName);
+        map.put("surname", requestSurname);
+        map.put("lastname", requestPatronymic);
+        map.put("login", requestLogin);
+        map.put("password", requestPass);
+        map.put("region", requestRegion);
+        map.put("birthdate",requestDOB);
+
+        Bitmap photo = personalInfo.myBitmap;
         if (photo == null){
             photo = BitmapFactory.decodeResource(getResources(), R.drawable.ic_logo2);
             log.info("INFO: photo is null");
@@ -96,7 +100,9 @@ public class RegistrationUser extends AppCompatActivity {
         try {
             //create a file to write bitmap data
             File file = new File(getCacheDir(), "photo");
-            file.createNewFile();
+
+            if (file.createNewFile())
+                throw new IOException();
             //Convert bitmap to byte array
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 80 /*ignored for PNG*/, bos);
@@ -106,28 +112,16 @@ public class RegistrationUser extends AppCompatActivity {
             fos.write(bitmapdata);
             fos.flush();
             fos.close();
+
             RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
             MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
-            map.put("type", requestType);
-            map.put("name", requestName);
-            map.put("surname", requestSurname);
-            map.put("lastname", requestPatronymic);
-            map.put("login", requestLogin);
-            map.put("password", requestPass);
-            map.put("region", requestRegion);
-            map.put("birthdate",requestDOB);
 
             Controller.getApi().signUp(map, body).enqueue(new Callback<User>() {
                 @Override
                 public void onResponse(Call<User> call, Response<User> response) {
-                    log.info("INFO: check response");
                     if (response.isSuccessful()) {
-                        log.info("INFO: response isSuccessful");
-                        if (response.body() == null)
-                            log.error("ERROR: body is null");
-                        else {
+                        if (response.body() != null) {
                             User user = response.body();
-                            Person person = response.body().getUser();
                             UserPage.auth = true;
                             Intent intent = new Intent();
                             intent.putExtra("PERSONREGINFO", user);
@@ -137,6 +131,7 @@ public class RegistrationUser extends AppCompatActivity {
                     }
                     else {
                         try {
+                            assert response.errorBody() != null;
                             JSONObject jsonObject = new JSONObject(response.errorBody().string());
                             String str = "Ошибка! ";
                             str += jsonObject.getString("message");

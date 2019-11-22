@@ -51,7 +51,7 @@ public class SpinnerRefereeAdapter extends ArrayAdapter<Person> {
 
 //        View rowview = inflater.inflate(R.layout.spinner_item,null,true);
 
-        TextView txtTitle = view.findViewById(R.id.playersSort);
+        TextView txtTitle = view.findViewById(R.id.text1);
         CheckName checkName = new CheckName();
         String str;
         try {

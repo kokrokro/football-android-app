@@ -51,7 +51,7 @@ public class SpinnerRegionAdapter extends ArrayAdapter<Region> {
     private View createItemView (int position, View convertView, ViewGroup parent) {
         final View view = inflater.inflate(resource, parent, false);
         Region region = regions.get(position);
-        TextView txtTitle = view.findViewById(R.id.playersSort);
+        TextView txtTitle = view.findViewById(R.id.text1);
         txtTitle.setText(region.getName());
 
         return view;

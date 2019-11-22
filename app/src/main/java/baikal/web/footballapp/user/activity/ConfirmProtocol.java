@@ -77,9 +77,9 @@ public class ConfirmProtocol extends AppCompatActivity {
             fab.setOnClickListener(v -> {
                 try {
                     List<Event> list = new ArrayList<>();
-                    for (PlayerEvent playerEvent : playerEvents) {
+                    for (PlayerEvent playerEvent : playerEvents)
                         list.add(playerEvent.getEvent());
-                    }
+
                     TeamTitleClubLogoMatchEvents playerEv = getPlayerEvent(list, match, teams.get("TeamOne"), teams.get("TeamTwo"));
                     Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
                     Bundle bundle = new Bundle();
@@ -87,7 +87,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                     bundle.putSerializable("PROTOCOLEVENTS", playerEv);
                     intent.putExtras(bundle);
 
-                    Log.d("ConfirmProtocol.java", "trying to enter to    worl protocol...");
+                    Log.d("ConfirmProtocol.java", "trying to enter to work protocol...");
 
                     startActivity(intent);
                 } catch (Exception e) {
@@ -112,6 +112,9 @@ public class ConfirmProtocol extends AppCompatActivity {
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
                 bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", teams.get("TeamOne"));
                 intent.putExtras(bundle);
+
+                Log.d("ConfirmProtocol: ", "team1 ...");
+
                 startActivity(intent);
             });
             buttonCommand2.setOnClickListener(v -> {
@@ -120,6 +123,9 @@ public class ConfirmProtocol extends AppCompatActivity {
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
                 bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", teams.get("TeamTwo"));
                 intent.putExtras(bundle);
+
+                Log.d("ConfirmProtocol: ", "team2 ...");
+
                 startActivity(intent);
             });
             buttonReferees.setOnClickListener(v -> {
@@ -217,8 +223,6 @@ public class ConfirmProtocol extends AppCompatActivity {
     }
 
     private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, MatchPopulate match, Team team1, Team team2) {
-
-        log.error(match.getId() + " 190");
         List<PlayerEvent> playerEvents1 = new ArrayList<>();
         String teamOne = team1.getName();
         String teamTwo = team2.getName();

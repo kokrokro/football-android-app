@@ -13,7 +13,7 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
-import baikal.web.footballapp.user.activity.ProtocolEdit;
+import baikal.web.footballapp.user.activity.ConfirmProtocol;
 import baikal.web.footballapp.user.activity.ProtocolScore;
 
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ import java.util.HashMap;
 
 public class RVScoreHalfAdapter extends RecyclerView.Adapter<RVScoreHalfAdapter.ViewHolder>{
     private final ProtocolScore context;
-    Logger log = LoggerFactory.getLogger(ProtocolEdit.class);
+    Logger log = LoggerFactory.getLogger(ConfirmProtocol.class);
     private final HashMap<Integer, String> halves;
     private final TeamTitleClubLogoMatchEvents playerEvents;
     public RVScoreHalfAdapter(Activity context, HashMap<Integer, String> halves,

@@ -7,28 +7,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.Spinner;
-import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Matches;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.RefereeRequest;
-import baikal.web.footballapp.model.RefereeRequestList;
-import baikal.web.footballapp.user.adapter.SpinnerRefereeAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,14 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -77,84 +62,82 @@ public class EditTimeTable extends AppCompatActivity {
 
         imageClose.setOnClickListener(v -> finish());
 
-        List<Person> referees = new ArrayList<>();
-        referees.add(null);
-        referees.addAll(1, AuthoUser.allReferees);
-        match = (MatchPopulate) getIntent().getExtras().getSerializable("MatchConfirmProtocolRefereesToEdit");
+        match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("MatchConfirmProtocolRefereesToEdit");
 
-        if (match.getPlayed()){
+        if (match != null && match.getPlayed())
             fab.hide();
-        }
 
-        for(Referee ref : match.getReferees()) {
-            switch (ref.getType()) {
-                case "firstReferee":
-                    ref1Id = ref.getPerson();
-                    Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                        @Override
-                        public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null && response.body().size()>0) {
-                                    Person p = response.body().get(0);
-                                    String string = p.getSurname()+" "+ p.getName();
-                                    ref1.setText(string);
+        if (match != null) {
+            for(Referee ref : match.getReferees()) {
+                switch (ref.getType()) {
+                    case "firstReferee":
+                        ref1Id = ref.getPerson();
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref1.setText(string);
+                                    }
                                 }
                             }
-                        }
-                        @Override
-                        public void onFailure(Call<List<Person>> call, Throwable t) { }
-                    });
-                    break;
-                case "secondReferee":
-                    ref2Id = ref.getPerson();
-                    Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                        @Override
-                        public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null && response.body().size()>0) {
-                                    Person p = response.body().get(0);
-                                    String string = p.getSurname()+" "+ p.getName();
-                                    ref2.setText(string);
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                        });
+                        break;
+                    case "secondReferee":
+                        ref2Id = ref.getPerson();
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref2.setText(string);
+                                    }
                                 }
                             }
-                        }
-                        @Override
-                        public void onFailure(Call<List<Person>> call, Throwable t) { }
-                    });
-                    break;
-                case "thirdReferee":
-                    ref3Id = ref.getPerson();
-                    Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                        @Override
-                        public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null && response.body().size()>0) {
-                                    Person p = response.body().get(0);
-                                    String string = p.getSurname()+" "+ p.getName();
-                                    ref3.setText(string);
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                        });
+                        break;
+                    case "thirdReferee":
+                        ref3Id = ref.getPerson();
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref3.setText(string);
+                                    }
                                 }
                             }
-                        }
-                        @Override
-                        public void onFailure(Call<List<Person>> call, Throwable t) { }
-                    });
-                    break;
-                case "timekeeper":
-                    ref4Id = ref.getPerson();
-                    Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                        @Override
-                        public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                            if (response.isSuccessful()) {
-                                if (response.body() != null && response.body().size()>0) {
-                                    Person p = response.body().get(0);
-                                    String string = p.getSurname()+" "+ p.getName();
-                                    ref4.setText(string);
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                        });
+                        break;
+                    case "timekeeper":
+                        ref4Id = ref.getPerson();
+                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                            @Override
+                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null && response.body().size()>0) {
+                                        Person p = response.body().get(0);
+                                        String string = p.getSurname()+" "+ p.getName();
+                                        ref4.setText(string);
+                                    }
                                 }
                             }
-                        }
-                        @Override
-                        public void onFailure(Call<List<Person>> call, Throwable t) { }
-                    });
+                            @Override
+                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                        });
+                }
             }
         }
 
@@ -209,13 +192,12 @@ public class EditTimeTable extends AppCompatActivity {
                .enqueue(new Callback<Match>() {
            @Override
            public void onResponse(Call<Match> call, Response<Match> response) {
-               Intent intent = new Intent();
-
-               Log.d("EdiTimeTable: ", "\n");
-
-               intent.putExtra("MatchIndex", getIntent().getIntExtra("MatchIndex", -1));
-
                showToast("Судьи назначены успешно");
+
+               Intent intent = new Intent();
+               intent.putExtra("MatchIndex", getIntent().getIntExtra("MatchIndex", -1));
+               setResult(RESULT_OK, intent);
+
                finish();
            }
 
@@ -266,7 +248,7 @@ public class EditTimeTable extends AppCompatActivity {
 
         if (resultCode == RESULT_OK) {
               name =data.getStringExtra("surname")+" "+data.getStringExtra("name") ;
-              id = data.getData().toString();
+              id = Objects.requireNonNull(data.getData()).toString();
         }
         if (requestCode == 1) {
             ref1Id = id;
@@ -284,18 +266,5 @@ public class EditTimeTable extends AppCompatActivity {
             ref4.setText(name);
             ref4Id = id;
         }
-    }
-
-    private void saveData(Matches matches) {
-        String str;
-        str = "Изменения сохранены";
-        Toast.makeText(EditTimeTable.this, str, Toast.LENGTH_SHORT).show();
-        Match match = matches.getMatch();
-        Intent intent = new Intent();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("PROTOCOLMATCHAFTEREDITREFEREES", match);
-        intent.putExtras(bundle);
-        setResult(RESULT_OK, intent);
-//
     }
 }

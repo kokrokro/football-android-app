@@ -1,10 +1,11 @@
 package baikal.web.footballapp;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.transition.Slide;
@@ -16,9 +17,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -40,16 +42,13 @@ import baikal.web.footballapp.model.Advertisings;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Clubs;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
-import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.UserPage;
-import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -59,6 +58,8 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class PersonalActivity extends AppCompatActivity {
+    private static final String TAG = "PersonalActivity: ";
+
     public static final List<Person> allPlayers = new ArrayList<>();
     public static final List<Person> people = new ArrayList<>();
     public static final List<Person> AllPeople = new ArrayList<>();
@@ -75,7 +76,6 @@ public class PersonalActivity extends AppCompatActivity {
     public static List<Tourney> allTourneys = new ArrayList<>();
     //    Fragment active = fragmentHome;
     public static Fragment active = fragmentMain;
-    private static Context contextBase;
     private static BottomNavigationView bottomNavigationView;
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
     private final Fragment fragmentTournament;
@@ -86,6 +86,7 @@ public class PersonalActivity extends AppCompatActivity {
     public static String id ;
     public static String token;
     public static boolean status;
+
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -109,22 +110,13 @@ public class PersonalActivity extends AppCompatActivity {
                             active = fragmentPlayers;
                             return true;
                         case R.id.navigation_user:
-                            //                    if (!UserPage.auth){
-                            //                        fragmentManager.beginTransaction().hide(active).show(fragmentUser).addToBackStack(null).commit();
-                            //                        active = fragmentUser;
-                            //                    }
-                            //                    else{
-                            //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
-                            //                        active = UserPage.authoUser;
-                            //                    }
+
                             status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
                             if (status) {
                                 log.debug("ЗАРЕГАН");
-                                log.debug("-------------");
                                 log.debug(SaveSharedPreference.getObject().getToken());
-                                log.debug("-------------");
                                 id = SaveSharedPreference.getObject().getUser().getId();
-                                Log.d("User ID: ", id);
+                                Log.d(TAG, "User ID: " + id);
 //                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                                 //     ft.detach(authoUser).attach(authoUser).commit();
                                 //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
@@ -172,7 +164,7 @@ public class PersonalActivity extends AppCompatActivity {
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Загрузка...");
 
-        contextBase = getApplicationContext();
+        Context contextBase = getApplicationContext();
 
         checkConnection();
         checkConnectionSingle();
@@ -180,7 +172,7 @@ public class PersonalActivity extends AppCompatActivity {
 
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);
-            //            BottomNavigationViewHelper helper = new BottomNavigationViewHelper();
+//                        BottomNavigationViewHelper helper = new BottomNavigationViewHelper();
 //            BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
         } catch (Exception e) {
@@ -191,11 +183,6 @@ public class PersonalActivity extends AppCompatActivity {
 
         fragmentManager.beginTransaction().setReorderingAllowed(true)
                 .add(R.id.pageContainer, fragmentMain, "1")
-//                .add(R.id.pageContainer, fragmentTournament, "2").hide(fragmentTournament)
-//                .add(R.id.pageContainer, fragmentClub, "3").hide(fragmentClub)
-//                .add(R.id.pageContainer, fragmentPlayers, "4").hide(fragmentPlayers)
-//                .add(R.id.pageContainer, fragmentUser, "5").hide(fragmentUser)
-//                .add(R.id.pageContainer, authoUser, "6").hide(authoUser)
                 .commit();
 
         // bottomNavigationView.getChildAt(0);

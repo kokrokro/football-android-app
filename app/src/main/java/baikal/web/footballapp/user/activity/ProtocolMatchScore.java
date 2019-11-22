@@ -111,9 +111,6 @@ public class ProtocolMatchScore extends AppCompatActivity {
             }else {
                 setAutoGoal(playerEvents, match);
             }
-
-//            RVProtocolEditAdapter adapter = new RVProtocolEditAdapter(this, events, match);
-//            RVProtocolEditAdapter adapter = new RVProtocolEditAdapter(this, playerEvents);
 //            recyclerView.setAdapter(adapter);
         }catch (Exception e){
             log.error("ERROR: ", e);

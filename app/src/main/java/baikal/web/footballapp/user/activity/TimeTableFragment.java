@@ -1,6 +1,7 @@
 package baikal.web.footballapp.user.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -121,6 +122,9 @@ public class TimeTableFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode != Activity.RESULT_OK)
+            return;
 
         int i = data.getExtras().getInt("MatchIndex", -1);
 

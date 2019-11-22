@@ -24,6 +24,7 @@
     <!--<color name="colorBadgeScale">#F9BDC8</color>-->
     <color name="colorBadgeScale">#FCDDE4</color>
     <color name="black_overlay">#66000000</color>
+    <color name="Black">#ff000000</color>
 
 </resources>
 

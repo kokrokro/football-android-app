@@ -1,4 +1,13 @@
 <resources>
+
+
+
+    <!-- Fragment Names -->
+
+    <!-- Dialog Names -->
+    <string name="dialog_select_image">SelectImage</string>
+
+    <!-- Old strings -->
     <string name="app_name">АЛФ РБ</string>
     <string name="reg_button">Зарегистрироваться</string>
     <string name="registration">Регистрация</string>
@@ -148,4 +157,6 @@
     <string name="trainer">Тренер</string>
     <string name="numberTrainer">Номер тренера</string>
     <string name="searchTourneys">Поиск по турнирам</string>
+    <string name="ChoosePhotoFromGalary">Выбрать фото</string>
+    <string name="OpenCamera">Открыть камеру</string>
 </resources>
