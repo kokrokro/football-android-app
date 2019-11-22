@@ -2,6 +2,7 @@ package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.ContentObservable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -13,16 +14,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.ParticipationRequest;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.user.activity.UserCommandInfo;
 import baikal.web.footballapp.user.activity.UserCommands;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,12 +47,15 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
     public RVOwnCommandAdapter (Activity activity, List<Team> list){
         this.activity = (PersonalActivity) activity;
 //        this.context = context;
+        log.error("adaaapter");
+
         this.list = list;
     }
     @NonNull
     @Override
     public RVOwnCommandAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_command, parent, false);
+
         return new ViewHolder(view);
     }
 
@@ -61,7 +70,7 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
                 break;
             }
         }
-        String nameTourney = league.getName();
+        String nameTourney = league.getTourney();
         for(Tourney tr : activity.allTourneys){
             if(tr.getId().equals(nameTourney)){
                 nameTourney = tr.getName();
@@ -102,21 +111,37 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
 
         str = transfer + transferBeginStr + "-" + transferEndStr;
         holder.textTransfer.setText(str);
-        List<Player> players = personTeams.getPlayers();
-        List<Player> playerList = new ArrayList<>();
-        for (Player player: players){
-            if (player.getInviteStatus().equals("Approved") || player.getInviteStatus().equals("Accepted")){
-//            if (player.getInviteStatus().equals("Accepted")){
-                playerList.add(player);
-            }
-        }
-        str = playersNum + playerList.size();
+//        List<Player> players = personTeams.getPlayers();
+//        List<Player> playerList = new ArrayList<>();
+//        for (Player player: players){
+//            if (player.getInviteStatus().equals("Approved") || player.getInviteStatus().equals("Accepted")){
+////            if (player.getInviteStatus().equals("Accepted")){
+//                playerList.add(player);
+//            }
+//        }
+        str = playersNum + personTeams.getPlayers().size();
         holder.textPlayersNum.setText(str);
         if (position== (list.size() - 1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
         final Team finalTeamLeague = personTeams;
         League finalLeague = league;
+        Controller.getApi().getParticipation(teamId).enqueue(new Callback<List<ParticipationRequest>>() {
+            @Override
+            public void onResponse(Call<List<ParticipationRequest>> call, Response<List<ParticipationRequest>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null && response.body().size()>0){
+                        holder.textStatus.setText(response.body().get(0).getStatus());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ParticipationRequest>> call, Throwable t) {
+
+            }
+        });
+        setListener(holder,personTeams,league);
 
 //        if (teamLeague.getStatus().equals("Rejected")){
 //            holder.textStatus.setText("Отклонена");
