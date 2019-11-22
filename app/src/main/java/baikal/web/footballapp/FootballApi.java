@@ -184,7 +184,7 @@ public interface FootballApi {
 
     //add player to team
     @Multipart
-    @POST("/api/team/addplayer")
+    @POST("/api/person_invite")
     Call<ServerResponse> addPlayerToTeam(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
     //create new team
@@ -207,7 +207,7 @@ public interface FootballApi {
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getTeams(@Query("creator") String creator);
     @GET("/api/participation_request")
-    Call<ParticipationRequest> getParticipation(@Query("team") String id);
+    Call<List<ParticipationRequest>> getParticipation(@Query("team") String id);
     @GET("api/crud/league?_populate=matches")
     Call<List<League>> getMainRefsLeagues(@Query("mainReferee") String mainRefId);
 

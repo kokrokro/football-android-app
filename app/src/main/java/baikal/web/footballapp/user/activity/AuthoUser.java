@@ -184,8 +184,6 @@ public class AuthoUser extends Fragment {
                 applyFontToMenuItem(mi);
             }
 
-            this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches).show(myMatches).commit();
-            categoryTitle.setText(getActivity().getText(R.string.matches));
 
             //adapters
 //            adapterInv = new RVInvitationAdapter(getActivity(), firstFragment, AuthoUser.pendingTeamInvitesList);
@@ -212,7 +210,7 @@ public class AuthoUser extends Fragment {
             }
 
         });
-
+        selectDrawerItem(nvDrawer.getMenu().getItem(0));
 
         fab1 = view.findViewById(R.id.buttonEditClub);
         fab1.setVisibility(View.INVISIBLE);

@@ -159,11 +159,9 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
     private void addPlayer(final String personId, League league, final Team team) {
         Map<String, RequestBody> map = new HashMap<>();
         RequestBody request = RequestBody.create(MediaType.parse("text/plain"), personId);
-        map.put("playerId", request);
-        request = RequestBody.create(MediaType.parse("text/plain"), league.getId());
-        map.put("_id", request);
+        map.put("person", request);
         request = RequestBody.create(MediaType.parse("text/plain"), team.getId());
-        map.put("teamId", request);
+        map.put("team", request);
         Call<ServerResponse> call = Controller.getApi().addPlayerToTeam(SaveSharedPreference.getObject().getToken(), map);
         log.info("INFO: load and parse json-file");
         final League finalLeague = league;

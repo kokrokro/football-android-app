@@ -36,7 +36,7 @@ import static android.app.Activity.RESULT_OK;
 
 
 public class UserCommands extends Fragment {
-    private final Logger log = LoggerFactory.getLogger(UserClubs.class);
+    private final Logger log = LoggerFactory.getLogger(UserCommands.class);
     private final int REQUEST_CODE_NEWCOMMAND = 286;
     private int num;
     private boolean scrollStatus;
@@ -70,9 +70,6 @@ public class UserCommands extends Fragment {
         textView2 = view.findViewById(R.id.userCommandsText2);
 
         teams.addAll(AuthoUser.createdTeams);
-        try{
-            RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
-
 
         if (teams.size()==0){
             linearOwnCommand.setVisibility(View.GONE);
@@ -86,12 +83,16 @@ public class UserCommands extends Fragment {
             textView.setVisibility(View.VISIBLE);
             textView2.setVisibility(View.VISIBLE);
         }
-        linear = view.findViewById(R.id.emptyCommand);
+        else{
+            linear = view.findViewById(R.id.emptyCommand);
+            linear.setVisibility(View.GONE);
+        }
         linearLayout = view.findViewById(R.id.notEmptyCommand);
         scroller = view.findViewById(R.id.userCommandScroll);
         recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
         recyclerView.setAdapter(AuthoUser.adapterCommand);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
 
         recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
 
@@ -150,7 +151,7 @@ public class UserCommands extends Fragment {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
-
+//
         AuthoUser.fab.setOnClickListener(v -> {
             //add command
 //                num = AuthoUser.pendingTeamInvitesList.size();
@@ -158,14 +159,13 @@ public class UserCommands extends Fragment {
             Intent intent = new Intent(getActivity(), NewCommand.class);
             startActivityForResult(intent, REQUEST_CODE_NEWCOMMAND);
         });
-
-        if (AuthoUser.personOngoingLeagues.size()!=0){
-            linear.setVisibility(View.GONE);
-        }
-        else {
-            linearLayout.setVisibility(View.GONE);
-        }
-        }catch (NullPointerException e){}
+//
+//        if (AuthoUser.personOngoingLeagues.size()!=0){
+//            linear.setVisibility(View.GONE);
+//        }
+//        else {
+//            linearLayout.setVisibility(View.GONE);
+//        }
         return view;
     }
 
