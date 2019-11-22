@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -56,16 +57,13 @@ public class NewCommand extends AppCompatActivity {
     private Team team;
     private EditText textTitle;
     private EditText number;
-    private EditText trainer;
+    private Button trainer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ImageButton imageClose;
         ImageButton imageSave;
         setContentView(R.layout.user_new_command);
-
-
-        allClubs.addAll(PersonalActivity.allClubs);
         allTournaments.addAll(PersonalActivity.tournaments);
 
         log.error(String.valueOf(allClubs.size()));
@@ -256,7 +254,8 @@ public class NewCommand extends AppCompatActivity {
         if (requestCode == 1) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                trainer.setText(data.getData().toString());
+                String str  = data.getSerializableExtra("surname") +" "+data.getSerializableExtra("name");
+                trainer.setText(str);
             }
         }
     }

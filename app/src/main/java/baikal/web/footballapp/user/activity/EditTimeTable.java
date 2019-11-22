@@ -268,6 +268,9 @@ public class EditTimeTable extends AppCompatActivity {
               name =data.getStringExtra("surname")+" "+data.getStringExtra("name") ;
               id = data.getData().toString();
         }
+        else {
+            return;
+        }
         if (requestCode == 1) {
             ref1Id = id;
             ref1.setText(name);
