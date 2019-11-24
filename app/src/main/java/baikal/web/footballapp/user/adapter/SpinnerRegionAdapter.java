@@ -4,16 +4,13 @@ import android.widget.ArrayAdapter;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.user.activity.NewCommand;
 
@@ -25,13 +22,11 @@ import java.util.List;
 public class SpinnerRegionAdapter extends ArrayAdapter<Region> {
     Logger log = LoggerFactory.getLogger(NewCommand.class);
     private final LayoutInflater inflater;
-    private final Context context;
     private final List<Region> regions;
     private final int resource;
 
     public SpinnerRegionAdapter (@NonNull Context context, int resource, List<Region> regions) {
         super(context, resource, regions);
-        this.context = context;
         this.resource = resource;
         this.regions = regions;
         inflater = LayoutInflater.from(context);
@@ -39,16 +34,16 @@ public class SpinnerRegionAdapter extends ArrayAdapter<Region> {
 
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return createItemView(position, convertView, parent);
+        return createItemView(position, parent);
     }
 
-    private View createItemView (int position, View convertView, ViewGroup parent) {
+    private View createItemView(int position, ViewGroup parent) {
         final View view = inflater.inflate(resource, parent, false);
         Region region = regions.get(position);
         TextView txtTitle = view.findViewById(R.id.text1);

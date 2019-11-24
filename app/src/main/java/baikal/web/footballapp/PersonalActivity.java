@@ -1,10 +1,7 @@
 package baikal.web.footballapp;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -17,8 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
@@ -33,6 +28,7 @@ import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import baikal.web.footballapp.club.activity.ClubPage;
@@ -69,7 +65,7 @@ public class PersonalActivity extends AppCompatActivity {
     private static final String CLUB = "CLUB_PAGE";
     private static final String PLAYERS = "PLAYERS_PAGE";
     private static final String USER = "USER_PAGE";
-    private static final AuthoUser authoUser = new AuthoUser();
+    private final AuthoUser authoUser = new AuthoUser();
     private static final Fragment fragmentMain = new MainPage();
     public static List<League> tournaments = new ArrayList<>();
     public static List<Club> allClubs = new ArrayList<>();
@@ -134,9 +130,6 @@ public class PersonalActivity extends AppCompatActivity {
                 }
             };
 
-    private ProgressDialog mProgressDialog;
-    private AdvertisingFragment dialogFragment;
-
     public PersonalActivity() {
         fragmentTournament = new TournamentPage();
     }
@@ -159,16 +152,13 @@ public class PersonalActivity extends AppCompatActivity {
             id = SaveSharedPreference.getObject().getUser().getId();
             token = SaveSharedPreference.getObject().getToken();
         }
-        mProgressDialog = new ProgressDialog(this);
+        ProgressDialog mProgressDialog = new ProgressDialog(this);
 
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Загрузка...");
 
-        Context contextBase = getApplicationContext();
-
         checkConnection();
         checkConnectionSingle();
-
 
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -261,7 +251,7 @@ public class PersonalActivity extends AppCompatActivity {
 
     private void showAds(Advertisings news) {
         if (news.getAds().size() != 0) {
-            dialogFragment = AdvertisingFragment.newInstance();
+            AdvertisingFragment dialogFragment = AdvertisingFragment.newInstance();
             Bundle args = new Bundle();
             args.putSerializable("ADVERTISING", (Serializable) news.getAds());
             dialogFragment.setArguments(args);
@@ -305,7 +295,7 @@ public class PersonalActivity extends AppCompatActivity {
     private void GetAllRegions() {
         Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
             @Override
-            public void onResponse(Call<List<Region>> call, Response<List<Region>> response) {
+            public void onResponse(@NonNull Call<List<Region>> call, @NonNull Response<List<Region>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         regions.clear();
@@ -314,7 +304,7 @@ public class PersonalActivity extends AppCompatActivity {
                 }}
 
             @Override
-            public void onFailure(Call<List<Region>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Region>> call, @NonNull Throwable t) {
 
             }
         });
@@ -346,7 +336,7 @@ public class PersonalActivity extends AppCompatActivity {
         allTourneys = new ArrayList<>();
         Controller.getApi().getAllTourneys().enqueue(new Callback<List<Tourney>>() {
             @Override
-            public void onResponse(Call<List<Tourney>> call, Response<List<Tourney>> response) {
+            public void onResponse(@NonNull Call<List<Tourney>> call, @NonNull Response<List<Tourney>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         allTourneys.clear();
@@ -356,17 +346,16 @@ public class PersonalActivity extends AppCompatActivity {
 
             }
             @Override
-            public void onFailure(Call<List<Tourney>> call, Throwable t) {
-                Log.e("ERROR: ", t.getMessage());
+            public void onFailure(@NonNull Call<List<Tourney>> call, @NonNull Throwable t) {
+                Log.e("ERROR: ", Objects.requireNonNull(t.getMessage()));
             }
         });
 
     }
 
     private void getError(Throwable error) {
-        String str;
+        String str = "";
         try {
-
             if (error instanceof HttpException) {
                 HttpException exception = (HttpException) error;
                 switch (exception.code()) {
@@ -378,11 +367,15 @@ public class PersonalActivity extends AppCompatActivity {
                         break;
                     case 522:
                         str = "Отсутствует соединение";
+                        break;
                     case 410:
                         str = "Wrong api request";
                     default:
                         break;
                 }
+
+                if(App.wasInBackground)
+                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
             }
             if (error instanceof SocketTimeoutException) {
                 str = "Неполадки на сервере. Попробуйте позже.";
@@ -416,7 +409,6 @@ public class PersonalActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void GetAllPlayers() {
-        String type = "player";
         Controller.getApi().getAllPersons( null, "32575", "0")
                 .subscribeOn(Schedulers.io())
 //                .doOnSubscribe(__ -> showDialog())
@@ -456,7 +448,7 @@ public class PersonalActivity extends AppCompatActivity {
 
     public void setAnimation() {
         Slide slide = new Slide();
-        slide.setSlideEdge(Gravity.LEFT);
+        slide.setSlideEdge(Gravity.START);
         slide.setDuration(400);
         slide.setInterpolator(new DecelerateInterpolator());
         getWindow().setExitTransition(slide);

@@ -1,14 +1,15 @@
 package baikal.web.footballapp.user.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -41,15 +43,16 @@ import static android.app.Activity.RESULT_OK;
 
 
 public class UserPage extends Fragment {
-    public static boolean auth;
-    private static AuthoUser authoUser;
+    private static final String TAG = "UserPage: ";
+    static boolean auth;
+    private AuthoUser authoUser;
     private final Logger log = LoggerFactory.getLogger(UserPage.class);
-    private final int REQUEST_CODE_REGISTRATION = 256;
+    private static final int REQUEST_CODE_REGISTRATION = 256;
     private EditText textLogin;
     private EditText textPass;
     private static User user;
 
-    public void resetLoginPassEditText() {
+    private void resetLoginPassEditText() {
         textLogin.setText("");
         textPass.setText("");
     }
@@ -96,13 +99,13 @@ public class UserPage extends Fragment {
             if (requestCode == REQUEST_CODE_REGISTRATION) {
                 //pass token
                 authoUser = new AuthoUser();
-                User user = (User) data.getExtras().getSerializable("PERSONREGINFO");
-                Person person = user.getUser();
+                User user = (User) Objects.requireNonNull(data.getExtras()).getSerializable("PERSONREGINFO");
+                Person person = Objects.requireNonNull(user).getUser();
                 PersonalActivity.allPlayers.add(person);
                 PersonalActivity.people.add(person);
                 PersonalActivity.AllPeople.add(person);
                 PlayersPage.adapter.notifyDataSetChanged();
-                SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
+                SaveSharedPreference.setLoggedIn(Objects.requireNonNull(getActivity()).getApplicationContext(), true);
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser, "AUTHOUSERPAGE").hide(this).show(authoUser).commit();
@@ -113,6 +116,11 @@ public class UserPage extends Fragment {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "On Destroy...");
+    }
 
     private void SignIn() {
         String login = textLogin.getText().toString();
@@ -121,7 +129,7 @@ public class UserPage extends Fragment {
         log.info("INFO: load and parse json-file");
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 log.info("INFO: check response");
                 if (response.isSuccessful()) {
                     log.info("INFO: response isSuccessful");
@@ -133,7 +141,7 @@ public class UserPage extends Fragment {
                         user = response.body();
                         try {
                             authoUser = new AuthoUser();
-                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
                             fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser).hide(PersonalActivity.active).show(authoUser).commit();
                             PersonalActivity.active = authoUser;
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
@@ -147,22 +155,28 @@ public class UserPage extends Fragment {
                 }
                 else {
                     try {
-                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        JSONObject jsonObject = new JSONObject(Objects.requireNonNull(response.errorBody()).string());
                         String str = "Ошибка! ";
                         str += jsonObject.getString("message");
                         Toast.makeText(getActivity(), str, Toast.LENGTH_LONG).show();
                     } catch (IOException | JSONException e) {
                         e.printStackTrace();
+                    } catch (NullPointerException e) {
+                        log.error(TAG, e);
                     }
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 //for getting error in network put here Toast, so get the error on network
                 log.error("ERROR: SignIn() onResponse ", t);
                 Toast.makeText(getActivity(), "Ошибка сервера.", Toast.LENGTH_SHORT).show();
-                getActivity().finishAndRemoveTask();
+                try {
+                    Objects.requireNonNull(getActivity()).finishAndRemoveTask();
+                } catch (Exception e) {
+                    log.error(TAG, e);
+                }
             }
         });
 

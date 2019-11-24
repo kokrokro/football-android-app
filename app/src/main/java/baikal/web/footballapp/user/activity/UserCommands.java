@@ -90,7 +90,7 @@ public class UserCommands extends Fragment {
         linearLayout = view.findViewById(R.id.notEmptyCommand);
         scroller = view.findViewById(R.id.userCommandScroll);
         recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
-        recyclerView.setAdapter(AuthoUser.adapterCommand);
+//        recyclerView.setAdapter(AuthoUser.adapterCommand);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
 

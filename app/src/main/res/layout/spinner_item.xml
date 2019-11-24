@@ -6,9 +6,11 @@
     android:layout_width="match_parent"
     android:maxLines="1"
     android:fontFamily="@font/manrope_regular"
-    android:gravity="start"
+    android:gravity="start|center_horizontal"
     android:textColor="@color/colorBottomNavigationUnChecked"
     android:textSize="17sp"
-    android:background="@color/colorWhite" />
+    android:background="@color/colorWhite"
+    android:paddingLeft="8dp"
+    android:paddingTop="4dp"/>
 
     <!--</LinearLayout>-->

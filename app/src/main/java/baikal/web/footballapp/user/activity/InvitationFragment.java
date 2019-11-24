@@ -29,13 +29,15 @@ public class InvitationFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewUserInvitation);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         try{
-        recyclerView.setAdapter(AuthoUser.adapterInv);
-        if (AuthoUser.pendingTeamInvitesList.size()!=0){
-            linearEmpty.setVisibility(View.GONE);
-        }
-        else {
-            linearNotEmpty.setVisibility(View.GONE);
-        }
+//        recyclerView.setAdapter(AuthoUser.adapterInv);
+//        if (AuthoUser.pendingTeamInvitesList.size()!=0){
+//            linearEmpty.setVisibility(View.GONE);
+//        }
+//        else {
+//            linearNotEmpty.setVisibility(View.GONE);
+//        }
+        linearEmpty.setVisibility(View.GONE);
+
         }catch (NullPointerException e){}
         return view;
     }

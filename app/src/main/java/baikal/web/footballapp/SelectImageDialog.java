@@ -1,6 +1,7 @@
 package baikal.web.footballapp;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,8 +50,16 @@ public class SelectImageDialog extends DialogFragment {
         takePhoto.setOnClickListener(v -> {
             Uri outputFileUri = getCaptureImageOutputUri();
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            startActivityForResult(intent, CAMERA_REQUEST_CODE);
+
+            try {
+                startActivityForResult(intent, CAMERA_REQUEST_CODE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+            } catch (ActivityNotFoundException e) {
+                Toast.makeText(getContext(), "Камера не доступна", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, e.toString());
+            } catch (Exception e) {
+                Log.e(TAG , e.toString());
+            }
         });
 
         return view;

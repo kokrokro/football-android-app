@@ -39,11 +39,11 @@ public class ProtocolMatchScore extends AppCompatActivity {
         halves = new HashMap<>();
         buttonBack = findViewById(R.id.protocolScoreBack);
         buttonBack.setOnClickListener(v -> finish());
-        recyclerViewFouls = findViewById(R.id.recyclerViewScoreFouls);
+//        recyclerViewFouls = findViewById(R.id.recyclerViewScoreFouls);
 
-        recyclerViewFouls.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewScore = findViewById(R.id.recyclerViewScore);
-        recyclerViewScore.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerViewFouls.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerViewScore = findViewById(R.id.recyclerViewScore);
+//        recyclerViewScore.setLayoutManager(new LinearLayoutManager(this));
         try{
 
             Intent arguments = getIntent();
@@ -61,7 +61,7 @@ public class ProtocolMatchScore extends AppCompatActivity {
             }
 
             RVScoreHalfAdapter1 adapter1 = new RVScoreHalfAdapter1(this, halves, playerEvents, match);
-            recyclerViewScore.setAdapter(adapter1);
+//            recyclerViewScore.setAdapter(adapter1);
 
             boolean containsFouls = false;
             try {
@@ -79,35 +79,35 @@ public class ProtocolMatchScore extends AppCompatActivity {
 
             if (containsFouls){
                 RVScoreFoulsAdapter1 adapter = new RVScoreFoulsAdapter1(this, halves, playerEvents, match);
-                recyclerViewFouls.setAdapter(adapter);
+//                recyclerViewFouls.setAdapter(adapter);
             }else {
-                LinearLayout textFouls = findViewById(R.id.protocolScoreFouls);
-                textFouls.setVisibility(View.GONE);
+//                LinearLayout textFouls = findViewById(R.id.protocolScoreFouls);
+//                textFouls.setVisibility(View.GONE);
             }
 
 
             setScore(playerEvents, match);
 
             if (playerEvents.getPlayerEvents()==null){
-                TextView textScore = findViewById(R.id.protocolScore);
-                textScore.setVisibility(View.GONE);
-                View line = findViewById(R.id.protocolScoreLine);
-                line.setVisibility(View.GONE);
-                LinearLayout textFouls = findViewById(R.id.protocolScoreFouls);
-                textFouls.setVisibility(View.GONE);
+//                TextView textScore = findViewById(R.id.protocolScore);
+//                textScore.setVisibility(View.GONE);
+//                View line = findViewById(R.id.protocolScoreLine);
+//                line.setVisibility(View.GONE);
+//                LinearLayout textFouls = findViewById(R.id.protocolScoreFouls);
+//                textFouls.setVisibility(View.GONE);
             }
             if (match.getPenalty() == null ){
 //            if (match.getPenalty() == null && !match.getPenalty().equals("")){
-                LinearLayout layout = findViewById(R.id.penalty);
-                layout.setVisibility(View.GONE);
+//                LinearLayout layout = findViewById(R.id.penalty);
+//                layout.setVisibility(View.GONE);
             }else {
 //                setPenalty(playerEvents.getPlayerEvents(), match);
                 setPenalty(playerEvents, match);
             }
             if (match.getAutoGoal() == null ){
 //            if (match.getAutoGoal() == null && !match.getAutoGoal().equals("")){
-                LinearLayout layout = findViewById(R.id.protocolScoreOwnGoals);
-                layout.setVisibility(View.GONE);
+//                LinearLayout layout = findViewById(R.id.protocolScoreOwnGoals);
+//                layout.setVisibility(View.GONE);
             }else {
                 setAutoGoal(playerEvents, match);
             }
@@ -119,16 +119,16 @@ public class ProtocolMatchScore extends AppCompatActivity {
 
 //    private  void setPenalty(List<PlayerEvent> playerEvents, Match match){
     private  void setScore(TeamTitleClubLogoMatchEvents playerEvents, Match match){
-        ImageView image1 = findViewById(R.id.scoreCommand1Logo);
-        ImageView image2 = findViewById(R.id.scoreCommand2Logo);
-        TextView text1 = findViewById(R.id.scoreCommand1Title);
-        TextView text2 = findViewById(R.id.scoreCommand2Title);
-        TextView score = findViewById(R.id.protocolEditMatchScore);
+//        ImageView image1 = findViewById(R.id.scoreCommand1Logo);
+//        ImageView image2 = findViewById(R.id.scoreCommand2Logo);
+//        TextView text1 = findViewById(R.id.scoreCommand1Title);
+//        TextView text2 = findViewById(R.id.scoreCommand2Title);
+//        TextView score = findViewById(R.id.protocolEditMatchScore);
         String str;
         str = playerEvents.getNameTeam1();
-        text1.setText(str);
+//        text1.setText(str);
         str = playerEvents.getNameTeam2();
-        text2.setText(str);
+//        text2.setText(str);
         try {
             str = match.getScore();
             if (str.equals("")) {
@@ -164,41 +164,41 @@ public class ProtocolMatchScore extends AppCompatActivity {
 
 
         str = count1 + ":" + count2;
-        score.setText(str);
-        setImage.setImage(this, image1, playerEvents.getClubLogo1());
-        setImage.setImage(this, image2, playerEvents.getClubLogo2());
+//        score.setText(str);
+//        setImage.setImage(this, image1, playerEvents.getClubLogo1());
+//        setImage.setImage(this, image2, playerEvents.getClubLogo2());
 
 
     }
     private  void setPenalty(TeamTitleClubLogoMatchEvents playerEvents, Match match){
-        ImageView image1 = findViewById(R.id.penaltyCommand1Logo);
-        ImageView image2 = findViewById(R.id.penaltyCommand2Logo);
-        TextView text1 = findViewById(R.id.penaltyCommand1Title);
-        TextView text2 = findViewById(R.id.penaltyCommand2Title);
-        TextView penalty = findViewById(R.id.protocolEditMatchPenalty);
-        penalty.setText(match.getPenalty());
+//        ImageView image1 = findViewById(R.id.penaltyCommand1Logo);
+//        ImageView image2 = findViewById(R.id.penaltyCommand2Logo);
+//        TextView text1 = findViewById(R.id.penaltyCommand1Title);
+//        TextView text2 = findViewById(R.id.penaltyCommand2Title);
+//        TextView penalty = findViewById(R.id.protocolEditMatchPenalty);
+//        penalty.setText(match.getPenalty());
         String str;
         str = playerEvents.getNameTeam1();
-        text1.setText(str);
+//        text1.setText(str);
         str = playerEvents.getNameTeam2();
-        text2.setText(str);
-        setImage.setImage(this, image1, playerEvents.getClubLogo1());
-        setImage.setImage(this, image2, playerEvents.getClubLogo2());
+//        text2.setText(str);
+//        setImage.setImage(this, image1, playerEvents.getClubLogo1());
+//        setImage.setImage(this, image2, playerEvents.getClubLogo2());
     }
     private  void setAutoGoal(TeamTitleClubLogoMatchEvents playerEvents, Match match){
-        ImageView image1 = findViewById(R.id.ownGoalsFoulsCommand1Logo);
-        ImageView image2 = findViewById(R.id.ownGoalsFoulsCommand2Logo);
-        TextView text1 = findViewById(R.id.ownGoalsFoulsCommand1Title);
-        TextView text2 = findViewById(R.id.ownGoalsFoulsCommand2Title);
-        TextView autoGoal = findViewById(R.id.protocolEditMatchAuthoGoul);
-        autoGoal.setText(match.getAutoGoal());
+//        ImageView image1 = findViewById(R.id.ownGoalsFoulsCommand1Logo);
+//        ImageView image2 = findViewById(R.id.ownGoalsFoulsCommand2Logo);
+//        TextView text1 = findViewById(R.id.ownGoalsFoulsCommand1Title);
+//        TextView text2 = findViewById(R.id.ownGoalsFoulsCommand2Title);
+//        TextView autoGoal = findViewById(R.id.protocolEditMatchAuthoGoul);
+//        autoGoal.setText(match.getAutoGoal());
         String str;
         str = playerEvents.getNameTeam1();
-        text1.setText(str);
+//        text1.setText(str);
         str = playerEvents.getNameTeam2();
-        text2.setText(str);
-        setImage.setImage(this, image1, playerEvents.getClubLogo1());
-        setImage.setImage(this, image2, playerEvents.getClubLogo2());
+//        text2.setText(str);
+//        setImage.setImage(this, image1, playerEvents.getClubLogo1());
+//        setImage.setImage(this, image2, playerEvents.getClubLogo2());
 
 
     }

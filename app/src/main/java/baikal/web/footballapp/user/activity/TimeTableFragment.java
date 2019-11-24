@@ -17,13 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.home.activity.ComingMatches;
-import baikal.web.footballapp.model.ActiveMatch;
-import baikal.web.footballapp.model.ActiveMatches;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
@@ -35,13 +31,12 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TimeTableFragment extends Fragment {
+    private static final String TAG = "TimeTableFragment: ";
     private RVTimeTableAdapter adapter;
     private final List<MatchPopulate> matches = new ArrayList<>();
     private NestedScrollView scroller;
@@ -67,7 +62,7 @@ public class TimeTableFragment extends Fragment {
             adapter = new RVTimeTableAdapter(getActivity(), this, matches);
             recyclerView.setAdapter(adapter);
         } catch (NullPointerException e) {
-            log.error("ERROR: ", e);
+            log.error(TAG, e);
         }
 
         return view;
@@ -77,44 +72,44 @@ public class TimeTableFragment extends Fragment {
     private void getActiveMatches(String limit, String offset) {
         Controller.getApi().getMainRefsLeagues(PersonalActivity.id).enqueue(new Callback<List<League>>() {
             @Override
-            public void onResponse(Call<List<League>> call, Response<List<League>> response) {
+            public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
                 if(response.isSuccessful())
                     if(response.body()!=null)
-                        saveData(response.body());
+                        saveData(response.body(), limit, offset);
             }
 
             @Override
-            public void onFailure(Call<List<League>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) {
                 log.error(t.getMessage());
                 layout.setVisibility(View.VISIBLE);
             }
         });
     }
 
-    private void saveData(List<League> leagueList) {
+    private void saveData(List<League> leagueList, String limit, String offset) {
         matches.clear();
-        String str="";
+        StringBuilder str= new StringBuilder();
         for(League l: leagueList)
            for (Match m : l.getMatches())
                if(!m.getPlayed())
-                   str+=","+m.getId();
+                   str.append(",").append(m.getId());
 
-        Controller.getApi().getMatches(str).enqueue(new Callback<List<MatchPopulate>>() {
+        Controller.getApi().getMatches(str.toString()).enqueue(new Callback<List<MatchPopulate>>() {
             @Override
-            public void onResponse(Call<List<MatchPopulate>> call, Response<List<MatchPopulate>> response) {
-                if(response.isSuccessful()){
+            public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
+                if(response.isSuccessful())
                     if(response.body()!=null){
                         matches.addAll(response.body());
                         adapter.notifyDataSetChanged();
-                        if (matches.size()==0){
+                        if (matches.size()==0)
                             layout.setVisibility(View.VISIBLE);
-                        }
                     }
-                }
             }
 
             @Override
-            public void onFailure(Call<List<MatchPopulate>> call, Throwable t) { }
+            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
+                Log.e(TAG, t.getMessage());
+            }
         });
     }
 

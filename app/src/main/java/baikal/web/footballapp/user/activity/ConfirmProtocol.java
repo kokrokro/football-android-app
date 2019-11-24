@@ -32,7 +32,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +59,6 @@ public class ConfirmProtocol extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.confirm_protocol);
         fab = findViewById(R.id.confirmProtocolButtonShowScore);
-//        fab.setActivated(true);
         buttonCommand1 = findViewById(R.id.confirmProtocolCommand1ButtonShow);
         buttonCommand2 = findViewById(R.id.confirmProtocolCommand2ButtonShow);
         buttonReferees = findViewById(R.id.confirmProtocolRefereesButtonShow);

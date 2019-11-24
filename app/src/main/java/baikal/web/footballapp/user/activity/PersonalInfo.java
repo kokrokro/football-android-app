@@ -1,21 +1,17 @@
 package baikal.web.footballapp.user.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -47,7 +43,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -81,14 +76,12 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
     private SpinnerRegionAdapter adapterRegion;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
-    public PersonalInfo (Context context)  {
+    PersonalInfo(Context context)  {
         this.context = context;
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view;
-        Toast.makeText(context, "Ошибка при загрузке регионов", Toast.LENGTH_LONG).show();
-        view = inflater.inflate(R.layout.personal_info, container, false);
+        final View view = inflater.inflate(R.layout.personal_info, container, false);
         buttonPhoto = view.findViewById(R.id.registrationInfoPhoto);
         textName = view.findViewById(R.id.registrationInfoName);
         textSurname = view.findViewById(R.id.registrationInfoSurname);
@@ -105,7 +98,7 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
 
         Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
             @Override
-            public void onResponse(Call<List<Region>> call, Response<List<Region>> response) {
+            public void onResponse(@NonNull Call<List<Region>> call, @NonNull Response<List<Region>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         regions.clear();
@@ -114,11 +107,11 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
                             regionsId.add(r.getId());
                     }
                     adapterRegion.notifyDataSetChanged();
-                } else { }
+                }
             }
 
             @Override
-            public void onFailure(Call<List<Region>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Region>> call, @NonNull Throwable t) {
                 Log.e("ERROR: ", Objects.requireNonNull(t.getMessage()));
                 Toast.makeText(context, "Ошибка при загрузке регионов", Toast.LENGTH_LONG).show();
             }
@@ -161,19 +154,18 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
             textDOB.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
         };
 
-//        buttonPhoto.setOnClickListener(v -> startActivityForResult(getPickImageChooserIntent(), 200));
-
         buttonPhoto.setOnClickListener(v -> {
             verifyPermissions();
             SelectImageDialog dialog = new SelectImageDialog();
-            dialog.show(getFragmentManager(), getString(R.string.dialog_select_image));
+            dialog.show(Objects.requireNonNull(getFragmentManager()), getString(R.string.dialog_select_image));
             dialog.setTargetFragment(PersonalInfo.this, 1); //request code doesn't mater
         });
 
         return view;
     }
 
-    private Bitmap getResizedBitmap(Bitmap image, int maxSize) {
+    private Bitmap getResizedBitmap(Bitmap image) {
+        int maxSize = 500;
         int width = image.getWidth();
         int height = image.getHeight();
 
@@ -189,7 +181,7 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         // save file url in bundle as it will be null on screen orientation
         // changes
@@ -201,8 +193,8 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         picUri = ImagePath;
         Log.d(TAG, "is from galary !!!");
         try {
-            myBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), picUri);
-            Bitmap newBitmap = getResizedBitmap(myBitmap, 500);
+            myBitmap = MediaStore.Images.Media.getBitmap(Objects.requireNonNull(getActivity()).getContentResolver(), picUri);
+            Bitmap newBitmap = getResizedBitmap(myBitmap);
             Glide.with(this)
                     .load(newBitmap)
                     .apply(RequestOptions
@@ -218,7 +210,7 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
     @Override
     public void getImageBitmap(Bitmap bitmap) {
         myBitmap = bitmap;
-        Bitmap newBitmap = getResizedBitmap(myBitmap, 500);
+        Bitmap newBitmap = getResizedBitmap(myBitmap);
         Glide.with(this)
                 .load(newBitmap)
                 .apply(RequestOptions
@@ -240,12 +232,12 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         };
 
         for (String permission : permissions)
-            if (ContextCompat.checkSelfPermission(getContext().getApplicationContext(), permission) == PackageManager.PERMISSION_DENIED)
+            if (ContextCompat.checkSelfPermission(Objects.requireNonNull(getContext()).getApplicationContext(), permission) == PackageManager.PERMISSION_DENIED)
                 ActivityCompat.requestPermissions(Objects.requireNonNull(getActivity()), permissions, REQUEST_CODE);
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         verifyPermissions();
     }
 }

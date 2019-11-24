@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,11 +30,13 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class ProtocolScore extends AppCompatActivity{
+    private static final String TAG = "ProtocolScore: ";
     private final Logger log = LoggerFactory.getLogger(ProtocolMatchScore.class);
     private HashMap<Integer, String> halves;
     private SetImage setImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate()...");
         RecyclerView recyclerViewFouls;
         RecyclerView recyclerViewScore;
         ImageButton buttonBack;
@@ -41,11 +45,6 @@ public class ProtocolScore extends AppCompatActivity{
         halves = new HashMap<>();
         buttonBack = findViewById(R.id.protocolScoreBack);
         buttonBack.setOnClickListener(v -> finish());
-        recyclerViewFouls = findViewById(R.id.recyclerViewScoreFouls);
-
-        recyclerViewFouls.setLayoutManager(new LinearLayoutManager(this));
-        recyclerViewScore = findViewById(R.id.recyclerViewScore);
-        recyclerViewScore.setLayoutManager(new LinearLayoutManager(this));
         try{
 
             setImage = new SetImage();
@@ -64,7 +63,6 @@ public class ProtocolScore extends AppCompatActivity{
             }
 
             RVScoreHalfAdapter adapter1 = new RVScoreHalfAdapter(this, halves, playerEvents);
-            recyclerViewScore.setAdapter(adapter1);
 
             boolean containsFouls = false;
             try {
@@ -79,101 +77,8 @@ public class ProtocolScore extends AppCompatActivity{
             }
 
 
-            if (containsFouls){
-                RVScoreFoulsAdapter adapter = new RVScoreFoulsAdapter(this, halves, playerEvents);
-                recyclerViewFouls.setAdapter(adapter);
-            }else {
-                LinearLayout textFouls = findViewById(R.id.protocolScoreFouls);
-                textFouls.setVisibility(View.GONE);
-            }
-
-
-            setScore(playerEvents, match);
-
-            if (playerEvents.getPlayerEvents()==null){
-                TextView textScore = findViewById(R.id.protocolScore);
-                textScore.setVisibility(View.GONE);
-                View line = findViewById(R.id.protocolScoreLine);
-                line.setVisibility(View.GONE);
-                LinearLayout textFouls = findViewById(R.id.protocolScoreFouls);
-                textFouls.setVisibility(View.GONE);
-            }
-            if (match.getPenalty() == null ){
-                LinearLayout layout = findViewById(R.id.penalty);
-                layout.setVisibility(View.GONE);
-            }else {
-                setPenalty(playerEvents, match);
-            }
-            if (match.getAutoGoal() == null ){
-//            if (match.getAutoGoal() == null && !match.getAutoGoal().equals("")){
-                LinearLayout layout = findViewById(R.id.protocolScoreOwnGoals);
-                layout.setVisibility(View.GONE);
-            }else {
-                setAutoGoal(playerEvents, match);
-            }
-
         }catch (Exception e){
             log.error("ERROR: ", e);
         }
     }
-
-//        private  void setScore(TeamTitleClubLogoMatchEvents playerEvents, Match match){
-    private  void setScore(TeamTitleClubLogoMatchEvents playerEvents, MatchPopulate match){
-        ImageView image1 = findViewById(R.id.scoreCommand1Logo);
-        ImageView image2 = findViewById(R.id.scoreCommand2Logo);
-        TextView text1 = findViewById(R.id.scoreCommand1Title);
-        TextView text2 = findViewById(R.id.scoreCommand2Title);
-        TextView score = findViewById(R.id.protocolEditMatchScore);
-        String str;
-        str = playerEvents.getNameTeam1();
-        text1.setText(str);
-        str = playerEvents.getNameTeam2();
-        text2.setText(str);
-        try {
-            str = match.getScore();
-            if (str.equals("")) {
-                str = "-";
-            }
-        } catch (Exception e) {
-            str = "-";
-        }
-        score.setText(str);
-        setImage.setImage(image1.getContext(), image1, playerEvents.getClubLogo1());
-        setImage.setImage(image2.getContext(),image2, playerEvents.getClubLogo2());
-
-
-    }
-    private  void setPenalty(TeamTitleClubLogoMatchEvents playerEvents, MatchPopulate match){
-//    private  void setPenalty(TeamTitleClubLogoMatchEvents playerEvents, Match match){
-        ImageView image1 = findViewById(R.id.penaltyCommand1Logo);
-        ImageView image2 = findViewById(R.id.penaltyCommand2Logo);
-        TextView text1 = findViewById(R.id.penaltyCommand1Title);
-        TextView text2 = findViewById(R.id.penaltyCommand2Title);
-        TextView penalty = findViewById(R.id.protocolEditMatchPenalty);
-        penalty.setText(match.getPenalty());
-        String str;
-        str = playerEvents.getNameTeam1();
-        text1.setText(str);
-        str = playerEvents.getNameTeam2();
-        text2.setText(str);
-        setImage.setImage(image1.getContext(), image1, playerEvents.getClubLogo1());
-        setImage.setImage(image2.getContext(), image2, playerEvents.getClubLogo2());
-    }
-    private  void setAutoGoal(TeamTitleClubLogoMatchEvents playerEvents, MatchPopulate match){
-//    private  void setAutoGoal(TeamTitleClubLogoMatchEvents playerEvents, Match match){
-        ImageView image1 = findViewById(R.id.ownGoalsFoulsCommand1Logo);
-        ImageView image2 = findViewById(R.id.ownGoalsFoulsCommand2Logo);
-        TextView text1 = findViewById(R.id.ownGoalsFoulsCommand1Title);
-        TextView text2 = findViewById(R.id.ownGoalsFoulsCommand2Title);
-        TextView autoGoal = findViewById(R.id.protocolEditMatchAuthoGoul);
-        autoGoal.setText(match.getAutoGoal());
-        String str;
-        str = playerEvents.getNameTeam1();
-        text1.setText(str);
-        str = playerEvents.getNameTeam2();
-        text2.setText(str);
-        setImage.setImage(image1.getContext(), image1, playerEvents.getClubLogo1());
-        setImage.setImage(image2.getContext(), image2, playerEvents.getClubLogo2());
-    }
-
 }

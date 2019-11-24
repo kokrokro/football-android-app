@@ -3,12 +3,15 @@ package baikal.web.footballapp.user.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
@@ -16,7 +19,6 @@ import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Matches;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Referee;
 
@@ -74,68 +76,52 @@ public class EditTimeTable extends AppCompatActivity {
                         ref1Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
-                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.body() != null && response.body().size()>0) {
-                                        Person p = response.body().get(0);
-                                        String string = p.getSurname()+" "+ p.getName();
-                                        ref1.setText(string);
-                                    }
-                                }
+                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
+                                if (response.isSuccessful())
+                                    if (response.body() != null && response.body().size()>0)
+                                        setPersonInitialsToTextView(response.body().get(0), ref1);
                             }
                             @Override
-                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
                         });
                         break;
                     case "secondReferee":
                         ref2Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
-                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.body() != null && response.body().size()>0) {
-                                        Person p = response.body().get(0);
-                                        String string = p.getSurname()+" "+ p.getName();
-                                        ref2.setText(string);
-                                    }
-                                }
+                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
+                                if (response.isSuccessful())
+                                    if (response.body() != null && response.body().size()>0)
+                                        setPersonInitialsToTextView(response.body().get(0), ref2);
                             }
                             @Override
-                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
                         });
                         break;
                     case "thirdReferee":
                         ref3Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
-                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.body() != null && response.body().size()>0) {
-                                        Person p = response.body().get(0);
-                                        String string = p.getSurname()+" "+ p.getName();
-                                        ref3.setText(string);
-                                    }
-                                }
+                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
+                                if (response.isSuccessful())
+                                    if (response.body() != null && response.body().size()>0)
+                                        setPersonInitialsToTextView(response.body().get(0), ref3);
                             }
                             @Override
-                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
                         });
                         break;
                     case "timekeeper":
                         ref4Id = ref.getPerson();
                         Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
                             @Override
-                            public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                                if (response.isSuccessful()) {
-                                    if (response.body() != null && response.body().size()>0) {
-                                        Person p = response.body().get(0);
-                                        String string = p.getSurname()+" "+ p.getName();
-                                        ref4.setText(string);
-                                    }
-                                }
+                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
+                                if (response.isSuccessful())
+                                    if (response.body() != null && response.body().size()>0)
+                                        setPersonInitialsToTextView(response.body().get(0), ref4);
                             }
                             @Override
-                            public void onFailure(Call<List<Person>> call, Throwable t) { }
+                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
                         });
                 }
             }
@@ -153,6 +139,11 @@ public class EditTimeTable extends AppCompatActivity {
         } catch (NullPointerException e) {
             log.error("ERROR: ", e);
         }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setPersonInitialsToTextView (Person p, TextView textView) {
+        textView.setText(p.getSurname() + " " + p.getName() + " " + p.getLastname());
     }
 
     @SuppressLint("CheckResult")
@@ -191,7 +182,7 @@ public class EditTimeTable extends AppCompatActivity {
                setReferees(match.getId(), PersonalActivity.token, newMatch)
                .enqueue(new Callback<Match>() {
            @Override
-           public void onResponse(Call<Match> call, Response<Match> response) {
+           public void onResponse(@NonNull Call<Match> call, @NonNull Response<Match> response) {
                showToast("Судьи назначены успешно");
 
                Intent intent = new Intent();
@@ -202,7 +193,7 @@ public class EditTimeTable extends AppCompatActivity {
            }
 
            @Override
-           public void onFailure(Call<Match> call, Throwable t) {
+           public void onFailure(@NonNull Call<Match> call, @NonNull Throwable t) {
                showToast("Ошибка!");
                 log.error(t.getLocalizedMessage());
                 log.error(t.getMessage());
@@ -243,8 +234,8 @@ public class EditTimeTable extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String name = "";
-        String id = "";
+        String name;
+        String id;
 
         if (resultCode == RESULT_OK) {
               name =data.getStringExtra("surname")+" "+data.getStringExtra("name") ;

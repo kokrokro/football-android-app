@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
@@ -118,7 +119,7 @@ public class RegistrationUser extends AppCompatActivity {
 
             Controller.getApi().signUp(map, body).enqueue(new Callback<User>() {
                 @Override
-                public void onResponse(Call<User> call, Response<User> response) {
+                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                     if (response.isSuccessful()) {
                         if (response.body() != null) {
                             User user = response.body();
@@ -155,7 +156,7 @@ public class RegistrationUser extends AppCompatActivity {
                 }
 
                 @Override
-                public void onFailure(Call<User> call, Throwable t) {
+                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                     log.error("ERROR: ", t);
                 }
             });

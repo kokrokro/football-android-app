@@ -19,7 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,14 +40,11 @@ import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.GetLeagueInfo;
-import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.PendingTeamInvite;
-import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.user.adapter.RVInvitationAdapter;
 import baikal.web.footballapp.user.adapter.RVOwnCommandAdapter;
 import baikal.web.footballapp.user.adapter.RVUserCommandAdapter;
 
@@ -57,7 +53,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -68,51 +64,51 @@ import retrofit2.Response;
 import static android.app.Activity.RESULT_OK;
 
 public class AuthoUser extends Fragment {
+    private static final String TAG = "AuthoUser";
     private static final Logger log = LoggerFactory.getLogger(AuthoUser.class);
+
     private DrawerLayout drawer;
     private Person person;
     public static FloatingActionButton fab;
-    public static FloatingActionButton fabT;
     //adapters
-    public static RVInvitationAdapter adapterInv;
     public static RVUserCommandAdapter adapterCommand;
     public static RVOwnCommandAdapter adapterOwnCommand;
 
-    private static TextView invBadge;
-    private List<PersonTeams> personTeams;
+    private TextView invBadge;
     public static final List<Person> allReferees = new ArrayList<>();
     public static List<PersonTeams> personOngoingLeagues;
     public static List<PersonTeams> personOwnCommand;
-    public static List<Team> createdTeams = new ArrayList<>();
+    static List<Team> createdTeams = new ArrayList<>();
     public static List<PersonTeams> personCommand;
-    private List<PendingTeamInvite> pendingTeamInvites;
     public static List<PendingTeamInvite> pendingTeamInvitesList;
-    private Toolbar toolbar;
-    private static TextView categoryTitle;
-    public static ImageButton buttonOpenProfile;
-    public static TextView textName;
-    private final InvitationFragment firstFragment = new InvitationFragment();
+
+    private TextView categoryTitle;
+    public TextView textName;
+
+    //Menu items
+    private final InvitationFragment    firstFragment = new InvitationFragment();
     private final AddTournamentFragment defaultFragment = new AddTournamentFragment();
-    private final UserClubs secondFragment = new UserClubs();
-    private final TimeTableFragment timeTableFragment = new TimeTableFragment();
-    private final RefereeFragment refereeFragment = new RefereeFragment();
-    private final MyMatches myMatches = new MyMatches();
-    private final UserCommands commands = new UserCommands();
+    private final UserClubs             secondFragment = new UserClubs();
+    private final TimeTableFragment     timeTableFragment = new TimeTableFragment();
+    private final RefereeFragment       refereeFragment = new RefereeFragment();
+    private final MyMatches             myMatches = new MyMatches();
+    private final UserCommands          commands = new UserCommands();
+
     private User user;
     private Menu m;
     private NavigationView nvDrawer;
     private FloatingActionButton fab1;
-    private FragmentTransaction fm;
     private final int REQUEST_CODE_CLUBEDIT = 276;
     private int clubOldIndex;
 
+    private Activity activity;
+
     private FragmentManager fragmentManager;
-    private static final String USER = "USER_PAGE";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fm = this.getChildFragmentManager().beginTransaction();
+        activity = getActivity();
     }
 
     @SuppressLint("RestrictedApi")
@@ -127,23 +123,23 @@ public class AuthoUser extends Fragment {
         nvDrawer = view.findViewById(R.id.nvView);
         nvDrawer.setItemIconTintList(null);
         View view1 = nvDrawer.getHeaderView(0);
-        buttonOpenProfile = view1.findViewById(R.id.userProfileOpen);
+        ImageButton buttonOpenProfile = view1.findViewById(R.id.userProfileOpen);
         textName = view1.findViewById(R.id.navigationName);
         try {
             categoryTitle = view.findViewById(R.id.categoryType);
             user = SaveSharedPreference.getObject();
             person = user.getUser();
-            personTeams = new ArrayList<>();
-            personTeams = person.getParticipation();
+//            List<PersonTeams> personTeams = new ArrayList<>();
+//            personTeams = person.getParticipation();
             personOngoingLeagues = new ArrayList<>();
             personOwnCommand = new ArrayList<>();
             personCommand = new ArrayList<>();
             pendingTeamInvitesList = new ArrayList<>();
-            pendingTeamInvites = person.getPendingTeamInvites();
+//            List<PendingTeamInvite> pendingTeamInvites = person.getPendingTeamInvites();
             invBadge = (TextView) nvDrawer.getMenu().findItem(R.id.nav_first_fragment).getActionView();
             Controller.getApi().getTeams(PersonalActivity.id).enqueue(new Callback<List<Team>>() {
                 @Override
-                public void onResponse(Call<List<Team>> call, Response<List<Team>> response) {
+                public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                     if(response.isSuccessful()){
                         if(response.body()!=null){
                             createdTeams.addAll(response.body());
@@ -152,7 +148,7 @@ public class AuthoUser extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<List<Team>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
 
                 }
             });
@@ -184,19 +180,13 @@ public class AuthoUser extends Fragment {
                 applyFontToMenuItem(mi);
             }
 
-
-            //adapters
-//            adapterInv = new RVInvitationAdapter(getActivity(), firstFragment, AuthoUser.pendingTeamInvitesList);
-//            adapterCommand = new RVUserCommandAdapter(getActivity(), AuthoUser.personCommand);
-//            adapterOwnCommand = new RVOwnCommandAdapter(getActivity(), AuthoUser.personOwnCommand);
-
         } catch (NullPointerException | IllegalStateException e) {
             log.error("ERROR: ", e);
         }
 
         fab = view.findViewById(R.id.addCommandButton);
-        toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        Toolbar toolbar = view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) activity).setSupportActionBar(toolbar);
         button = view.findViewById(R.id.drawerBtn);
         button.setOnClickListener(v -> drawer.openDrawer(GravityCompat.END));
 
@@ -210,22 +200,23 @@ public class AuthoUser extends Fragment {
             }
 
         });
-        selectDrawerItem(nvDrawer.getMenu().getItem(0));
 
         fab1 = view.findViewById(R.id.buttonEditClub);
         fab1.setVisibility(View.INVISIBLE);
 
+        selectDrawerItem(nvDrawer.getMenu().getItem(0));
 
         // Setup drawer view
         setupDrawerContent(nvDrawer);
         fab.setVisibility(View.INVISIBLE);
 
+        fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
 
         return view;
     }
 
     private void applyFontToMenuItem(MenuItem mi) {
-        Typeface font = Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf");
+        Typeface font = Typeface.createFromAsset(activity.getAssets(), "fonts/manrope_regular.otf");
         SpannableString mNewTitle = new SpannableString(mi.getTitle());
         mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
@@ -253,13 +244,14 @@ public class AuthoUser extends Fragment {
 
     @SuppressLint("RestrictedApi")
     private void selectDrawerItem(MenuItem menuItem) {
+        FragmentTransaction menuFragmentTransaction = this.getChildFragmentManager().beginTransaction();
         switch (menuItem.getItemId()) {
             case R.id.nav_default_fragment:
                 try {
                     setItemColor(1);
                     clearItemColor(1);
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
-                    categoryTitle.setText(getActivity().getText(R.string.title_tournament));
+                    menuFragmentTransaction.replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
+                    categoryTitle.setText(activity.getText(R.string.title_tournament));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
 
@@ -271,8 +263,8 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(0);
                     clearItemColor(0);
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
-                    categoryTitle.setText(getActivity().getText(R.string.invitation));
+                    menuFragmentTransaction.replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
+                    categoryTitle.setText(activity.getText(R.string.invitation));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
@@ -283,7 +275,7 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(2);
                     clearItemColor(2);
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, secondFragment, "CLUBFRAGMENT").show(secondFragment).commit();
+                    menuFragmentTransaction.replace(R.id.flContent, secondFragment, "CLUBFRAGMENT").show(secondFragment).commit();
                     if (person.getClub() != null) {
                         fab1.setVisibility(View.VISIBLE);
                         Club club = null;
@@ -303,7 +295,7 @@ public class AuthoUser extends Fragment {
                             startActivityForResult(intent1, REQUEST_CODE_CLUBEDIT);
                         });
                     }
-                    categoryTitle.setText(getActivity().getText(R.string.title_club));
+                    categoryTitle.setText(activity.getText(R.string.title_club));
                     fab.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
@@ -313,8 +305,8 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(3);
                     clearItemColor(3);
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, commands).show(commands).commit();
-                    categoryTitle.setText(getActivity().getText(R.string.commands));
+                    menuFragmentTransaction.replace(R.id.flContent, commands).show(commands).commit();
+                    categoryTitle.setText(activity.getText(R.string.commands));
                     fab.setVisibility(View.VISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
@@ -325,8 +317,8 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(5);
                     clearItemColor(5);
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
-                    categoryTitle.setText(getActivity().getText(R.string.matches));
+                    menuFragmentTransaction.replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
+                    categoryTitle.setText(activity.getText(R.string.matches));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
@@ -337,8 +329,8 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(6);
                     clearItemColor(6);
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
-                    categoryTitle.setText(getActivity().getText(R.string.referees));
+                    menuFragmentTransaction.replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
+                    categoryTitle.setText(activity.getText(R.string.referees));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
@@ -349,8 +341,8 @@ public class AuthoUser extends Fragment {
                 try {
                     setItemColor(4);
                     clearItemColor(4);
-                    this.getChildFragmentManager().beginTransaction().replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
-                    categoryTitle.setText(getActivity().getText(R.string.tournamentInfoTimetable));
+                    menuFragmentTransaction.replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
+                    categoryTitle.setText(activity.getText(R.string.tournamentInfoTimetable));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
@@ -358,21 +350,24 @@ public class AuthoUser extends Fragment {
                 }
                 break;
             default:
-                SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), false);
+                SaveSharedPreference.setLoggedIn(activity.getApplicationContext(), false);
                 SaveSharedPreference.saveObject(null);
 //                PersonalActivity.fragmentUser.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 try {
                     Fragment userPage = new UserPage();
-                    fragmentManager.beginTransaction().replace(R.id.pageContainer, userPage).addToBackStack(USER).show(userPage).commit();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.pageContainer, userPage)
+                            .hide(PersonalActivity.active)
+                            .show(userPage)
+                            .commit();
+
                 } catch (Exception e) {
                     log.error("AuthoUser: ", e);
-                    getActivity().getSupportFragmentManager().beginTransaction().show(PersonalActivity.fragmentUser).commit();
+                    fragmentManager.beginTransaction().show(PersonalActivity.fragmentUser).commit();
                 }
                 PersonalActivity.active = PersonalActivity.fragmentUser;
                 refreshTournaments();
-                log.info("INFO: AuthoUser onDestroy");
-                this.onDestroy();
                 break;
         }
 
@@ -388,10 +383,10 @@ public class AuthoUser extends Fragment {
 
                 try {
                     SpannableString s = new SpannableString(mi.getTitle());
-                    s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
+                    s.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
                     mi.setTitle(s);
                 } catch (Exception e) {
-                    log.error("ERROR: ", e);
+                    log.error(TAG, e);
                 }
                 //for aapplying a font to subMenu ...
                 SubMenu subMenu = mi.getSubMenu();
@@ -454,7 +449,8 @@ public class AuthoUser extends Fragment {
         }
     }
 
-    public static void SetInvNum(Activity activity, int position) {
+    @SuppressLint("SetTextI18n")
+    public void SetInvNum(Activity activity, int position) {
         Typeface font = Typeface.createFromAsset(activity.getAssets(), "fonts/manrope_bold.otf");
         invBadge.setTypeface(font);
         invBadge.setGravity(Gravity.CENTER_VERTICAL);
@@ -474,72 +470,6 @@ public class AuthoUser extends Fragment {
     public void onDestroy() {
         log.info("INFO: AuthoUser onDestroy");
         super.onDestroy();
-    }
-
-
-    private void userGetType() {
-                for (PendingTeamInvite pendingTeamInvite : pendingTeamInvites) {
-                    League league = null;
-                    for (League tournament : PersonalActivity.tournaments) {
-                        if (tournament.getStatus().equals("Pending") && tournament.getId().equals(pendingTeamInvite.getLeague())) {
-                            league = tournament;
-                            break;
-                        }
-                    }
-                    Team team = null;
-                    if (league != null) {
-                        for (Team teams : league.getTeams()) {
-                            if (teams.getStatus().equals("Pending") && teams.getId().equals(pendingTeamInvite.getTeam())) {
-                                team = teams;
-                                for (baikal.web.footballapp.model.Player player : teams.getPlayers()) {
-                                    if (player.getId().equals(person.getId()) && player.getInviteStatus().equals("Rejected")) {
-                                        team = null;
-                                        break;
-                                    }
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    if (league != null && team != null) {
-                        pendingTeamInvitesList.add(pendingTeamInvite);
-                    }
-                }
-                if (pendingTeamInvitesList.size() != 0) {
-                    SetInvNum(getActivity(), pendingTeamInvitesList.size());
-                }
-                if (personTeams.size() != 0) {
-                    for (PersonTeams team : personTeams) {
-                        personOngoingLeagues.add(team);
-                        getUserCommands(team.getLeague(), team.getTeam(), team);
-                    }
-                }
-
-                GetAllReferees();
-
-//                this.getChildFragmentManager().beginTransaction().add(R.id.flContent, timeTableFragment).hide(timeTableFragment).commit();
-
-    }
-
-
-
-    @SuppressLint("CheckResult")
-    private void GetAllReferees() {
-        Controller.getApi().getAllPersons( null, "15", "0")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(this::saveReferees,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
-    }
-
-    private void saveReferees(List<Person> people) {
-        allReferees.clear();
-        allReferees.addAll(people);
     }
 
     @Override
@@ -589,9 +519,5 @@ public class AuthoUser extends Fragment {
             }
 
             applyFontToMenuItem(mi);
-    }
-
-    public void setFragmentManager (FragmentManager fragmentManager) {
-        this.fragmentManager = fragmentManager;
     }
 }

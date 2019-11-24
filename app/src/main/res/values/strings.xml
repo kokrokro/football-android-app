@@ -24,7 +24,7 @@
     <string name="title_activity_personal">PersonalActivity</string>
     <string name="tournamentStatusFinish">Завершен</string>
     <string name="tournamentTitle">Кубок Бурятии по мини-футболу. Первый этап. Золотая лига</string>
-    <string name="tournamentDate">27.01.2018-28.02.2018</string>
+    <string name="tournamentDate">27.01.2018–28.02.2018</string>
     <string name="tournamentCommandNum">Количество команд:</string>
     <string name="tournamentInfoTimetable">Расписание</string>
     <string name="tournamentInfoPlayers">Игроки</string>
@@ -53,14 +53,14 @@
     <string name="commandAbbreviation5">Д - Количество действующих дисквалификаций на будущие матчи</string>
     <string name="title_activity_command_info">CommandInfoActivity</string>
     <string name="allNewsButton">Все новости</string>
-    <string name="search">Поиск по игрокам...</string>
+    <string name="search">Поиск по игрокам …</string>
     <string name="back">Назад</string>
     <string name="changeProfile">Редактировать профиль</string>
     <string name="changeCommand">Редактировать команду</string>
     <string name="editClub">Редактировать клуб</string>
     <string name="protocol">Протокол</string>
     <string name="editProtocol">Редактировать протокол</string>
-    <string name="confirmProtocol">Подтвердить протокол</string>
+    <string name="confirmProtocol">Рабочий протокол</string>
     <string name="editProtocolResponsiblePersons">Ответственные лица</string>
     <string name="protocolScore">Текущий счет</string>
     <string name="addEvent">Добавить событие</string>
@@ -159,4 +159,5 @@
     <string name="searchTourneys">Поиск по турнирам</string>
     <string name="ChoosePhotoFromGalary">Выбрать фото</string>
     <string name="OpenCamera">Открыть камеру</string>
+    <string name="ProtocolToSend">Протокол</string>
 </resources>
