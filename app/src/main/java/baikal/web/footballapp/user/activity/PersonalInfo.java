@@ -49,7 +49,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,18 +58,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import static baikal.web.footballapp.Controller.BASE_URL;
-
 public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageSelectedListener {
     private static final String TAG = "Personal Info: ";
     private static final int REQUEST_CODE = 6424;           //magic number which doesn't mater
 
-    Uri picUri;
+    private Uri picUri;
 
-    List<Region> regions = new ArrayList<>();
+
+    private List<Region> regions = new ArrayList<>();
     List<String> regionsId = new ArrayList<>();
+    int selectedRegionIndex = 0;
 
-    ImageButton buttonPhoto;
+    private ImageButton buttonPhoto;
     Bitmap myBitmap;
     EditText textSurname;
     EditText textName;
@@ -84,8 +83,6 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
     private SpinnerRegionAdapter adapterRegion;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
-    private User user;
-    private String token;
     private Person person;
 
     private boolean isPasswordHidden;
@@ -94,11 +91,11 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         this.isPasswordHidden = isPasswordHidden;
         this.context = context;
 
-        user = SaveSharedPreference.getObject();
-        token = user.getToken();
-        person = user.getUser();
-
-        Log.d(TAG, person.getRegion());
+        if (isPasswordHidden) {
+            User user = SaveSharedPreference.getObject();
+            person = user.getUser();
+            Log.d(TAG, person.getRegion());
+        }
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,8 +109,6 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         textLogin = view.findViewById(R.id.registrationInfoLogin);
         TextView titlePassword = view.findViewById(R.id.registrationInfoPasswordTitle);
         textPassword = view.findViewById(R.id.registrationInfoPassword);
-
-        Log.d(TAG, spinnerRegion.toString());
 
         Region r = new Region();
         r.setName("Регион");
@@ -143,7 +138,6 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
                         r.setName("Регион");
                         r.setId("-1");
                         regions.add(r);
-                        regionsId.add("-1");
                         regions.addAll(response.body());
                         for (Region rr: regions)
                             regionsId.add(rr.getId());
@@ -164,6 +158,7 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         spinnerRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
              public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedRegionIndex = position;
                 parent.getItemAtPosition(position);
              }
 
@@ -212,8 +207,10 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
     private void setRegionData ()
     {
         for (int i=0; i<regionsId.size(); i++)
-            if (regionsId.get(i).equals(person.getRegion()))
+            if (regionsId.get(i).equals(person.getRegion())) {
                 spinnerRegion.setSelection(i);
+                Log.d(TAG, "position = " + spinnerRegion.getSelectedItemPosition());
+            }
     }
 
     private void fillPersonData ()

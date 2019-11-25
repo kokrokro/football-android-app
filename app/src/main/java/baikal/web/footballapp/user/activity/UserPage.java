@@ -136,7 +136,6 @@ public class UserPage extends Fragment {
                     if (response.body() == null) {
                         log.error("ERROR: body is null");
                     } else {
-                        log.info("INFO: body is not null");
                         //all is ok
                         user = response.body();
                         try {
@@ -146,6 +145,9 @@ public class UserPage extends Fragment {
                             PersonalActivity.active = authoUser;
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                             SaveSharedPreference.saveObject(user);
+                            PersonalActivity.token = user.getToken();
+                            PersonalActivity.id = user.getUser().getId();
+
                             resetLoginPassEditText();
 
                         } catch (Exception e) {

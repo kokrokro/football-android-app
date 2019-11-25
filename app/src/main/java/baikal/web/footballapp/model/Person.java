@@ -7,9 +7,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Person implements Serializable {
-    @SerializedName("region")
-    @Expose
-    private String region;
+
     @SerializedName("surname")
     @Expose
     private String surname;
@@ -19,43 +17,27 @@ public class Person implements Serializable {
     @SerializedName("lastname")
     @Expose
     private String lastname;
-    @SerializedName("birthdate")
-    @Expose
-    private String birthdate;
     @SerializedName("photo")
     @Expose
     private String photo;
-    @SerializedName("desc")
+    @SerializedName("favoriteTourney")
     @Expose
-    private String desc;
-    @SerializedName("participationMatches")
-    @Expose
-    private List<Match> participationMatches = null;
-    @SerializedName("participation")
-    @Expose
-    private List<PersonTeams> participation = null;
-    @SerializedName("pastLeagues")
-    @Expose
-    private List<PastLeague> pastLeagues = null;
+    private List<String> favoriteTourney = new ArrayList<>();
     @SerializedName("_id")
     @Expose
-    private String id;
-    @SerializedName("club")
-    @Expose
-    private String club;
-//    private Club club;
-    @SerializedName("pendingClubInvites")
-    @Expose
-    private List<Object> pendingClubInvites = null;
+    private String _id;
     @SerializedName("login")
     @Expose
     private String login;
     @SerializedName("password")
     @Expose
     private String password;
-    @SerializedName("type")
+    @SerializedName("birthdate")
     @Expose
-    private String type;
+    private String birthdate;
+    @SerializedName("region")
+    @Expose
+    private String region;
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -65,12 +47,38 @@ public class Person implements Serializable {
     @SerializedName("__v")
     @Expose
     private Integer v;
+    @SerializedName("id")
+    @Expose
+    private String id;
+
+    @SerializedName("participationMatches")
+    @Expose
+    private List<Match> participationMatches = null;
+    @SerializedName("participation")
+    @Expose
+    private List<PersonTeams> participation = null;
+    @SerializedName("pastLeagues")
+    @Expose
+    private List<PastLeague> pastLeagues = null;
+
+    @SerializedName("club")
+    @Expose
+    private String club;
+//    private Club club;
+    @SerializedName("pendingClubInvites")
+    @Expose
+    private List<Object> pendingClubInvites = null;
+
+
+    @SerializedName("type")
+    @Expose
+    private String type;
+
+
     @SerializedName("pendingTeamInvites")
     @Expose
     private List<PendingTeamInvite> pendingTeamInvites = null;
-    @SerializedName("favoriteTourney")
-    @Expose
-    private List<String> favoriteTourney = new ArrayList<>();
+
 
     public String getSurnameWithInitials() {
         String p1 = "";
@@ -135,14 +143,6 @@ public class Person implements Serializable {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public List<PersonTeams> getParticipation() {
@@ -246,4 +246,11 @@ public class Person implements Serializable {
         return participationMatches;
     }
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
 }
