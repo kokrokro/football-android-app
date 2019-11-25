@@ -132,8 +132,8 @@ public interface FootballApi {
     @PATCH("/api/crud/match/{id}")
     Call<Match> setReferees(@Path("id") String id, @Header("auth") String authorization,@Body Match match);
     @Multipart
-    @POST("/api/editPlayerInfo")
-    Call<EditProfile> editProfile(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
+    @POST("/api/crud/person/{id}")
+    Call<EditProfile> editProfile(@Path("id") String id, @Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
     @Multipart
     @PATCH("/api/crud/person/{id}")
     Call<EditProfile> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Part("favoriteTourney") List<RequestBody> favoriteTourney);

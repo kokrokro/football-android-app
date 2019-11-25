@@ -1,7 +1,9 @@
 package baikal.web.footballapp;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -13,6 +15,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -453,6 +456,15 @@ public class PersonalActivity extends AppCompatActivity {
         slide.setInterpolator(new DecelerateInterpolator());
         getWindow().setExitTransition(slide);
         getWindow().setEnterTransition(slide);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == Activity.RESULT_OK) {
+
+        }
     }
 }
 

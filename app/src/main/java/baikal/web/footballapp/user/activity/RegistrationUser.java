@@ -37,7 +37,8 @@ import retrofit2.Response;
 public class RegistrationUser extends AppCompatActivity {
 
     private final Logger log = LoggerFactory.getLogger(RegistrationUser.class);
-    private final PersonalInfo personalInfo = new PersonalInfo(this);
+//    private final PersonalInfo personalInfo = new PersonalInfo(this, false, null);
+    private final PersonalInfo personalInfo = new PersonalInfo(this, false);
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
 
     @Override
@@ -49,7 +50,7 @@ public class RegistrationUser extends AppCompatActivity {
 
         imageClose.setOnClickListener(v -> finish());
         imageSave.setOnClickListener(v -> SignUp());
-        fragmentManager.beginTransaction().add(R.id.registrationViewPager, personalInfo, "personalInfo").show(personalInfo).commit();
+        fragmentManager.beginTransaction().add(R.id.registrationViewPagerFragment, personalInfo, "personalInfo").show(personalInfo).commit();
     }
 
     public void showAlertDialogButtonClicked() {
@@ -98,13 +99,12 @@ public class RegistrationUser extends AppCompatActivity {
             log.info("INFO: photo is null");
         }
 
-        try {
-            //create a file to write bitmap data
-            File file = new File(getCacheDir(), "photo");
+        File file = new File(getCacheDir(), "photo");
 
+        try {
             if (file.createNewFile())
                 throw new IOException();
-            //Convert bitmap to byte array
+
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 80 /*ignored for PNG*/, bos);
             byte[] bitmapdata = bos.toByteArray();
@@ -113,57 +113,57 @@ public class RegistrationUser extends AppCompatActivity {
             fos.write(bitmapdata);
             fos.flush();
             fos.close();
-
-            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
-            MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
-
-            Controller.getApi().signUp(map, body).enqueue(new Callback<User>() {
-                @Override
-                public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
-                    if (response.isSuccessful()) {
-                        if (response.body() != null) {
-                            User user = response.body();
-                            UserPage.auth = true;
-                            Intent intent = new Intent();
-                            intent.putExtra("PERSONREGINFO", user);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-                    }
-                    else {
-                        try {
-                            assert response.errorBody() != null;
-                            JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                            String str = "Ошибка! ";
-                            str += jsonObject.getString("message");
-
-                            if (str.contains("Не удалось создать пользователя")) {
-                                str = "Такой логин уже существует...";
-                                Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
-                            }
-                            else if (str.contains("Минимальная длина пароля - 6 символов")) {
-                                str = "Минимальная длина пароля - 6 символов";
-                                Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
-                            }
-                            else {
-                                Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
-                                finish();
-                            }
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
-                    log.error("ERROR: ", t);
-                }
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-    }
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
 
+        MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
+
+        Controller.getApi().signUp(map, body).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        User user = response.body();
+                        UserPage.auth = true;
+                        Intent intent = new Intent();
+                        intent.putExtra("PERSONREGINFO", user);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                }
+                else {
+                    try {
+                        assert response.errorBody() != null;
+                        JSONObject jsonObject = new JSONObject(response.errorBody().string());
+                        String str = "Ошибка! ";
+                        str += jsonObject.getString("message");
+
+                        if (str.contains("Не удалось создать пользователя")) {
+                            str = "Такой логин уже существует...";
+                            Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
+                        }
+                        else if (str.contains("Минимальная длина пароля - 6 символов")) {
+                            str = "Минимальная длина пароля - 6 символов";
+                            Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            Toast.makeText(RegistrationUser.this, str, Toast.LENGTH_LONG).show();
+                            finish();
+                        }
+                    } catch (IOException | JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                log.error("ERROR: ", t);
+            }
+        });
+
+    }
 }

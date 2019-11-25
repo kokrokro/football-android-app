@@ -9,4 +9,12 @@ public class InputEventData {
         this.eventType = eventType;
         this.eventIconId = eventIconId;
     }
+
+    public int getEventIconId() {
+        return eventIconId;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
 }

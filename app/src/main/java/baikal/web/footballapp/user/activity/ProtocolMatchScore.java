@@ -3,21 +3,13 @@ package baikal.web.footballapp.user.activity;
 import android.content.Intent;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
-import baikal.web.footballapp.user.adapter.RVScoreFoulsAdapter1;
-import baikal.web.footballapp.user.adapter.RVScoreHalfAdapter1;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,8 +23,6 @@ public class ProtocolMatchScore extends AppCompatActivity {
     private final SetImage setImage = new SetImage();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        RecyclerView recyclerViewFouls;
-        RecyclerView recyclerViewScore;
         ImageButton buttonBack;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.protocol_match_score);
@@ -60,7 +50,6 @@ public class ProtocolMatchScore extends AppCompatActivity {
                 }
             }
 
-            RVScoreHalfAdapter1 adapter1 = new RVScoreHalfAdapter1(this, halves, playerEvents, match);
 //            recyclerViewScore.setAdapter(adapter1);
 
             boolean containsFouls = false;
@@ -78,7 +67,6 @@ public class ProtocolMatchScore extends AppCompatActivity {
 
 
             if (containsFouls){
-                RVScoreFoulsAdapter1 adapter = new RVScoreFoulsAdapter1(this, halves, playerEvents, match);
 //                recyclerViewFouls.setAdapter(adapter);
             }else {
 //                LinearLayout textFouls = findViewById(R.id.protocolScoreFouls);

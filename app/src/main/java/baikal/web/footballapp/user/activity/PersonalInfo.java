@@ -28,7 +28,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SelectImageDialog;
+import baikal.web.footballapp.SetImage;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.user.adapter.SpinnerRegionAdapter;
 
 import com.bumptech.glide.Glide;
@@ -44,6 +49,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,16 +59,18 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import static baikal.web.footballapp.Controller.BASE_URL;
+
 public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageSelectedListener {
     private static final String TAG = "Personal Info: ";
     private static final int REQUEST_CODE = 6424;           //magic number which doesn't mater
 
-    private ImageButton buttonPhoto;
-    private Uri picUri;
+    Uri picUri;
 
-    private List<Region> regions = new ArrayList<>();
+    List<Region> regions = new ArrayList<>();
     List<String> regionsId = new ArrayList<>();
 
+    ImageButton buttonPhoto;
     Bitmap myBitmap;
     EditText textSurname;
     EditText textName;
@@ -76,8 +84,21 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
     private SpinnerRegionAdapter adapterRegion;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
 
-    PersonalInfo(Context context)  {
+    private User user;
+    private String token;
+    private Person person;
+
+    private boolean isPasswordHidden;
+
+    PersonalInfo(Context context, boolean isPasswordHidden)  {
+        this.isPasswordHidden = isPasswordHidden;
         this.context = context;
+
+        user = SaveSharedPreference.getObject();
+        token = user.getToken();
+        person = user.getUser();
+
+        Log.d(TAG, person.getRegion());
     }
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -86,28 +107,51 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         textName = view.findViewById(R.id.registrationInfoName);
         textSurname = view.findViewById(R.id.registrationInfoSurname);
         textPatronymic = view.findViewById(R.id.registrationInfoPatronymic);
-        textLogin = view.findViewById(R.id.registrationInfoLogin);
-        textPassword = view.findViewById(R.id.registrationInfoPassword);
         textDOB = view.findViewById(R.id.registrationInfoDOB);
-
         spinnerRegion = view.findViewById(R.id.regionEditSpinner);
+        textLogin = view.findViewById(R.id.registrationInfoLogin);
+        TextView titlePassword = view.findViewById(R.id.registrationInfoPasswordTitle);
+        textPassword = view.findViewById(R.id.registrationInfoPassword);
+
+        Log.d(TAG, spinnerRegion.toString());
+
+        Region r = new Region();
+        r.setName("Регион");
+        r.setId("-1");
+        regions.add(r);
+        regionsId.add("-1");
+
         adapterRegion = new SpinnerRegionAdapter (Objects.requireNonNull(this.getContext()), R.layout.spinner_item, regions);
         adapterRegion.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinnerRegion.setBackgroundColor(Color.rgb(245,245,245));
         spinnerRegion.setAdapter(adapterRegion);
 
+        if (isPasswordHidden) {
+            textPassword.setVisibility(View.INVISIBLE);
+            titlePassword.setVisibility(View.INVISIBLE);
+            fillPersonData();
+        }
+
         Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
             @Override
             public void onResponse(@NonNull Call<List<Region>> call, @NonNull Response<List<Region>> response) {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful())
                     if (response.body() != null) {
                         regions.clear();
+
+                        Region r = new Region();
+                        r.setName("Регион");
+                        r.setId("-1");
+                        regions.add(r);
+                        regionsId.add("-1");
                         regions.addAll(response.body());
-                        for (Region r: regions)
-                            regionsId.add(r.getId());
+                        for (Region rr: regions)
+                            regionsId.add(rr.getId());
+                        adapterRegion.notifyDataSetChanged();
+
+                        if (isPasswordHidden)
+                            setRegionData();
                     }
-                    adapterRegion.notifyDataSetChanged();
-                }
             }
 
             @Override
@@ -127,6 +171,7 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
              public void onNothingSelected(AdapterView<?> parent) {
              }
         });
+
 
         textDOB.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
@@ -162,6 +207,30 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         });
 
         return view;
+    }
+
+    private void setRegionData ()
+    {
+        for (int i=0; i<regionsId.size(); i++)
+            if (regionsId.get(i).equals(person.getRegion()))
+                spinnerRegion.setSelection(i);
+    }
+
+    private void fillPersonData ()
+    {
+        try {
+            textName.setText(person.getName());
+            textSurname.setText(person.getSurname());
+            textPatronymic.setText(person.getLastname());
+            textLogin.setText(person.getLogin());
+            textDOB.setText((new DateToString()).ChangeDate(person.getBirthdate()));
+
+            SetImage setImage = new SetImage();
+            setImage.setImage(getContext(), buttonPhoto, person.getPhoto());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Bitmap getResizedBitmap(Bitmap image) {

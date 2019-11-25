@@ -1,5 +1,6 @@
 package baikal.web.footballapp.user.adapter;
 
+import android.graphics.Color;
 import android.widget.ArrayAdapter;
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -18,10 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Objects;
 
 public class SpinnerRegionAdapter extends ArrayAdapter<Region> {
-    Logger log = LoggerFactory.getLogger(NewCommand.class);
-    private final LayoutInflater inflater;
+    public static final String TAG = "SpinnerRegionAdapter: ";
+    Logger log = LoggerFactory.getLogger(SpinnerRegionAdapter.class);
     private final List<Region> regions;
     private final int resource;
 
@@ -29,27 +31,47 @@ public class SpinnerRegionAdapter extends ArrayAdapter<Region> {
         super(context, resource, regions);
         this.resource = resource;
         this.regions = regions;
-        inflater = LayoutInflater.from(context);
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        log.debug(TAG, "notifyDataSetChanged ..........");
+        super.notifyDataSetChanged();
     }
 
     @Override
     public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return createItemView(position, parent);
+        log.debug(TAG, "getDropDownView at position = " + position);
+        return createItemView(position, convertView, parent);
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        return createItemView(position, parent);
+        log.debug(TAG, "getView at position = " + position);
+        return createItemView(position, convertView, parent);
     }
 
-    private View createItemView(int position, ViewGroup parent) {
-        final View view = inflater.inflate(resource, parent, false);
-        Region region = regions.get(position);
-        TextView txtTitle = view.findViewById(R.id.text1);
-        txtTitle.setText(region.getName());
+    private View createItemView(int position, View convertView, ViewGroup parent) {
+//        View view = new View(getContext());
+//        return view;
 
-        return view;
+        try {
+            if (convertView == null)
+                convertView = LayoutInflater.from(getContext()).inflate(resource, parent, false);
+
+            if (getItem(position) != null) {
+                Region region = getItem(position);
+                TextView txtTitle = convertView.findViewById(R.id.text1);
+                txtTitle.setText(Objects.requireNonNull(region).getName());
+
+                if (position == 0)
+                    txtTitle.setTextColor(Color.LTGRAY);
+            }
+        } catch (Exception e) {
+            log.error(TAG, e);
+        }
+        return convertView;
     }
 
 }

@@ -64,7 +64,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
-        android:id="@+id/registrationViewPager"
+        android:id="@+id/registrationViewPagerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />

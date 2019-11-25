@@ -51,10 +51,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-                <TextView
+                <Button
                     android:id="@+id/editProtocolCommand1"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="0dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/manrope_light"
@@ -62,6 +62,7 @@
                     android:text="Команда 1"
                     android:textAlignment="center"
                     android:textColor="@color/colorLightGrayForText"
+                    android:background="@color/colorWhite"
                     android:textSize="17sp" />
 
                 <View
@@ -69,10 +70,10 @@
                     android:layout_height="match_parent"
                     android:background="@color/colorLightGray" />
 
-                <TextView
+                <Button
                     android:id="@+id/editProtocolCommand2"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="0dp"
                     android:layout_weight="1"
                     android:fontFamily="@font/manrope_light"
@@ -80,6 +81,7 @@
                     android:text="Команда 2"
                     android:textAlignment="center"
                     android:textColor="@color/colorLightGrayForText"
+                    android:background="@color/colorWhite"
                     android:textSize="17sp" />
 
             </LinearLayout>
@@ -94,7 +96,9 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/protocolEditEvents"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"/>
+                android:layout_height="60dp"
+                android:orientation="vertical"
+                android:background="@color/colorWhite"/>
 
             <View
                 android:layout_width="match_parent"
@@ -103,11 +107,11 @@
                 android:layout_marginTop="0dp"
                 />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/playersNumberRawContainer"
+            <GridView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"/>
+                android:id="@+id/playerNumberButtons"
+                />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

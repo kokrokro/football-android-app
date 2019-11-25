@@ -84,6 +84,7 @@ public class AuthoUser extends Fragment {
 
     private TextView categoryTitle;
     public TextView textName;
+    ImageButton buttonOpenProfile;
 
     //Menu items
     private final InvitationFragment    firstFragment = new InvitationFragment();
@@ -99,6 +100,7 @@ public class AuthoUser extends Fragment {
     private NavigationView nvDrawer;
     private FloatingActionButton fab1;
     private final int REQUEST_CODE_CLUBEDIT = 276;
+    private final int REQUEST_CODE_PROFILE_DATA_EDIT = 4214;
     private int clubOldIndex;
 
     private Activity activity;
@@ -123,7 +125,7 @@ public class AuthoUser extends Fragment {
         nvDrawer = view.findViewById(R.id.nvView);
         nvDrawer.setItemIconTintList(null);
         View view1 = nvDrawer.getHeaderView(0);
-        ImageButton buttonOpenProfile = view1.findViewById(R.id.userProfileOpen);
+        buttonOpenProfile = view1.findViewById(R.id.userProfileOpen);
         textName = view1.findViewById(R.id.navigationName);
         try {
             categoryTitle = view.findViewById(R.id.categoryType);
@@ -194,7 +196,7 @@ public class AuthoUser extends Fragment {
         buttonOpenProfile.setOnClickListener(v -> {
             try {
                 Intent intent = new Intent(getActivity(), UserInfo.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_PROFILE_DATA_EDIT);
             } catch (Exception e) {
                 log.error("ERROR: ", e);
             }
@@ -221,6 +223,7 @@ public class AuthoUser extends Fragment {
         mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         mi.setTitle(mNewTitle);
     }
+
 
 
     @Override
@@ -498,6 +501,12 @@ public class AuthoUser extends Fragment {
                 Toast.makeText(getActivity(), "Изменения сохранены", Toast.LENGTH_LONG).show();
             }
 
+            if (requestCode == REQUEST_CODE_PROFILE_DATA_EDIT) {
+                user = (User) data.getExtras().getSerializable("newUserData");
+
+                SaveSharedPreference.saveObject(user);
+//                buttonOpenProfile
+            }
         }
     }
 

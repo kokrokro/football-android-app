@@ -234,14 +234,14 @@ public class EditTimeTable extends AppCompatActivity {
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         String name;
         String id;
 
         if (resultCode == RESULT_OK) {
-              name =data.getStringExtra("surname")+" "+data.getStringExtra("name") ;
-              id = Objects.requireNonNull(data.getData()).toString();
-        }
-        else {
+            name = data.getStringExtra("surname") + " " + data.getStringExtra("name");
+            id = Objects.requireNonNull(data.getData()).toString();
+        } else {
             return;
         }
         if (requestCode == 1) {

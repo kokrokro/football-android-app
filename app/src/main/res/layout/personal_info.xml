@@ -109,11 +109,10 @@
                 android:paddingStart="4sp"
                 android:paddingEnd="4sp"
                 android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-                android:spinnerMode="dialog"
+                android:spinnerMode="dropdown"
                 android:touchscreenBlocksFocus="false"
-                android:popupBackground="@color/colorWhite"
-                android:visibility="visible"
-                tools:visibility="visible" />
+                android:popupBackground="@color/colorWhite"/>
+
             <View
                 android:id="@+id/viewRegion"
                 android:layout_width="match_parent"
@@ -125,40 +124,7 @@
                 />
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_regular"
-                android:paddingStart="4sp"
-                android:paddingEnd="4sp"
-                android:gravity="start"
-                android:textColor="@color/colorLightGrayForText"
-                android:textSize="12sp"
-                android:text="@string/loginProfile"/>
-            <EditText
-                android:id="@+id/registrationInfoLogin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/MyEditText"
-                android:hint="@string/login"
-                android:inputType="text"/>
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_regular"
-                android:paddingStart="4sp"
-                android:paddingEnd="4sp"
-                android:gravity="start"
-                android:textColor="@color/colorLightGrayForText"
-                android:textSize="12sp"
-                android:text="@string/passProfile"/>
-            <EditText
-                android:id="@+id/registrationInfoPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                style="@style/MyEditText"
-                android:hint="@string/pass"
-                android:inputType="textPassword"/>
-            <TextView
+                android:id="@+id/registrationInfoDOBTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_regular"
@@ -181,7 +147,47 @@
                 android:textAllCaps="false"
                 android:textSize="15sp"
                 android:textColor="@color/colorLightGrayForText"
-                android:text="@string/DOB"/>
+                android:text="@string/DOB"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:paddingStart="4sp"
+                android:paddingEnd="4sp"
+                android:gravity="start"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp"
+                android:text="@string/loginProfile"/>
+            <EditText
+                android:id="@+id/registrationInfoLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyEditText"
+                android:hint="@string/login"
+                android:inputType="text"/>
+
+            <TextView
+                android:id="@+id/registrationInfoPasswordTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/manrope_regular"
+                android:paddingStart="4sp"
+                android:paddingEnd="4sp"
+                android:gravity="start"
+                android:textColor="@color/colorLightGrayForText"
+                android:textSize="12sp"
+                android:text="@string/passProfile"/>
+            <EditText
+                android:id="@+id/registrationInfoPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/MyEditText"
+                android:hint="@string/pass"
+                android:inputType="textPassword"/>
+
+
             <View
                 android:layout_width="match_parent"
                 android:paddingStart="5sp"
@@ -191,8 +197,6 @@
                 android:layout_height="1dp"
                 android:background="@color/colorLightGray"
                 />
-
-
 
         </LinearLayout>
 
