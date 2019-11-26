@@ -169,7 +169,7 @@ public interface FootballApi {
     Observable<Response<ServerResponse>> setReferees(@Header("auth") String authorization, @Body SetRefereeList body);
 
     @GET("/api/person_invite?_populate=team&status=pending")
-    Call<List<Invite>> getInvites(@Query("person") String person);
+    Call<List<Invite>> getInvites(@Query("person") String person, @Query("team") String team);
 
     //refresh web
     @GET("/api/refresh")
@@ -208,6 +208,9 @@ public interface FootballApi {
     Call<User> playerInv(@Path("id") String id, @Header("auth") String authorization);
     @POST("/api/person_invite/reject/{id}")
     Call<Invite> rejectInv(@Path("id") String id, @Header("auth") String authorization);
+
+    @POST("/api/person_invite/cancel/{id}")
+    Call<Invite> cancelInv(@Path("id") String id, @Header("auth") String authorization);
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getTeams(@Query("creator") String creator);
     @GET("/api/participation_request")

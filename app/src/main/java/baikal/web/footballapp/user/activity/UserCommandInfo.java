@@ -5,6 +5,8 @@ import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
@@ -20,11 +22,13 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.EditCommand;
 import baikal.web.footballapp.model.EditCommandResponse;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerAdapter;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerInvAdapter;
@@ -38,6 +42,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -49,9 +54,10 @@ public class UserCommandInfo extends AppCompatActivity {
     private final Logger log = LoggerFactory.getLogger(UserCommandInfo.class);
     private static ProgressDialog mProgressDialog;
     public static List<Player> players;
-    public static List<Player> playersInv;
+    public static List<String> playersInv;
     public static RVUserCommandPlayerAdapter adapter;
     public static RVUserCommandPlayerInvAdapter adapterInv;
+    public static List<Invite> allInvites = new ArrayList<>();
     private Team team;
     private League league;
     @Override
@@ -76,14 +82,20 @@ public class UserCommandInfo extends AppCompatActivity {
             Intent intent = getIntent();
             team = (Team) intent.getExtras().getSerializable("COMMANDEDIT");
             league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
-            for (Player player : team.getPlayers()){
-                if (player.getInviteStatus().equals("Approved") || player.getInviteStatus().equals("Accepted")){
-                    players.add(player);
+            players.addAll(team.getPlayers());
+            MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+            mainViewModel.getAllInvites().observe(this, invites -> {
+                playersInv.clear();
+                allInvites.clear();
+                for(Invite invite : invites){
+                    if(invite.getTeam().getId().equals(team.getId())){
+                        playersInv.add(invite.getPerson());
+                        allInvites.add(invite);
+                        adapterInv.notifyDataSetChanged();
+                    }
                 }
-                if (player.getInviteStatus().equals("Pending")){
-                    playersInv.add(player);
-                }
-            }
+
+            });
             if (playersInv.size()==0){
                 TextView textView = findViewById(R.id.userCommandPlayersInvText);
                 textView.setVisibility(View.GONE);
@@ -121,7 +133,7 @@ public class UserCommandInfo extends AppCompatActivity {
                 startActivity(intent1);
             });
             buttonSave.setOnClickListener(v -> {
-                editTeam();
+//                editTeam();
                 //post
                 finish();
             });
@@ -130,111 +142,111 @@ public class UserCommandInfo extends AppCompatActivity {
             log.error("ERROR: ", e);
         }
     }
-    private void editTeam() {
-        List<Player> playerList = new ArrayList<>(players);
-        if (playersInv.size()!=0) {
-            playerList.addAll(playersInv);
-        }
-        PersonTeams personTeams2 = null;
-        for (PersonTeams personTeams: AuthoUser.personOwnCommand){
-            if (personTeams.getTeam().equals(team.getId())){
-                personTeams2 = personTeams;
-                break;
-            }
-        }
-        EditCommand editCommand = new EditCommand();
-        editCommand.setId(league.getId());
-        editCommand.setTeamId(team.getId());
-        editCommand.setPlayers(playerList);
-        Call<EditCommandResponse> call2 = Controller.getApi().editTeam( SaveSharedPreference.getObject().getToken(), editCommand);
-        final PersonTeams finalPersonTeams = personTeams2;
-        call2.enqueue(new Callback<EditCommandResponse>() {
-                @Override
-                public void onResponse(Call<EditCommandResponse> call, Response<EditCommandResponse> response) {
-                    log.info("INFO: check response");
-                    if (response.isSuccessful()) {
-                        log.info("INFO: response isSuccessful");
-                        if (response.body() != null) {
-                            List<Player> players = response.body().getPlayers();
-                            team.setPlayers(players);
-                            String teamId = team.getId();
-                            Team teamLeague = null;
-                            for (Team team: league.getTeams()){
-                                if (team.getId().equals(teamId)){
-                                    teamLeague = team;
-                                    break;
-                                }
-                            }
-                            league.getTeams().remove(teamLeague);
-                            league.getTeams().add(team);
-
-                            PersonTeams personTeams = new PersonTeams();
-                            personTeams.setLeague(league.getId());
-                            personTeams.setTeam(team.getId());
-
-                            User user = SaveSharedPreference.getObject();
-                            Person person = user.getUser();
-                            List<PersonTeams> list = new ArrayList<>(person.getParticipation());
-                            for (int i=0; i<list.size(); i++){
-                                if (list.get(i).getLeague().equals(finalPersonTeams.getLeague())){
-                                    list.set(i, personTeams);
-                                }
-                            }
-                            person.setParticipation(list);
-                            user.setUser(person);
-                            SaveSharedPreference.editObject(user);
-
-
-
-                            for (int i=0; i<AuthoUser.personOwnCommand.size(); i++){
-                                if (AuthoUser.personOwnCommand.get(i).getLeague().equals(finalPersonTeams.getLeague())){
-                                    AuthoUser.personOwnCommand.set(i, personTeams);
-                                }
-                            }
-//                            AuthoUser.personOwnCommand.remove(finalPersonTeams);
-
-
-
-
-
-                            for (int i = 0; i< PersonalActivity.tournaments.size(); i++){
-                                if (league.getId().equals(PersonalActivity.tournaments.get(i).getId())){
-                                    PersonalActivity.tournaments.set(i, league);
-                                }
-                            }
-
-
-
-                            List<PersonTeams> result = new ArrayList<>(AuthoUser.personOwnCommand);
-                            AuthoUser.adapterOwnCommand.dataChanged(result);
-//                            AuthoUser.adapterOwnCommand.notifyDataSetChanged();
-                            Toast.makeText(UserCommandInfo.this, "Изменения сохранены.", Toast.LENGTH_LONG).show();
-
-                            //all is ok
-                            finish();
+//    private void editTeam() {
+//        List<String> playerList = new ArrayList<>(players);
+//        if (playersInv.size()!=0) {
+//            playerList.addAll(playersInv);
+//        }
+//        PersonTeams personTeams2 = null;
+//        for (PersonTeams personTeams: AuthoUser.personOwnCommand){
+//            if (personTeams.getTeam().equals(team.getId())){
+//                personTeams2 = personTeams;
+//                break;
+//            }
+//        }
+//        EditCommand editCommand = new EditCommand();
+//        editCommand.setId(league.getId());
+//        editCommand.setTeamId(team.getId());
+//        editCommand.setPlayers(playerList);
+//        Call<EditCommandResponse> call2 = Controller.getApi().editTeam( SaveSharedPreference.getObject().getToken(), editCommand);
+//        final PersonTeams finalPersonTeams = personTeams2;
+//        call2.enqueue(new Callback<EditCommandResponse>() {
+//                @Override
+//                public void onResponse(Call<EditCommandResponse> call, Response<EditCommandResponse> response) {
+//                    log.info("INFO: check response");
+//                    if (response.isSuccessful()) {
+//                        log.info("INFO: response isSuccessful");
+//                        if (response.body() != null) {
+//                            List<Player> players = response.body().getPlayers();
+//                            team.setPlayers(players);
+//                            String teamId = team.getId();
+//                            Team teamLeague = null;
+//                            for (Team team: league.getTeams()){
+//                                if (team.getId().equals(teamId)){
+//                                    teamLeague = team;
+//                                    break;
+//                                }
+//                            }
+//                            league.getTeams().remove(teamLeague);
+//                            league.getTeams().add(team);
+//
+//                            PersonTeams personTeams = new PersonTeams();
+//                            personTeams.setLeague(league.getId());
+//                            personTeams.setTeam(team.getId());
+//
+//                            User user = SaveSharedPreference.getObject();
+//                            Person person = user.getUser();
+//                            List<PersonTeams> list = new ArrayList<>(person.getParticipation());
+//                            for (int i=0; i<list.size(); i++){
+//                                if (list.get(i).getLeague().equals(finalPersonTeams.getLeague())){
+//                                    list.set(i, personTeams);
+//                                }
+//                            }
+//                            person.setParticipation(list);
+//                            user.setUser(person);
+//                            SaveSharedPreference.editObject(user);
+//
+//
+//
+//                            for (int i=0; i<AuthoUser.personOwnCommand.size(); i++){
+//                                if (AuthoUser.personOwnCommand.get(i).getLeague().equals(finalPersonTeams.getLeague())){
+//                                    AuthoUser.personOwnCommand.set(i, personTeams);
+//                                }
+//                            }
+////                            AuthoUser.personOwnCommand.remove(finalPersonTeams);
+//
+//
+//
+//
+//
+//                            for (int i = 0; i< PersonalActivity.tournaments.size(); i++){
+//                                if (league.getId().equals(PersonalActivity.tournaments.get(i).getId())){
+//                                    PersonalActivity.tournaments.set(i, league);
+//                                }
+//                            }
+//
+//
+//
+//                            List<PersonTeams> result = new ArrayList<>(AuthoUser.personOwnCommand);
+//                            AuthoUser.adapterOwnCommand.dataChanged(result);
+////                            AuthoUser.adapterOwnCommand.notifyDataSetChanged();
+//                            Toast.makeText(UserCommandInfo.this, "Изменения сохранены.", Toast.LENGTH_LONG).show();
+//
+//                            //all is ok
+//                            finish();
+////                        }
 //                        }
-                        }
-                    }
-                    else {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response.errorBody().string());
-                            String str = "Ошибка! ";
-                            str += jsonObject.getString("message");
-                            Toast.makeText(UserCommandInfo.this, str, Toast.LENGTH_LONG).show();
-                            finish();
-                        } catch (IOException | JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<EditCommandResponse> call, Throwable t) {
-                    log.error("ERROR: ", t);
-                }
-            });
-
-    }
+//                    }
+//                    else {
+//                        try {
+//                            JSONObject jsonObject = new JSONObject(response.errorBody().string());
+//                            String str = "Ошибка! ";
+//                            str += jsonObject.getString("message");
+//                            Toast.makeText(UserCommandInfo.this, str, Toast.LENGTH_LONG).show();
+//                            finish();
+//                        } catch (IOException | JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }
+//
+//                @Override
+//                public void onFailure(Call<EditCommandResponse> call, Throwable t) {
+//                    log.error("ERROR: ", t);
+//                }
+//            });
+//
+//    }
     private void showDialog() {
 
         if (mProgressDialog != null && !mProgressDialog.isShowing())

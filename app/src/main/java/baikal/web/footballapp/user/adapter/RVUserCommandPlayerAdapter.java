@@ -56,7 +56,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
         holder.textNum.setText(str);
         Person player = null;
         for (Person person : PersonalActivity.people) {
-            if (person.getId().equals(players.get(position).getPlayerId())){
+            if (person.getId().equals(players.get(position).getPerson())){
                 player = person;
                 break;
             }

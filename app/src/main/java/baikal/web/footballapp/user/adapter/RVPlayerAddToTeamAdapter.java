@@ -216,13 +216,13 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
                             }
                         }
 
-                        UserCommandInfo.playersInv.add(player);
-//                        UserCommandInfo.adapterInv.notifyDataSetChanged();
-                        List<baikal.web.footballapp.model.Player> players = new ArrayList<>(UserCommandInfo.playersInv);
-                        UserCommandInfo.adapterInv.dataChanged(players);
-                        List<PersonTeams> result = new ArrayList<>(AuthoUser.personOwnCommand);
-                        AuthoUser.adapterOwnCommand.dataChanged(result);
-                        Toast.makeText(context, "Вы отправили игроку приглашение", Toast.LENGTH_LONG).show();
+//                        UserCommandInfo.playersInv.add(player);
+////                        UserCommandInfo.adapterInv.notifyDataSetChanged();
+//                        List<baikal.web.footballapp.model.Player> players = new ArrayList<>(UserCommandInfo.playersInv);
+//                        UserCommandInfo.adapterInv.dataChanged(players);
+//                        List<PersonTeams> result = new ArrayList<>(AuthoUser.personOwnCommand);
+//                        AuthoUser.adapterOwnCommand.dataChanged(result);
+//                        Toast.makeText(context, "Вы отправили игроку приглашение", Toast.LENGTH_LONG).show();
 
                     }
                 } else {

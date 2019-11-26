@@ -40,6 +40,9 @@ public class Player implements Serializable {
     @SerializedName("playerId")
     @Expose
     private String playerId;
+    @SerializedName("person")
+    @Expose
+    private String person;
 
     public String getInviteStatus() {
         return inviteStatus;
@@ -129,4 +132,11 @@ public class Player implements Serializable {
         this.playerId = playerId;
     }
 
+    public String getPerson() {
+        return person;
+    }
+
+    public void setPerson(String person) {
+        this.person = person;
+    }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import java.util.List;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
@@ -20,6 +21,7 @@ public class MainRepository {
                 .enqueue(callback);
         return returnNews;
     }
+
     public LiveData<List<PersonPopulate>> getFavTourneys(String id, retrofit2.Callback<List<PersonPopulate>> callback) {
         MutableLiveData<List<PersonPopulate>> returnNews = new MutableLiveData<>();
         Controller
@@ -27,5 +29,15 @@ public class MainRepository {
                 .getFavTourneysByPerson(id)
                 .enqueue(callback);
         return returnNews;
+    }
+
+    public LiveData<List<Invite>> getInvites(String person, String team, retrofit2.Callback<List<Invite>> callback) {
+        MutableLiveData<List<Invite>> invites = new MutableLiveData<>();
+        Controller
+                .getApi()
+                .getInvites(person, team)
+                .enqueue(callback);
+
+        return invites;
     }
 }

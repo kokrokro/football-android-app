@@ -4,25 +4,33 @@ import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.user.activity.UserCommandInfo;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -33,8 +41,9 @@ import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCommandPlayerInvAdapter.ViewHolder>{
     private final UserCommandInfo context;
-    private final List<Player> players;
-    public RVUserCommandPlayerInvAdapter (UserCommandInfo context, List<Player> players){
+    private final List<String> players;
+
+    public RVUserCommandPlayerInvAdapter (UserCommandInfo context, List<String> players){
         this.context = context;
         this.players = players;
     }
@@ -53,7 +62,7 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         holder.textNum.setText(str);
         Person player = null;
         for (Person person : PersonalActivity.people) {
-            if (person.getId().equals(players.get(position).getPlayerId())){
+            if (person.getId().equals(players.get(position))){
                 player = person;
                 break;
             }
@@ -97,9 +106,24 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         }
         holder.buttonDelete.setOnClickListener(v -> {
             //post
+            Controller.getApi().cancelInv(UserCommandInfo.allInvites.get(position).get_id(), PersonalActivity.token).enqueue(new Callback<Invite>() {
+                @Override
+                public void onResponse(Call<Invite> call, Response<Invite> response) {
+                    if(response.isSuccessful()){
+                        Log.d("Debug", "____________");
+                        Toast.makeText(context,"Приглашение отменено", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                @Override
+                public void onFailure(Call<Invite> call, Throwable t) {
+                    Toast.makeText(context,"Не удалось", Toast.LENGTH_SHORT).show();
+                    Log.d("Debug", "neeeet");
+                }
+            });
+
             UserCommandInfo.playersInv.remove(players.get(position));
-            List<Player> players = new ArrayList<>(UserCommandInfo.playersInv);
-            UserCommandInfo.adapterInv.dataChanged(players);
+//            List<String> players = new ArrayList<>(UserCommandInfo.playersInv);
+            UserCommandInfo.adapterInv.notifyDataSetChanged();
         });
     }
 
@@ -123,7 +147,7 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
             line = item.findViewById(R.id.userCommandPlayerInvLine);
         }
     }
-    public void dataChanged(List<Player> allPlayers1){
+    public void dataChanged(List<String> allPlayers1){
         players.clear();
         players.addAll(allPlayers1);
         notifyDataSetChanged();
