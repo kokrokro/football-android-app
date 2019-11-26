@@ -13,6 +13,7 @@ import baikal.web.footballapp.model.EditCommandResponse;
 import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.EditProtocolBody;
 import baikal.web.footballapp.model.GetLeagueInfo;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
@@ -167,6 +168,8 @@ public interface FootballApi {
     @POST("/api/matches/setmultireferees")
     Observable<Response<ServerResponse>> setReferees(@Header("auth") String authorization, @Body SetRefereeList body);
 
+    @GET("/api/person_invite?_populate=team&status=pending")
+    Call<List<Invite>> getInvites(@Query("person") String person);
 
     //refresh web
     @GET("/api/refresh")
@@ -201,9 +204,10 @@ public interface FootballApi {
     Call<EditCommandResponse> editTeam(@Header("auth") String authorization, @Body EditCommand body);
 
     //player inv
-    @Multipart
-    @POST("/api/team/acceptrequest")
-    Call<User> playerInv(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
+    @POST("/api/person_invite/accept/{id}")
+    Call<User> playerInv(@Path("id") String id, @Header("auth") String authorization);
+    @POST("/api/person_invite/reject/{id}")
+    Call<Invite> rejectInv(@Path("id") String id, @Header("auth") String authorization);
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getTeams(@Query("creator") String creator);
     @GET("/api/participation_request")

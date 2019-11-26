@@ -1,5 +1,6 @@
 package baikal.web.footballapp.user.activity;
 
+import android.graphics.LightingColorFilter;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -11,10 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Invite;
+import baikal.web.footballapp.user.adapter.RVInvitationAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class InvitationFragment extends Fragment {
     private final Logger log = LoggerFactory.getLogger(InvitationFragment.class);
@@ -28,17 +39,30 @@ public class InvitationFragment extends Fragment {
         linearNotEmpty = view.findViewById(R.id.notEmptyInv);
         recyclerView = view.findViewById(R.id.recyclerViewUserInvitation);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        try{
-//        recyclerView.setAdapter(AuthoUser.adapterInv);
-//        if (AuthoUser.pendingTeamInvitesList.size()!=0){
-//            linearEmpty.setVisibility(View.GONE);
-//        }
-//        else {
-//            linearNotEmpty.setVisibility(View.GONE);
-//        }
-        linearEmpty.setVisibility(View.GONE);
+        RVInvitationAdapter adapter;
+        List<Invite> invites = new ArrayList<>();
+        adapter = new RVInvitationAdapter(getActivity(),getContext(),invites);
+        Controller.getApi().getInvites(PersonalActivity.id).enqueue(new Callback<List<Invite>>() {
+            @Override
+            public void onResponse(Call<List<Invite>> call, Response<List<Invite>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        invites.clear();
+                        invites.addAll(response.body());
+                        if(invites.size()>0){
+                            linearEmpty.setVisibility(View.GONE);
+                        }
+                        recyclerView.setAdapter(adapter);
+                        log.error(""+invites.size());
+                    }
+                }
+            }
 
-        }catch (NullPointerException e){}
+            @Override
+            public void onFailure(Call<List<Invite>> call, Throwable t) {
+                log.error(t.getMessage());
+            }
+        });
         return view;
     }
 
