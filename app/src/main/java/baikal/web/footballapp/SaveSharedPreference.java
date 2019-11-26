@@ -49,16 +49,18 @@ public class SaveSharedPreference {
     public static User getObject(){
         Gson gson = new Gson();
         String json = sharedPreferences.getString("MyObject", "");
-        return gson.fromJson(json, User.class);
+        return user = gson.fromJson(json, User.class);
     }
 
     public static void saveObject(User myobject){
+        user = myobject;
         Gson gson = new Gson();
         String json = gson.toJson(myobject);
         editor.putString("MyObject", json);
         editor.apply();
     }
     public static void editObject(User myobject){
+        user = myobject;
         Gson gson = new Gson();
         String json = gson.toJson(myobject);
         editor.putString("MyObject", json);

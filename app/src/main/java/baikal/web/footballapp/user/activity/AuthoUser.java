@@ -19,6 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,7 +40,6 @@ import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.model.Club;
-import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.PendingTeamInvite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
@@ -84,7 +84,6 @@ public class AuthoUser extends Fragment {
 
     private TextView categoryTitle;
     public TextView textName;
-    ImageButton buttonOpenProfile;
 
     //Menu items
     private final InvitationFragment    firstFragment = new InvitationFragment();
@@ -125,7 +124,7 @@ public class AuthoUser extends Fragment {
         nvDrawer = view.findViewById(R.id.nvView);
         nvDrawer.setItemIconTintList(null);
         View view1 = nvDrawer.getHeaderView(0);
-        buttonOpenProfile = view1.findViewById(R.id.userProfileOpen);
+        ImageButton buttonOpenProfile = view1.findViewById(R.id.userProfileOpen);
         textName = view1.findViewById(R.id.navigationName);
         try {
             categoryTitle = view.findViewById(R.id.categoryType);
@@ -406,51 +405,51 @@ public class AuthoUser extends Fragment {
 
     @SuppressLint("CheckResult")
     private void refreshTournaments() {
-            Controller.getApi().getAllLeagues("10", "0")
+        Controller.getApi().getAllLeagues("10", "0")
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(PersonalActivity::saveData
-                            ,
-                            error ->{
+                    .subscribe( PersonalActivity::saveData,
+                                error -> {
                         CheckError checkError = new CheckError();
-                                checkError.checkError(getActivity(), error);
-                            }
-                    );
-        }
-
-
-
-    @SuppressLint("CheckResult")
-    private void getUserCommands(String leagueId, String teamId, PersonTeams team){
-
-        Controller.getApi().getLeagueInfo(leagueId)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(getLeagueInfo -> getParticipation(getLeagueInfo, teamId, team)
-                        ,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
+                        checkError.checkError(getActivity(), error);
+                    });
     }
 
-    private void getParticipation(GetLeagueInfo getLeagueInfo, String teamId, PersonTeams team) {
-        for (Team team1 : getLeagueInfo.getLeagueInfo().getTeams()) {
-            if (team1.getId().equals(teamId)) {
-                if (team1.getCreator().equals(person.getId())) {
-                    if (!personOwnCommand.contains(team)) {
-                        personOwnCommand.add(team);
-                    }
-                } else {
-                    if (!personCommand.contains(team)) {
-                        personCommand.add(team);
-                    }
-                }
-                break;
-            }
-        }
-    }
+
+
+//    @SuppressLint("CheckResult")
+//    private void getUserCommands(String leagueId, String teamId, PersonTeams team){
+//
+//        final Disposable subscribe = Controller.getApi().getLeagueInfo(leagueId)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(getLeagueInfo -> getParticipation(getLeagueInfo, teamId, team)
+//                        ,
+//                        error -> {
+//                            CheckError checkError = new CheckError();
+//                            checkError.checkError(getActivity(), error);
+//                        }
+//                );
+//
+//        Log.d(TAG,subscribe.toString());
+//    }
+
+//    private void getParticipation(GetLeagueInfo getLeagueInfo, String teamId, PersonTeams team) {
+//        for (Team team1 : getLeagueInfo.getLeagueInfo().getTeams()) {
+//            if (team1.getId().equals(teamId)) {
+//                if (team1.getCreator().equals(person.getId())) {
+//                    if (!personOwnCommand.contains(team)) {
+//                        personOwnCommand.add(team);
+//                    }
+//                } else {
+//                    if (!personCommand.contains(team)) {
+//                        personCommand.add(team);
+//                    }
+//                }
+//                break;
+//            }
+//        }
+//    }
 
     @SuppressLint("SetTextI18n")
     public void SetInvNum(Activity activity, int position) {
@@ -479,9 +478,9 @@ public class AuthoUser extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_CLUBEDIT) {
-                Club result = (Club) data.getExtras().getSerializable("CREATECLUBRESULT");
+                Club result = (Club) Objects.requireNonNull(data.getExtras()).getSerializable("CREATECLUBRESULT");
                 Person person1 = SaveSharedPreference.getObject().getUser();
-                person1.setClub(result.getId());
+                person1.setClub(Objects.requireNonNull(result).getId());
 //                SaveSharedPreference.getObject().setUser(person1);
                 User user = SaveSharedPreference.getObject();
                 user.setUser(person1);
@@ -493,7 +492,7 @@ public class AuthoUser extends Fragment {
                     } else {
                         PersonalActivity.allClubs.set(clubOldIndex, result);
                     }
-                }catch (Exception e){}
+                } catch (Exception ignored){}
                 List<Club> list = new ArrayList<>(PersonalActivity.allClubs);
                 ClubPage.adapter.dataChanged(list);
                 FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
@@ -502,31 +501,41 @@ public class AuthoUser extends Fragment {
             }
 
             if (requestCode == REQUEST_CODE_PROFILE_DATA_EDIT) {
-                user = (User) data.getExtras().getSerializable("newUserData");
-
+                person = (Person) Objects.requireNonNull(data.getExtras()).getSerializable("newUserData");
+                user.setUser(person);
                 SaveSharedPreference.saveObject(user);
-//                buttonOpenProfile
+
+                PersonalActivity.id = person.getId();
+                PersonalActivity.token = user.getToken();
+
+                Person man1 = new Person();
+                for (Person man : PersonalActivity.people) {
+                    if (man.getId().equals(person.getId())) {
+                        man1 = man;
+                    }
+                }
+                PersonalActivity.people.remove(man1);
+                PersonalActivity.people.add(user.getUser());
             }
         }
     }
 
     private void setItemColor(int itemColor) {
-            MenuItem mi = m.getItem(itemColor);
-            try {
-                    SpannableString s = new SpannableString(mi.getTitle());
-                    s.setSpan(new ForegroundColorSpan(getActivity().getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
-                    mi.setTitle(s);
-            } catch (Exception e) {
-                log.error("ERROR: ", e);
+        MenuItem mi = m.getItem(itemColor);
+        try {
+            SpannableString s = new SpannableString(mi.getTitle());
+            s.setSpan(new ForegroundColorSpan(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
+            mi.setTitle(s);
+        } catch (Exception e) {
+            log.error("ERROR: ", e);
+        }
+        SubMenu subMenu = mi.getSubMenu();
+        if (subMenu != null && subMenu.size() > 0) {
+            for (int j = 0; j < subMenu.size(); j++) {
+                MenuItem subMenuItem = subMenu.getItem(j);
+                applyFontToMenuItem(subMenuItem);
             }
-            SubMenu subMenu = mi.getSubMenu();
-            if (subMenu != null && subMenu.size() > 0) {
-                for (int j = 0; j < subMenu.size(); j++) {
-                    MenuItem subMenuItem = subMenu.getItem(j);
-                    applyFontToMenuItem(subMenuItem);
-                }
-            }
-
-            applyFontToMenuItem(mi);
+        }
+        applyFontToMenuItem(mi);
     }
 }

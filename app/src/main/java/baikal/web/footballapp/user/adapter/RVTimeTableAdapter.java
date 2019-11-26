@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.DateToString;
@@ -131,49 +132,14 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
         CheckName checkName = new CheckName();
 
         str = "Не назначен";
-            holder.textReferee1.setText(str);
-            holder.textReferee1.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
-            holder.textReferee2.setText(str);
-            holder.textReferee2.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
-            holder.textReferee3.setText(str);
-            holder.textReferee3.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
-            holder.textReferee4.setText(str);
-            holder.textReferee4.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
-
-
-        try{
-            for (Referee referee : referees)
-                for (Person person : PersonalActivity.allPlayers)
-                    if (referee.getPerson().equals(person.getId()))
-                        switch (referee.getType()) {
-
-                            case "firstReferee":
-                                str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
-                                holder.textReferee1.setText(str);
-                                holder.textReferee1.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
-                                break;
-                            case "secondReferee":
-                                str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
-                                holder.textReferee2.setText(str);
-                                holder.textReferee2.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
-                                break;
-                            case "thirdReferee":
-                                str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
-                                holder.textReferee3.setText(str);
-                                holder.textReferee3.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
-                                break;
-                            case "timekeeper":
-                                str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
-                                holder.textReferee4.setText(str);
-                                holder.textReferee4.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
-                                break;
-                            default:
-                                break;
-                        }
-
-        } catch (Exception e){
-            log.error("ERROR: ", e);
-        }
+        holder.textReferee1.setText(str);
+        holder.textReferee1.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
+        holder.textReferee2.setText(str);
+        holder.textReferee2.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
+        holder.textReferee3.setText(str);
+        holder.textReferee3.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
+        holder.textReferee4.setText(str);
+        holder.textReferee4.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
 
         holder.buttonEdit.setOnClickListener(v -> {
             Intent intent = new Intent(activity, EditTimeTable.class);
@@ -186,6 +152,16 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
 
         if (position == (matches.size() - 1))
             holder.line.setVisibility(View.INVISIBLE);
+    }
+
+    private void setRefereeToTextView (TextView textView, Person referee) {
+        try {
+            textView.setText(referee.getSurnameWithInitials());
+        } catch (Exception e) {
+            textView.setText("Не назначен");
+//            Toast.makeText(context, "Не удалось загрузить список судий...", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
     @Override

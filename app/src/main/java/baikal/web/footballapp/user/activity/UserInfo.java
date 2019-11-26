@@ -3,20 +3,14 @@ package baikal.web.footballapp.user.activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.RequestOptions;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
@@ -30,17 +24,12 @@ import org.slf4j.LoggerFactory;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.players.activity.PlayersPage;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -48,18 +37,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static baikal.web.footballapp.Controller.BASE_URL;
-
 public class UserInfo extends AppCompatActivity {
     private static final String TAG = "UserInfo: ";
     private final Logger log = LoggerFactory.getLogger(UserInfo.class);
-    private static final int EDIT_PROFILE_DATA_SUCCESS = 32443; //magic number
 
     private final PersonalInfo personalInfo = new PersonalInfo(this, true);
 
-    private User user;
-    private String token;
     private Person person;
+
+    public UserInfo() {
+        try {
+            User user = SaveSharedPreference.getObject();
+            PersonalActivity.token = user.getToken();
+            PersonalActivity.id = user.getUser().getId();
+            this.person = user.getUser();
+            Log.d(TAG, person.getId());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +80,9 @@ public class UserInfo extends AppCompatActivity {
         String patronymic = personalInfo.textPatronymic.getText().toString();
         String login = personalInfo.textLogin.getText().toString();
         String DOB = (new DateToString()).TimeForServer(personalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
-        String region = personalInfo.regionsId.get(personalInfo.spinnerRegion.getSelectedItemPosition());
+        String region = personalInfo.regionsId.get(personalInfo.selectedRegionIndex);
+
+        Log.d(TAG, region);
 
         Map<String, RequestBody> map = new HashMap<>();
         RequestBody requestName = RequestBody.create(MediaType.parse("text/plain"), name);
@@ -112,9 +110,6 @@ public class UserInfo extends AppCompatActivity {
         File file = new File(getCacheDir(), "photo");
 
         try {
-//            if (!file.createNewFile())
-//                throw new IOException();
-
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             photo.compress(Bitmap.CompressFormat.JPEG, 80 /*ignored for PNG*/, bos);
 
@@ -131,47 +126,37 @@ public class UserInfo extends AppCompatActivity {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
 
-        final Bitmap myBitmap = photo;
-        Controller.getApi().editProfile(person.getId(), PersonalActivity.token, map, body).enqueue(new Callback<EditProfile>() {
+        Log.d(TAG, person.getId() + "\n" + PersonalActivity.token);
+
+        Controller.getApi().editProfile(person.getId(), PersonalActivity.token, map, body).enqueue(new Callback<Person>() {
             @Override
-            public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
-                if (response.isSuccessful())
+            public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
+                if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        Person p = response.body().getPerson();
-
-                        user.setUser(p);
-
-                        //all is ok
-                        if (person.getType().equals("player")) {
-                            Person man1 = new Person();
-                            for (Person man : PersonalActivity.people) {
-                                if (man.getId().equals(person.getId())) {
-                                    man1 = man;
-                                }
-                            }
-                            PersonalActivity.people.remove(man1);
-                            PersonalActivity.people.add(user.getUser());
-                            PlayersPage.adapter.notifyDataSetChanged();
-                        }
-                        String str = "Изменения сохранены.";
+                        Person p = response.body();
 
                         Intent intent = new Intent();
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable("newUserData", user);
+                        bundle.putSerializable("newUserData", p);
+                        intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
 
-                        Toast.makeText(UserInfo.this, str, Toast.LENGTH_LONG).show();
+                        Toast.makeText(UserInfo.this, "Изменения сохранены.", Toast.LENGTH_LONG).show();
                         finish();
                     }
+                    else
+                        Toast.makeText(UserInfo.this, "Response body is null", Toast.LENGTH_LONG).show();
+                }
+                else
+                    Toast.makeText(UserInfo.this, "Response is not successful", Toast.LENGTH_LONG).show();
             }
 
             @Override
-            public void onFailure(Call<EditProfile> call, Throwable t) {
-
+            public void onFailure(@NonNull Call<Person> call, @NonNull Throwable t) {
+                Toast.makeText(UserInfo.this, "Не удалось изменить данные", Toast.LENGTH_LONG).show();
+                log.error(TAG, t);
             }
         });
-
-        finish();
     }
 
 }
