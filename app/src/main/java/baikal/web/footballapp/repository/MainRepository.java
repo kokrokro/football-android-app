@@ -7,6 +7,7 @@ import java.util.List;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.model.Invite;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
@@ -39,5 +40,13 @@ public class MainRepository {
                 .enqueue(callback);
 
         return invites;
+    }
+    public LiveData<List<League>> getLegues(String tourney, retrofit2.Callback<List<League>> callback){
+        MutableLiveData<List<League>> returnNews = new MutableLiveData<>();
+        Controller
+                .getApi()
+                .getLeaguesByTourney(tourney)
+                .enqueue(callback);
+        return returnNews;
     }
 }

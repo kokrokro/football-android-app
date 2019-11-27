@@ -95,10 +95,9 @@ public class TournamentsFragment extends Fragment {
                     favTourneyId.add(tr.getId());
                     tourneyIds += "," + tr.getId();
                 }
-                getFavLeagues(tourneyIds, leagues -> {
-
-                    mainViewModel.setFavTourneysId(favTourneyId);
-                    adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
+                mainViewModel.setFavTourneysId(favTourneyId);
+                mainViewModel.getFavLeagues(tourneyIds).observe(this, leagues -> {
+                    adapter = new RVFavTourneyAdapter(favTourney , getActivity(), leagues, listener);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                     adapter.dataChanged(tourneys);
@@ -121,26 +120,6 @@ public class TournamentsFragment extends Fragment {
 //            }
 //        });
         return view;
-    }
-
-    private void getFavLeagues(String tr, MyCallback callback){
-        List<League> leagues = new ArrayList<>();
-        Controller.getApi().getLeaguesByTourney(tr).enqueue(new Callback<List<League>>() {
-            @Override
-            public void onResponse(Call<List<League>> call, Response<List<League>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null)  {
-                        favLeague.clear();
-                        favLeague.addAll(response.body());
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            }
-            @Override
-            public void onFailure(Call<List<League>> call, Throwable t) {
-            }
-        });
-        callback.onDataGot(leagues);
     }
 
     @SuppressLint("CheckResult")

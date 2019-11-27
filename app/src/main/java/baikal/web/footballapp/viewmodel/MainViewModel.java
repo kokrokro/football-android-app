@@ -27,7 +27,7 @@ import retrofit2.Response;
 public class MainViewModel extends ViewModel {
     private MutableLiveData<List<News_>> newsData = null;
     private MutableLiveData<List<Tourney>> favTourney = null;
-    private MutableLiveData<List<List<League>>> favLeagues= null;
+    private MutableLiveData<List<League>> favLeagues= null;
     private MutableLiveData<List<String>> favTourneysId = null;
     private MutableLiveData<List<Invite>> allInvites = null;
     public LiveData<List<Invite>> getAllInvites(){
@@ -57,27 +57,11 @@ public class MainViewModel extends ViewModel {
     }
 
 
-    public LiveData<List<List<League>>> getFavLeagues(){
+    public LiveData<List<League>> getFavLeagues(String tourney){
         if(favLeagues==null){
             favLeagues = new MutableLiveData<>();
         }
-        if(favTourneysId==null){
-            loadTourneys(PersonalActivity.id);
-        }
-        if(favTourneysId!=null){
-            List<String> favList = favTourneysId.getValue();
-            List<List<League>> leagueList = new ArrayList<>();
-            for (String tr : favList){
-                getFavLeagues(tr, new TournamentsFragment.MyCallback() {
-                    @Override
-                    public void onDataGot(List<League> leagues) {
-                        leagueList.add(leagues);
-                    }
-                });
-            }
-            favLeagues.setValue(leagueList);
-
-        }
+        loadFavLeagues(tourney);
         return favLeagues;
     }
     public void setFavTourneysId(List<String> favTourney){
@@ -153,22 +137,21 @@ public class MainViewModel extends ViewModel {
         })
         ;
     }
-    private void getFavLeagues(String tr, TournamentsFragment.MyCallback callback){
-        List<League> leagues = new ArrayList<>();
-        Controller.getApi().getLeaguesByTourney(tr).enqueue(new Callback<List<League>>() {
+    private void loadFavLeagues(String tourney){
+        new MainRepository().getLegues(tourney, new Callback<List<League>>() {
             @Override
             public void onResponse(Call<List<League>> call, Response<List<League>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null)
-                    {
-                        leagues.addAll(response.body());
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        favLeagues.setValue(response.body());
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<List<League>> call, Throwable t) {
+
             }
         });
-        callback.onDataGot(leagues);
     }
 }
