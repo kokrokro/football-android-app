@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.PorterDuff;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +20,19 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
+import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.UserCommandInfo;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -35,6 +43,8 @@ import static baikal.web.footballapp.Controller.BASE_URL;
 public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserCommandPlayerAdapter.ViewHolder> {
     private final List<Player> players;
     private final UserCommandInfo context;
+
+
 
     public RVUserCommandPlayerAdapter(Activity context, List<Player> players) {
         this.context = (UserCommandInfo) context;
@@ -110,13 +120,31 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
         if (position == (players.size() - 1)) {
             holder.line.setVisibility(View.INVISIBLE);
         }
-        if (player.getId().equals(SaveSharedPreference.getObject().getUser().getId())){
-            holder.buttonDelete.setVisibility(View.INVISIBLE);
-        }
+//        if (player.getId().equals(SaveSharedPreference.getObject().getUser().getId())){
+//            holder.buttonDelete.setVisibility(View.INVISIBLE);
+//        }
         holder.buttonDelete.setOnClickListener(v -> {
             //post
             UserCommandInfo.players.remove(players.get(position));
             UserCommandInfo.adapter.notifyDataSetChanged();
+            Log.d("cancel invite id ", ""+UserCommandInfo.accepted.get(position).get_id());
+            Controller.getApi()
+                    .cancelInv(UserCommandInfo.accepted.get(position).get_id(),PersonalActivity.token)
+                    .enqueue(new Callback<Invite>() {
+                @Override
+                public void onResponse(Call<Invite> call, Response<Invite> response) {
+                    if(response.isSuccessful()){
+                        if(response.body()!=null){
+                            Log.d("cancel invite", "__SUCCCESS");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Invite> call, Throwable t) {
+                    Log.d("cancel invite", "__FAIL");
+                }
+            });
         });
         holder.editNum.getBackground().setColorFilter(context.getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         holder.editNum.setOnFocusChangeListener((v, hasFocus) -> {

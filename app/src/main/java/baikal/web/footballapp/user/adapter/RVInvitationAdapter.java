@@ -188,7 +188,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                             personTeams.setTeam(team);
                             int size1 = AuthoUser.personOwnCommand.size();
                             int size2 = AuthoUser.personCommand.size();
-                            AuthoUser.personCommand.add(personTeams);
+//                            AuthoUser.personCommand.add(personTeams);
                             if (AuthoUser.personOwnCommand.size() != 0
                                     && AuthoUser.personCommand.size() != 0) {
                                 LayoutInflater factory = activity.getLayoutInflater();

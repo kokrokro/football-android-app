@@ -17,6 +17,7 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.user.activity.UserCommands;
 
 import org.slf4j.Logger;
@@ -29,8 +30,8 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
     private final Logger log = LoggerFactory.getLogger(UserCommands.class);
     UserCommands context;
     private final PersonalActivity activity;
-    private final List<PersonTeams> list;
-    public RVUserCommandAdapter (Activity activity, List<PersonTeams> list){
+    private final List<Team> list;
+    public RVUserCommandAdapter (Activity activity, List<Team> list){
         this.activity = (PersonalActivity) activity;
 //        this.context = context;
         this.list = list;
@@ -44,7 +45,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PersonTeams personTeams = list.get(position);
+        Team personTeams = list.get(position);
 //        League league = personTeams.getLeague();
         League league = null;
         for (League league1 : PersonalActivity.tournaments){
@@ -53,13 +54,8 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
                 break;
             }
         }
-        String teamId = personTeams.getTeam();
-        Team teamLeague = null;
-        for (Team team: league.getTeams()){
-            if (team.getId().equals(teamId)){
-                teamLeague = team;
-            }
-        }
+        String teamId = personTeams.getId();
+        Team teamLeague = personTeams;
 //        Team team = personTeams.getTeam();
 //        holder.textTournamentTitle.setText();
         String title = "Команда: ";
@@ -68,19 +64,24 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         String playersNum = "Количество игроков: ";
         String str = title + teamLeague.getName();
         holder.textCommandTitle.setText(str);
-        if (teamLeague.getStatus().equals("Rejected")){
-            holder.textStatus.setText("Отклонена");
-            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
+//        if (teamLeague.getStatus().equals("Rejected")){
+//            holder.textStatus.setText("Отклонена");
+//            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorBadge));
+//        }
+//        if (teamLeague.getStatus().equals("Pending")){
+//            holder.textStatus.setText("Ожидание");
+//        }
+//        if (teamLeague.getStatus().equals("Approved")){
+//            holder.textStatus.setText("Утверждена");
+//            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
+//        }
+        Tourney tourney = null;
+        for(Tourney tr: PersonalActivity.allTourneys ){
+            if(tr.getId().equals(league.getTourney())){
+                tourney = tr;
+            }
         }
-        if (teamLeague.getStatus().equals("Pending")){
-            holder.textStatus.setText("Ожидание");
-        }
-        if (teamLeague.getStatus().equals("Approved")){
-            holder.textStatus.setText("Утверждена");
-            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
-        }
-
-        str = league.getTourney() + ". " + league.getName();
+        str = tourney.getName() + ". " + league.getName();
         holder.textTournamentTitle.setText(str);
 
         DateToString dateToString = new DateToString();
@@ -89,14 +90,12 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         log.error(str);
         str = transfer + dateToString.ChangeDate(league.getTransferBegin()) + "-" + dateToString.ChangeDate(league.getTransferEnd());
         holder.textTransfer.setText(str);
-        List<Player> players = teamLeague.getPlayers();
-        List<Player> playerList = new ArrayList<>();
-        for (Player player: players){
-            if (player.getInviteStatus().equals("Approved") || player.getInviteStatus().equals("Accepted")){
-                playerList.add(player);
-            }
+        try{
+            str = playersNum + personTeams.getPlayers().size();
+
+        }catch (NullPointerException e){
+            str = playersNum;
         }
-        str = playersNum + playerList.size();
         holder.textPlayersNum.setText(str);
         if (position== (list.size() - 1)){
             holder.line.setVisibility(View.INVISIBLE);

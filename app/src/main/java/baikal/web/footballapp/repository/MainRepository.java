@@ -35,7 +35,7 @@ public class MainRepository {
         MutableLiveData<List<Invite>> invites = new MutableLiveData<>();
         Controller
                 .getApi()
-                .getInvites(person, team)
+                .getInvites(person, team, null)
                 .enqueue(callback);
 
         return invites;

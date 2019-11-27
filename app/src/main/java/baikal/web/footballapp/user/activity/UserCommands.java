@@ -22,6 +22,7 @@ import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.adapter.RVOwnCommandAdapter;
+import baikal.web.footballapp.user.adapter.RVUserCommandAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -69,7 +70,7 @@ public class UserCommands extends Fragment {
         textView = view.findViewById(R.id.userCommandsText);
         textView2 = view.findViewById(R.id.userCommandsText2);
 
-        teams.addAll(AuthoUser.createdTeams);
+        teams = AuthoUser.createdTeams;
 
         if (teams.size()==0){
             linearOwnCommand.setVisibility(View.GONE);
@@ -82,8 +83,6 @@ public class UserCommands extends Fragment {
             line.setVisibility(View.VISIBLE);
             textView.setVisibility(View.VISIBLE);
             textView2.setVisibility(View.VISIBLE);
-        }
-        else{
             linear = view.findViewById(R.id.emptyCommand);
             linear.setVisibility(View.GONE);
         }
@@ -94,8 +93,9 @@ public class UserCommands extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
 
+        RVUserCommandAdapter adapter1 = new RVUserCommandAdapter(getActivity(),AuthoUser.personCommand);
+        recyclerView.setAdapter(adapter1);
         recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
-
         recyclerView2.setAdapter(adapter);
         recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
         scrollStatus = false;

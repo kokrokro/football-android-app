@@ -47,7 +47,6 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
     public RVOwnCommandAdapter (Activity activity, List<Team> list){
         this.activity = (PersonalActivity) activity;
 //        this.context = context;
-        log.error("adaaapter");
 
         this.list = list;
     }

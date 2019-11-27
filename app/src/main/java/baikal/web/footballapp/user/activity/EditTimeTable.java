@@ -179,7 +179,7 @@ public class EditTimeTable extends AppCompatActivity {
         Match newMatch = new Match();
         newMatch.setReferees(refereeRequests);
         Controller.getApi().
-               setReferees(match.getId(), PersonalActivity.token, newMatch)
+                editMatch(match.getId(), PersonalActivity.token, newMatch)
                .enqueue(new Callback<Match>() {
            @Override
            public void onResponse(@NonNull Call<Match> call, @NonNull Response<Match> response) {

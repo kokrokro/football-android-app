@@ -31,7 +31,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -159,7 +158,7 @@ public class RefereesMatches extends AppCompatActivity {
         CheckError checkError = new CheckError();
         SetRefereeList setRefereeList = new SetRefereeList();
         setRefereeList.setRefereeRequestList(refereeRequestLists);
-        Controller.getApi().setReferees(SaveSharedPreference.getObject().getToken(), setRefereeList)
+        Controller.getApi().editMatch(SaveSharedPreference.getObject().getToken(), setRefereeList)
                 .map(responseBody -> {
                     if (!responseBody.isSuccessful()) {
                         String srt = responseBody.errorBody().string();

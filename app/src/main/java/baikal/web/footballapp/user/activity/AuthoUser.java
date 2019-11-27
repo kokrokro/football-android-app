@@ -40,6 +40,7 @@ import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.model.Club;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.PendingTeamInvite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
@@ -79,7 +80,7 @@ public class AuthoUser extends Fragment {
     public static List<PersonTeams> personOngoingLeagues;
     public static List<PersonTeams> personOwnCommand;
     static List<Team> createdTeams = new ArrayList<>();
-    public static List<PersonTeams> personCommand;
+    public static List<Team> personCommand;
     public static List<PendingTeamInvite> pendingTeamInvitesList;
 
     private TextView categoryTitle;
@@ -136,6 +137,23 @@ public class AuthoUser extends Fragment {
             personOwnCommand = new ArrayList<>();
             personCommand = new ArrayList<>();
             pendingTeamInvitesList = new ArrayList<>();
+            Controller.getApi().getUsersTeams(PersonalActivity.id).enqueue(new Callback<List<Invite>>() {
+                @Override
+                public void onResponse(Call<List<Invite>> call, Response<List<Invite>> response) {
+                    if(response.isSuccessful()){
+                        if(response.body()!=null){
+                            for(Invite invite : response.body()){
+                                personCommand.add(invite.getTeam());
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Invite>> call, Throwable t) {
+
+                }
+            });
 //            List<PendingTeamInvite> pendingTeamInvites = person.getPendingTeamInvites();
             invBadge = (TextView) nvDrawer.getMenu().findItem(R.id.nav_first_fragment).getActionView();
             Controller.getApi().getTeams(PersonalActivity.id).enqueue(new Callback<List<Team>>() {
@@ -143,6 +161,7 @@ public class AuthoUser extends Fragment {
                 public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                     if(response.isSuccessful()){
                         if(response.body()!=null){
+                            createdTeams.clear();
                             createdTeams.addAll(response.body());
                         }
                     }

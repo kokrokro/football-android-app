@@ -131,7 +131,7 @@ public interface FootballApi {
     Call<List<MatchPopulate>> getMatches(@Query("_id") String id);
     //edit web
     @PATCH("/api/crud/match/{id}")
-    Call<Match> setReferees(@Path("id") String id, @Header("auth") String authorization,@Body Match match);
+    Call<Match> editMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
     @Multipart
     @PATCH("/api/crud/person/{id}")
     Call<Person> editProfile(@Path("id") String id, @Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
@@ -166,11 +166,12 @@ public interface FootballApi {
 
     //set referee
     @POST("/api/matches/setmultireferees")
-    Observable<Response<ServerResponse>> setReferees(@Header("auth") String authorization, @Body SetRefereeList body);
+    Observable<Response<ServerResponse>> editMatch(@Header("auth") String authorization, @Body SetRefereeList body);
 
-    @GET("/api/person_invite?_populate=team&status=pending")
-    Call<List<Invite>> getInvites(@Query("person") String person, @Query("team") String team);
-
+    @GET("/api/person_invite?_populate=team")
+    Call<List<Invite>> getInvites(@Query("person") String person, @Query("team") String team, @Query("status") String status);
+    @GET("/api/person_invite?_populate=team&status=accepted")
+    Call<List<Invite>> getUsersTeams(@Query("person") String person);
     //refresh web
     @GET("/api/refresh")
     Observable<User> refreshUser(@Header("auth") String authorization);
@@ -200,8 +201,8 @@ public interface FootballApi {
     Call<Team> addTeamToLeague(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
     //edit team
-    @POST("/api/team/edit")
-    Call<EditCommandResponse> editTeam(@Header("auth") String authorization, @Body EditCommand body);
+    @PATCH("/api/crud/team/{id}")
+    Call<Team> editTeam(@Path("id") String id, @Header("auth") String authorization, @Body Team body);
 
     //player inv
     @POST("/api/person_invite/accept/{id}")

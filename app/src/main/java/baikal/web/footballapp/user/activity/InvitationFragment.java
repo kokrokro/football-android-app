@@ -42,7 +42,7 @@ public class InvitationFragment extends Fragment {
         RVInvitationAdapter adapter;
         List<Invite> invites = new ArrayList<>();
         adapter = new RVInvitationAdapter(getActivity(),getContext(),invites);
-        Controller.getApi().getInvites(PersonalActivity.id,null).enqueue(new Callback<List<Invite>>() {
+        Controller.getApi().getInvites(PersonalActivity.id,null,"pending").enqueue(new Callback<List<Invite>>() {
             @Override
             public void onResponse(Call<List<Invite>> call, Response<List<Invite>> response) {
                 if(response.isSuccessful()){
