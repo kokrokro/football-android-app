@@ -133,11 +133,6 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
                 if (response.isSuccessful())
                     if (response.body() != null) {
                         regions.clear();
-
-                        Region r = new Region();
-                        r.setName("Регион");
-                        r.setId("-1");
-                        regions.add(r);
                         regions.addAll(response.body());
                         for (Region rr: regions)
                             regionsId.add(rr.getId());
