@@ -14,10 +14,10 @@
             android:icon="@drawable/ic_trophy"
             android:title="Турниры"
             />
-        <item
-            android:id="@+id/nav_second_fragment"
-            android:icon="@drawable/ic_cl"
-            android:title="Клубы" />
+<!--        <item-->
+<!--            android:id="@+id/nav_second_fragment"-->
+<!--            android:icon="@drawable/ic_cl"-->
+<!--            android:title="Клубы" />-->
         <item
             android:id="@+id/nav_command_fragment"
             android:icon="@drawable/ic_commands"
@@ -30,10 +30,7 @@
             android:id="@+id/nav_third_fragment"
             android:icon="@drawable/ic_whistle"
             android:title="Мои матчи" />
-        <item
-            android:id="@+id/nav_referee_fragment"
-            android:icon="@drawable/ic_referee"
-            android:title="Судьи" />
+
         <item
             android:id="@+id/nav_fourth_fragment"
             android:icon="@drawable/ic_sign_out2"

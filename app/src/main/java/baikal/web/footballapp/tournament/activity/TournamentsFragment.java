@@ -64,7 +64,7 @@ public class TournamentsFragment extends Fragment {
     private int count = 0;
     private int offset = 0;
     private final int limit = 5;
-    public static List<List<League>> favLeague = new ArrayList<>( );
+    public static List<League> favLeague = new ArrayList<>( );
     private static List<Tourney> favTourney = new ArrayList<>();
     private static List<String> favTourneyId = new ArrayList<>();
 
@@ -81,12 +81,7 @@ public class TournamentsFragment extends Fragment {
         try {
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);
-            RVFavTourneyAdapter.Listener listener = new RVFavTourneyAdapter.Listener() {
-                @Override
-                public void onClick(String id) {
-                    showTournamentInfo(id);
-                }
-            };
+            RVFavTourneyAdapter.Listener listener = id -> showTournamentInfo(id);
             mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
             mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
                 favTourney.clear();
@@ -100,9 +95,7 @@ public class TournamentsFragment extends Fragment {
                     favTourneyId.add(tr.getId());
                     tourneyIds += "," + tr.getId();
                 }
-
                 getFavLeagues(tourneyIds, leagues -> {
-                    favLeague.add(leagues);
 
                     mainViewModel.setFavTourneysId(favTourneyId);
                     adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, listener);
@@ -137,7 +130,9 @@ public class TournamentsFragment extends Fragment {
             public void onResponse(Call<List<League>> call, Response<List<League>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null)  {
-                        leagues.addAll(response.body());
+                        favLeague.clear();
+                        favLeague.addAll(response.body());
+                        adapter.notifyDataSetChanged();
                     }
                 }
             }

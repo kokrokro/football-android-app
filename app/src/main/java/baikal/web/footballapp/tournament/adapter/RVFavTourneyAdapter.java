@@ -40,11 +40,11 @@ import retrofit2.Response;
 public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapter.ViewHolder> {
     private List<Tourney> tourneys;
     private PersonalActivity activity;
-    private List<List<League>> favLeagues;
+    private List<League> favLeagues;
     final Logger log = LoggerFactory.getLogger(TournamentPage.class);
     private Listener mListener;
 
-    public RVFavTourneyAdapter(List<Tourney> tourneys, Activity activity, List<List<League>> favLeagues,  Listener mListener){
+    public RVFavTourneyAdapter(List<Tourney> tourneys, Activity activity, List<League> favLeagues,  Listener mListener){
         this.tourneys = tourneys;
         this.activity = (PersonalActivity) activity;
         this.favLeagues = favLeagues;
@@ -73,14 +73,24 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
         holder.textCommandNum.setText(str);
         holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
+        List<League> leagueList = new ArrayList<>();
+
+        for (League l : favLeagues){
+
+            if(l.getTourney().equals(tourney.getId())){
+                leagueList.add(l);
+
+            }
+        }
 
         try {
-            holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, favLeagues.get(position), tourneys));
-            if (favLeagues.get(position).size() > 0) {
 
-                String leagueId = favLeagues.get(position).get(0).getId();
-                holder.bind(leagueId, mListener);
-            }
+            holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, leagueList, tourneys));
+//            if (favLeagues.get(position).size() > 0) {
+//
+//                String leagueId = favLeagues.get(position).get(0).getId();
+//                holder.bind(leagueId, mListener);
+//            }
         } catch (Exception e) {
             log.error("RVFavTourneyAdapter: ", e);
         }

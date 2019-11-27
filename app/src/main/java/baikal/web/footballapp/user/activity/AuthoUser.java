@@ -27,6 +27,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebStorage;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -209,8 +210,6 @@ public class AuthoUser extends Fragment {
         ((AppCompatActivity) activity).setSupportActionBar(toolbar);
         button = view.findViewById(R.id.drawerBtn);
         button.setOnClickListener(v -> drawer.openDrawer(GravityCompat.END));
-
-
         buttonOpenProfile.setOnClickListener(v -> {
             try {
                 Intent intent = new Intent(getActivity(), UserInfo.class);
@@ -292,40 +291,40 @@ public class AuthoUser extends Fragment {
                     log.error("ERROR: ", e);
                 }
                 break;
-            case R.id.nav_second_fragment:
+//            case R.id.nav_second_fragment:
+//                try {
+//                    setItemColor(2);
+//                    clearItemColor(2);
+//                    menuFragmentTransaction.replace(R.id.flContent, secondFragment, "CLUBFRAGMENT").show(secondFragment).commit();
+//                    if (person.getClub() != null) {
+//                        fab1.setVisibility(View.VISIBLE);
+//                        Club club = null;
+//                        Person person = user.getUser();
+//                        for (Club club1 : PersonalActivity.allClubs) {
+//                            String str = person.getClub();
+//                            if (club1.getId().equals(str))
+//                                club = club1;
+//                        }
+//                        final Club finalClub = club;
+//                        fab1.setOnClickListener(v -> {
+//                            Intent intent1 = new Intent(getActivity(), UserEditClub.class);
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable("AUTHOUSERCLUBINFO", finalClub);
+//                            clubOldIndex = PersonalActivity.allClubs.indexOf(finalClub);
+//                            intent1.putExtras(bundle);
+//                            startActivityForResult(intent1, REQUEST_CODE_CLUBEDIT);
+//                        });
+//                    }
+//                    categoryTitle.setText(activity.getText(R.string.title_club));
+//                    fab.setVisibility(View.INVISIBLE);
+//                } catch (Exception e) {
+//                    log.error("ERROR: ", e);
+//                }
+//                break;
+            case R.id.nav_command_fragment:
                 try {
                     setItemColor(2);
                     clearItemColor(2);
-                    menuFragmentTransaction.replace(R.id.flContent, secondFragment, "CLUBFRAGMENT").show(secondFragment).commit();
-                    if (person.getClub() != null) {
-                        fab1.setVisibility(View.VISIBLE);
-                        Club club = null;
-                        Person person = user.getUser();
-                        for (Club club1 : PersonalActivity.allClubs) {
-                            String str = person.getClub();
-                            if (club1.getId().equals(str))
-                                club = club1;
-                        }
-                        final Club finalClub = club;
-                        fab1.setOnClickListener(v -> {
-                            Intent intent1 = new Intent(getActivity(), UserEditClub.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("AUTHOUSERCLUBINFO", finalClub);
-                            clubOldIndex = PersonalActivity.allClubs.indexOf(finalClub);
-                            intent1.putExtras(bundle);
-                            startActivityForResult(intent1, REQUEST_CODE_CLUBEDIT);
-                        });
-                    }
-                    categoryTitle.setText(activity.getText(R.string.title_club));
-                    fab.setVisibility(View.INVISIBLE);
-                } catch (Exception e) {
-                    log.error("ERROR: ", e);
-                }
-                break;
-            case R.id.nav_command_fragment:
-                try {
-                    setItemColor(3);
-                    clearItemColor(3);
                     menuFragmentTransaction.replace(R.id.flContent, commands).show(commands).commit();
                     categoryTitle.setText(activity.getText(R.string.commands));
                     fab.setVisibility(View.VISIBLE);
@@ -336,8 +335,8 @@ public class AuthoUser extends Fragment {
                 break;
             case R.id.nav_third_fragment:
                 try {
-                    setItemColor(5);
-                    clearItemColor(5);
+                    setItemColor(4);
+                    clearItemColor(4);
                     menuFragmentTransaction.replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
                     categoryTitle.setText(activity.getText(R.string.matches));
                     fab.setVisibility(View.INVISIBLE);
@@ -346,22 +345,22 @@ public class AuthoUser extends Fragment {
                     log.error("ERROR: ", e);
                 }
                 break;
-            case R.id.nav_referee_fragment:
-                try {
-                    setItemColor(6);
-                    clearItemColor(6);
-                    menuFragmentTransaction.replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
-                    categoryTitle.setText(activity.getText(R.string.referees));
-                    fab.setVisibility(View.INVISIBLE);
-                    fab1.setVisibility(View.INVISIBLE);
-                } catch (Exception e) {
-                    log.error("ERROR: ", e);
-                }
-                break;
+//            case R.id.nav_referee_fragment:
+//                try {
+//                    setItemColor(6);
+//                    clearItemColor(6);
+//                    menuFragmentTransaction.replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
+//                    categoryTitle.setText(activity.getText(R.string.referees));
+//                    fab.setVisibility(View.INVISIBLE);
+//                    fab1.setVisibility(View.INVISIBLE);
+//                } catch (Exception e) {
+//                    log.error("ERROR: ", e);
+//                }
+//                break;
             case R.id.nav_timetable_fragment:
                 try {
-                    setItemColor(4);
-                    clearItemColor(4);
+                    setItemColor(3);
+                    clearItemColor(3);
                     menuFragmentTransaction.replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     categoryTitle.setText(activity.getText(R.string.tournamentInfoTimetable));
                     fab.setVisibility(View.INVISIBLE);
@@ -371,6 +370,7 @@ public class AuthoUser extends Fragment {
                 }
                 break;
             default:
+                WebStorage.getInstance().deleteAllData();
                 SaveSharedPreference.setLoggedIn(activity.getApplicationContext(), false);
                 SaveSharedPreference.saveObject(null);
 //                PersonalActivity.fragmentUser.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);

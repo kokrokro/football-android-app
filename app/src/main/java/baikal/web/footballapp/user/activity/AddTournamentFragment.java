@@ -44,7 +44,7 @@ public class AddTournamentFragment extends Fragment {
         WebView webView = view.findViewById(R.id.webViewTournament1);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-
+        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ PersonalActivity.token +"');", null);
         webView.loadUrl("https://football.bwadm.ru");
 
         webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
@@ -56,7 +56,7 @@ public class AddTournamentFragment extends Fragment {
         webSettings.setSupportZoom(false);
         webSettings.setAllowFileAccess(true);
         webSettings.setAllowContentAccess(true);
-        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ PersonalActivity.token +"');", null);
+
        // getContext().deleteDatabase(webSettings.getDatabasePath());
 
 

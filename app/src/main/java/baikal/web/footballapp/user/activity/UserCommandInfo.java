@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -60,6 +62,7 @@ public class UserCommandInfo extends AppCompatActivity {
     public static RVUserCommandPlayerInvAdapter adapterInv;
     public static List<Invite> allInvites = new ArrayList<>();
     public static List<Invite> accepted = new ArrayList<>();
+    public static List<String> canceled = new ArrayList<>();
     private Team team;
     private League league;
     @Override
@@ -85,23 +88,6 @@ public class UserCommandInfo extends AppCompatActivity {
             team = (Team) intent.getExtras().getSerializable("COMMANDEDIT");
             league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
             players.addAll(team.getPlayers());
-            MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-            mainViewModel.getAllInvites().observe(this, invites -> {
-                playersInv.clear();
-                allInvites.clear();
-                accepted.clear();
-                for(Invite invite : invites){
-                    if(invite.getStatus().equals("pending") &&  invite.getTeam().getId().equals(team.getId())){
-                        playersInv.add(invite.getPerson());
-                        allInvites.add(invite);
-                        adapterInv.notifyDataSetChanged();
-                    }
-                    if(invite.getStatus().equals("accepted") &&  invite.getTeam().getId().equals(team.getId())){
-                        accepted.add(invite);
-                    }
-                }
-
-            });
             if (playersInv.size()==0){
                 TextView textView = findViewById(R.id.userCommandPlayersInvText);
                 textView.setVisibility(View.GONE);
@@ -120,10 +106,49 @@ public class UserCommandInfo extends AppCompatActivity {
             adapter = new RVUserCommandPlayerAdapter(this, players);
             recyclerViewPlayer.setAdapter(adapter);
             recyclerViewPlayer.setLayoutManager(new LinearLayoutManager(this));
+            recyclerViewPlayer.setVisibility(View.INVISIBLE);
             recyclerViewPlayerInv = findViewById(R.id.recyclerViewUserCommandPlayersInv);
             adapterInv = new RVUserCommandPlayerInvAdapter(this, playersInv);
             recyclerViewPlayerInv.setAdapter(adapterInv);
             recyclerViewPlayerInv.setLayoutManager(new LinearLayoutManager(this));
+            MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+            mainViewModel.getAllInvites().observe(this, invites -> {
+                playersInv.clear();
+                allInvites.clear();
+                accepted.clear();
+                for(Invite invite : invites){
+                    if(invite.getTeam().getId().equals(team.getId())){
+                        if(invite.getStatus().equals("pending")){
+                            playersInv.add(invite.getPerson());
+                            allInvites.add(invite);
+                            continue;
+                        }
+                        if(invite.getStatus().equals("accepted")){
+                            accepted.add(invite);
+                            continue;
+                        }
+                        if(invite.getStatus().equals("canceled")){
+                            canceled.add(invite.getPerson());
+                        }
+                    }
+
+                }
+                adapterInv.notifyDataSetChanged();
+                for(Player player : players){
+                    for(String personId : canceled){
+                        if(player.getPerson().equals(personId)){
+                            players.remove(player);
+
+                            break;
+                        }
+                    }
+                }
+                adapter.notifyDataSetChanged();
+                recyclerViewPlayer.setVisibility(View.VISIBLE);
+            });
+
+
+
             buttonAdd.setOnClickListener(v -> {
                 Observable.just("input_parameter")
                         .subscribeOn(Schedulers.io())//creation of secondary thread
