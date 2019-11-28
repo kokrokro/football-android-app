@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +66,11 @@ public class UserCommandInfo extends AppCompatActivity {
     public static List<String> canceled = new ArrayList<>();
     private Team team;
     private League league;
+    private EditText teamName;
+    private Button teamTrainer;
+    private EditText teamNumber;
+    private String newTrainerId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RecyclerView recyclerViewPlayer;
@@ -75,8 +81,13 @@ public class UserCommandInfo extends AppCompatActivity {
         ImageButton buttonClose;
         ImageButton buttonSave;
         Button buttonAdd;
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_command_info);
+        teamName = findViewById(R.id.editTeamTitle);
+        teamTrainer = findViewById(R.id.newCommandTrainer);
+        teamNumber = findViewById(R.id.newCommandNumber);
         try {
 
 
@@ -87,16 +98,30 @@ public class UserCommandInfo extends AppCompatActivity {
             Intent intent = getIntent();
             team = (Team) intent.getExtras().getSerializable("COMMANDEDIT");
             league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
-            players.addAll(team.getPlayers());
-            if (playersInv.size()==0){
-                TextView textView = findViewById(R.id.userCommandPlayersInvText);
-                textView.setVisibility(View.GONE);
-                textView = findViewById(R.id.userCommandPlayersStructureText);
-                textView.setVisibility(View.GONE);
-            }else {
-                View line = findViewById(R.id.userCommandPlayersLine);
-                line.setVisibility(View.VISIBLE);
+            teamName.setText(team.getName());
+            String str = team.getTrainer();
+            for(Person p : PersonalActivity.people){
+                if(p.getId().equals(str)){
+                    str = p.getSurname()+" "+p.getName();
+                    break;
+                }
             }
+            teamTrainer.setOnClickListener(v -> {
+                Intent intent1 = new Intent(this, ChooseTrainer.class);
+                startActivityForResult(intent1, 1);
+            });
+            teamTrainer.setText(str);
+            players.addAll(team.getPlayers());
+            teamNumber.setText(team.getCreatorPhone());
+//            if (playersInv.size()==0){
+//                TextView textView = findViewById(R.id.userCommandPlayersInvText);
+//                textView.setVisibility(View.GONE);
+//                textView = findViewById(R.id.userCommandPlayersStructureText);
+//                textView.setVisibility(View.GONE);
+//            }else {
+//                View line = findViewById(R.id.userCommandPlayersLine);
+//                line.setVisibility(View.VISIBLE);
+//            }
             toolbar = findViewById(R.id.toolbarUserCommandInfo);
             setSupportActionBar(toolbar);
             buttonAdd = findViewById(R.id.userCommandPlayerButton);
@@ -106,7 +131,7 @@ public class UserCommandInfo extends AppCompatActivity {
             adapter = new RVUserCommandPlayerAdapter(this, players);
             recyclerViewPlayer.setAdapter(adapter);
             recyclerViewPlayer.setLayoutManager(new LinearLayoutManager(this));
-            recyclerViewPlayer.setVisibility(View.INVISIBLE);
+            recyclerViewPlayer.setVisibility(View.GONE);
             recyclerViewPlayerInv = findViewById(R.id.recyclerViewUserCommandPlayersInv);
             adapterInv = new RVUserCommandPlayerInvAdapter(this, playersInv);
             recyclerViewPlayerInv.setAdapter(adapterInv);
@@ -175,8 +200,11 @@ public class UserCommandInfo extends AppCompatActivity {
     }
     private void editTeam(String id) {
        Team editTeam = new Team();
-       editTeam.setPlayers(players);
-       log.debug(""+players.size());
+       editTeam.setName(teamName.getText().toString());
+       if(newTrainerId!=null){
+           editTeam.setTrainer(newTrainerId);
+       }
+       editTeam.setCreatorPhone(teamNumber.getText().toString());
        Controller.getApi().editTeam(id, PersonalActivity.token,editTeam).enqueue(new Callback<Team>() {
            @Override
            public void onResponse(Call<Team> call, Response<Team> response) {
@@ -193,6 +221,17 @@ public class UserCommandInfo extends AppCompatActivity {
            }
        });
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode,resultCode,data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                newTrainerId = data.getData().toString();
+                String str  = data.getSerializableExtra("surname") +" "+data.getSerializableExtra("name");
+                teamTrainer.setText(str);
+            }
+        }
     }
     private void showDialog() {
 

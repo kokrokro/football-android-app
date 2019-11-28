@@ -81,6 +81,81 @@
             android:paddingTop="8dp">
             <!--android:paddingStart="18dp"-->
             <!--android:paddingEnd="18dp"-->
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/editTeam"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:paddingBottom="8dp"
+                    android:paddingStart="13dp"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp"
+                    android:text="@string/commandTitle" />
+
+                <EditText
+                    android:id="@+id/editTeamTitle"
+                    style="@style/MyEditText"
+                    android:textColor="@color/colorLightGrayForText"
+                    android:layout_marginBottom="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="13dp"
+                    android:hint="@string/commandTitle2"
+                    android:inputType="text|textCapSentences" />
+                <TextView
+                    android:id="@+id/editTeamTrainer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:paddingBottom="3dp"
+                    android:paddingStart="13dp"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp"
+                    android:text="@string/editTeamTrainer" />
+
+                <Button
+                    android:id="@+id/newCommandTrainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorWhite"
+                    android:fontFamily="@font/manrope_regular"
+                    android:gravity="center_vertical"
+                    android:stateListAnimator="@animator/mtrl_btn_unelevated_state_list_anim"
+                    android:text="Выберите тренера"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorLightGrayForText"
+                    android:textSize="15sp">
+
+                </Button>
+                <TextView
+                    android:id="@+id/editTeamNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:paddingBottom="8dp"
+                    android:paddingStart="13dp"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp"
+                    android:text="@string/editTeamNumber" />
+                <EditText
+                    android:id="@+id/newCommandNumber"
+                    style="@style/MyEditText"
+                    android:layout_marginEnd="18dp"
+                    android:textColor="@color/colorLightGrayForText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="13dp"
+                    android:hint="@string/numberTrainer"
+                    android:inputType="phone" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/userCommandPlayersStructureText"
                 android:layout_width="wrap_content"

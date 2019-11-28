@@ -119,6 +119,7 @@
     <string name="commandTitle">Название команды:</string>
     <string name="commandTitle2">Название команды</string>
     <string name="structure">Состав</string>
+    <string name="editTeam">Редактирование информации</string>
     <string name="buttonOk">Принять</string>
     <string name="buttonCancel">Отклонить</string>
     <string name="playersInv">Приглашенные игроки</string>
@@ -160,4 +161,6 @@
     <string name="ChoosePhotoFromGalary">Выбрать фото</string>
     <string name="OpenCamera">Открыть камеру</string>
     <string name="ProtocolToSend">Протокол</string>
+    <string name="editTeamTrainer">Тренер:</string>
+    <string name="editTeamNumber">Номер тренера:</string>
 </resources>
