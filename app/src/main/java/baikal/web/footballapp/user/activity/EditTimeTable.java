@@ -40,6 +40,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EditTimeTable extends AppCompatActivity {
+    private static final String TAG = "EditTimeTable";
     private final Logger log = LoggerFactory.getLogger(EditTimeTable.class);
     private MatchPopulate match;
     private Button ref1;
@@ -91,7 +92,14 @@ public class EditTimeTable extends AppCompatActivity {
         if (match != null) {
             for(Referee ref : match.getReferees()) {
                 refIds.set(Objects.requireNonNull(refTypeId.get(ref.getType())), ref.getPerson());
-                Person p = MankindKeeper.getInstance().allPlayers.get(ref.getPerson());
+                Person p;
+
+                try {
+                    p = MankindKeeper.getInstance().allPlayers.get(ref.getPerson());
+                } catch (Exception e) {
+                    log.error(TAG, e);
+                    p = null;
+                }
 
                 if (p == null) {
                     Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
@@ -134,7 +142,7 @@ public class EditTimeTable extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void refereeRequest() {
-        Log.d("EDITTIMETABLE: ", "trying to save referees...");
+        Log.d(TAG, "trying to save referees...");
         List<Referee> refereeRequests = new ArrayList<>();
 
         if(refIds.get(0)!=null){
