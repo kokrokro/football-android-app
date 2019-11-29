@@ -6,6 +6,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,12 +39,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ComingMatches extends Fragment {
+public class ComingMatches extends Fragment implements Callback<List<ActiveMatch>> {
     private final Logger log = LoggerFactory.getLogger(ComingMatches.class);
     private LinearLayout layout;
     private RVComingMatchesAdapter adapter;
     private List<ActiveMatch> matches = new ArrayList<>();
     private List<String> leagues;
+    private String TAG = "UpcomingMatches";
     public ComingMatches( List<String> favLeagues){
         this.leagues = favLeagues;
     }
@@ -63,24 +67,8 @@ public class ComingMatches extends Fragment {
         for(String l : leagues){
             query+=","+l;
         }
-        Controller.getApi().getUpcomingMatches(strDate, query, "20").enqueue(new Callback<List<ActiveMatch>>() {
-            @Override
-            public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!=null){
-                        matches.clear();
-                        matches.addAll(response.body());
-                        adapter.notifyDataSetChanged();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
-
-            }
-        });
-
+        Call<List<ActiveMatch>> call = Controller.getApi().getUpcomingMatches(strDate, query, "20");
+        call.enqueue(this);
         try {
             adapter = new RVComingMatchesAdapter(getActivity(), matches);
             recyclerView.setAdapter(adapter);
@@ -133,5 +121,26 @@ public class ComingMatches extends Fragment {
         }catch (Exception e){
             log.error("ERROR: ", e);
         }
+    }
+    @Override
+    public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
+        if(response.isSuccessful()){
+            if(response.body()!=null){
+                matches.clear();
+                matches.addAll(response.body());
+                adapter.notifyDataSetChanged();
+            }
+        } else{
+            try {
+                Log.d(TAG,response.errorBody().string());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
+
     }
 }
