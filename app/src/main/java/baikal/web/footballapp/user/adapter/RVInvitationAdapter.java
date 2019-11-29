@@ -18,6 +18,7 @@ import android.widget.Toast;
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -93,27 +94,29 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             }
         }
 
-       for(Person p : PersonalActivity.allPlayers){
-           if(p.getId().equals(team.getTrainer())){
-               person = p;
-           }
-       }
+        for (Map.Entry<String, Person> p: MankindKeeper.getInstance().allPlayers.entrySet()) {
 
+        }
 
-        str = tourney.getName()+ ". " + league.getName();
-        holder.textTournamentTitle.setText(str);
-        DateToString dateToString = new DateToString();
-        str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
-        holder.textTournamentDate.setText(str);
-        str = "Тренер: ";
-        CheckName checkName = new CheckName();
-        str += checkName.check(person.getSurname(), person.getName(), person.getLastname());
-        holder.textCoach.setText(str);
+        if (MankindKeeper.getInstance().allPlayers.containsKey(team.getTrainer())) {
+            person = MankindKeeper.getInstance().allPlayers.get(team.getTrainer());
+        }
 
-        str = "Команда: ";
-        str += team.getName();
-        holder.textCommand.setText(str);
+        try {
+            str = tourney.getName() + ". " + league.getName();
+            holder.textTournamentTitle.setText(str);
+            DateToString dateToString = new DateToString();
+            str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
+            holder.textTournamentDate.setText(str);
+            str = "Тренер: ";
+            CheckName checkName = new CheckName();
+            str += checkName.check(person.getSurname(), person.getName(), person.getLastname());
+            holder.textCoach.setText(str);
 
+            str = "Команда: ";
+            str += team.getName();
+            holder.textCommand.setText(str);
+        } catch (Exception e) {}
 
         final League finalLeague = league;
         final Team finalTeam = team;

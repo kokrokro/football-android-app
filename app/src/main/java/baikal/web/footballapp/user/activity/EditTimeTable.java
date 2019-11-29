@@ -6,6 +6,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Match;
@@ -27,9 +29,11 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.TreeMap;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,10 +46,7 @@ public class EditTimeTable extends AppCompatActivity {
     private Button ref2;
     private Button ref3;
     private Button ref4;
-    private String ref1Id = null;
-    private String ref2Id = null;
-    private String ref3Id = null;
-    private String ref4Id = null;
+    private List<String> refIds;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
@@ -62,6 +63,12 @@ public class EditTimeTable extends AppCompatActivity {
         ref3 = findViewById(R.id.refereeEditMatchSpinnerReferee3);
         ref4 = findViewById(R.id.refereeEditMatchSpinnerReferee4);
 
+        refIds = new ArrayList<>();
+        refIds.add(null);
+        refIds.add(null);
+        refIds.add(null);
+        refIds.add(null);
+
         imageClose.setOnClickListener(v -> finish());
 
         match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("MatchConfirmProtocolRefereesToEdit");
@@ -69,61 +76,39 @@ public class EditTimeTable extends AppCompatActivity {
         if (match != null && match.getPlayed())
             fab.hide();
 
+        TreeMap<String, Integer> refTypeId = new TreeMap<>();
+        refTypeId.put("firstReferee" , 0);
+        refTypeId.put("secondReferee", 1);
+        refTypeId.put("thirdReferee" , 2);
+        refTypeId.put("timekeeper"   , 3);
+
+        TreeMap<String, TextView> textViewRefs = new TreeMap<>();
+        textViewRefs.put("firstReferee" , ref1);
+        textViewRefs.put("secondReferee", ref2);
+        textViewRefs.put("thirdReferee" , ref3);
+        textViewRefs.put("timekeeper"   , ref4);
+
         if (match != null) {
             for(Referee ref : match.getReferees()) {
-                switch (ref.getType()) {
-                    case "firstReferee":
-                        ref1Id = ref.getPerson();
-                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                                if (response.isSuccessful())
-                                    if (response.body() != null && response.body().size()>0)
-                                        setPersonInitialsToTextView(response.body().get(0), ref1);
-                            }
-                            @Override
-                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
-                        });
-                        break;
-                    case "secondReferee":
-                        ref2Id = ref.getPerson();
-                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                                if (response.isSuccessful())
-                                    if (response.body() != null && response.body().size()>0)
-                                        setPersonInitialsToTextView(response.body().get(0), ref2);
-                            }
-                            @Override
-                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
-                        });
-                        break;
-                    case "thirdReferee":
-                        ref3Id = ref.getPerson();
-                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                                if (response.isSuccessful())
-                                    if (response.body() != null && response.body().size()>0)
-                                        setPersonInitialsToTextView(response.body().get(0), ref3);
-                            }
-                            @Override
-                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
-                        });
-                        break;
-                    case "timekeeper":
-                        ref4Id = ref.getPerson();
-                        Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
-                            @Override
-                            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                                if (response.isSuccessful())
-                                    if (response.body() != null && response.body().size()>0)
-                                        setPersonInitialsToTextView(response.body().get(0), ref4);
-                            }
-                            @Override
-                            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
-                        });
-                }
+                refIds.set(Objects.requireNonNull(refTypeId.get(ref.getType())), ref.getPerson());
+                Person p = MankindKeeper.getInstance().allPlayers.get(ref.getPerson());
+
+                if (p == null) {
+                    Controller.getApi().getPerson(ref.getPerson()).enqueue(new Callback<List<Person>>() {
+                        @Override
+                        public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
+                            if (response.isSuccessful())
+                                if (response.body() != null && response.body().size()>0) {
+                                    Person pp = response.body().get(0);
+                                    MankindKeeper.getInstance().allPlayers.put(pp.get_id(), pp);
+                                    setPersonInitialsToTextView(pp, Objects.requireNonNull(textViewRefs.get(ref.getType())));
+                                }
+                        }
+                        @Override
+                        public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
+                    });
+                } else
+                    setPersonInitialsToTextView(p, Objects.requireNonNull(textViewRefs.get(ref.getType())));
             }
         }
 
@@ -144,6 +129,7 @@ public class EditTimeTable extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     private void setPersonInitialsToTextView (Person p, TextView textView) {
         textView.setText(p.getSurname() + " " + p.getName() + " " + p.getLastname());
+        textView.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
     }
 
     @SuppressLint("CheckResult")
@@ -151,27 +137,27 @@ public class EditTimeTable extends AppCompatActivity {
         Log.d("EDITTIMETABLE: ", "trying to save referees...");
         List<Referee> refereeRequests = new ArrayList<>();
 
-        if(ref1Id!=null){
+        if(refIds.get(0)!=null){
             Referee ref = new Referee();
-            ref.setPerson(ref1Id);
+            ref.setPerson(refIds.get(0));
             ref.setType("firstReferee");
             refereeRequests.add(ref);
         }
-        if(ref2Id!=null){
+        if(refIds.get(1)!=null){
             Referee ref = new Referee();
-            ref.setPerson(ref2Id);
+            ref.setPerson(refIds.get(1));
             ref.setType("secondReferee");
             refereeRequests.add(ref);
         }
-        if(ref3Id!=null){
+        if(refIds.get(2)!=null){
             Referee ref = new Referee();
-            ref.setPerson(ref3Id);
+            ref.setPerson(refIds.get(2));
             ref.setType("thirdReferee");
             refereeRequests.add(ref);
         }
-        if(ref4Id!=null){
+        if(refIds.get(3)!=null){
             Referee ref = new Referee();
-            ref.setPerson(ref4Id);
+            ref.setPerson(refIds.get(3));
             ref.setType("timekeeper");
             refereeRequests.add(ref);
         }
@@ -185,8 +171,12 @@ public class EditTimeTable extends AppCompatActivity {
            public void onResponse(@NonNull Call<Match> call, @NonNull Response<Match> response) {
                showToast("Судьи назначены успешно");
 
+               String[] refIdsAr = {refIds.get(0), refIds.get(1), refIds.get(2), refIds.get(3)};
+
                Intent intent = new Intent();
                intent.putExtra("MatchIndex", getIntent().getIntExtra("MatchIndex", -1));
+               intent.putExtra("refs", refIdsAr);
+
                setResult(RESULT_OK, intent);
 
                finish();
@@ -235,30 +225,20 @@ public class EditTimeTable extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        String name;
-        String id;
 
         if (resultCode == RESULT_OK) {
-            name = data.getStringExtra("surname") + " " + data.getStringExtra("name");
-            id = Objects.requireNonNull(data.getData()).toString();
-        } else {
-            return;
-        }
-        if (requestCode == 1) {
-            ref1Id = id;
-            ref1.setText(name);
-        }
-        if (requestCode == 2) {
-            ref2.setText(name);
-            ref2Id = id;
-        }
-        if (requestCode == 3) {
-            ref3.setText(name);
-            ref3Id = id;
-        }
-        if (requestCode == 4) {
-            ref4.setText(name);
-            ref4Id = id;
+            String id = Objects.requireNonNull(data.getData()).toString();
+
+            List<TextView> refs = new ArrayList<>();
+            refs.add(ref1);
+            refs.add(ref2);
+            refs.add(ref3);
+            refs.add(ref4);
+
+            try {
+                refIds.set(requestCode - 1, id);
+                setPersonInitialsToTextView(Objects.requireNonNull(MankindKeeper.getInstance().allPlayers.get(id)), refs.get(requestCode - 1));
+            } catch (Exception ignored) {}
         }
     }
 }

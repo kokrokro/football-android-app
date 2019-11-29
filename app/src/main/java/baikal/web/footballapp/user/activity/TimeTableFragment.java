@@ -15,14 +15,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.user.adapter.RVTimeTableAdapter;
 
 import org.slf4j.Logger;
@@ -30,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,6 +41,7 @@ import retrofit2.Response;
 
 public class TimeTableFragment extends Fragment {
     private static final String TAG = "TimeTableFragment: ";
+    public final int SUCCESSFUL_EDIT_MATCH = 6123;
     private RVTimeTableAdapter adapter;
     private final List<MatchPopulate> matches = new ArrayList<>();
     private NestedScrollView scroller;
@@ -108,7 +113,7 @@ public class TimeTableFragment extends Fragment {
 
             @Override
             public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
-                Log.e(TAG, t.getMessage());
+                Log.e(TAG, Objects.requireNonNull(t.getMessage()));
             }
         });
     }
@@ -121,11 +126,31 @@ public class TimeTableFragment extends Fragment {
         if (resultCode != Activity.RESULT_OK)
             return;
 
-        int i = data.getExtras().getInt("MatchIndex", -1);
+        if (requestCode == SUCCESSFUL_EDIT_MATCH) {
+            int matchIndx = data.getIntExtra("MatchIndex", -1);
+            if (matchIndx != -1) {
+                String[] newRefs = data.getStringArrayExtra("refs");
+                if (newRefs == null) return;
+                Log.d(TAG, newRefs.toString());
 
-        if (i==-1)
-            return;
+                List<Referee> newReferees = new ArrayList<>();
+                newReferees.add(new Referee());
+                newReferees.add(new Referee());
+                newReferees.add(new Referee());
+                newReferees.add(new Referee());
 
+                newReferees.get(0).setType("firstReferee");
+                newReferees.get(1).setType("secondReferee");
+                newReferees.get(2).setType("thirdReferee");
+                newReferees.get(3).setType("timekeeper");
 
+                newReferees.get(0).setPerson(newRefs[0]);
+                newReferees.get(1).setPerson(newRefs[1]);
+                newReferees.get(2).setPerson(newRefs[2]);
+                newReferees.get(3).setPerson(newRefs[3]);
+                matches.get(matchIndx).setReferees(newReferees);
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 }

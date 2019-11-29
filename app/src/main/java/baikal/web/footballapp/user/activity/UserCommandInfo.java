@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -100,12 +101,11 @@ public class UserCommandInfo extends AppCompatActivity {
             league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
             teamName.setText(team.getName());
             String str = team.getTrainer();
-            for(Person p : PersonalActivity.people){
-                if(p.getId().equals(str)){
-                    str = p.getSurname()+" "+p.getName();
-                    break;
-                }
+            if (MankindKeeper.getInstance().allPlayers.containsKey(team.getTrainer())) {
+                Person p = MankindKeeper.getInstance().allPlayers.get(team.getTrainer());
+                str = p.getSurname()+" "+p.getName();
             }
+
             teamTrainer.setOnClickListener(v -> {
                 Intent intent1 = new Intent(this, ChooseTrainer.class);
                 startActivityForResult(intent1, 1);

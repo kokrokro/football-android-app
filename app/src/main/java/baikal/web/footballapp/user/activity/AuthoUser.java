@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -527,14 +528,7 @@ public class AuthoUser extends Fragment {
                 PersonalActivity.id = person.getId();
                 PersonalActivity.token = user.getToken();
 
-                Person man1 = new Person();
-                for (Person man : PersonalActivity.people) {
-                    if (man.getId().equals(person.getId())) {
-                        man1 = man;
-                    }
-                }
-                PersonalActivity.people.remove(man1);
-                PersonalActivity.people.add(user.getUser());
+                MankindKeeper.getInstance().allPlayers.put(person.getId(), person);
             }
         }
     }

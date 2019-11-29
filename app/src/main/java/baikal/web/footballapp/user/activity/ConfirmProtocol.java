@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -227,12 +228,8 @@ public class ConfirmProtocol extends AppCompatActivity {
         String clubEvent = "";
         String teamName = "";
         for (Event event : events) {
-            Person person = null;
-            for (Person person1 : PersonalActivity.AllPeople) {
-                if (person1.getId().equals(event.getPlayer())) {
-                    person = person1;
-                }
-            }
+            Person person = MankindKeeper.getInstance().allPlayers.get(event.getPlayer());
+
             for (Player player : team1.getPlayers()) {
                 if (player.getPlayerId().equals(person.getId())) {
                     clubEvent = clubOne;

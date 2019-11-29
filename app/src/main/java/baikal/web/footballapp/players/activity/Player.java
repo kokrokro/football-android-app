@@ -56,8 +56,6 @@ public class Player extends Fragment {
         scroller = view.findViewById(R.id.playerInfoScroll);
         scrollStatus = false;
 
-
-
         try {
             Bundle bundle = this.getArguments();
             person = (Person) bundle.getSerializable("PLAYERINFO");

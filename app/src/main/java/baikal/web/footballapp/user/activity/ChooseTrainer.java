@@ -15,11 +15,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
@@ -31,48 +26,35 @@ import java.util.List;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PersonTeams;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.players.activity.PlayerInv;
 import baikal.web.footballapp.players.activity.PlayersPage;
-import baikal.web.footballapp.players.adapter.RVPlayerInvAdapter;
-import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
 import baikal.web.footballapp.user.adapter.TrainerAdapter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class ChooseTrainer extends AppCompatActivity {
-    private RecyclerView recyclerView;
-    private int count = 0;
     private int offset = 0;
     private final int limit = 10;
-    public static TrainerAdapter adapter;
-    //    RecyclerViewPlayersAdapter adapter;
+    public TrainerAdapter adapter;
     private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
-    private SearchView searchView;
-    private ProgressBar progressBar;
-    private final List<Person> result = new ArrayList<>();
     private ProgressDialog mProgressDialog;
-    private final List<Person> people = new ArrayList<>();
-    private final List<Person> allPeople = new ArrayList<>();
-    private NestedScrollView scroller;
+    private List<String> allPeople = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_players);
         mProgressDialog = new ProgressDialog(this, R.style.MyProgressDialogTheme);
         mProgressDialog.setIndeterminate(true);
+
+        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
 //        mProgressDialog.setMessage("Загрузка...");
-        final View view;
         getAllPlayers("10", "0");
-        scroller = findViewById(R.id.scrollerPlayersPage);
-        searchView =findViewById(R.id.searchView);
-        progressBar =findViewById(R.id.progressSearch);
+        NestedScrollView scroller = findViewById(R.id.scrollerPlayersPage);
+        SearchView searchView = findViewById(R.id.searchView);
+        ProgressBar progressBar = findViewById(R.id.progressSearch);
         Typeface tf = Typeface.createFromAsset(getAssets(), "fonts/manrope_regular.otf");
         SearchView.SearchAutoComplete theTextArea = searchView.findViewById(R.id.search_src_text);
         theTextArea.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
@@ -87,7 +69,7 @@ public class ChooseTrainer extends AppCompatActivity {
             if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                 offset++;
                 int temp = limit*offset;
-                if (temp<=count && result.size()== 0) {
+                if (temp <= allPeople.size()) {
                     String str = String.valueOf(temp);
                     getAllPlayers("10", str);
                 }
@@ -105,37 +87,32 @@ public class ChooseTrainer extends AppCompatActivity {
             }
         });
         searchView.setOnCloseListener(() -> {
-            result.clear();
-            people.clear();
-            people.addAll(allPeople);
-            List<Person> list = new ArrayList<>(people);
-            adapter.dataChanged(list);
+            adapter.dataChanged(allPeople);
             return false;
         });
 
         try{
-            recyclerView = findViewById(R.id.recyclerViewPlayers);
+            RecyclerView recyclerView = findViewById(R.id.recyclerViewPlayers);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new TrainerAdapter(this,  PersonalActivity.allPlayers,(id , name, surname) -> {
+
+            adapter = new TrainerAdapter(this, allPeople, (id) -> {
                 Intent data = new Intent();
 //---set the data to pass back---
                 data.setData(Uri.parse(id));
-                data.putExtra("name",name );
-                data.putExtra("surname", surname);
                 setResult(RESULT_OK, data);
 //---close the activity---
                 finish();
             });
             recyclerView.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
         }catch (Exception e){log.error("ERROR: ", e);}
 
     }
 
     @SuppressLint("CheckResult")
     private void SearchUsers(String search){
-//        PersonalActivity.people.clear();
-        Controller.getApi().getAllPersons( search, "32575", "0")
+        Controller.getApi().getAllPersons( search, "50", "0")
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(__ -> showDialog())
                 .doOnTerminate(this::hideDialog)
@@ -150,15 +127,17 @@ public class ChooseTrainer extends AppCompatActivity {
     }
 
     private void savePlayers(List<Person> people) {
-        result.clear();
-        result.addAll(people);
-        adapter.dataChanged(result);
+        List<String> res = new ArrayList<>();
+        for (Person p: people)
+            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
+                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+                res.add(p.getId());
+            }
+        adapter.dataChanged(res);
     }
 
     @Override
     public void onPause() {
-        PersonalActivity.people.clear();
-        PersonalActivity.people.addAll(PersonalActivity.AllPeople);
         super.onPause();
     }
 
@@ -169,7 +148,6 @@ public class ChooseTrainer extends AppCompatActivity {
     }
 
     private void hideDialog() {
-
         if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
@@ -188,12 +166,12 @@ public class ChooseTrainer extends AppCompatActivity {
     }
 
     private void saveAllPlayers(List<Person> peopleList) {
-        count += peopleList.size();
-        people.addAll(people.size(), peopleList);
-        List<Person> list = new ArrayList<>(people);
-        allPeople.clear();
-        allPeople.addAll(people);
-        adapter.dataChanged(list);
+        for (Person p: peopleList)
+            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
+                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+                allPeople.add(p.getId());
+            }
+        adapter.dataChanged(allPeople);
     }
 }
 

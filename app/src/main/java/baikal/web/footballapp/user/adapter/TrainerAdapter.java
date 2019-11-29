@@ -2,11 +2,7 @@ package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,43 +11,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.RequestOptions;
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.FullScreenImage;
-import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.players.activity.Player;
 import baikal.web.footballapp.players.activity.PlayersPage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
-
-import static android.app.Activity.RESULT_OK;
-import static baikal.web.footballapp.Controller.BASE_URL;
+import java.util.Objects;
 
 public class TrainerAdapter extends RecyclerView.Adapter<TrainerAdapter.ViewHolder> {
     private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
-    private final List<Person> allPlayers;
+    private final List<String> allPlayers;
     private final Context context;
-    private final Activity activity;
     private final MyListener myListener;
 
-    public TrainerAdapter(Activity activity, List<Person> allPlayers,MyListener myListener) {
-        this.allPlayers = allPlayers;
-        this.activity = activity;
+    public TrainerAdapter(Activity activity, List<String> allPlayers, MyListener myListener) {
+        this.allPlayers = new ArrayList<>();
+        this.allPlayers.addAll(allPlayers);
         this.context = activity;
         this.myListener = myListener;
     }
-
 
     @NonNull
     @Override
@@ -60,56 +46,24 @@ public class TrainerAdapter extends RecyclerView.Adapter<TrainerAdapter.ViewHold
         return new ViewHolder(view);
     }
     public interface MyListener {
-        void onClick(String id, String name, String surname);
+        void onClick(String id);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         try {
-            String uriPic = BASE_URL;
-            String DOB = allPlayers.get(position).getBirthdate();
+            Person currentPlayer = MankindKeeper.getInstance().allPlayers.get(allPlayers.get(position));
+            String DOB = currentPlayer != null ? currentPlayer.getBirthdate() : "error";
             DateToString dateToString = new DateToString();
             holder.textDOB.setText(dateToString.ChangeDate(DOB));
             String str;
             CheckName checkName = new CheckName();
-            str = checkName.check(allPlayers.get(position).getSurname(), allPlayers.get(position).getName(), allPlayers.get(position).getLastname());
+            str = checkName.check(Objects.requireNonNull(currentPlayer).getSurname(), currentPlayer.getName(), currentPlayer.getLastname());
             holder.textName.setText(str);
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.optionalCircleCrop();
-            requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-            requestOptions.error(R.drawable.ic_logo2);
-            requestOptions.override(500, 500);
-            requestOptions.priority(Priority.HIGH);
-            try {
-                uriPic += "/" + allPlayers.get(position).getPhoto();
-                URL url = new URL(uriPic);
-                Glide.with(activity)
-                        .asBitmap()
-                        .load(url)
-                        .apply(requestOptions)
-                        .into(holder.imageLogo);
+            SetImage setImage = new SetImage();
+            setImage.setImage(context, holder.imageLogo, currentPlayer.getPhoto());
 
-                final String finalUriPic = uriPic;
-                holder.imageLogo.setOnClickListener(v -> {
-                    if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {
-                        Intent intent = new Intent(activity, FullScreenImage.class);
-                        intent.putExtra("player_photo", finalUriPic);
-                        context.startActivity(intent);
-                    }
-
-                });
-            } catch (MalformedURLException e) {
-                Glide.with(activity)
-                        .asBitmap()
-                        .load(R.drawable.ic_logo2)
-                        .apply(requestOptions)
-                        .into(holder.imageLogo);
-            }
-
-            holder.buttonShow2.setOnClickListener(v -> {
-                Person p = allPlayers.get(position);
-                myListener.onClick(p.getId(), p.getName(),p.getSurname());
-            });
+            holder.buttonShow2.setOnClickListener(v -> myListener.onClick(currentPlayer.getId()));
             if (position == (allPlayers.size() - 1)) {
                 holder.line.setVisibility(View.INVISIBLE);
             }
@@ -143,11 +97,9 @@ public class TrainerAdapter extends RecyclerView.Adapter<TrainerAdapter.ViewHold
         }
     }
 
-    public void dataChanged(List<Person> allPlayers1){
+    public void dataChanged(List<String> allPlayers1){
         allPlayers.clear();
         allPlayers.addAll(allPlayers1);
         notifyDataSetChanged();
     }
-
-
 }

@@ -59,9 +59,6 @@ import retrofit2.Response;
 public class PersonalActivity extends AppCompatActivity {
     private static final String TAG = "PersonalActivity: ";
 
-    public static final List<Person> allPlayers = new ArrayList<>();
-    public static final List<Person> people = new ArrayList<>();
-    public static final List<Person> AllPeople = new ArrayList<>();
     public static final Fragment fragmentUser = new UserPage();
     private static final String MAIN = "MAIN_PAGE";
     private static final String TOURNAMENT = "TOURNAMENT_PAGE";
@@ -395,28 +392,18 @@ public class PersonalActivity extends AppCompatActivity {
             if(App.wasInBackground)
                 Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
     private void savePlayers(List<Person> people1) {
-        people.clear();
-        AllPeople.clear();
-        allPlayers.clear();
-        allPlayers.addAll(people1);
-        people.addAll(allPlayers);
-        AllPeople.addAll(allPlayers);
-//        PlayersPage.adapter.notifyDataSetChanged();
-//        PlayersPage.adapter.dataChanged(people1.getPeople());
+        MankindKeeper.getInstance().allPlayers.clear();
+        for (Person p: people1)
+            MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
     }
 
     @SuppressLint("CheckResult")
     private void GetAllPlayers() {
         Controller.getApi().getAllPersons( null, "32575", "0")
                 .subscribeOn(Schedulers.io())
-//                .doOnSubscribe(__ -> showDialog())
-//                .doOnTerminate(__ ->hideDialog())
-//                .retryWhen(retryHandler -> retryHandler.flatMap(nothing -> retrySubject.asObservable()))
                 .retryWhen(throwableObservable -> throwableObservable.take(3).delay(30, TimeUnit.SECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))

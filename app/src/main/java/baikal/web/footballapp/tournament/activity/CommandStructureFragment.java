@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 
 import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -49,13 +50,7 @@ public class CommandStructureFragment extends Fragment {
         textCouch = view.findViewById(R.id.commandTrainer);
         recyclerView = view.findViewById(R.id.recyclerViewCommandStructure);
         imageCoach = view.findViewById(R.id.commandTrainerPhoto);
-        Person coach = null;
-        for (Person person : PersonalActivity.AllPeople) {
-            if (person.getId().equals(team.getCreator())) {
-                coach = person;
-                break;
-            }
-        }
+        Person coach = MankindKeeper.getInstance().allPlayers.get(team.getCreator());
 
         SetImage setImage = new SetImage();
         String str;

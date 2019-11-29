@@ -143,8 +143,6 @@ public class PlayerAddToTeam extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        PersonalActivity.people.clear();
-        PersonalActivity.people.addAll(PersonalActivity.AllPeople);
         super.onDestroy();
     }
 

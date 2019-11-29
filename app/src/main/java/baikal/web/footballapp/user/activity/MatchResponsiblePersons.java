@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -17,6 +18,7 @@ import baikal.web.footballapp.tournament.activity.TournamentPage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MatchResponsiblePersons extends AppCompatActivity {
 
@@ -49,15 +51,13 @@ public class MatchResponsiblePersons extends AppCompatActivity {
         textReferee2 = findViewById(R.id.referee2Name);
         textReferee3 = findViewById(R.id.referee3Name);
         textReferee4 = findViewById(R.id.referee4Name);
-        String str;
+
         try {
-            ArrayList<CharSequence> referees =  getIntent().getExtras().getCharSequenceArrayList("CONFIRMPROTOCOLREFEREES");
-            Log.d("MatchResponsible: ", String.valueOf(referees.size()));
+            ArrayList<CharSequence> referees =  Objects.requireNonNull(getIntent().getExtras()).getCharSequenceArrayList("CONFIRMPROTOCOLREFEREES");
+
             List<Person> personList = new ArrayList<>();
-            for (CharSequence referee : referees)
-                for (Person person : PersonalActivity.allPlayers)
-                    if (referee.equals(person.getId()))
-                        personList.add(person);
+            for (CharSequence referee : Objects.requireNonNull(referees))
+                personList.add(MankindKeeper.getInstance().allPlayers.get(referee.toString()));
 
             setRefereesView(personList.get(0), textReferee1, imageReferee1);
             setRefereesView(personList.get(1), textReferee2, imageReferee2);

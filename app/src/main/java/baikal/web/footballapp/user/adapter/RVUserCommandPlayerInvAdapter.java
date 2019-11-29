@@ -21,9 +21,11 @@ import com.bumptech.glide.request.RequestOptions;
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.FullScreenImage;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
@@ -61,31 +63,16 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         String str = String.valueOf(count);
         holder.textNum.setText(str);
         Person player = null;
-        for (Person person : PersonalActivity.people) {
-            if (person.getId().equals(players.get(position))){
-                player = person;
-                break;
-            }
-        }
 
-        CheckName checkName = new CheckName();
-        str = checkName.check(player.getSurname(), player.getName(), player.getLastname());
-        holder.textName.setText(str);
+        if (MankindKeeper.getInstance().allPlayers.containsKey(players.get(position)))
+            player = MankindKeeper.getInstance().allPlayers.get(players.get(position));
+
         try {
+            holder.textName.setText(player.getSurnameWithInitials());
             String uriPic = BASE_URL;
             uriPic += "/" + player.getPhoto();
-            URL url = new URL(uriPic);
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.optionalCircleCrop();
-            requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-            requestOptions.error(R.drawable.ic_logo2);
-            requestOptions.override(500, 500);
-            requestOptions.priority(Priority.HIGH);
-            Glide.with(context)
-                    .asBitmap()
-                    .load(url)
-                    .apply(requestOptions)
-                    .into(holder.image);
+
+            (new SetImage()).setImage(context, holder.image, player.getPhoto());
             final String finalUriPic = uriPic;
             holder.image.setOnClickListener(v -> {
                 if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {
@@ -94,7 +81,7 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
                     context.startActivity(intent);
                 }
             });
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -38,15 +39,8 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Person player = null;
-        for (Person person : PersonalActivity.AllPeople){
-            if (person.getId().equals(players.get(position).getPlayerId())){
-                player = person;
-                break;
-            }
-        }
-        String str;
-        CheckName checkName = new CheckName();
+        Person player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getPlayerId());
+        String str = "";
 
         try {
             if (player==null){
@@ -55,7 +49,7 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
                 player.setSurname("");
                 player.setLastname("");
             }
-            str = checkName.check(player.getSurname(), player.getName(), player.getLastname());
+            str = player.getSurnameWithInitials();
             holder.textName.setText(str);
             int count = players.get(position).getMatches();
             str = String.valueOf(count);

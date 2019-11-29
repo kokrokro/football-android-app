@@ -1,6 +1,5 @@
 package baikal.web.footballapp.players.activity;
 
-
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.PorterDuff;
@@ -27,6 +26,7 @@ import android.widget.ProgressBar;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.People;
@@ -43,30 +43,28 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 public class PlayersPage extends Fragment {
+    private static final String TAG = "PlayerPage";
+    private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
+
     private RecyclerView recyclerView;
-    private int count = 0;
     private int offset = 0;
     private final int limit = 10;
-    public static RecyclerViewPlayersAdapter adapter;
-//    RecyclerViewPlayersAdapter adapter;
-private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
+    public RecyclerViewPlayersAdapter adapter;
     private SearchView searchView;
     private ProgressBar progressBar;
-    private final List<Person> result = new ArrayList<>();
     private ProgressDialog mProgressDialog;
-    private final List<Person> people = new ArrayList<>();
-    private final List<Person> allPeople = new ArrayList<>();
-    private NestedScrollView scroller;
+    private final List<String> allPeople = new ArrayList<>();
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
-
         mProgressDialog = new ProgressDialog(getActivity(), R.style.MyProgressDialogTheme);
         mProgressDialog.setIndeterminate(true);
+        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
 //        mProgressDialog.setMessage("Загрузка...");
         final View view;
         view = inflater.inflate(R.layout.page_players, container, false);
         getAllPlayers("10", "0");
-        scroller = view.findViewById(R.id.scrollerPlayersPage);
+        NestedScrollView scroller = view.findViewById(R.id.scrollerPlayersPage);
         searchView = view.findViewById(R.id.searchView);
         progressBar = view.findViewById(R.id.progressSearch);
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf");
@@ -83,7 +81,7 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
             if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
                 offset++;
                 int temp = limit*offset;
-                if (temp<=count && result.size()== 0) {
+                if (temp<=allPeople.size()) {
                     String str = String.valueOf(temp);
                     getAllPlayers("10", str);
                 }
@@ -101,21 +99,19 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
             }
         });
         searchView.setOnCloseListener(() -> {
-            result.clear();
-            people.clear();
-            people.addAll(allPeople);
-            List<Person> list = new ArrayList<>(people);
-            adapter.dataChanged(list);
+            adapter.dataChanged(allPeople);
             return false;
         });
 
-        try{
+        try {
             recyclerView = view.findViewById(R.id.recyclerViewPlayers);
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RecyclerViewPlayersAdapter(getActivity(), PlayersPage.this, people);
+            adapter = new RecyclerViewPlayersAdapter(getContext(), (PersonalActivity) getActivity(), allPeople);
             recyclerView.setAdapter(adapter);
-        }catch (Exception e){log.error("ERROR: ", e);}
+        } catch (Exception e) {log.error("ERROR: ", e);}
+
+        adapter.dataChanged(allPeople);
 
         return view;
     }
@@ -127,14 +123,11 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
         searchView.setIconified(true);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) item.getActionView();
-
     }
 
     @SuppressLint("CheckResult")
     private void SearchUsers(String search){
-//        PersonalActivity.people.clear();
-        String type = "player";
-        Controller.getApi().getAllPersons(search, "32575", "0")
+        Controller.getApi().getAllPersons(search, "50", "0")
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(__ -> showDialog())
                 .doOnTerminate(this::hideDialog)
@@ -149,20 +142,21 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
     }
 
     private void savePlayers(List<Person> people) {
-        result.clear();
-        result.addAll(people);
-        adapter.dataChanged(result);
+        List<String> res = new ArrayList<>();
+        for (Person p: people)
+            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
+                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+                res.add(p.getId());
+            }
+        adapter.dataChanged(res);
     }
 
     @Override
     public void onPause() {
-        PersonalActivity.people.clear();
-        PersonalActivity.people.addAll(PersonalActivity.AllPeople);
         super.onPause();
     }
 
     private void showDialog() {
-
         if (mProgressDialog != null && !mProgressDialog.isShowing())
             mProgressDialog.show();
     }
@@ -187,12 +181,13 @@ private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
     }
 
     private void saveAllPlayers(List<Person> peopleList) {
-        count += peopleList.size();
-        people.addAll(people.size(), peopleList);
-        List<Person> list = new ArrayList<>(people);
-        allPeople.clear();
-        allPeople.addAll(people);
-        adapter.dataChanged(list);
+        Log.d(TAG, "saved all players " + peopleList.size());
+        for (Person p: peopleList)
+            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
+                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+                allPeople.add(p.getId());
+            }
+        adapter.dataChanged(allPeople);
     }
 }
 

@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -191,12 +192,8 @@ public class ShowProtocol extends AppCompatActivity {
         String clubEvent = "";
         String teamName = "";
         for (Event event : events) {
-            Person person = null;
-            for (Person person1 : PersonalActivity.AllPeople) {
-                if (person1.getId().equals(event.getPlayer())) {
-                    person = person1;
-                }
-            }
+            Person person = MankindKeeper.getInstance().allPlayers.get(event.getPlayer());
+
             for (Player player : team1.getPlayers()) {
                 if (player.getPlayerId().equals(person.getId())) {
                     clubEvent = clubOne;

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -101,10 +102,7 @@ public class UserPage extends Fragment {
                 authoUser = new AuthoUser();
                 User user = (User) Objects.requireNonNull(data.getExtras()).getSerializable("PERSONREGINFO");
                 Person person = Objects.requireNonNull(user).getUser();
-                PersonalActivity.allPlayers.add(person);
-                PersonalActivity.people.add(person);
-                PersonalActivity.AllPeople.add(person);
-                PlayersPage.adapter.notifyDataSetChanged();
+                MankindKeeper.getInstance().allPlayers.put(person.get_id(), person);
                 SaveSharedPreference.setLoggedIn(Objects.requireNonNull(getActivity()).getApplicationContext(), true);
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
