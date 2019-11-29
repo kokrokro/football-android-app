@@ -55,7 +55,6 @@ public class MainPage extends Fragment {
                         for(String str : favTourneysId){
                             s= s+','+str;
                         }
-                        Log.d("UpcomingMatches", ""+s.length());
                         Controller.getApi().getLeaguesByTourney(s).enqueue(new Callback<List<League>>() {
                             @Override
                             public void onResponse(Call<List<League>> call, Response<List<League>> response) {
@@ -64,6 +63,7 @@ public class MainPage extends Fragment {
                                         favLeagues.clear();
                                         favLeagues.addAll(response.body());
                                         favLeaguesId.clear();
+                                        Log.d("UpcomingMatches", favLeagues.toString());
                                         for(League l :favLeagues){
                                             favLeaguesId.add(l.getId());
                                         }
@@ -90,6 +90,7 @@ public class MainPage extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         NewsAndAds newsAndAds = new NewsAndAds();
+        Log.d("UpcomingMatches", ""+favLeaguesId.size());
         ComingMatches comingMatches = new ComingMatches(favLeaguesId);
 
         try {
