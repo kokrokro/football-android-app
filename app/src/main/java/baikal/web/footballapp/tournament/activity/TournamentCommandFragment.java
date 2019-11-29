@@ -1,5 +1,6 @@
 package baikal.web.footballapp.tournament.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.widget.LinearLayout;
 
 
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.GroupTeamPlaceComparator;
@@ -35,8 +37,9 @@ public class TournamentCommandFragment extends Fragment{
     Logger log = LoggerFactory.getLogger(TournamentTimeTableFragment.class);
     private boolean scrollStatus;
     private FloatingActionButton fab;
+    @SuppressLint("RestrictedApi")
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         NestedScrollView scroller;
         RecyclerView recyclerView;
@@ -46,7 +49,7 @@ public class TournamentCommandFragment extends Fragment{
 
         Bundle arguments = getArguments();
         List<Team> teams = (List<Team>) arguments.getSerializable("TOURNAMENTINFOTEAMS");
-        LeagueInfo leagueInfo = (LeagueInfo) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
+        League leagueInfo = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
 //        HashMap<String, List<Team>> commandGroups = new HashMap<>();
         List<String> groups = new ArrayList<>();
         try{
@@ -69,35 +72,36 @@ public class TournamentCommandFragment extends Fragment{
         scrollStatus = false;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        if (groups.size()!=0){
-            layout.setVisibility(View.GONE);
-            if (!leagueInfo.getStatus().equals("Groups")){
-                layoutPlayoff.setVisibility(View.VISIBLE);
-                List<Team> list = new ArrayList<>(teams);
-                for (Team team : teams){
+            if (groups.size()!=0){
+                layout.setVisibility(View.GONE);
+                if (!leagueInfo.getStatus().equals("Groups")){
+                    layoutPlayoff.setVisibility(View.VISIBLE);
+                    List<Team> list = new ArrayList<>(teams);
+                    for (Team team : teams){
 //                    if (team.getPlace()!=null){
 //                    if (team.getPlayoffPlace()!=null){
-                    if (team.getPlayoffPlace()!=null){
-                        list.remove(team);
+                        if (team.getPlayoffPlace()!=null){
+                            list.remove(team);
+                        }
                     }
+                    teams.removeAll(list);
+//                    Collections.sort(teams, new PlayoffTeamPlaceComparator());
+                    int count = teams.size();
+//                    Collections.sort(list, new GroupTeamPlaceComparator());
+//                    Collections.sort(list, new PlayoffTeamMadeToPlayoffComparator());
+                    teams.addAll(count, list);
+                    RVLeaguePlayoffCommandAdapter adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo);
+                    recyclerViewPlayoff.setAdapter(adapter);
                 }
-                teams.removeAll(list);
-                Collections.sort(teams, new PlayoffTeamPlaceComparator());
-                int count = teams.size();
-                Collections.sort(list, new GroupTeamPlaceComparator());
-                Collections.sort(list, new PlayoffTeamMadeToPlayoffComparator());
-                teams.addAll(count, list);
-                RVLeaguePlayoffCommandAdapter adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo);
-                recyclerViewPlayoff.setAdapter(adapter);
+                else {
+                    RVTournamentCommandAdapter adapter = new RVTournamentCommandAdapter(getActivity(),this, groups, teams, leagueInfo);
+                    recyclerView.setAdapter(adapter);
+                }
             }
             else {
-                RVTournamentCommandAdapter adapter = new RVTournamentCommandAdapter(getActivity(),this, groups, teams, leagueInfo);
-                recyclerView.setAdapter(adapter);
+                fab.setVisibility(View.INVISIBLE);
             }
-        }
-        else {
-            fab.setVisibility(View.INVISIBLE);
-        }
+
 
 
 
@@ -118,12 +122,12 @@ public class TournamentCommandFragment extends Fragment{
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 //nothing to do
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE ) {
                     fab.show();

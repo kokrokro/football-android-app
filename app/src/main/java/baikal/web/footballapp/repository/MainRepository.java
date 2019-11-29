@@ -11,14 +11,33 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.Stadium;
+import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 
 public class MainRepository {
+    public LiveData<List<Team>> getTeams(String creator, retrofit2.Callback<List<Team>> callback) {
+        MutableLiveData<List<Team>> returnNews = new MutableLiveData<>();
+        Controller
+                .getApi()
+                .getTeams(creator)
+                .enqueue(callback);
+        return returnNews;
+    }
+
     public LiveData<List<News_>> getNews(String limit, String offset, retrofit2.Callback<List<News_>> callback) {
         MutableLiveData<List<News_>> returnNews = new MutableLiveData<>();
         Controller
                 .getApi()
                 .getAllNewsCrud(limit, offset)
+                .enqueue(callback);
+        return returnNews;
+    }
+    public LiveData<List<Stadium>> getStadiums(String tourney, String id, retrofit2.Callback<List<Stadium>> callback) {
+        MutableLiveData<List<Stadium>> returnNews = new MutableLiveData<>();
+        Controller
+                .getApi()
+                .getStadium(tourney,id)
                 .enqueue(callback);
         return returnNews;
     }

@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
@@ -33,8 +34,11 @@ import baikal.web.footballapp.home.activity.FullscreenNewsActivity;
 import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.Stadium;
+import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 //import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
@@ -64,10 +68,11 @@ public class TournamentsFragment extends Fragment {
     private int count = 0;
     private int offset = 0;
     private final int limit = 5;
-    public static List<League> favLeague = new ArrayList<>( );
+    private static List<League> favLeague = new ArrayList<>( );
     private static List<Tourney> favTourney = new ArrayList<>();
     private static List<String> favTourneyId = new ArrayList<>();
-
+    public static List<Team> allTeams = new ArrayList<>();
+    public static List<Stadium> allStadiums = new ArrayList<>();
     private MainViewModel mainViewModel;
     private TournamentPage tournamentPage;
     @SuppressLint("ValidFragment")
@@ -78,25 +83,36 @@ public class TournamentsFragment extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.fragment_tournaments, container, false);
         scroller = view.findViewById(R.id.scrollerLeague);
+        mainViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
+        mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        mainViewModel.getTeams().observe(this,teams -> {
+            allTeams.clear();
+            allTeams.addAll(teams);
+        });
+        mainViewModel.getAllStadiums().observe(this,stadiums -> {
+            allStadiums.clear();
+            allStadiums.addAll(stadiums);
+        });
+
         try {
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);
-            RVFavTourneyAdapter.Listener listener = id -> showTournamentInfo(id);
-            mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+            RecyclerViewTournamentAdapter.Listener listener = this::showTournamentInfo;
+
             mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
                 favTourney.clear();
                 favTourney.addAll(tourneys);
                 favTourneyId.clear();
                 favLeague.clear();
 
-                String tourneyIds = "";
+                StringBuilder tourneyIds = new StringBuilder();
 
                 for (Tourney tr : tourneys){
                     favTourneyId.add(tr.getId());
-                    tourneyIds += "," + tr.getId();
+                    tourneyIds.append(",").append(tr.getId());
                 }
                 mainViewModel.setFavTourneysId(favTourneyId);
-                mainViewModel.getFavLeagues(tourneyIds).observe(this, leagues -> {
+                mainViewModel.getFavLeagues(tourneyIds.toString()).observe(this, leagues -> {
                     adapter = new RVFavTourneyAdapter(favTourney , getActivity(), leagues, listener);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -123,36 +139,34 @@ public class TournamentsFragment extends Fragment {
     }
 
     @SuppressLint("CheckResult")
-    private void showTournamentInfo(String leagueId){
-        Controller.getApi().getLeagueInfo(leagueId)
-                .subscribeOn(Schedulers.io())
-//                .doOnTerminate(()->progressBarHide())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveData
-                        ,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
+    private void showTournamentInfo(League leagueId){
+        saveData(leagueId);
+
+//        Controller.getApi().getLeagueInfo(leagueId)
+//                .subscribeOn(Schedulers.io())
+////                .doOnTerminate(()->progressBarHide())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(this::saveData
+//                        ,
+//                        error -> {
+//                            CheckError checkError = new CheckError();
+//                            checkError.checkError(getActivity(), error);
+//                        }
+//                );
     }
 
-    private void saveData(GetLeagueInfo getLeagueInfo) {
-        LeagueInfo tournament1 = getLeagueInfo.getLeagueInfo();
+    private void saveData(League league) {
+//        LeagueInfo tournament1 = getLeagueInfo.getLeagueInfo();
         Bundle bundle = new Bundle();
-        bundle.putSerializable("TOURNAMENTINFO", tournament1);
-        Log.d("deeeeeed","showtournamentinfo");
+        bundle.putSerializable("TOURNAMENTINFO", league);
         Tournament tournament = new Tournament();
         tournament.setArguments(bundle);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         try{
-            fragmentManager.beginTransaction().add(R.id.pageContainer, tournament, "LEAGUEINFO").commit();
+            fragmentManager.beginTransaction().add(R.id.pageContainer, tournament, "LEAGUEINFO").addToBackStack(null).commit();
         }catch (Exception e){
             log.error("ERROR: ", e);
         }
         PersonalActivity.active = tournament;
-    }
-    public interface MyCallback {
-        void onDataGot(List<League> leagues);
     }
 }

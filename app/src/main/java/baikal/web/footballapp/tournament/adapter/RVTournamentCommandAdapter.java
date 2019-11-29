@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.GroupTeamPlaceComparator;
@@ -29,10 +30,10 @@ public class RVTournamentCommandAdapter extends RecyclerView.Adapter<RVTournamen
     private final PersonalActivity activity;
     private final List<String> groups;
     private final List<Team> teams;
-    private final LeagueInfo leagueInfo;
+    private final League leagueInfo;
 
     public RVTournamentCommandAdapter(Activity activity, TournamentCommandFragment context, List<String> groups, List<Team> teams
-    ,LeagueInfo leagueInfo){
+    ,League leagueInfo){
         this.activity = (PersonalActivity) activity;
         this.context = context;
         this.groups = groups;

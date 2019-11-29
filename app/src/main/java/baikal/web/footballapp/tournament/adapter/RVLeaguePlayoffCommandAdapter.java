@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.activity.CommandInfoActivity;
@@ -31,10 +32,10 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
     private final List<Team> teams;
-    private final LeagueInfo leagueInfo;
+    private final League leagueInfo;
 
     public RVLeaguePlayoffCommandAdapter(Activity activity, TournamentCommandFragment context, List<Team> teams,
-                                         LeagueInfo leagueInfo) {
+                                         League leagueInfo) {
         this.activity = (PersonalActivity) activity;
         this.context = context;
         this.teams = teams;
@@ -60,7 +61,6 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
             str = String.valueOf(teams.get(position).getPlayoffPlace());
             if (str.equals("null")) {
                 str = "-";
-                log.error("3333333333333333333333333333333333333");
                 try{
                     Boolean check = teams.get(position).getMadeToPlayoff();
                     if (!check ){
@@ -96,15 +96,20 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
         });
 
         int count;
-        count = teams.get(position).getDraws() + teams.get(position).getWins() + teams.get(position).getLosses();
-        str = String.valueOf(count);
-        holder.textGame.setText(str);
-        count = teams.get(position).getGoals() - teams.get(position).getGoalsReceived();
-        str = String.valueOf(count);
-        holder.textDifference.setText(str);
+        try{
+            count = teams.get(position).getDraws() + teams.get(position).getWins() + teams.get(position).getLosses();
+            str = String.valueOf(count);
+            holder.textGame.setText(str);
+            count = teams.get(position).getGoals() - teams.get(position).getGoalsReceived();
+            str = String.valueOf(count);
+            holder.textDifference.setText(str);
 //        str = String.valueOf(teams.get(position).getGoals());
-        str = String.valueOf(teams.get(position).getGroupScore());
-        holder.textPoint.setText(str);
+            str = String.valueOf(teams.get(position).getGroupScore());
+            holder.textPoint.setText(str);
+        }catch (NullPointerException e){
+
+        }
+
 
 
     }

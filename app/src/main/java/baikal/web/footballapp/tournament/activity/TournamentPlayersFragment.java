@@ -60,13 +60,13 @@ public class TournamentPlayersFragment extends Fragment {
         Bundle arguments = getArguments();
         List<Team> team = (List<Team>) arguments.getSerializable("TOURNAMENTINFOTEAMS");
         List<String> clubs = new ArrayList<>();
-        for (Team team1 : team) {
-            for (Player player : team1.getPlayers()) {
-                playerList.add(player);
-//                if (team1.getClub().)
-                clubs.add(team1.getClub());
-            }
-        }
+//        for (Team team1 : team) {
+//            for (Player player : team1.getPlayers()) {
+//                playerList.add(player);
+////                if (team1.getClub().)
+//                clubs.add(team1.getClub());
+//            }
+//        }
         Collections.sort(playerList, new PlayerMatchComparator());
         view = inflater.inflate(R.layout.tournament_info_tab_players, container, false);
         layout = view.findViewById(R.id.tournamentPlayersEmpty);

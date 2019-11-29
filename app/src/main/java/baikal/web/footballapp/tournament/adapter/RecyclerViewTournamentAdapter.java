@@ -40,18 +40,22 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
     private final PersonalActivity activity;
     //private final ListAdapterListener mListener;
     private final List<Tourney> tourneys;
-    public RecyclerViewTournamentAdapter(Activity activity,List<League> tournaments, List<Tourney> tourneys){
+    private final Listener mListener;
+    public RecyclerViewTournamentAdapter(Activity activity,List<League> tournaments, List<Tourney> tourneys, Listener mListener){
         this.tournaments = tournaments;
         this.activity = (PersonalActivity) activity;
        // this.context = context;
 
         //this.mListener = mListener;
         this.tourneys = tourneys;
+        this.mListener = mListener;
     }
 //    public interface ListAdapterListener {
 //        void onClickSwitch(String leagueId);
 //    }
-
+    public interface Listener {
+        void onClick(League league);
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -78,6 +82,7 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + league.getMaxTeams();
         holder.textCommandNum.setText(str);
+        holder.bind(league,mListener);
 //        if (status){
 //            holder.textStatusFinish.setVisibility(View.VISIBLE);
 //            Glide.with(context)
@@ -146,6 +151,11 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
 
 
 //            mProgressDialog.setIndeterminate(true);
+        }
+        public void bind(League id, final Listener listener) {
+            imageButton.setOnClickListener(v ->
+                    listener.onClick(id)
+            );
         }
     }
 

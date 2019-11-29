@@ -74,7 +74,7 @@ public class TournamentPage extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
 
-        Person person = null;
+        Person person;
         if(PersonalActivity.status)
         {
             User user = SaveSharedPreference.getObject();
@@ -136,23 +136,4 @@ public class TournamentPage extends Fragment {
         }
     }
 
-    @SuppressLint("CheckResult")
-    private void GetAllReferees() {
-        String type = "referee";
-        Controller.getApi().getAllPersons( null, "32575", "0")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                //.repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(this::saveReferees,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
-    }
-
-    private void saveReferees(List<Person> people) {
-        referees.clear();
-        referees.addAll(people);
-    }
 }

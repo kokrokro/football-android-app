@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Tournament extends Fragment {
@@ -53,13 +55,13 @@ public class Tournament extends Fragment {
         textTitle = view.findViewById(R.id.tournamentInfoTitle);
         try {
             Bundle arguments = getArguments();
-            LeagueInfo league = (LeagueInfo) arguments.getSerializable("TOURNAMENTINFO");
-            if (league.getTeams().size() != 0){
-                viewPager.addOnPageChangeListener(onPageChangeListener);
-                tabLayout.addOnTabSelectedListener(onTabSelectedListener);
-                fabCommand.hide();
-                fabPlayers.hide();
-            }
+            League league = (League) arguments.getSerializable("TOURNAMENTINFO");
+//            if (league.getTeams().size() != 0){
+//                viewPager.addOnPageChangeListener(onPageChangeListener);
+//                tabLayout.addOnTabSelectedListener(onTabSelectedListener);
+//                fabCommand.hide();
+//                fabPlayers.hide();
+//            }
 
             String str = "";
             for(Tourney t: PersonalActivity.allTourneys){
@@ -89,7 +91,7 @@ public class Tournament extends Fragment {
     }
 
 
-    private void setupViewPager(ViewPager viewPager, LeagueInfo league) {
+    private void setupViewPager(ViewPager viewPager, League league) {
         TournamentTimeTableFragment tournamentTimeTableFragment = new TournamentTimeTableFragment();
         TournamentCommandFragment tournamentCommandFragment = new TournamentCommandFragment();
         TournamentPlayersFragment tournamentPlayersFragment = new TournamentPlayersFragment();
@@ -98,7 +100,13 @@ public class Tournament extends Fragment {
         leagueMatch.putSerializable("TOURNAMENTINFOMATCHESLEAGUE", league);
         tournamentTimeTableFragment.setArguments(leagueMatch);
         Bundle teams = new Bundle();
-        List<Team> teamList = league.getTeams();
+        List<Team> teamList = new ArrayList<>();
+        for (Team team : TournamentsFragment.allTeams){
+            if(team.getLeague().equals(league.getId())){
+                teamList.add(team);
+            }
+        }
+
         teams.putSerializable("TOURNAMENTINFOTEAMS", (Serializable) teamList);
         teams.putSerializable("TOURNAMENTINFOMATCHESLEAGUE", league);
         tournamentCommandFragment.setArguments(teams);

@@ -41,19 +41,17 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
     private List<Tourney> tourneys;
     private PersonalActivity activity;
     private List<League> favLeagues;
+    private RecyclerViewTournamentAdapter.Listener mListener;
     final Logger log = LoggerFactory.getLogger(TournamentPage.class);
-    private Listener mListener;
 
-    public RVFavTourneyAdapter(List<Tourney> tourneys, Activity activity, List<League> favLeagues,  Listener mListener){
+    public RVFavTourneyAdapter(List<Tourney> tourneys, Activity activity, List<League> favLeagues, RecyclerViewTournamentAdapter.Listener mListener){
         this.tourneys = tourneys;
         this.activity = (PersonalActivity) activity;
         this.favLeagues = favLeagues;
         this.mListener = mListener;
 
     }
-    public interface Listener {
-        void onClick(String id);
-    }
+
     @NonNull
     @Override
     public RVFavTourneyAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -83,17 +81,8 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             }
         }
 
-        try {
+            holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, leagueList, tourneys, mListener));
 
-            holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, leagueList, tourneys));
-//            if (favLeagues.get(position).size() > 0) {
-//
-//                String leagueId = favLeagues.get(position).get(0).getId();
-//                holder.bind(leagueId, mListener);
-//            }
-        } catch (Exception e) {
-            log.error("RVFavTourneyAdapter: ", e);
-        }
 
     }
 
@@ -123,11 +112,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             linearLayout = itemView.findViewById(R.id.tourneyShow);
         }
 
-        public void bind(String id, final Listener listener) {
-            linearLayout.setOnClickListener(v -> {
-                listener.onClick(id);
-            });
-        }
+
     }
     public void dataChanged(List<Tourney> tourneys){
         this.tourneys.clear();

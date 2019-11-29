@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.activity.CommandInfoActivity;
@@ -32,9 +33,9 @@ public class RVTournamentCommandCardAdapter extends RecyclerView.Adapter<RVTourn
 
     private final List<Team> teams;
     private final String group;
-    private final LeagueInfo leagueInfo;
+    private final League leagueInfo;
     public RVTournamentCommandCardAdapter(Activity activity, TournamentCommandFragment context, List<Team> teams, String group,
-                                          LeagueInfo leagueInfo) {
+                                          League leagueInfo) {
         this.activity = (PersonalActivity) activity;
         this.context = context;
         this.teams = teams;

@@ -16,6 +16,8 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.Stadium;
+import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.repository.MainRepository;
 import baikal.web.footballapp.tournament.activity.TournamentsFragment;
@@ -30,6 +32,59 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<League>> favLeagues= null;
     private MutableLiveData<List<String>> favTourneysId = null;
     private MutableLiveData<List<Invite>> allInvites = null;
+    private MutableLiveData<List<Stadium>> allStadiums = null;
+    private MutableLiveData<List<Team>> allTeams = null;
+
+    public LiveData<List<Team>> getTeams(){
+        if(allTeams==null){
+            allTeams = new MutableLiveData<>();
+        }
+        loadTeams();
+        return allTeams;
+    }
+
+    public LiveData<List<Stadium>> getAllStadiums(){
+        if(allStadiums==null){
+            allStadiums = new MutableLiveData<>();
+        }
+        loadStadiums();
+        return allStadiums;
+    }
+    private void loadTeams() {
+        new MainRepository().getTeams(null, new Callback<List<Team>>() {
+            @Override
+            public void onResponse(Call<List<Team>> call, Response<List<Team>> response) {
+                if (response.isSuccessful()){
+                    if (response.body() != null ){
+                        allTeams.setValue(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Team>> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void loadStadiums() {
+        new MainRepository().getStadiums(null, null, new Callback<List<Stadium>>() {
+            @Override
+            public void onResponse(Call<List<Stadium>> call, Response<List<Stadium>> response) {
+                if (response.isSuccessful()){
+                    if (response.body() != null ){
+                        allStadiums.setValue(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Stadium>> call, Throwable t) {
+
+            }
+        });
+    }
     public LiveData<List<Invite>> getAllInvites(){
         if(allInvites==null){
             allInvites = new MutableLiveData<>();

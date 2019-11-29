@@ -32,6 +32,7 @@ import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
 import baikal.web.footballapp.model.SetRefereeList;
 import baikal.web.footballapp.model.SignIn;
+import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
@@ -66,7 +67,7 @@ public interface FootballApi {
     Call<List<News_>> getAllNewsCrud(@Query("_limit") String limit, @Query("_offset") String offset);
 
     //get all news
-    @GET("/api/crud/announce")
+    @GET("/api/crud/announce?_")
     Observable<List<Announce>> getAllAnnounce(@Query("_limit") String limit, @Query("_offset") String offset);
 
     //get advertising
@@ -121,9 +122,9 @@ public interface FootballApi {
 //    @GET("/api/leagues/all")
 //    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
 //    //    Call<Tournaments> getAllTournaments();
-    @GET("/api/crud/league?_populate=matches?_populate=stages")
+    @GET("/api/crud/league?_populate=matches+stages")
     Observable<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
-    @GET("/api/crud/league")
+    @GET("/api/crud/league?_populate=matches+stages")
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
     @GET("/api/crud/match?_sort=date")
     Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
@@ -146,7 +147,8 @@ public interface FootballApi {
     Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);
     @GET("/api/crud/person?_select=favoriteTourney")
     Call<List<Person> >getFavTourneysId(@Query("_id") String id);
-
+    @GET("/api/crud/stadium")
+    Call <List<Stadium>> getStadium (@Query("tourney") String tourney, @Query("_id") String id);
     @GET("api/crud/person")
     Call<List<Person>> getPerson(@Query("_id") String id);
 

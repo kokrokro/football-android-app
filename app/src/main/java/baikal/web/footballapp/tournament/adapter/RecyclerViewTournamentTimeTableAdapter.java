@@ -14,15 +14,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Player;
+import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.tournament.activity.ShowProtocol;
 
 import org.slf4j.Logger;
@@ -31,6 +35,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.tournament.activity.TournamentPage;
+import baikal.web.footballapp.tournament.activity.TournamentsFragment;
 import q.rorbin.badgeview.QBadgeView;
 
 public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter<RecyclerViewTournamentTimeTableAdapter.ViewHolder> {
@@ -38,11 +44,11 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
 
     private final PersonalActivity activity;
     private final List<Match> matches;
-    private final LeagueInfo league;
+    private final League league;
 
-    public RecyclerViewTournamentTimeTableAdapter(Activity activity, List<Match> matches, LeagueInfo league) {
+    public RecyclerViewTournamentTimeTableAdapter(Activity activity, League league) {
         this.activity = (PersonalActivity) activity;
-        this.matches = matches;
+        this.matches = league.getMatches();
         this.league = league;
     }
 
@@ -68,79 +74,55 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
             holder.textTime.setText(str);
         }
         str = match.getPlace();
-        try {
-            String[] stadium;
-            stadium = str.split(":", 1);
-            holder.textStadium.setText(stadium[0]);
-        } catch (NullPointerException e) {
-            holder.textStadium.setText(str);
+        if(str!=null){
+            for(Stadium stadium : TournamentsFragment.allStadiums){
+                if(stadium.get_id().equals(str)){
+                    holder.textStadium.setText(stadium.getName());
+                    break;
+                }
+            }
         }
+        else {
+            holder.textStadium.setText("Не назначен");
+        }
+
 
         str = match.getTour();
         holder.textTour.setText(str);
 //        int score1 = 0;
 //        int score2 = 0;
-        Team team1 = null;
-        Team team2 = null;
+        String team1 = match.getTeamOne();
+        String team2 = match.getTeamTwo();
+        Team teamOne = null, teamTwo = null;
+        try{
+            for(Team team: TournamentsFragment.allTeams){
+                if(team1.equals(team.getId())){
+                    teamOne = team;
+                    continue;
+                }
+                if(team2.equals(team.getId())){
+                    teamTwo = team;
+                }
+            }
+        }catch (NullPointerException e){
+
+        }
+
+        if( teamOne!=null){
+            holder.textCommandTitle1.setText(teamOne.getName());
+        }
+        else {
+            holder.textCommandTitle1.setText("Неизвестно");
+        }
+        if( teamTwo!=null){
+            holder.textCommandTitle2.setText(teamTwo.getName());
+        }
+        else {
+            holder.textCommandTitle2.setText("Неизвестно");
+        }
+
         List<String> teamPlayers1 = new ArrayList<>();
         List<String> teamPlayers2 = new ArrayList<>();
-
-        SetImage setImage = new SetImage();
-        for (Team team : league.getTeams()) {
-            if (team.getId().equals(match.getTeamOne())) {
-                str = team.getName();
-                team1 = team;
-                holder.textCommandTitle1.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team.getClub())) {
-                        setImage.setImage(activity, holder.imgCommandLogo1 ,club.getLogo());
-                    }
-                }
-                for (Player player : team.getPlayers()) {
-                    teamPlayers1.add(player.getId());
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo1)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-                    }
-                }
-            }
-            if (team.getId().equals(match.getTeamTwo())) {
-                str = team.getName();
-                team2 = team;
-                holder.textCommandTitle2.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team.getClub())) {
-                        setImage.setImage(activity, holder.imgCommandLogo2 ,club.getLogo());
-                    }
-                }
-                for (Player player : team.getPlayers()) {
-                    teamPlayers2.add(player.getId());
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo2)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-//                        break;
-                    }
-//                    if (player.getGoals()!=0){
-//                        score2+=player.getGoals();
-//                    }
-                }
-//                break;
-            }
-        }
         try {
             str = match.getScore();
             if (str.equals("")) {
