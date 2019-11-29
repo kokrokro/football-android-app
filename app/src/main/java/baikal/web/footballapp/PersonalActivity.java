@@ -261,21 +261,21 @@ public class PersonalActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void checkConnection() {
-        ReactiveNetwork
-                .observeNetworkConnectivity(getApplicationContext())
-                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isConnected -> {
-                    // isConnected can be true or false
-                    if (isConnected) {
+//        ReactiveNetwork
+//                .observeNetworkConnectivity(getApplicationContext())
+//                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(isConnected -> {
+//                    // isConnected can be true or false
+//                    if (isConnected) {
                         showSnack();
-                    } else {
-                        String str = "Отсутствует интернет соединение";
-                        if(App.wasInBackground)
-                            showToast(str);
-                    }
-                });
+//                    } else {
+//                        String str = "Отсутствует интернет соединение";
+//                        if(App.wasInBackground)
+//                            showToast(str);
+//                    }
+//                });
     }
 
     private void showSnack() {
@@ -284,7 +284,7 @@ public class PersonalActivity extends AppCompatActivity {
         //all players
         GetAllPlayers();
         //all clubs
-        GetAllClubs();
+//        GetAllClubs();
         GetAllRegions();
         if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
             log.error("REFRESH USER");
@@ -333,7 +333,6 @@ public class PersonalActivity extends AppCompatActivity {
                         ,
                         this::getError
                 );
-        allTourneys = new ArrayList<>();
         Controller.getApi().getAllTourneys().enqueue(new Callback<List<Tourney>>() {
             @Override
             public void onResponse(@NonNull Call<List<Tourney>> call, @NonNull Response<List<Tourney>> response) {

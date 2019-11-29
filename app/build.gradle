@@ -91,7 +91,7 @@ dependencies {
     implementation 'androidx.paging:paging-runtime:2.1.0'
 
     //network
-    implementation group: 'com.github.pwittchen', name: 'reactivenetwork-rx2', version: '3.0.0'
+    implementation 'com.github.pwittchen:reactivenetwork-rx2:3.0.6'
 
 
 }
