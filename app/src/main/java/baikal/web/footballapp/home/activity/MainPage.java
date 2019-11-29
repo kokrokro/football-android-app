@@ -7,6 +7,7 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +55,7 @@ public class MainPage extends Fragment {
                         for(String str : favTourneysId){
                             s= s+','+str;
                         }
+                        Log.d("UpcomingMatches", ""+s.length());
                         Controller.getApi().getLeaguesByTourney(s).enqueue(new Callback<List<League>>() {
                             @Override
                             public void onResponse(Call<List<League>> call, Response<List<League>> response) {
