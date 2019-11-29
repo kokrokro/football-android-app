@@ -25,6 +25,7 @@ import baikal.web.footballapp.model.ParticipationRequest;
 import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.RefereeRequestList;
@@ -67,7 +68,7 @@ public interface FootballApi {
     Call<List<News_>> getAllNewsCrud(@Query("_limit") String limit, @Query("_offset") String offset);
 
     //get all news
-    @GET("/api/crud/announce?_")
+    @GET("/api/crud/announce")
     Observable<List<Announce>> getAllAnnounce(@Query("_limit") String limit, @Query("_offset") String offset);
 
     //get advertising
@@ -83,7 +84,8 @@ public interface FootballApi {
     Observable<Clubs> getAllClubs();
 //    Call<Clubs> getAllClubs();
 
-
+    @GET("/api/stats/person?_populate=person")
+    Call<List<PersonStats>> getPersonStats(@Query("person") String person, @Query("on_") String on);
 
 
 

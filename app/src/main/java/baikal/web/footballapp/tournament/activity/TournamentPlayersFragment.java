@@ -20,7 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.PlayerGoalsComparator;
@@ -28,6 +31,9 @@ import baikal.web.footballapp.tournament.PlayerMatchComparator;
 import baikal.web.footballapp.tournament.PlayerRCComparator;
 import baikal.web.footballapp.tournament.PlayerYCComparator;
 import baikal.web.footballapp.tournament.adapter.RVTournamentPlayersAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +47,7 @@ public class TournamentPlayersFragment extends Fragment {
     private boolean scrollStatus;
     private final List<Player> playerList = new ArrayList<>();
     private RVTournamentPlayersAdapter adapter;
-
+    private static List<PersonStats> personStats = new ArrayList<>();
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -59,15 +65,35 @@ public class TournamentPlayersFragment extends Fragment {
         RecyclerView recyclerView;
         Bundle arguments = getArguments();
         List<Team> team = (List<Team>) arguments.getSerializable("TOURNAMENTINFOTEAMS");
+        League league = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
         List<String> clubs = new ArrayList<>();
-//        for (Team team1 : team) {
-//            for (Player player : team1.getPlayers()) {
-//                playerList.add(player);
-////                if (team1.getClub().)
-//                clubs.add(team1.getClub());
-//            }
-//        }
-        Collections.sort(playerList, new PlayerMatchComparator());
+        StringBuilder playersId= new StringBuilder();
+        for (Team team1 : team) {
+            //                if (team1.getClub().)
+            //                clubs.add(team1.getClub());
+            playerList.addAll(team1.getPlayers());
+            for(Player player : team1.getPlayers()){
+                playersId.append(",").append(player.getId());
+            }
+        }
+        Controller.getApi().getPersonStats(playersId.toString(),league.getId()).enqueue(new Callback<List<PersonStats>>() {
+            @Override
+            public void onResponse(Call<List<PersonStats>> call, Response<List<PersonStats>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        personStats.clear();
+                        personStats.addAll(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PersonStats>> call, Throwable t) {
+
+            }
+        });
+
+//        Collections.sort(playerList, new PlayerMatchComparator());
         view = inflater.inflate(R.layout.tournament_info_tab_players, container, false);
         layout = view.findViewById(R.id.tournamentPlayersEmpty);
         layout1 = view.findViewById(R.id.mainview);
@@ -124,7 +150,7 @@ public class TournamentPlayersFragment extends Fragment {
                     case "по проведенным матчам": {
                         log.error("по проведенным матчам");
                         List<Player> players = new ArrayList<>(playerList);
-                        Collections.sort(players, new PlayerMatchComparator());
+//                        Collections.sort(players, new PlayerMatchComparator());
                         adapter.dataChanged(players);
                         break;
                     }

@@ -83,18 +83,18 @@ public class TournamentsFragment extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.fragment_tournaments, container, false);
         scroller = view.findViewById(R.id.scrollerLeague);
-        mainViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
-        mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        mainViewModel.getTeams().observe(this,teams -> {
-            allTeams.clear();
-            allTeams.addAll(teams);
-        });
-        mainViewModel.getAllStadiums().observe(this,stadiums -> {
-            allStadiums.clear();
-            allStadiums.addAll(stadiums);
-        });
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
 
         try {
+            mainViewModel.getTeams().observe(this,teams -> {
+                allTeams.clear();
+                allTeams.addAll(teams);
+            });
+            mainViewModel.getAllStadiums().observe(this,stadiums -> {
+                allStadiums.clear();
+                allStadiums.addAll(stadiums);
+            });
             recyclerView = view.findViewById(R.id.recyclerViewTournament);
             recyclerView.setNestedScrollingEnabled(false);
             RecyclerViewTournamentAdapter.Listener listener = this::showTournamentInfo;
