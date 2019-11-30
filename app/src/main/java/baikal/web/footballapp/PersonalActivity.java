@@ -57,27 +57,32 @@ import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class PersonalActivity extends AppCompatActivity {
-    private static final String TAG = "PersonalActivity: ";
+    private static final String TAG = "PersonalActivity";
+    private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
-    public static final Fragment fragmentUser = new UserPage();
     private static final String MAIN = "MAIN_PAGE";
     private static final String TOURNAMENT = "TOURNAMENT_PAGE";
     private static final String CLUB = "CLUB_PAGE";
     private static final String PLAYERS = "PLAYERS_PAGE";
     private static final String USER = "USER_PAGE";
+
+
     private final AuthoUser authoUser = new AuthoUser();
     private static final Fragment fragmentMain = new MainPage();
-    public static List<League> tournaments = new ArrayList<>();
-    public static List<Club> allClubs = new ArrayList<>();
-    public static List<Tourney> allTourneys = new ArrayList<>();
-    //    Fragment active = fragmentHome;
-    public static Fragment active = fragmentMain;
-    private static BottomNavigationView bottomNavigationView;
-    private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
+    public static final Fragment fragmentUser = new UserPage();
     private final Fragment fragmentTournament;
     private final Fragment fragmentClub = new ClubPage();
     private final Fragment fragmentPlayers = new PlayersPage();
+    public static Fragment active = fragmentMain;
+
+    private static BottomNavigationView bottomNavigationView;
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
+
+    //TODO
+    //to prevent memleak need to be replaced to the singleton MankindKeeper...
+    public static List<League> tournaments = new ArrayList<>();
+    public static List<Club> allClubs = new ArrayList<>();
+    public static List<Tourney> allTourneys = new ArrayList<>();
     public static List<Region> regions = new ArrayList<>();
     public static String id ;
     public static String token;
