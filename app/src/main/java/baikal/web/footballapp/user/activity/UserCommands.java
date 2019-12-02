@@ -177,7 +177,12 @@ public class UserCommands extends Fragment {
                 if (num==0){
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 //                    FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
-                    ft.detach(this).attach(this).commit();
+                    try {
+                        ft.detach(this).attach(this).commit();
+                    }catch (Exception e ){
+
+                    }
+
                 }
                 else{
                     AuthoUser.adapterCommand.notifyDataSetChanged();

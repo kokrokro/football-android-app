@@ -2,8 +2,6 @@ package baikal.web.footballapp.tournament.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +11,6 @@ import android.widget.TextView;
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;

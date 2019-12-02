@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import baikal.web.footballapp.user.adapter.TrainerAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
@@ -227,7 +228,7 @@ public class UserCommandInfo extends AppCompatActivity {
         super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                newTrainerId = data.getData().toString();
+                newTrainerId = Objects.requireNonNull(data.getData()).toString();
                 String str  = data.getSerializableExtra("surname") +" "+data.getSerializableExtra("name");
                 teamTrainer.setText(str);
             }

@@ -58,6 +58,7 @@ public class NewCommand extends AppCompatActivity {
     private EditText textTitle;
     private EditText number;
     private Button trainer;
+    private static String newTrainerId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,8 +103,16 @@ public class NewCommand extends AppCompatActivity {
 
         //spinnerTournament.setBackground(spinnerDrawable);
         SpinnerTournamentAdapter adapterTournament = new SpinnerTournamentAdapter(this, R.layout.spinner_item, allTournaments);
+
+        adapterTournament.setDropDownViewResource(R.layout.spinner_dropdown);
+        Drawable spinnerDrawable = spinnerTournament.getBackground().getConstantState().newDrawable();
+
+
+        spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+
+        spinnerTournament.setBackground(spinnerDrawable);
+        spinnerTournament.setSelection(0);
         spinnerTournament.setAdapter(adapterTournament);
-//        spinnerTournament.setPopupBackgroundResource(R.color.colorWhite);
         spinnerTournament.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 itemTournament = (League) parent.getItemAtPosition(pos);
@@ -168,7 +177,7 @@ public class NewCommand extends AppCompatActivity {
         map.put("name", request);
         request = RequestBody.create(MediaType.parse("text/plain"), numberTrainer);
         map.put("creatorPhone", request);
-        request = RequestBody.create(MediaType.parse("text/plain"), trainer.getText().toString());
+        request = RequestBody.create(MediaType.parse("text/plain"), newTrainerId);
         map.put("trainer", request);
 
 
@@ -254,6 +263,7 @@ public class NewCommand extends AppCompatActivity {
         if (requestCode == 1) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
+                newTrainerId = data.getData().toString();
                 String str  = data.getSerializableExtra("surname") +" "+data.getSerializableExtra("name");
                 trainer.setText(str);
             }

@@ -29,7 +29,7 @@ import baikal.web.footballapp.tournament.activity.TournamentPage;
 
 public class AddTournamentFragment extends Fragment {
 
-
+    private static final String admin = "https://football.bwadm.ru";
     public AddTournamentFragment() {
         // Required empty public constructor
     }
@@ -44,8 +44,10 @@ public class AddTournamentFragment extends Fragment {
         WebView webView = view.findViewById(R.id.webViewTournament1);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
+        webView.setVerticalScrollBarEnabled(true);
+//        webview.setHorizontalScrollBarEnabled(true);
         webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ PersonalActivity.token +"');", null);
-        webView.loadUrl("https://football.bwadm.ru");
+        webView.loadUrl(admin);
 
         webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
        // webView.clearCache(true);
@@ -65,7 +67,7 @@ public class AddTournamentFragment extends Fragment {
     private class MyWebViewClient extends WebViewClient {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if ("https://football.bwadm.ru".equals(Uri.parse(url).getHost())) {
+            if (admin.equals(Uri.parse(url).getHost())) {
 
                 return false;
             }
