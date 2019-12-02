@@ -163,7 +163,7 @@ public class PersonalActivity extends AppCompatActivity {
         mProgressDialog.setMessage("Загрузка...");
 
         checkConnection();
-        checkConnectionSingle();
+//        checkConnectionSingle();
 
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);

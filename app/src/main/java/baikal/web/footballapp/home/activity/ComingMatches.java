@@ -62,10 +62,12 @@ public class ComingMatches extends Fragment implements Callback<List<ActiveMatch
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
         String strDate =">="+sdf.format(now);
+        Log.d("UpcomingMatches", strDate);
         String query = "";
         for(String l : leagues){
             query+=","+l;
         }
+        Log.d("UpcomingMatches", query);
         Call<List<ActiveMatch>> call = Controller.getApi().getUpcomingMatches(strDate, query, "20");
         call.enqueue(this);
         try {
@@ -129,6 +131,7 @@ public class ComingMatches extends Fragment implements Callback<List<ActiveMatch
                 matches.addAll(response.body());
                 adapter.notifyDataSetChanged();
             }
+            Log.d("UpcomingMatches", ""+matches.size());
         }
     }
 
