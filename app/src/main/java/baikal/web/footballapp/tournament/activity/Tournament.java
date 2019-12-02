@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
@@ -106,7 +107,6 @@ public class Tournament extends Fragment {
                 teamList.add(team);
             }
         }
-
         teams.putSerializable("TOURNAMENTINFOTEAMS", (Serializable) teamList);
         teams.putSerializable("TOURNAMENTINFOMATCHESLEAGUE", league);
         tournamentCommandFragment.setArguments(teams);

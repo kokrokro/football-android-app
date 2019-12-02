@@ -2,6 +2,8 @@ package baikal.web.footballapp.tournament.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.tournament.activity.TournamentPlayersFragment;
 
@@ -23,11 +26,11 @@ import java.util.List;
 public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamentPlayersAdapter.ViewHolder>{
     private final TournamentPlayersFragment context;
     private final List<Player> players;
-    private final List<String> clubs;
-    public RVTournamentPlayersAdapter(TournamentPlayersFragment context, List<Player> players, List<String> clubs){
+    private final List<PersonStats> personStats;
+    public RVTournamentPlayersAdapter(TournamentPlayersFragment context, List<Player> players, List<PersonStats> personStats){
         this.context = context;
         this.players = players;
-        this.clubs = clubs;
+        this.personStats = personStats;
     }
     @NonNull
     @Override
@@ -38,9 +41,10 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        PersonStats stats = personStats.get(position);
         Person player = null;
-        for (Person person : PersonalActivity.AllPeople){
-            if (person.getId().equals(players.get(position).getPlayerId())){
+        for (Person person : PersonalActivity.allPlayers){
+            if (person.getId().equals(stats.getPerson())){
                 player = person;
                 break;
             }
@@ -82,26 +86,26 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
             str = String.valueOf(count);
             holder.textPoint4.setText(str);
         }
-        Club club = null;
-        for (Club club1 : PersonalActivity.allClubs){
-            try{
-                if (club1.getId().equals(clubs.get(position))){
-                    club = club1;
-                }
-            }catch (IndexOutOfBoundsException e){break;}
-        }
-        SetImage setImage = new SetImage();
-        assert club != null;
-        try {
-            setImage.setImage(holder.image.getContext(), holder.image, club.getLogo());
-        }catch (NullPointerException e){}
+//        Club club = null;
+//        for (Club club1 : PersonalActivity.allClubs){
+//            try{
+//                if (club1.getId().equals(clubs.get(position))){
+//                    club = club1;
+//                }
+//            }catch (IndexOutOfBoundsException e){break;}
+//        }
+//        SetImage setImage = new SetImage();
+//        assert club != null;
+//        try {
+//            setImage.setImage(holder.image.getContext(), holder.image, club.getLogo());
+//        }catch (NullPointerException e){}
 
 
     }
 
     @Override
     public int getItemCount() {
-        return players.size();
+        return personStats.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{

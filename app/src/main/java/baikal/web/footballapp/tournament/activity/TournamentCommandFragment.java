@@ -16,10 +16,12 @@ import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
 
+import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.tournament.GroupTeamPlaceComparator;
 import baikal.web.footballapp.tournament.PlayoffTeamMadeToPlayoffComparator;
 import baikal.web.footballapp.tournament.PlayoffTeamPlaceComparator;
@@ -52,13 +54,13 @@ public class TournamentCommandFragment extends Fragment{
         League leagueInfo = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
 //        HashMap<String, List<Team>> commandGroups = new HashMap<>();
         List<String> groups = new ArrayList<>();
-        try{
-            for (Team team : teams){
-                if (!groups.contains(team.getGroup())){
-                    groups.add(team.getGroup());
-                }
-            }
-        }catch (Exception e){}
+//        try{
+//            for (Team team : teams){
+//                if (!groups.contains(team.getGroup())){
+//                    groups.add(team.getGroup());
+//                }
+//            }
+//        }catch (Exception e){}
 
         view = inflater.inflate(R.layout.tournament_info_tab_command, container, false);
         Tournament tournament = (Tournament) this.getParentFragment();
@@ -72,35 +74,51 @@ public class TournamentCommandFragment extends Fragment{
         scrollStatus = false;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-            if (groups.size()!=0){
-                layout.setVisibility(View.GONE);
-                if (!leagueInfo.getStatus().equals("Groups")){
-                    layoutPlayoff.setVisibility(View.VISIBLE);
-                    List<Team> list = new ArrayList<>(teams);
-                    for (Team team : teams){
-//                    if (team.getPlace()!=null){
-//                    if (team.getPlayoffPlace()!=null){
-                        if (team.getPlayoffPlace()!=null){
-                            list.remove(team);
-                        }
-                    }
-                    teams.removeAll(list);
-//                    Collections.sort(teams, new PlayoffTeamPlaceComparator());
-                    int count = teams.size();
-//                    Collections.sort(list, new GroupTeamPlaceComparator());
-//                    Collections.sort(list, new PlayoffTeamMadeToPlayoffComparator());
-                    teams.addAll(count, list);
-                    RVLeaguePlayoffCommandAdapter adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo);
-                    recyclerViewPlayoff.setAdapter(adapter);
-                }
-                else {
-                    RVTournamentCommandAdapter adapter = new RVTournamentCommandAdapter(getActivity(),this, groups, teams, leagueInfo);
-                    recyclerView.setAdapter(adapter);
+        if(teams.size()!=0){
+            layout.setVisibility(View.GONE);
+            layoutPlayoff.setVisibility(View.VISIBLE);
+        }
+        List<TeamStats> teamStatsList = new ArrayList<>();
+        for(TeamStats teamStats : PersonalActivity.teamStats){
+            for(Team team : teams){
+                if(teamStats.getTeam().equals(team.getId())){
+                    teamStatsList.add(teamStats);
                 }
             }
-            else {
-                fab.setVisibility(View.INVISIBLE);
-            }
+        }
+        RVLeaguePlayoffCommandAdapter adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo, teamStatsList);
+        recyclerViewPlayoff.setAdapter(adapter);
+
+
+//            if (groups.size()!=0){
+//                layout.setVisibility(View.GONE);
+//                if (!leagueInfo.getStatus().equals("Groups")){
+//                    layoutPlayoff.setVisibility(View.VISIBLE);
+//                    List<Team> list = new ArrayList<>(teams);
+//                    for (Team team : teams){
+////                    if (team.getPlace()!=null){
+////                    if (team.getPlayoffPlace()!=null){
+//                        if (team.getPlayoffPlace()!=null){
+//                            list.remove(team);
+//                        }
+//                    }
+//                    teams.removeAll(list);
+////                    Collections.sort(teams, new PlayoffTeamPlaceComparator());
+//                    int count = teams.size();
+////                    Collections.sort(list, new GroupTeamPlaceComparator());
+////                    Collections.sort(list, new PlayoffTeamMadeToPlayoffComparator());
+//                    teams.addAll(count, list);
+//                    RVLeaguePlayoffCommandAdapter adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo);
+//                    recyclerViewPlayoff.setAdapter(adapter);
+//                }
+//                else {
+//                    RVTournamentCommandAdapter adapter = new RVTournamentCommandAdapter(getActivity(),this, groups, teams, leagueInfo);
+//                    recyclerView.setAdapter(adapter);
+//                }
+//            }
+//            else {
+//                fab.setVisibility(View.INVISIBLE);
+//            }
 
 
 
