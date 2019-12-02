@@ -35,6 +35,7 @@ import baikal.web.footballapp.model.SetRefereeList;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
@@ -225,7 +226,8 @@ public interface FootballApi {
 
     @GET("/api/crud/team")
     Call<List<Team>> getTeam(@Query("_id") String id);
-
+    @GET("/api/stats/team")
+    Observable<List<TeamStats>> getTeamStats(@Query("_id") String id);
 
     //add new club
     @Multipart

@@ -43,6 +43,7 @@ import baikal.web.footballapp.model.Clubs;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
+import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
@@ -82,6 +83,7 @@ public class PersonalActivity extends AppCompatActivity {
     private final Fragment fragmentPlayers = new PlayersPage();
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
     public static List<Region> regions = new ArrayList<>();
+    public static List<TeamStats> teamStats = new ArrayList<>();
     public static String id ;
     public static String token;
     public static boolean status;
@@ -161,7 +163,7 @@ public class PersonalActivity extends AppCompatActivity {
         mProgressDialog.setMessage("Загрузка...");
 
         checkConnection();
-        checkConnectionSingle();
+//        checkConnectionSingle();
 
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -312,7 +314,22 @@ public class PersonalActivity extends AppCompatActivity {
             }
         });
     }
+    @SuppressLint("CheckResult")
+    private void getAllTeamStats(){
+        Controller.getApi().getTeamStats(null).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe(stats->{
+                    teamStats.clear();
+                    teamStats.addAll(stats);
+                },error -> {
+                    CheckError checkError = new CheckError();
+                    checkError.checkError(this, error);
+                });
 
+
+
+    }
     @SuppressLint("CheckResult")
     private void RefreshUser() {
         Controller.getApi().refreshUser(SaveSharedPreference.getObject().getToken())
