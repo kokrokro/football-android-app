@@ -45,7 +45,6 @@ public class ComingMatches extends Fragment implements Callback<List<ActiveMatch
     private RVComingMatchesAdapter adapter;
     private List<ActiveMatch> matches = new ArrayList<>();
     private List<String> leagues;
-    private String TAG = "UpcomingMatches";
     public ComingMatches( List<String> favLeagues){
         this.leagues = favLeagues;
     }
@@ -129,12 +128,6 @@ public class ComingMatches extends Fragment implements Callback<List<ActiveMatch
                 matches.clear();
                 matches.addAll(response.body());
                 adapter.notifyDataSetChanged();
-            }
-        } else{
-            try {
-                Log.d(TAG,response.errorBody().string());
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

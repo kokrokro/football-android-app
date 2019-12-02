@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +43,6 @@ public class MainPage extends Fragment {
         tabLayout = view.findViewById(R.id.mainPageTab);
         viewPager = view.findViewById(R.id.mainPageViewPager);
         tabLayout.setupWithViewPager(viewPager);
-        setupViewPager(viewPager);
         setCustomFont();
         Controller.getApi().getFavTourneysId(PersonalActivity.id).enqueue(new Callback<List<Person>>() {
             @Override
@@ -63,17 +63,16 @@ public class MainPage extends Fragment {
                                         favLeagues.clear();
                                         favLeagues.addAll(response.body());
                                         favLeaguesId.clear();
-                                        Log.d("UpcomingMatches", favLeagues.toString());
                                         for(League l :favLeagues){
                                             favLeaguesId.add(l.getId());
                                         }
+                                        setupViewPager(viewPager);
                                     }
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<List<League>> call, Throwable t) {
-
                             }
                         });
                     }
@@ -90,7 +89,6 @@ public class MainPage extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         NewsAndAds newsAndAds = new NewsAndAds();
-        Log.d("UpcomingMatches", ""+favLeaguesId.size());
         ComingMatches comingMatches = new ComingMatches(favLeaguesId);
 
         try {
