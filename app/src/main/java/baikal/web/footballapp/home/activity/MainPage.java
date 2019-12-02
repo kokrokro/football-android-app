@@ -7,11 +7,13 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,7 +43,6 @@ public class MainPage extends Fragment {
         tabLayout = view.findViewById(R.id.mainPageTab);
         viewPager = view.findViewById(R.id.mainPageViewPager);
         tabLayout.setupWithViewPager(viewPager);
-        setupViewPager(viewPager);
         setCustomFont();
         Controller.getApi().getFavTourneysId(PersonalActivity.id).enqueue(new Callback<List<Person>>() {
             @Override
@@ -65,13 +66,13 @@ public class MainPage extends Fragment {
                                         for(League l :favLeagues){
                                             favLeaguesId.add(l.getId());
                                         }
+                                        setupViewPager(viewPager);
                                     }
                                 }
                             }
 
                             @Override
                             public void onFailure(Call<List<League>> call, Throwable t) {
-
                             }
                         });
                     }
