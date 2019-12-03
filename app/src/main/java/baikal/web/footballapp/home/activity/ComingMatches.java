@@ -39,7 +39,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ComingMatches extends Fragment implements Callback<List<ActiveMatch>> {
+public class ComingMatches extends Fragment{
     private final Logger log = LoggerFactory.getLogger(ComingMatches.class);
     private LinearLayout layout;
     private RVComingMatchesAdapter adapter;
@@ -68,8 +68,25 @@ public class ComingMatches extends Fragment implements Callback<List<ActiveMatch
             query+=","+l;
         }
         Log.d("UpcomingMatches", query);
-        Call<List<ActiveMatch>> call = Controller.getApi().getUpcomingMatches(strDate, query, "20");
-        call.enqueue(this);
+        Controller.getApi().getUpcomingMatches(strDate, query, "20").enqueue(new Callback<List<ActiveMatch>>(){
+            @Override
+            public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        matches.clear();
+                        matches.addAll(response.body());
+                        adapter.notifyDataSetChanged();
+                    }
+                    Log.d("UpcomingMatches", ""+matches.size());
+                    Log.d("RVUpcomingMatches","matches "+matches.size());
+                }
+            }
+            @Override
+            public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
+
+            }
+        });
+
         try {
             adapter = new RVComingMatchesAdapter(getActivity(), matches);
             recyclerView.setAdapter(adapter);
@@ -123,20 +140,5 @@ public class ComingMatches extends Fragment implements Callback<List<ActiveMatch
             log.error("ERROR: ", e);
         }
     }
-    @Override
-    public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
-        if(response.isSuccessful()){
-            if(response.body()!=null){
-                matches.clear();
-                matches.addAll(response.body());
-                adapter.notifyDataSetChanged();
-            }
-            Log.d("UpcomingMatches", ""+matches.size());
-        }
-    }
 
-    @Override
-    public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
-
-    }
 }

@@ -4,6 +4,8 @@ import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -76,6 +78,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
 
         SetImage setImage = new SetImage();
                 str = team1.getName();
+                Log.d("RVUpcomingMatches", str);
                 holder.textCommandTitle1.setText(str);
                 for (Club club : PersonalActivity.allClubs) {
                     if (club.getId().equals(team1.getClub())) {
