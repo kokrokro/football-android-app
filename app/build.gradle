@@ -70,7 +70,7 @@ dependencies {
     //typeface
     implementation 'com.norbsoft.typefacehelper:library:0.9.0'
     implementation 'com.drivemode:TypefaceHelper:1.2.0@aar'
-    //datapicker
+    //datepicker
     implementation 'com.ycuwq.widgets:datepicker:1.2.0'
     //retrofit
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
