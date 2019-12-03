@@ -71,6 +71,7 @@ public class UserCommandInfo extends AppCompatActivity {
     private Button teamTrainer;
     private EditText teamNumber;
     private String newTrainerId;
+    private Boolean isCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,16 +102,23 @@ public class UserCommandInfo extends AppCompatActivity {
             league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
             teamName.setText(team.getName());
             String str = team.getTrainer();
+            isCreator = team.getCreator().equals(PersonalActivity.id);
             for(Person p : PersonalActivity.people){
                 if(p.getId().equals(str)){
                     str = p.getSurname()+" "+p.getName();
                     break;
                 }
             }
-            teamTrainer.setOnClickListener(v -> {
-                Intent intent1 = new Intent(this, ChooseTrainer.class);
-                startActivityForResult(intent1, 1);
-            });
+            if( isCreator){
+                teamTrainer.setOnClickListener(v -> {
+                    Intent intent1 = new Intent(this, ChooseTrainer.class);
+                    startActivityForResult(intent1, 1);
+                });
+            }
+            else {
+                teamName.getFreezesText();
+                teamNumber.getFreezesText();
+            }
             teamTrainer.setText(str);
             players.addAll(team.getPlayers());
             teamNumber.setText(team.getCreatorPhone());
@@ -160,15 +168,15 @@ public class UserCommandInfo extends AppCompatActivity {
 
                 }
                 adapterInv.notifyDataSetChanged();
-                for(Player player : players){
-                    for(String personId : canceled){
-                        if(player.getPerson().equals(personId)){
-                            players.remove(player);
-
-                            break;
-                        }
-                    }
-                }
+//                for(Player player : players){
+//                    for(String personId : canceled){
+//                        if(player.getPerson().equals(personId)){
+//                            players.remove(player);
+//
+//                            break;
+//                        }
+//                    }
+//                }
                 adapter.notifyDataSetChanged();
                 recyclerViewPlayer.setVisibility(View.VISIBLE);
             });
@@ -189,11 +197,17 @@ public class UserCommandInfo extends AppCompatActivity {
                 intent1.putExtras(bundle2);
                 startActivity(intent1);
             });
-            buttonSave.setOnClickListener(v -> {
-                editTeam(team.getId());
-                //post
-                finish();
-            });
+            if(isCreator){
+                buttonSave.setOnClickListener(v -> {
+                    editTeam(team.getId());
+                    //post
+                    finish();
+                });
+            }
+            else {
+                buttonSave.setVisibility(View.GONE);
+            }
+
             buttonClose.setOnClickListener(v -> finish());
         } catch (Exception e) {
             log.error("ERROR: ", e);

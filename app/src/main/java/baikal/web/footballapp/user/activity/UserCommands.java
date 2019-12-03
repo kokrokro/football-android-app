@@ -44,6 +44,11 @@ public class UserCommands extends Fragment {
     private View line;
     private TextView textView;
     private TextView textView2;
+    private LinearLayout linearLayoutTrainerTeams;
+    private TextView textTrainerTeams;
+    private View lineTrainer;
+    private RecyclerView trainerRecyclerView;
+    private static List<Team> trainerTeams = new ArrayList<>();
     private static List<Team> teams = new ArrayList<>();
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,35 +74,81 @@ public class UserCommands extends Fragment {
         line = view.findViewById(R.id.userCommandsLine);
         textView = view.findViewById(R.id.userCommandsText);
         textView2 = view.findViewById(R.id.userCommandsText2);
-
+        linearLayoutTrainerTeams = view.findViewById(R.id.userCommandsTrainer);
+        textTrainerTeams = view.findViewById(R.id.userCommandsTex3);
+        lineTrainer  = view.findViewById(R.id.userCommandsLine2);
         teams = AuthoUser.createdTeams;
 
+
+        for(Team team : PersonalActivity.allTeams){
+            if(team.getTrainer().equals(PersonalActivity.id)){
+                trainerTeams.add(team);
+            }
+        }
         if (teams.size()==0){
             linearOwnCommand.setVisibility(View.GONE);
+        }
+        else {
+            textView2.setVisibility(View.VISIBLE);
         }
         if (AuthoUser.personCommand.size()==0){
             linearUserCommand.setVisibility(View.GONE);
         }
-        if (teams.size() != 0
-                && AuthoUser.personCommand.size() != 0) {
-            line.setVisibility(View.VISIBLE);
+        else {
             textView.setVisibility(View.VISIBLE);
-            textView2.setVisibility(View.VISIBLE);
-            linear = view.findViewById(R.id.emptyCommand);
-            linear.setVisibility(View.GONE);
         }
-        linearLayout = view.findViewById(R.id.notEmptyCommand);
+        if(trainerTeams.size()==0){
+            linearLayoutTrainerTeams.setVisibility(View.GONE);
+        }
+        else {
+            textTrainerTeams.setVisibility(View.VISIBLE);
+        }
+
+
+
+        if(teams.size()!=0 && (AuthoUser.personCommand.size()!=0 || trainerTeams.size()!=0)){
+            line.setVisibility(View.VISIBLE);
+        }
+        if((teams.size()==0 || AuthoUser.personCommand.size()!=0) && trainerTeams.size()!=0){
+            lineTrainer.setVisibility(View.VISIBLE);
+        }
+
+
+
+
+        linearLayout = view.findViewById(R.id.emptyCommand);
+        if(teams.size()==0 && AuthoUser.personCommand.size()==0 && trainerTeams.size()==0){
+            linearLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            linearLayout.setVisibility(View.GONE);
+        }
+
         scroller = view.findViewById(R.id.userCommandScroll);
         recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
 //        recyclerView.setAdapter(AuthoUser.adapterCommand);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
 
-        RVUserCommandAdapter adapter1 = new RVUserCommandAdapter(getActivity(),AuthoUser.personCommand);
+        RVUserCommandAdapter adapter1 = new RVUserCommandAdapter(getActivity(),AuthoUser.personCommand, (t,l) ->{});
         recyclerView.setAdapter(adapter1);
         recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
         recyclerView2.setAdapter(adapter);
         recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+        trainerRecyclerView = view.findViewById(R.id.recyclerViewUserCommandTrainer);
+        trainerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        RVUserCommandAdapter adapter2 = new RVUserCommandAdapter(getActivity(),trainerTeams, (t,l) ->{
+            Intent intent = new Intent(getActivity(), UserCommandInfo.class);
+            Bundle bundle = new Bundle();
+            Bundle bundle1 = new Bundle();
+            bundle.putSerializable("COMMANDEDIT", t);
+            bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+            intent.putExtras( bundle);
+            intent.putExtras( bundle1);
+            getActivity().startActivity(intent);
+        });
+        trainerRecyclerView.setAdapter(adapter2);
         scrollStatus = false;
 
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {

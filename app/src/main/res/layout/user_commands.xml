@@ -122,6 +122,37 @@
                     android:layout_height="wrap_content"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
                 </LinearLayout>
+                <View
+                    android:id="@+id/userCommandsLine2"
+                    android:layout_width="match_parent"
+                    android:layout_height="12sp"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8sp"
+                    android:background="@color/colorLightGray2"
+                    android:visibility="gone" />
+                <TextView
+                    android:id="@+id/userCommandsTex3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:paddingBottom="8dp"
+                    android:layout_marginStart="8sp"
+                    android:paddingTop="8dp"
+                    android:text="@string/myCommands3"
+                    android:visibility="gone"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp" />
+                <LinearLayout
+                    android:id="@+id/userCommandsTrainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerViewUserCommandTrainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
