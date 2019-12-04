@@ -75,10 +75,17 @@ public class ComingMatches extends Fragment{
                     if(response.body()!=null){
                         matches.clear();
                         matches.addAll(response.body());
-                        adapter.notifyDataSetChanged();
+                        //adapter.notifyDataSetChanged();
+                        try {
+                            Log.d("RVUpcomingMatches","matches2 "+matches.size());
+                            adapter = new RVComingMatchesAdapter(getActivity(), matches);
+                            recyclerView.setAdapter(adapter);
+                        }catch (NullPointerException e){
+                            layout.setVisibility(View.VISIBLE);
+                        }
                     }
                     Log.d("UpcomingMatches", ""+matches.size());
-                    Log.d("RVUpcomingMatches","matches "+matches.size());
+                    Log.d("RVUpcomingMatches","matches1 "+matches.size());
                 }
             }
             @Override
@@ -87,12 +94,7 @@ public class ComingMatches extends Fragment{
             }
         });
 
-        try {
-            adapter = new RVComingMatchesAdapter(getActivity(), matches);
-            recyclerView.setAdapter(adapter);
-        }catch (NullPointerException e){
-            layout.setVisibility(View.VISIBLE);
-        }
+
         return view;
     }
 

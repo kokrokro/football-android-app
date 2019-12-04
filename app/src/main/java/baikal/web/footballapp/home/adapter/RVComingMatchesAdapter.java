@@ -77,48 +77,50 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         Team team2 = match.getTeamTwo();
 
         SetImage setImage = new SetImage();
-                str = team1.getName();
-                Log.d("RVUpcomingMatches", str);
-                holder.textCommandTitle1.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team1.getClub())) {
-                        setImage.setImage(activity, holder.imgCommandLogo1 ,club.getLogo());
-                    }
-                }
-                for (Player player : team1.getPlayers()) {
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo1)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-                    }
-                }
+        str = team1.getName();
+        holder.textCommandTitle1.setText(str);
+        for (Club club : PersonalActivity.allClubs) {
+            if (club.getId().equals(team1.getClub())) {
+                setImage.setImage(activity, holder.imgCommandLogo1, club.getLogo());
+            }
+        }
+        Log.d("RVUpcomingMatches", str);
+        Log.d("RVUpcomingMatches", "team1.getPlayers(): "+team1.getPlayers().size());
 
-                str = team2.getName();
-                holder.textCommandTitle2.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team2.getClub())) {
-                        setImage.setImage(activity, holder.imgCommandLogo2 ,club.getLogo());
-                    }
-                }
-                for (Player player : team2.getPlayers()) {
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo2)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-                    }
-                }
+        for (Player player : team1.getPlayers()) {
+            if (player.getActiveDisquals() != 0) {
+                new QBadgeView(activity)
+                        .bindTarget(holder.imgCommandLogo1)
+                        .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                        .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                        .setBadgeTextSize(5, true)
+                        .setBadgePadding(5, true)
+                        .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                        .setGravityOffset(-3, 1, true)
+                        .setBadgeNumber(3);
+            }
+        }
+
+        str = team2.getName();
+        holder.textCommandTitle2.setText(str);
+        for (Club club : PersonalActivity.allClubs) {
+            if (club.getId().equals(team2.getClub())) {
+                setImage.setImage(activity, holder.imgCommandLogo2, club.getLogo());
+            }
+        }
+        for (Player player : team2.getPlayers()) {
+            if (player.getActiveDisquals() != 0) {
+                new QBadgeView(activity)
+                        .bindTarget(holder.imgCommandLogo2)
+                        .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                        .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                        .setBadgeTextSize(5, true)
+                        .setBadgePadding(5, true)
+                        .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                        .setGravityOffset(-3, 1, true)
+                        .setBadgeNumber(3);
+            }
+        }
         try {
             str = match.getScore();
             if (str.equals("")) {
@@ -209,7 +211,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         }
     }
 
-    public void dataChanged(List<ActiveMatch> allPlayers1){
+    public void dataChanged(List<ActiveMatch> allPlayers1) {
         log.error("*******************************************");
         matches.clear();
         matches.addAll(allPlayers1);
