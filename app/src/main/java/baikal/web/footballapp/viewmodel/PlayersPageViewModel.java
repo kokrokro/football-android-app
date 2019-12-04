@@ -6,18 +6,16 @@ import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.players.datasource.PlayersDataSourceFactory;
 
 public class PlayersPageViewModel extends ViewModel {
-    public final LiveData<PagedList<Person>> playersList;
+    public LiveData<PagedList<Person>> playersList;
 
-    public PlayersPageViewModel(LiveData<PagedList<Person>> playersList) {
-        playersList = new LivePagedListBuilder<>(asdf, 50).build();
+    public PlayersPageViewModel() {
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setEnablePlaceholders(false)
+                .build();
+        PlayersDataSourceFactory dataSourceFactory = new PlayersDataSourceFactory();
+        playersList = new LivePagedListBuilder<>(dataSourceFactory, config).build();
     }
-//    public LiveData<List<Person>> getPlayers() {
-//        if (playersList == null) {
-//            playersList = new MutableLiveData<>();
-//        }
-//
-//        return playersList;
-//    }
 }

@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -34,7 +35,9 @@ import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.players.adapter.PlayersAdapter;
 import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
+import baikal.web.footballapp.viewmodel.PlayersPageViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -47,12 +50,28 @@ public class PlayersPage extends Fragment {
     private RecyclerView recyclerView;
     private int offset = 0;
     private SearchView searchView;
+    private PlayersPageViewModel playersPageViewModel;
+    private PlayersAdapter playersAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
+
+//        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
 
         final View view = inflater.inflate(R.layout.page_players, container, false);
+
+        try {
+            recyclerView = view.findViewById(R.id.recyclerViewPlayers);
+            recyclerView.setNestedScrollingEnabled(false);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            playersAdapter = new PlayersAdapter();
+            recyclerView.setAdapter(playersAdapter);
+
+            playersPageViewModel = ViewModelProviders.of(this).get(PlayersPageViewModel.class);
+            playersPageViewModel.playersList.observe(this, playersAdapter::submitList);
+        } catch (Exception e) {
+            log.error("ERROR: ", e);
+        }
 
         getAllPlayers("10", "0");
 
@@ -79,6 +98,7 @@ public class PlayersPage extends Fragment {
                 }
             }
         });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -91,23 +111,12 @@ public class PlayersPage extends Fragment {
                 return false;
             }
         });
+
         searchView.setOnCloseListener(() -> {
             adapter.dataChanged(allPeople);
             return false;
         });
 
-        try {
-            recyclerView = view.findViewById(R.id.recyclerViewPlayers);
-            recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RecyclerViewPlayersAdapter(getContext(), (PersonalActivity) getActivity(), allPeople);
-            recyclerView.setAdapter(adapter);
-        } catch (Exception e) {
-            log.error("ERROR: ", e);
-        }
-
-        //Дугар ты упоролся и запутался мы тоже
-//        adapter.dataChanged(allPeople);
 
         return view;
     }
