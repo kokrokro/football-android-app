@@ -299,6 +299,10 @@ public class PersonalActivity extends AppCompatActivity {
             RefreshUser();
         }
     }
+    private void getAllMatches(){
+
+    }
+
     private void getAllTeams(){
         Controller.getApi().getTeams(null).enqueue(new Callback<List<Team>>() {
             @Override

@@ -132,8 +132,6 @@ public class AuthoUser extends Fragment {
             categoryTitle = view.findViewById(R.id.categoryType);
             user = SaveSharedPreference.getObject();
             person = user.getUser();
-//            List<PersonTeams> personTeams = new ArrayList<>();
-//            personTeams = person.getParticipation();
             personOngoingLeagues = new ArrayList<>();
             personOwnCommand = new ArrayList<>();
             personCommand = new ArrayList<>();
@@ -155,7 +153,6 @@ public class AuthoUser extends Fragment {
 
                 }
             });
-//            List<PendingTeamInvite> pendingTeamInvites = person.getPendingTeamInvites();
             invBadge = (TextView) nvDrawer.getMenu().findItem(R.id.nav_first_fragment).getActionView();
             Controller.getApi().getTeams(PersonalActivity.id).enqueue(new Callback<List<Team>>() {
                 @Override
@@ -173,8 +170,6 @@ public class AuthoUser extends Fragment {
 
                 }
             });
-//            userGetType();
-
 
             try {
                 textName.setText(person.getName());

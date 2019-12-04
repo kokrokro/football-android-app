@@ -129,6 +129,7 @@
     <string name="desc">Описание:</string>
     <string name="desc2">Описание</string>
     <string name="addPlayer">Добавить игрока</string>
+    <string name="showProtocol">Показать протокол</string>
     <string name="empty">Ничего нет</string>
     <string name="empty2">Не назначено</string>
     <string name="not_inv">Здесь будут отображаться приглашения от команд</string>

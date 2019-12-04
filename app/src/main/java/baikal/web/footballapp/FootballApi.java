@@ -90,19 +90,6 @@ public interface FootballApi {
 
 
 
-    //get tournament's info
-    //@GET("/api/leagues/league/{id}")
-    @GET("/api/crud/league")
-    Observable<GetLeagueInfo> getLeagueInfo(@Query("_id") String id);
-//    Call<GetLeagueInfo> getLeagueInfo(@Path("id") String id);
-
-
-
-    //get active matches
-    @GET("/api/matches/active")
-    Observable<ActiveMatches> getActiveMatches(@Query("limit") String limit, @Query("offset") String  offset,
-                                               @Query("played") Boolean played);
-
 
     //get coming matches
     @GET("/api/matches/upcoming")
@@ -113,8 +100,6 @@ public interface FootballApi {
 
     //get referees type==referee
     //get players type==player
-    @GET("/api/getusers")
-    Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
     @GET("/api/crud/person")
     Observable<List<Person> >getAllPersons( @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/tourney")
@@ -132,7 +117,7 @@ public interface FootballApi {
     @GET("/api/crud/match?_sort=date")
     Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
     @GET("api/crud/match?_populate=teamOne+teamTwo+place")
-    Call<List<MatchPopulate>> getMatches(@Query("_id") String id);
+    Call<List<MatchPopulate>> getMatches(@Query("_id") String id, @Query("referees.person") String referee);
     //edit web
     @PATCH("/api/crud/match/{id}")
     Call<Match> editMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);

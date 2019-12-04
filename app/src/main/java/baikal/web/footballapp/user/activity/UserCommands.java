@@ -104,17 +104,12 @@ public class UserCommands extends Fragment {
             textTrainerTeams.setVisibility(View.VISIBLE);
         }
 
-
-
         if(teams.size()!=0 && (AuthoUser.personCommand.size()!=0 || trainerTeams.size()!=0)){
             line.setVisibility(View.VISIBLE);
         }
         if((teams.size()==0 || AuthoUser.personCommand.size()!=0) && trainerTeams.size()!=0){
             lineTrainer.setVisibility(View.VISIBLE);
         }
-
-
-
 
         linearLayout = view.findViewById(R.id.emptyCommand);
         if(teams.size()==0 && AuthoUser.personCommand.size()==0 && trainerTeams.size()==0){
