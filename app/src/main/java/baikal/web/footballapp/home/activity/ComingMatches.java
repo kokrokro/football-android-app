@@ -62,6 +62,7 @@ public class ComingMatches extends Fragment{
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
         String strDate =">="+sdf.format(now);
+        Log.d("UpcomingMatches", "msg1");
         Log.d("UpcomingMatches", strDate);
         String query = "";
         for(String l : leagues){
