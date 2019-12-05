@@ -2,13 +2,14 @@ package baikal.web.footballapp.tournament.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
@@ -16,17 +17,15 @@ import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.tournament.activity.TournamentPlayersFragment;
 
 import java.util.List;
 
 
 public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamentPlayersAdapter.ViewHolder>{
-    private final TournamentPlayersFragment context;
+    private static final String TAG = "TournamentPlayersAdap";
     private final List<Player> players;
     private final List<String> clubs;
-    public RVTournamentPlayersAdapter(TournamentPlayersFragment context, List<Player> players, List<String> clubs){
-        this.context = context;
+    public RVTournamentPlayersAdapter(List<Player> players, List<String> clubs){
         this.players = players;
         this.clubs = clubs;
     }
@@ -39,8 +38,16 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Person player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getPlayerId());
-        String str = "";
+        Person player = null;
+        try {
+            Log.d(TAG, players.get(position).getId());
+            Log.d(TAG, String.valueOf(MankindKeeper.getInstance().allPlayers.containsKey(players.get(position).getId())));
+            player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getId());
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
+
+        String str;
 
         try {
             if (player==null){
@@ -86,11 +93,7 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
         }
         SetImage setImage = new SetImage();
         assert club != null;
-        try {
-            setImage.setImage(holder.image.getContext(), holder.image, club.getLogo());
-        }catch (NullPointerException e){}
-
-
+        setImage.setImage(holder.image.getContext(), holder.image, club.getLogo());
     }
 
     @Override
@@ -105,8 +108,8 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
         final TextView textPoint3;
         final TextView textPoint4;
         final ImageView image;
-//        TextView textPoint5;
-ViewHolder(View item) {
+
+        ViewHolder(View item) {
             super(item);
             textName = item.findViewById(R.id.tournamentPlayer);
             textPoint1 = item.findViewById(R.id.tournamentPlayerPoint1);
@@ -114,7 +117,6 @@ ViewHolder(View item) {
             textPoint3 = item.findViewById(R.id.tournamentPlayerPoint3);
             textPoint4 = item.findViewById(R.id.tournamentPlayerPoint4);
             image = item.findViewById(R.id.tournamentPlayerCommandLogo);
-//            textPoint5 = (TextView) item.findViewById(R.id.tournamentPlayerPoint5);
         }
     }
     public void dataChanged(List<Player> allPlayers1){

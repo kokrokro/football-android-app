@@ -162,7 +162,7 @@ public class PersonalActivity extends AppCompatActivity {
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Загрузка...");
 
-        checkConnection();
+        showSnack();
         checkConnectionSingle();
 
         try {
@@ -234,15 +234,17 @@ public class PersonalActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void checkConnectionSingle() {
         Single<Boolean> single = ReactiveNetwork.checkInternetConnectivity();
+        //noinspection ResultOfMethodCallIgnored
         single
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isConnectedToInternet -> GetAdvertising("1", "0"));
+                .subscribe(isConnectedToInternet -> GetAdvertising());
     }
 
     @SuppressLint("CheckResult")
-    private void GetAdvertising(String limit, String offset) {
-        Controller.getApi().getAdvertising(limit, offset)
+    private void GetAdvertising() {
+        //noinspection ResultOfMethodCallIgnored
+        Controller.getApi().getAdvertising("1", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showAds
@@ -262,25 +264,6 @@ public class PersonalActivity extends AppCompatActivity {
             dialogFragment.setArguments(args);
             dialogFragment.show(this.getSupportFragmentManager(), "dialogFragment");
         }
-    }
-
-    @SuppressLint("CheckResult")
-    private void checkConnection() {
-//        ReactiveNetwork
-//                .observeNetworkConnectivity(getApplicationContext())
-//                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(isConnected -> {
-//                    // isConnected can be true or false
-//                    if (isConnected) {
-                        showSnack();
-//                    } else {
-//                        String str = "Отсутствует интернет соединение";
-//                        if(App.wasInBackground)
-//                            showToast(str);
-//                    }
-//                });
     }
 
     private void showSnack() {
@@ -317,6 +300,7 @@ public class PersonalActivity extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void RefreshUser() {
+        //noinspection ResultOfMethodCallIgnored
         Controller.getApi().refreshUser(SaveSharedPreference.getObject().getToken())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -330,7 +314,8 @@ public class PersonalActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void GetAllTournaments() {
         tournaments = new ArrayList<>();
-        Controller.getApi().getAllLeagues("32575", "0")
+        //noinspection ResultOfMethodCallIgnored
+        Controller.getApi().getAllLeagues("25", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 //.repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
@@ -399,14 +384,15 @@ public class PersonalActivity extends AppCompatActivity {
     }
 
     private void savePlayers(List<Person> people1) {
-        MankindKeeper.getInstance().allPlayers.clear();
         for (Person p: people1)
-            MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id()))
+                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
     }
 
     @SuppressLint("CheckResult")
     private void GetAllPlayers() {
-        Controller.getApi().getAllPersons( null, "32575", "0")
+        //noinspection ResultOfMethodCallIgnored
+        Controller.getApi().getAllPersons( null, "25", "0")
                 .subscribeOn(Schedulers.io())
                 .retryWhen(throwableObservable -> throwableObservable.take(3).delay(30, TimeUnit.SECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -420,6 +406,7 @@ public class PersonalActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void GetAllClubs() {
         allClubs = new ArrayList<>();
+        //noinspection ResultOfMethodCallIgnored
         Controller.getApi().getAllClubs()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -436,10 +423,6 @@ public class PersonalActivity extends AppCompatActivity {
 //        ClubPage.adapter.notifyDataSetChanged();
     }
 
-    private void showToast(String str) {
-        this.runOnUiThread(() -> Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show());
-    }
-
     public void setAnimation() {
         Slide slide = new Slide();
         slide.setSlideEdge(Gravity.START);
@@ -447,15 +430,6 @@ public class PersonalActivity extends AppCompatActivity {
         slide.setInterpolator(new DecelerateInterpolator());
         getWindow().setExitTransition(slide);
         getWindow().setEnterTransition(slide);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == Activity.RESULT_OK) {
-
-        }
     }
 }
 

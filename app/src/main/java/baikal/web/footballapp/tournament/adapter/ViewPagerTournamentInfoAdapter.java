@@ -1,9 +1,5 @@
 package baikal.web.footballapp.tournament.adapter;
 
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,12 +22,12 @@ public class ViewPagerTournamentInfoAdapter extends FragmentPagerAdapter {
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    private final FragmentManager fm;
-    public ViewPagerTournamentInfoAdapter(FragmentManager fm) {
+    public ViewPagerTournamentInfoAdapter(@NonNull FragmentManager fm) {
+        //noinspection deprecation
         super(fm);
-        this.fm = fm;
     }
 
+    @NonNull
     @Override
     public Fragment getItem(int position) {
         return mFragmentList.get(position);

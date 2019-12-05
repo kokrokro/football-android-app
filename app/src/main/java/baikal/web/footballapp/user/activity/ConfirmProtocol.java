@@ -264,7 +264,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         entry.setClubLogo2(clubTwo);
         entry.setNameTeam1(teamOne);
         entry.setNameTeam2(teamTwo);
-//        return playerEvents;
+
         return entry;
     }
 

@@ -37,7 +37,7 @@ public class RVCommandStructureAdapter extends RecyclerView.Adapter<RVCommandStr
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Person player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getPlayerId());
+        Person player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getId());
         
         try {
             String str;

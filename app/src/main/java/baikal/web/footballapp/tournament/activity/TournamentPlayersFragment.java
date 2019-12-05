@@ -1,5 +1,6 @@
 package baikal.web.footballapp.tournament.activity;
 
+import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -27,7 +28,6 @@ import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.PlayerGoalsComparator;
-import baikal.web.footballapp.tournament.PlayerMatchComparator;
 import baikal.web.footballapp.tournament.PlayerRCComparator;
 import baikal.web.footballapp.tournament.PlayerYCComparator;
 import baikal.web.footballapp.tournament.adapter.RVTournamentPlayersAdapter;
@@ -48,6 +48,7 @@ public class TournamentPlayersFragment extends Fragment {
     private final List<Player> playerList = new ArrayList<>();
     private RVTournamentPlayersAdapter adapter;
     private static List<PersonStats> personStats = new ArrayList<>();
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -104,9 +105,9 @@ public class TournamentPlayersFragment extends Fragment {
         fab = tournament.getFabPlayers();
         spinner = view.findViewById(R.id.playersSpinner);
         scroller = view.findViewById(R.id.tournamentInfoPlayersScroll);
-        recyclerView = view.findViewById(R.id.recyclerViewTournamentPlayers);
+        recyclerView = view.findViewById(R.id.recyclerViewTournamentPlayersStats);
         scrollStatus = false;
-        adapter = new RVTournamentPlayersAdapter(this, playerList, clubs);
+        adapter = new RVTournamentPlayersAdapter(playerList, clubs);
         recyclerView.setAdapter(adapter);
         final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -117,7 +118,6 @@ public class TournamentPlayersFragment extends Fragment {
         } else {
             layout1.setVisibility(View.GONE);
             fab.setVisibility(View.INVISIBLE);
-
         }
 
 

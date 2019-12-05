@@ -63,7 +63,7 @@ public class PlayersPage extends Fragment {
 //        mProgressDialog.setMessage("Загрузка...");
         final View view;
         view = inflater.inflate(R.layout.page_players, container, false);
-        getAllPlayers("10", "0");
+        getAllPlayers("20", "0");
         NestedScrollView scroller = view.findViewById(R.id.scrollerPlayersPage);
         searchView = view.findViewById(R.id.searchView);
         progressBar = view.findViewById(R.id.progressSearch);
@@ -103,13 +103,11 @@ public class PlayersPage extends Fragment {
             return false;
         });
 
-        try {
-            recyclerView = view.findViewById(R.id.recyclerViewPlayers);
-            recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RecyclerViewPlayersAdapter(getContext(), (PersonalActivity) getActivity(), allPeople);
-            recyclerView.setAdapter(adapter);
-        } catch (Exception e) {log.error("ERROR: ", e);}
+        recyclerView = view.findViewById(R.id.recyclerViewPlayers);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new RecyclerViewPlayersAdapter(getContext(), (PersonalActivity) getActivity(), allPeople);
+        recyclerView.setAdapter(adapter);
 
         adapter.dataChanged(allPeople);
 
@@ -162,7 +160,6 @@ public class PlayersPage extends Fragment {
     }
 
     private void hideDialog() {
-
         if (mProgressDialog != null && mProgressDialog.isShowing())
             mProgressDialog.dismiss();
     }
@@ -187,6 +184,7 @@ public class PlayersPage extends Fragment {
                 MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
                 allPeople.add(p.getId());
             }
+
         adapter.dataChanged(allPeople);
     }
 }

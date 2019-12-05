@@ -1,4 +1,4 @@
-package baikal.web.footballapp.protocol.Adapters;
+package baikal.web.footballapp.user.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;

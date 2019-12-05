@@ -56,12 +56,6 @@ public class Tournament extends Fragment {
         try {
             Bundle arguments = getArguments();
             League league = (League) arguments.getSerializable("TOURNAMENTINFO");
-//            if (league.getTeams().size() != 0){
-//                viewPager.addOnPageChangeListener(onPageChangeListener);
-//                tabLayout.addOnTabSelectedListener(onTabSelectedListener);
-//                fabCommand.hide();
-//                fabPlayers.hide();
-//            }
 
             String str = "";
             for(Tourney t: PersonalActivity.allTourneys){

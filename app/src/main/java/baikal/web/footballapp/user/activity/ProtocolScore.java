@@ -10,7 +10,7 @@ import android.util.Log;
 import android.widget.ImageButton;
 
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.protocol.Adapters.RVCommandEventListAdapter;
+import baikal.web.footballapp.user.adapter.RVCommandEventListAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
