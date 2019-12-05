@@ -45,11 +45,13 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
     private final PersonalActivity activity;
     private final List<Match> matches;
     private final League league;
+    private TournamentsFragment tournamentsFragment;
 
-    public RecyclerViewTournamentTimeTableAdapter(Activity activity, League league) {
+    public RecyclerViewTournamentTimeTableAdapter(Activity activity, League league, TournamentsFragment tournamentsFragment) {
         this.activity = (PersonalActivity) activity;
         this.matches = league.getMatches();
         this.league = league;
+        this.tournamentsFragment = tournamentsFragment;
     }
 
     @NonNull
@@ -75,7 +77,7 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
         }
         str = match.getPlace();
         if(str!=null){
-            for(Stadium stadium : TournamentsFragment.allStadiums){
+            for(Stadium stadium : tournamentsFragment.allStadiums){
                 if(stadium.get_id().equals(str)){
                     holder.textStadium.setText(stadium.getName());
                     break;
@@ -95,7 +97,7 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
         String team2 = match.getTeamTwo();
         Team teamOne = null, teamTwo = null;
         try{
-            for(Team team: TournamentsFragment.allTeams){
+            for(Team team: tournamentsFragment.allTeams){
                 if(team1.equals(team.getId())){
                     teamOne = team;
                     continue;

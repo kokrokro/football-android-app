@@ -205,7 +205,7 @@ public class UserCommandInfo extends AppCompatActivity {
            editTeam.setTrainer(newTrainerId);
        }
        editTeam.setCreatorPhone(teamNumber.getText().toString());
-       Controller.getApi().editTeam(id, PersonalActivity.token,editTeam).enqueue(new Callback<Team>() {
+       Controller.getApi().editTeam(id, SaveSharedPreference.getObject().getToken(),editTeam).enqueue(new Callback<Team>() {
            @Override
            public void onResponse(Call<Team> call, Response<Team> response) {
                if(response.isSuccessful()){

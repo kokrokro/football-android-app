@@ -14,12 +14,10 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,6 +41,7 @@ import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Invite;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.PendingTeamInvite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
@@ -58,8 +57,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -89,30 +86,32 @@ public class AuthoUser extends Fragment {
     public TextView textName;
 
     //Menu items
-    private final InvitationFragment    firstFragment = new InvitationFragment();
-    private final AddTournamentFragment defaultFragment = new AddTournamentFragment();
-    private final UserClubs             secondFragment = new UserClubs();
-    private final TimeTableFragment     timeTableFragment = new TimeTableFragment();
-    private final RefereeFragment       refereeFragment = new RefereeFragment();
-    private final MyMatches             myMatches = new MyMatches();
-    private final UserCommands          commands = new UserCommands();
+    private InvitationFragment    firstFragment = new InvitationFragment();
+    private AddTournamentFragment defaultFragment = new AddTournamentFragment();
+    private UserClubs             secondFragment = new UserClubs();
+    private TimeTableFragment     timeTableFragment = new TimeTableFragment();
+    private MyMatches             myMatches = new MyMatches();
+    private UserCommands          commands = new UserCommands();
 
     private User user;
     private Menu m;
     private NavigationView nvDrawer;
     private FloatingActionButton fab1;
+
     private final int REQUEST_CODE_CLUBEDIT = 276;
     private final int REQUEST_CODE_PROFILE_DATA_EDIT = 4214;
-    private int clubOldIndex;
 
-    private Activity activity;
+    public PersonalActivity activity;
 
     private FragmentManager fragmentManager;
+
+    public AuthoUser (PersonalActivity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activity = getActivity();
     }
 
     @SuppressLint("RestrictedApi")
@@ -139,9 +138,9 @@ public class AuthoUser extends Fragment {
             personOwnCommand = new ArrayList<>();
             personCommand = new ArrayList<>();
             pendingTeamInvitesList = new ArrayList<>();
-            Controller.getApi().getUsersTeams(PersonalActivity.id).enqueue(new Callback<List<Invite>>() {
+            Controller.getApi().getUsersTeams(SaveSharedPreference.getObject().getUser().getId()).enqueue(new Callback<List<Invite>>() {
                 @Override
-                public void onResponse(Call<List<Invite>> call, Response<List<Invite>> response) {
+                public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
                     if(response.isSuccessful()){
                         if(response.body()!=null){
                             for(Invite invite : response.body()){
@@ -152,13 +151,13 @@ public class AuthoUser extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<List<Invite>> call, Throwable t) {
+                public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) {
 
                 }
             });
 //            List<PendingTeamInvite> pendingTeamInvites = person.getPendingTeamInvites();
             invBadge = (TextView) nvDrawer.getMenu().findItem(R.id.nav_first_fragment).getActionView();
-            Controller.getApi().getTeams(PersonalActivity.id).enqueue(new Callback<List<Team>>() {
+            Controller.getApi().getTeams(SaveSharedPreference.getObject().getUser().getId()).enqueue(new Callback<List<Team>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                     if(response.isSuccessful()){
@@ -208,7 +207,7 @@ public class AuthoUser extends Fragment {
 
         fab = view.findViewById(R.id.addCommandButton);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
-        ((AppCompatActivity) activity).setSupportActionBar(toolbar);
+        activity.setSupportActionBar(toolbar);
         button = view.findViewById(R.id.drawerBtn);
         button.setOnClickListener(v -> drawer.openDrawer(GravityCompat.END));
         buttonOpenProfile.setOnClickListener(v -> {
@@ -292,36 +291,6 @@ public class AuthoUser extends Fragment {
                     log.error("ERROR: ", e);
                 }
                 break;
-//            case R.id.nav_second_fragment:
-//                try {
-//                    setItemColor(2);
-//                    clearItemColor(2);
-//                    menuFragmentTransaction.replace(R.id.flContent, secondFragment, "CLUBFRAGMENT").show(secondFragment).commit();
-//                    if (person.getClub() != null) {
-//                        fab1.setVisibility(View.VISIBLE);
-//                        Club club = null;
-//                        Person person = user.getUser();
-//                        for (Club club1 : PersonalActivity.allClubs) {
-//                            String str = person.getClub();
-//                            if (club1.getId().equals(str))
-//                                club = club1;
-//                        }
-//                        final Club finalClub = club;
-//                        fab1.setOnClickListener(v -> {
-//                            Intent intent1 = new Intent(getActivity(), UserEditClub.class);
-//                            Bundle bundle = new Bundle();
-//                            bundle.putSerializable("AUTHOUSERCLUBINFO", finalClub);
-//                            clubOldIndex = PersonalActivity.allClubs.indexOf(finalClub);
-//                            intent1.putExtras(bundle);
-//                            startActivityForResult(intent1, REQUEST_CODE_CLUBEDIT);
-//                        });
-//                    }
-//                    categoryTitle.setText(activity.getText(R.string.title_club));
-//                    fab.setVisibility(View.INVISIBLE);
-//                } catch (Exception e) {
-//                    log.error("ERROR: ", e);
-//                }
-//                break;
             case R.id.nav_command_fragment:
                 try {
                     setItemColor(2);
@@ -346,18 +315,6 @@ public class AuthoUser extends Fragment {
                     log.error("ERROR: ", e);
                 }
                 break;
-//            case R.id.nav_referee_fragment:
-//                try {
-//                    setItemColor(6);
-//                    clearItemColor(6);
-//                    menuFragmentTransaction.replace(R.id.flContent, refereeFragment, "REFEREESFRAGMENT").show(refereeFragment).commit();
-//                    categoryTitle.setText(activity.getText(R.string.referees));
-//                    fab.setVisibility(View.INVISIBLE);
-//                    fab1.setVisibility(View.INVISIBLE);
-//                } catch (Exception e) {
-//                    log.error("ERROR: ", e);
-//                }
-//                break;
             case R.id.nav_timetable_fragment:
                 try {
                     setItemColor(3);
@@ -377,18 +334,19 @@ public class AuthoUser extends Fragment {
 //                PersonalActivity.fragmentUser.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
                 try {
-                    Fragment userPage = new UserPage();
+                    Fragment userPage = new UserPage(activity);
                     fragmentManager.beginTransaction()
                             .replace(R.id.pageContainer, userPage)
-                            .hide(PersonalActivity.active)
+                            .hide(activity.getActive())
                             .show(userPage)
                             .commit();
 
                 } catch (Exception e) {
                     log.error("AuthoUser: ", e);
-                    fragmentManager.beginTransaction().show(PersonalActivity.fragmentUser).commit();
+                    activity.setFragmentUser(new UserPage(activity));
+                    fragmentManager.beginTransaction().show(activity.getFragmentUser()).commit();
                 }
-                PersonalActivity.active = PersonalActivity.fragmentUser;
+                activity.setActive(activity.getFragmentUser());
                 refreshTournaments();
                 break;
         }
@@ -425,14 +383,24 @@ public class AuthoUser extends Fragment {
 
     @SuppressLint("CheckResult")
     private void refreshTournaments() {
-        Controller.getApi().getAllLeagues("10", "0")
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe( PersonalActivity::saveData,
-                                error -> {
-                        CheckError checkError = new CheckError();
-                        checkError.checkError(getActivity(), error);
-                    });
+        Controller.getApi().getAllLeagues("10", "0").enqueue(new Callback<List<League>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
+                if (response.body() != null)
+                    for (League l: response.body())
+                        if (!MankindKeeper.getInstance().allLeagues.contains(l))
+                            MankindKeeper.getInstance().allLeagues.add(l);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) {
+                CheckError checkError = new CheckError();
+                try {
+                    checkError.checkError(getActivity(), t);
+                } catch (Exception ignored) { }
+
+            }
+        });
     }
 
 
@@ -506,14 +474,14 @@ public class AuthoUser extends Fragment {
                 user.setUser(person1);
                 SaveSharedPreference.editObject(user);
                 try {
-                    if (PersonalActivity.allClubs.size() == 1) {
-                        PersonalActivity.allClubs.clear();
-                        PersonalActivity.allClubs.add(result);
-                    } else {
-                        PersonalActivity.allClubs.set(clubOldIndex, result);
-                    }
+                    if (MankindKeeper.getInstance().allClubs.size() == 1) {
+                        MankindKeeper.getInstance().allClubs.clear();
+                        MankindKeeper.getInstance().allClubs.add(result);
+                    } else
+                        MankindKeeper.getInstance().updateClub(result);
+
                 } catch (Exception ignored){}
-                List<Club> list = new ArrayList<>(PersonalActivity.allClubs);
+                List<Club> list = new ArrayList<>(MankindKeeper.getInstance().allClubs);
                 ClubPage.adapter.dataChanged(list);
                 FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
                 ft.detach(secondFragment).attach(secondFragment).commit();
@@ -524,9 +492,6 @@ public class AuthoUser extends Fragment {
                 person = (Person) Objects.requireNonNull(data.getExtras()).getSerializable("newUserData");
                 user.setUser(person);
                 SaveSharedPreference.saveObject(user);
-
-                PersonalActivity.id = person.getId();
-                PersonalActivity.token = user.getToken();
 
                 MankindKeeper.getInstance().allPlayers.put(person.getId(), person);
             }

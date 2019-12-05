@@ -6,6 +6,7 @@ import baikal.web.footballapp.model.AddTeam;
 import baikal.web.footballapp.model.Advertisings;
 import baikal.web.footballapp.model.Announce;
 import baikal.web.footballapp.model.Announces;
+import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Clubs;
 import baikal.web.footballapp.model.DataClub;
 import baikal.web.footballapp.model.EditCommand;
@@ -18,16 +19,11 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Matches;
-import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
-import baikal.web.footballapp.model.Participation;
 import baikal.web.footballapp.model.ParticipationRequest;
-import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.PersonStats;
-import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.RefereeRequestList;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
@@ -35,11 +31,9 @@ import baikal.web.footballapp.model.SetRefereeList;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +47,6 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -81,7 +74,7 @@ public interface FootballApi {
 
     //get all clubs
     @GET("/api/clubs")
-    Observable<Clubs> getAllClubs();
+    Call<List<Club>> getAllClubs();
 //    Call<Clubs> getAllClubs();
 
     @GET("/api/stats/person?_populate=person")
@@ -109,23 +102,16 @@ public interface FootballApi {
 
 
 
-
-    //get referees type==referee
-    //get players type==player
-    @GET("/api/getusers")
-    Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
     @GET("/api/crud/person")
-    Observable<List<Person> >getAllPersons( @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
+    Observable<List<Person>> getAllPersons(@Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
+    @GET("/api/crud/person")
+    Observable<List<Person>> getAllPerson(@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneysById(@Query("_id") String id);
-    //get all tournaments
-//    @GET("/api/leagues/all")
-//    Observable<Tournaments> getAllTournaments( @Query("limit") String limit, @Query("offset") String offset);
-//    //    Call<Tournaments> getAllTournaments();
     @GET("/api/crud/league?_populate=matches+stages")
-    Observable<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
+    Call<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/league?_populate=matches+stages")
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
     @GET("/api/crud/match?_sort=date")
@@ -225,7 +211,6 @@ public interface FootballApi {
 
     @GET("/api/crud/team")
     Call<List<Team>> getTeam(@Query("_id") String id);
-
 
     //add new club
     @Multipart

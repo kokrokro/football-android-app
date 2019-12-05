@@ -1,5 +1,6 @@
 package baikal.web.footballapp.user.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -15,32 +16,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.RequestOptions;
-import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Person;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URL;
-
-import static baikal.web.footballapp.Controller.BASE_URL;
+import java.util.Objects;
 
 public class UserClubs extends Fragment {
+    private static final String TAG = "UserClubs";
     private final Logger log = LoggerFactory.getLogger(UserClubs.class);
-    private String uriPic;
     private FloatingActionButton fab;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        fab = getActivity().findViewById(R.id.buttonEditClub);
+        fab = Objects.requireNonNull(getActivity()).findViewById(R.id.buttonEditClub);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -61,51 +57,29 @@ public class UserClubs extends Fragment {
         try {
             Person person = SaveSharedPreference.getObject().getUser();
             String str = person.getClub();
-            for (Club club1 : PersonalActivity.allClubs) {
+            for (Club club1 : MankindKeeper.getInstance().allClubs) {
                 if (club1.getId().equals(str)) {
                     club = club1;
                 }
             }
 
-            RequestOptions requestOptions = new RequestOptions();
-            requestOptions.optionalCircleCrop();
-            requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-            RequestOptions.errorOf(R.drawable.ic_logo2);
-            requestOptions.override(500, 500); // resizing
-            requestOptions.priority(Priority.HIGH);
-
             if (club != null) {
                 linearLayout.setVisibility(View.GONE);
-                str = club.getName();
-                textTitle.setText(str);
-                str = club.getInfo();
-                textDesc.setText(str);
-                uriPic = BASE_URL;
+                (new SetImage()).setImage(getContext(), imageLogo, club.getLogo());
 
-                try {
-                    uriPic += "/" + club.getLogo();
-                    URL url = new URL(uriPic);
-                    Glide.with(this)
-                            .asBitmap()
-                            .load(url)
-                            .apply(requestOptions)
-                            .into(imageLogo);
-                } catch (Exception e) {
-                    Glide.with(this)
-                            .asBitmap()
-                            .load(R.drawable.ic_logo2)
-                            .apply(requestOptions)
-                            .into(imageLogo);
-                }
+                textTitle.setText(club.getName());
+                textDesc.setText(club.getInfo());
             } else {
                 linearLayoutClubInfo.setVisibility(View.GONE);
             }
         } catch (NullPointerException e) {
+            log.error(TAG, e);
         }
 
         return view;
     }
 
+    @SuppressLint("RestrictedApi")
     @Override
     public void onDestroy() {
         log.info("INFO: UserClubs onDestroy");

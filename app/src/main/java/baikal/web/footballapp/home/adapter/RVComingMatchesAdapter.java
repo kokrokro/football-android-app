@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -77,7 +78,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         SetImage setImage = new SetImage();
                 str = team1.getName();
                 holder.textCommandTitle1.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
+                for (Club club : MankindKeeper.getInstance().allClubs) {
                     if (club.getId().equals(team1.getClub())) {
                         setImage.setImage(activity, holder.imgCommandLogo1 ,club.getLogo());
                     }
@@ -98,7 +99,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
 
                 str = team2.getName();
                 holder.textCommandTitle2.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
+                for (Club club : MankindKeeper.getInstance().allClubs) {
                     if (club.getId().equals(team2.getClub())) {
                         setImage.setImage(activity, holder.imgCommandLogo2 ,club.getLogo());
                     }

@@ -30,6 +30,7 @@ import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.home.activity.FullscreenNewsActivity;
 import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.League;
@@ -68,15 +69,18 @@ public class TournamentsFragment extends Fragment {
     private int count = 0;
     private int offset = 0;
     private final int limit = 5;
-    private static List<League> favLeague = new ArrayList<>( );
-    private static List<Tourney> favTourney = new ArrayList<>();
-    private static List<String> favTourneyId = new ArrayList<>();
-    public static List<Team> allTeams = new ArrayList<>();
-    public static List<Stadium> allStadiums = new ArrayList<>();
+    private List<League> favLeague = new ArrayList<>( );
+    private List<Tourney> favTourney = new ArrayList<>();
+    private List<String> favTourneyId = new ArrayList<>();
+    public List<Team> allTeams = new ArrayList<>();
+    public List<Stadium> allStadiums = new ArrayList<>();
     private MainViewModel mainViewModel;
-    private TournamentPage tournamentPage;
+    private PersonalActivity activity;
+
     @SuppressLint("ValidFragment")
-    public TournamentsFragment(TournamentPage tournamentPage) { this.tournamentPage = tournamentPage; }
+    TournamentsFragment(PersonalActivity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -99,7 +103,7 @@ public class TournamentsFragment extends Fragment {
             recyclerView.setNestedScrollingEnabled(false);
             RecyclerViewTournamentAdapter.Listener listener = this::showTournamentInfo;
 
-            mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
+            mainViewModel.getFavTourney(SaveSharedPreference.getObject().getUser().getId()).observe(this, tourneys -> {
                 favTourney.clear();
                 favTourney.addAll(tourneys);
                 favTourneyId.clear();
@@ -159,7 +163,7 @@ public class TournamentsFragment extends Fragment {
 //        LeagueInfo tournament1 = getLeagueInfo.getLeagueInfo();
         Bundle bundle = new Bundle();
         bundle.putSerializable("TOURNAMENTINFO", league);
-        Tournament tournament = new Tournament();
+        Tournament tournament = new Tournament(this);
         tournament.setArguments(bundle);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         try{
@@ -167,6 +171,6 @@ public class TournamentsFragment extends Fragment {
         }catch (Exception e){
             log.error("ERROR: ", e);
         }
-        PersonalActivity.active = tournament;
+        activity.setActive(tournament);
     }
 }

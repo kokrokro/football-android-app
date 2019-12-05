@@ -27,6 +27,12 @@ public class TournamentTimeTableFragment extends Fragment {
     private final Logger log = LoggerFactory.getLogger(TournamentTimeTableFragment.class);
     private boolean scrollStatus;
 
+    private TournamentsFragment tournamentsFragment;
+
+    public TournamentTimeTableFragment (TournamentsFragment tournamentsFragment) {
+        this.tournamentsFragment = tournamentsFragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -47,7 +53,7 @@ public class TournamentTimeTableFragment extends Fragment {
 
         scrollStatus = false;
         try {
-            RecyclerViewTournamentTimeTableAdapter adapter = new RecyclerViewTournamentTimeTableAdapter(getActivity(),league);
+            RecyclerViewTournamentTimeTableAdapter adapter = new RecyclerViewTournamentTimeTableAdapter(getActivity(),league, tournamentsFragment);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }

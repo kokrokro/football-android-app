@@ -43,7 +43,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TournamentPlayersFragment extends Fragment {
-    private final Logger log = LoggerFactory.getLogger(TournamentTimeTableFragment.class);
+    private final Logger log = LoggerFactory.getLogger(TournamentPlayersFragment.class);
     private boolean scrollStatus;
     private final List<Player> playerList = new ArrayList<>();
     private RVTournamentPlayersAdapter adapter;

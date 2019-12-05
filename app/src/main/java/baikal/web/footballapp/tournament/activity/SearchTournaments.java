@@ -36,8 +36,10 @@ import java.util.List;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.League;
@@ -76,7 +78,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private static RVTourneyAdapter adapter;
     private ProgressDialog mProgressDialog;
     private NestedScrollView scroller;
-    //    private final List<League> tournaments= new ArrayList<>();
+    //    private final List<League> allLeagues= new ArrayList<>();
     private List<Tourney> tourneyList = new ArrayList<>();
     private ImageButton filter;
     private List<Region> regions = new ArrayList<>();
@@ -111,10 +113,10 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         icon.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
         ImageView searchViewClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
-        tourneyList = new ArrayList<>(PersonalActivity.allTourneys);
-        regions = new ArrayList<>(PersonalActivity.regions);
+        tourneyList = new ArrayList<>(MankindKeeper.getInstance().allTourneys);
+        regions = new ArrayList<>(MankindKeeper.getInstance().regions);
         mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        mainViewModel.getFavTourney(PersonalActivity.id).observe(this, tourneys -> {
+        mainViewModel.getFavTourney(SaveSharedPreference.getObject().getUser().getId()).observe(this, tourneys -> {
             favTourneysId.clear();
             for(Tourney tr :tourneys)
                 favTourneysId.add(tr.getId());
@@ -180,7 +182,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         for(int i = 0; i < favTourneysId.size(); i++){
             favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneysId.get(i)));
         }
-        Controller.getApi().editPlayerInfo(PersonalActivity.id,PersonalActivity.token,favTourneyNew).enqueue(new Callback<EditProfile>() {
+        Controller.getApi().editPlayerInfo(SaveSharedPreference.getObject().getUser().getId(),SaveSharedPreference.getObject().getToken(),favTourneyNew).enqueue(new Callback<EditProfile>() {
             @Override
             public void onResponse(Call<EditProfile> call, Response<EditProfile> response) {
                 String tourneyIds = "";
@@ -227,7 +229,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
 //        PersonalActivity.people.clear();
 //        String type = "player";
         if (search!=null && search.equals("")) {
-            saveAllData(PersonalActivity.allTourneys);
+            saveAllData(MankindKeeper.getInstance().allTourneys);
         } else {
 
             Controller.getApi().getTourneys(search,region)

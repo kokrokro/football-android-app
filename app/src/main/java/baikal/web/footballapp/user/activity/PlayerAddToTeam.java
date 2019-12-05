@@ -17,10 +17,8 @@ import android.widget.ProgressBar;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.adapter.RVPlayerAddToTeamAdapter;

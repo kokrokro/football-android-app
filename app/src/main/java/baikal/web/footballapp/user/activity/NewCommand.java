@@ -2,11 +2,9 @@ package baikal.web.footballapp.user.activity;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -16,17 +14,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.AddTeam;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.user.adapter.SpinnerClubAdapter;
 import baikal.web.footballapp.user.adapter.SpinnerTournamentAdapter;
 
 import org.json.JSONException;
@@ -64,7 +58,7 @@ public class NewCommand extends AppCompatActivity {
         ImageButton imageClose;
         ImageButton imageSave;
         setContentView(R.layout.user_new_command);
-        allTournaments.addAll(PersonalActivity.tournaments);
+        allTournaments.addAll(MankindKeeper.getInstance().allLeagues);
 
         log.error(String.valueOf(allClubs.size()));
         imageClose = findViewById(R.id.newCommandClose);
@@ -149,7 +143,7 @@ public class NewCommand extends AppCompatActivity {
         String token = SaveSharedPreference.getObject().getToken();
         String tournament = itemTournament.getId();
 //        for (PersonTeams league1: AuthoUser.personOngoingLeagues){
-        for (League league1 : PersonalActivity.tournaments) {
+        for (League league1 : MankindKeeper.getInstance().allLeagues) {
 //            League tournament1 = league1.getLeague();
             if (league1.getId().equals(tournament)) {
                 league = league1;
@@ -249,12 +243,14 @@ public class NewCommand extends AppCompatActivity {
             }
         });
     }@Override
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                String str  = data.getSerializableExtra("surname") +" "+data.getSerializableExtra("name");
+                String str = data.getSerializableExtra("surname") + " " + data.getSerializableExtra("name");
                 trainer.setText(str);
             }
         }

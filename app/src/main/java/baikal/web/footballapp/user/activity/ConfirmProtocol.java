@@ -14,7 +14,6 @@ import android.widget.Toast;
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
@@ -200,7 +199,9 @@ public class ConfirmProtocol extends AppCompatActivity {
         SetImage setImage = new SetImage();
                             teams.put("TeamOne", match.getTeamOne());
                             teams.put("TeamTwo", match.getTeamTwo());
-                        for (Club club : PersonalActivity.allClubs) {
+        //TODO
+        //MAKE ACCESS THROUGH SINGLETON
+                        for (Club club : MankindKeeper.getInstance().allClubs) {
                             if (match.getTeamOne().getClub().equals(club.getId())) {
                                 try {
                                     clubOne = club.getLogo();
@@ -278,7 +279,6 @@ public class ConfirmProtocol extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
     private void showToastResult(String str) {
             this.runOnUiThread(() -> Toast.makeText(ConfirmProtocol.this, str, Toast.LENGTH_SHORT).show());

@@ -199,7 +199,7 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
                         personTeams2.setTeam(team.getId());
 //                        AuthoUser.personOwnCommand.remove(personTeams);
 
-//                        for (League league1 : PersonalActivity.tournaments){
+//                        for (League league1 : PersonalActivity.allLeagues){
 //                            if (league1.getId().equals(personTeams2.getLeague())){
 //                                Team teamCount = null;
 //                                for (Team team1: league1.getTeams()){

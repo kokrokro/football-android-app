@@ -93,7 +93,7 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         }
         holder.buttonDelete.setOnClickListener(v -> {
             //post
-            Controller.getApi().cancelInv(UserCommandInfo.allInvites.get(position).get_id(), PersonalActivity.token).enqueue(new Callback<Invite>() {
+            Controller.getApi().cancelInv(UserCommandInfo.allInvites.get(position).get_id(), SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
                 @Override
                 public void onResponse(Call<Invite> call, Response<Invite> response) {
                     if(response.isSuccessful()){

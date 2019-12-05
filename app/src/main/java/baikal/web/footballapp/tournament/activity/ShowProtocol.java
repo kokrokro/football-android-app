@@ -151,7 +151,7 @@ public class ShowProtocol extends AppCompatActivity {
         ImageView image1 = findViewById(R.id.confirmProtocolCommand1Logo);
         ImageView image2 = findViewById(R.id.confirmProtocolCommand2Logo);
         SetImage setImage = new SetImage();
-        for (League league : PersonalActivity.tournaments) {
+        for (League league : MankindKeeper.getInstance().allLeagues) {
             if (teams.size() != 2 && match.getLeague().equals(league.getId())) {
                 for (Team team : league.getTeams()) {
                     if (team.getId().equals(match.getTeamOne())
@@ -162,7 +162,7 @@ public class ShowProtocol extends AppCompatActivity {
                         if (team.getId().equals(match.getTeamTwo())) {
                             teams.put("TeamTwo", team);
                         }
-                        for (Club club : PersonalActivity.allClubs) {
+                        for (Club club : MankindKeeper.getInstance().allClubs) {
                             if (team.getId().equals(match.getTeamOne())
                                     && team.getClub().equals(club.getId())) {
                                 try {

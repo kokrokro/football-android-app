@@ -22,6 +22,7 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
@@ -75,7 +76,7 @@ public class TimeTableFragment extends Fragment {
 
     @SuppressLint("CheckResult")
     private void getActiveMatches(String limit, String offset) {
-        Controller.getApi().getMainRefsLeagues(PersonalActivity.id).enqueue(new Callback<List<League>>() {
+        Controller.getApi().getMainRefsLeagues(SaveSharedPreference.getObject().getUser().getId()).enqueue(new Callback<List<League>>() {
             @Override
             public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
                 if(response.isSuccessful())

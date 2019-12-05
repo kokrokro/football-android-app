@@ -18,6 +18,7 @@ import java.util.List;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Tourney;
@@ -32,7 +33,6 @@ public class MainPage extends Fragment {
     private List<String> favTourneysId = new ArrayList<>();
     private List<String> favLeaguesId = new ArrayList<>();
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -43,7 +43,7 @@ public class MainPage extends Fragment {
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
         setCustomFont();
-        Controller.getApi().getFavTourneysId(PersonalActivity.id).enqueue(new Callback<List<Person>>() {
+        Controller.getApi().getFavTourneysId(SaveSharedPreference.getObject().getUser().getId()).enqueue(new Callback<List<Person>>() {
             @Override
             public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
                 if (response.isSuccessful()){

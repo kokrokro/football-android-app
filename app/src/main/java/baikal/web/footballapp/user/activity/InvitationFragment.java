@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.user.adapter.RVInvitationAdapter;
 import retrofit2.Call;
@@ -42,7 +43,7 @@ public class InvitationFragment extends Fragment {
         RVInvitationAdapter adapter;
         List<Invite> invites = new ArrayList<>();
         adapter = new RVInvitationAdapter(getActivity(),getContext(),invites);
-        Controller.getApi().getInvites(PersonalActivity.id,null,"pending").enqueue(new Callback<List<Invite>>() {
+        Controller.getApi().getInvites(SaveSharedPreference.getObject().getUser().getId(),null,"pending").enqueue(new Callback<List<Invite>>() {
             @Override
             public void onResponse(Call<List<Invite>> call, Response<List<Invite>> response) {
                 if(response.isSuccessful()){

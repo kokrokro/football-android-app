@@ -161,8 +161,8 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
 
 
     public void dataChanged(List<League> allPlayers1){
-        //tournaments.clear();
-        //tournaments.addAll(allPlayers1);
+        //allLeagues.clear();
+        //allLeagues.addAll(allPlayers1);
         notifyDataSetChanged();
     }
 

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
@@ -34,6 +35,12 @@ public class Tournament extends Fragment {
 
     private FloatingActionButton fabCommand;
     private FloatingActionButton fabPlayers;
+
+    private TournamentsFragment tournamentsFragment;
+
+    public Tournament (TournamentsFragment tournamentsFragment) {
+        this.tournamentsFragment = tournamentsFragment;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +65,7 @@ public class Tournament extends Fragment {
             League league = (League) arguments.getSerializable("TOURNAMENTINFO");
 
             String str = "";
-            for(Tourney t: PersonalActivity.allTourneys){
+            for(Tourney t: MankindKeeper.getInstance().allTourneys){
                 if(league.getTourney().equals(t.getId())){
                     str = t.getName();
                 }
@@ -86,7 +93,7 @@ public class Tournament extends Fragment {
 
 
     private void setupViewPager(ViewPager viewPager, League league) {
-        TournamentTimeTableFragment tournamentTimeTableFragment = new TournamentTimeTableFragment();
+        TournamentTimeTableFragment tournamentTimeTableFragment = new TournamentTimeTableFragment(tournamentsFragment);
         TournamentCommandFragment tournamentCommandFragment = new TournamentCommandFragment();
         TournamentPlayersFragment tournamentPlayersFragment = new TournamentPlayersFragment();
 
@@ -95,7 +102,7 @@ public class Tournament extends Fragment {
         tournamentTimeTableFragment.setArguments(leagueMatch);
         Bundle teams = new Bundle();
         List<Team> teamList = new ArrayList<>();
-        for (Team team : TournamentsFragment.allTeams){
+        for (Team team : tournamentsFragment.allTeams){
             if(team.getLeague().equals(league.getId())){
                 teamList.add(team);
             }

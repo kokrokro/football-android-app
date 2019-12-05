@@ -106,7 +106,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
             UserCommandInfo.adapter.notifyDataSetChanged();
             Log.d("cancel invite id ", ""+UserCommandInfo.accepted.get(position).get_id());
             Controller.getApi()
-                    .cancelInv(UserCommandInfo.accepted.get(position).get_id(),PersonalActivity.token)
+                    .cancelInv(UserCommandInfo.accepted.get(position).get_id(), SaveSharedPreference.getObject().getToken())
                     .enqueue(new Callback<Invite>() {
                 @Override
                 public void onResponse(Call<Invite> call, Response<Invite> response) {

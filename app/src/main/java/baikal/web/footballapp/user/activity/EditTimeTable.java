@@ -19,6 +19,7 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
@@ -173,7 +174,7 @@ public class EditTimeTable extends AppCompatActivity {
         Match newMatch = new Match();
         newMatch.setReferees(refereeRequests);
         Controller.getApi().
-                editMatch(match.getId(), PersonalActivity.token, newMatch)
+                editMatch(match.getId(), SaveSharedPreference.getObject().getToken(), newMatch)
                .enqueue(new Callback<Match>() {
            @Override
            public void onResponse(@NonNull Call<Match> call, @NonNull Response<Match> response) {

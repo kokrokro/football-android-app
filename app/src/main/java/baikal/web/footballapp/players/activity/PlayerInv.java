@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.widget.ImageButton;
 
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -23,10 +24,10 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PlayerInv extends AppCompatActivity {
     final Logger log = LoggerFactory.getLogger(PlayerInv.class);
-    Team itemTeam;
     List<PersonTeams> teams;
     public static String personId;
     Person person;
@@ -35,7 +36,6 @@ public class PlayerInv extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         teams = new ArrayList<>();
         ImageButton imageClose;
-        ImageButton imageSave;
         RecyclerView recyclerView;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.player_inv);
@@ -43,23 +43,27 @@ public class PlayerInv extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerViewPlayerInv);
         try {
             Intent intent = getIntent();
-            person = (Person) intent.getExtras().getSerializable("PLAYERINV");
-            personId = person.getId();
+            person = (Person) Objects.requireNonNull(intent.getExtras()).getSerializable("PLAYERINV");
+            if (person != null) {
+                personId = person.getId();
+            }
             for (PersonTeams personTeams : AuthoUser.personOwnCommand){
                 League league = null;
-                for (League league1 : PersonalActivity.tournaments){
+                for (League league1 : MankindKeeper.getInstance().allLeagues){
                     if (league1.getId().equals(personTeams.getLeague())){
                         league = league1;
                         break;
                     }
                 }
-                for (Team team: league.getTeams()){
-                    if (team.getStatus().equals("Pending")
-                            && team.getCreator().equals(SaveSharedPreference.getObject().getUser().getId())){
-                        PersonTeams personTeams1 = new PersonTeams();
-                        personTeams1.setTeam(team.getId());
-                        personTeams1.setLeague(league.getId());
-                        teams.add(personTeams1);
+                if (league != null) {
+                    for (Team team: league.getTeams()){
+                        if (team.getStatus().equals("Pending")
+                                && team.getCreator().equals(SaveSharedPreference.getObject().getUser().getId())){
+                            PersonTeams personTeams1 = new PersonTeams();
+                            personTeams1.setTeam(team.getId());
+                            personTeams1.setLeague(league.getId());
+                            teams.add(personTeams1);
+                        }
                     }
                 }
             }

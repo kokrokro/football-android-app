@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class TournamentCommandFragment extends Fragment{
-    Logger log = LoggerFactory.getLogger(TournamentTimeTableFragment.class);
+    Logger log = LoggerFactory.getLogger(TournamentCommandFragment.class);
     private boolean scrollStatus;
     private FloatingActionButton fab;
     @SuppressLint("RestrictedApi")

@@ -25,6 +25,7 @@ import java.util.Map;
 
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 
 public class AddTournamentFragment extends Fragment {
@@ -44,7 +45,7 @@ public class AddTournamentFragment extends Fragment {
         WebView webView = view.findViewById(R.id.webViewTournament1);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ PersonalActivity.token +"');", null);
+        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ SaveSharedPreference.getObject().getToken()+"');", null);
         webView.loadUrl("https://football.bwadm.ru");
 
         webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());

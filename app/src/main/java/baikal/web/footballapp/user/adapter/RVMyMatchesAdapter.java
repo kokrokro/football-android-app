@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -24,7 +25,6 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.ConfirmProtocol;
 import baikal.web.footballapp.user.activity.MyMatches;
@@ -93,7 +93,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         List<String> teamPlayers2 = new ArrayList<>();
 
         League league = null;
-        for (League league1 : PersonalActivity.tournaments){
+        for (League league1 : MankindKeeper.getInstance().allLeagues){
             if (league1.getId().equals(match.getLeague())){
                 league = league1;
                 break;
@@ -110,7 +110,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
                 team1 = team;
                 str = team.getName();
                 holder.textCommand1.setText(str);
-                for (Club club : PersonalActivity.allClubs){
+                for (Club club : MankindKeeper.getInstance().allClubs){
                     if (club.getId().equals(team.getClub())){
                         setImage.setImage(activity, holder.image1, club.getLogo());
                     }
@@ -135,7 +135,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
                 team2 = team;
                 str = team.getName();
                 holder.textCommand2.setText(str);
-                for (Club club : PersonalActivity.allClubs){
+                for (Club club : MankindKeeper.getInstance().allClubs){
                     if (club.getId().equals(team.getClub())){
                         setImage.setImage(activity, holder.image2, club.getLogo());
                     }

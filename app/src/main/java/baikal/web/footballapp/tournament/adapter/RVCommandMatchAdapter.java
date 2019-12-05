@@ -3,6 +3,8 @@ package baikal.web.footballapp.tournament.adapter;
 import android.app.Activity;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,15 +17,15 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.activity.CommandInfoActivity;
-import baikal.web.footballapp.tournament.activity.CommandMatchFragment;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,14 +45,13 @@ import q.rorbin.badgeview.QBadgeView;
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class RVCommandMatchAdapter extends RecyclerView.Adapter<RVCommandMatchAdapter.ViewHolder> {
+    private static final String TAG = "RVCommandMatchAdapter";
     Logger log = LoggerFactory.getLogger(CommandInfoActivity.class);
-    private final CommandMatchFragment context;
     private final CommandInfoActivity activity;
     private final List<Match> matches;
 
-    public RVCommandMatchAdapter(Activity activity, CommandMatchFragment context, List<Match> matches) {
+    public RVCommandMatchAdapter(Activity activity, List<Match> matches) {
         this.activity = (CommandInfoActivity) activity;
-        this.context = context;
         this.matches = matches;
     }
 
@@ -92,105 +93,72 @@ public class RVCommandMatchAdapter extends RecyclerView.Adapter<RVCommandMatchAd
         List<String> teamPlayers1 = new ArrayList<>();
         List<String> teamPlayers2 = new ArrayList<>();
         League league = null;
-        for (League league1 : PersonalActivity.tournaments) {
+        for (League league1 : MankindKeeper.getInstance().allLeagues) {
             if (league1.getId().equals(match.getLeague())) {
                 league = league1;
             }
         }
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.optionalCircleCrop();
-        requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-        requestOptions.error(R.drawable.ic_logo2);
-        requestOptions.override(500, 500);
-        requestOptions.priority(Priority.HIGH);
-
-        for (Team team : league.getTeams()) {
-            if (team.getId().equals(match.getTeamOne())) {
-                str = team.getName();
-                team1 = team;
-                holder.textCommandTitle1.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team.getClub())) {
-                        String uriPic = BASE_URL;
-                        try {
-                            uriPic += "/" + club.getLogo();
-                            URL url = new URL(uriPic);
-                            Glide.with(activity)
-                                    .asBitmap()
-                                    .load(url)
-                                    .apply(requestOptions)
-                                    .into(holder.imgCommandLogo1);
-                        } catch (MalformedURLException e) {
-                            Glide.with(activity)
-                                    .asBitmap()
-                                    .load(R.drawable.ic_logo2)
-                                    .apply(requestOptions)
-                                    .into(holder.imgCommandLogo1);
+        try {
+            for (Team team : league.getTeams()) {
+                if (team.getId().equals(match.getTeamOne())) {
+                    str = team.getName();
+                    team1 = team;
+                    holder.textCommandTitle1.setText(str);
+                    for (Club club : MankindKeeper.getInstance().allClubs) {
+                        if (club.getId().equals(team.getClub())) {
+                            (new SetImage()).setImage(activity, holder.imgCommandLogo1, club.getLogo());
+                            break;
                         }
-//                        break;
                     }
-                }
-                for (Player player : team.getPlayers()) {
-                    teamPlayers1.add(player.getId());
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo1)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
+                    for (Player player : team.getPlayers()) {
+                        teamPlayers1.add(player.getId());
+                        if (player.getActiveDisquals() != 0) {
+                            new QBadgeView(activity)
+                                    .bindTarget(holder.imgCommandLogo1)
+                                    .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                                    .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                                    .setBadgeTextSize(5, true)
+                                    .setBadgePadding(5, true)
+                                    .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                                    .setGravityOffset(-3, 1, true)
+                                    .setBadgeNumber(3);
 //                        break;
-                    }
+                        }
 //                    if (player.getGoals()!=0){
-                    score1 += player.getGoals();
+                        score1 += player.getGoals();
 //                    }
+                    }
                 }
-            }
-            if (team.getId().equals(match.getTeamTwo())) {
-                str = team.getName();
-                team2 = team;
-                holder.textCommandTitle2.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team.getClub())) {
-                        String uriPic = BASE_URL;
-                        try {
-                            uriPic += "/" + club.getLogo();
-                            URL url = new URL(uriPic);
-                            Glide.with(activity)
-                                    .asBitmap()
-                                    .load(url)
-                                    .apply(requestOptions)
-                                    .into(holder.imgCommandLogo2);
-                        } catch (MalformedURLException e) {
-                            Glide.with(activity)
-                                    .asBitmap()
-                                    .load(R.drawable.ic_logo2)
-                                    .apply(requestOptions)
-                                    .into(holder.imgCommandLogo1);
+                if (team.getId().equals(match.getTeamTwo())) {
+                    str = team.getName();
+                    team2 = team;
+                    holder.textCommandTitle2.setText(str);
+                    for (Club club : MankindKeeper.getInstance().allClubs) {
+                        if (club.getId().equals(team.getClub())) {
+                            (new SetImage()).setImage(activity, holder.imgCommandLogo2, club.getLogo());
+                            break;
                         }
-//                        break;
                     }
-                }
-                for (Player player : team.getPlayers()) {
-                    teamPlayers2.add(player.getId());
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo2)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
+                    for (Player player : team.getPlayers()) {
+                        teamPlayers2.add(player.getId());
+                        if (player.getActiveDisquals() != 0) {
+                            new QBadgeView(activity)
+                                    .bindTarget(holder.imgCommandLogo2)
+                                    .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                                    .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                                    .setBadgeTextSize(5, true)
+                                    .setBadgePadding(5, true)
+                                    .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                                    .setGravityOffset(-3, 1, true)
+                                    .setBadgeNumber(3);
+                        }
+                        score2 += player.getGoals();
                     }
-                    score2 += player.getGoals();
                 }
             }
+        } catch (Exception e) {
+            log.error(TAG, e);
         }
         try{
             str = match.getScore();

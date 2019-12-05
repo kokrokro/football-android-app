@@ -1,5 +1,6 @@
 package baikal.web.footballapp.club.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -39,6 +41,7 @@ public class ClubPage extends Fragment {
     private RecyclerView recyclerView;
     private NestedScrollView scroller;
 
+    @SuppressLint("RestrictedApi")
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -75,7 +78,7 @@ public class ClubPage extends Fragment {
 
         try {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RecyclerViewClubAdapter(getActivity(), ClubPage.this, PersonalActivity.allClubs);
+            adapter = new RecyclerViewClubAdapter(getActivity(), ClubPage.this, MankindKeeper.getInstance().allClubs);
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
         }
@@ -130,8 +133,8 @@ public class ClubPage extends Fragment {
                 User user = SaveSharedPreference.getObject();
                 user.setUser(person1);
                 SaveSharedPreference.editObject(user);
-                PersonalActivity.allClubs.add(result);
-                List<Club> list = new ArrayList<>(PersonalActivity.allClubs);
+                MankindKeeper.getInstance().allClubs.add(result);
+                List<Club> list = new ArrayList<>(MankindKeeper.getInstance().allClubs);
                 ClubPage.adapter.dataChanged(list);
                 Toast.makeText(getActivity(), "Клуб создан.", Toast.LENGTH_LONG).show();
             }

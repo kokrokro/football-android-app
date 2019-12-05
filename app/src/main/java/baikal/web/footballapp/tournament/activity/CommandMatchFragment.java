@@ -40,7 +40,7 @@ public class CommandMatchFragment extends Fragment {
         if (matches.size()!=0){
             layout.setVisibility(View.GONE);
         }
-        RVCommandMatchAdapter adapter = new RVCommandMatchAdapter(getActivity(), this, matches);
+        RVCommandMatchAdapter adapter = new RVCommandMatchAdapter(getActivity(), matches);
         recyclerView.setAdapter(adapter);
         }catch (Exception e){}
         return view;

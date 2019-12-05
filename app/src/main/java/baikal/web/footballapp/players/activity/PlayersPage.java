@@ -29,7 +29,6 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.People;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
 
@@ -59,7 +58,10 @@ public class PlayersPage extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         mProgressDialog = new ProgressDialog(getActivity(), R.style.MyProgressDialogTheme);
         mProgressDialog.setIndeterminate(true);
+
+        Log.d(TAG, "OnCreateView: " + MankindKeeper.getInstance().allPlayers.keySet().toString());
         allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
+
 //        mProgressDialog.setMessage("Загрузка...");
         final View view;
         view = inflater.inflate(R.layout.page_players, container, false);
@@ -104,7 +106,7 @@ public class PlayersPage extends Fragment {
         });
 
         recyclerView = view.findViewById(R.id.recyclerViewPlayers);
-        recyclerView.setNestedScrollingEnabled(false);
+//        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new RecyclerViewPlayersAdapter(getContext(), (PersonalActivity) getActivity(), allPeople);
         recyclerView.setAdapter(adapter);
@@ -164,12 +166,10 @@ public class PlayersPage extends Fragment {
             mProgressDialog.dismiss();
     }
 
-
     @SuppressLint("CheckResult")
     private void getAllPlayers(String limit, String offset) {
         CheckError checkError = new CheckError();
-        String type = "player";
-        Controller.getApi().getAllPersons( null, limit, offset)
+        Controller.getApi().getAllPerson(limit, offset)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::saveAllPlayers,
@@ -179,11 +179,24 @@ public class PlayersPage extends Fragment {
 
     private void saveAllPlayers(List<Person> peopleList) {
         Log.d(TAG, "saved all players " + peopleList.size());
-        for (Person p: peopleList)
+        for (Person p: peopleList) {
+//            Log.d(TAG, p.toString());
             if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
                 MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
                 allPeople.add(p.getId());
             }
+        }
+
+        if (allPeople.size() != MankindKeeper.getInstance().allPlayers.size()) {
+            allPeople.clear();
+            allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
+        }
+
+        Log.d(TAG, MankindKeeper.getInstance().allPlayers.keySet().toString());
+
+        Log.d(TAG, "AllPeople:\n");
+        for (String p: allPeople)
+            Log.d(TAG, p);
 
         adapter.dataChanged(allPeople);
     }

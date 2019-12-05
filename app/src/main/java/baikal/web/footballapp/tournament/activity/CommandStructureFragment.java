@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CommandStructureFragment extends Fragment {
+    private static final String TAG = "CommandStructureFragment";
     Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
     @Override
@@ -70,7 +71,11 @@ public class CommandStructureFragment extends Fragment {
 
         List<Player> players = team.getPlayers();
 //        players.sort(Comparator.comparing(Player::getDisquals));
-        Collections.sort(players, new PlayerComparator());
+        try {
+            Collections.sort(players, new PlayerComparator());
+        } catch (Exception e) {
+            log.error(TAG, e);
+        }
         RVCommandStructureAdapter adapter = new RVCommandStructureAdapter(players);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

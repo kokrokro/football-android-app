@@ -84,7 +84,7 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
             holder.textPoint4.setText(str);
         }
         Club club = null;
-        for (Club club1 : PersonalActivity.allClubs){
+        for (Club club1 : MankindKeeper.getInstance().allClubs){
             try{
                 if (club1.getId().equals(clubs.get(position))){
                     club = club1;

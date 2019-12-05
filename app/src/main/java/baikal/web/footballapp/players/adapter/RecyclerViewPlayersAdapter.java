@@ -1,6 +1,5 @@
 package baikal.web.footballapp.players.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -54,6 +53,7 @@ public class RecyclerViewPlayersAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         try {
+            Log.d(TAG, String.valueOf(position));
             Person p = MankindKeeper.getInstance().allPlayers.get(allPlayers.get(position));
             String DOB = p != null ? p.getBirthdate() : "error";
             DateToString dateToString = new DateToString();
@@ -73,11 +73,11 @@ public class RecyclerViewPlayersAdapter extends RecyclerView.Adapter<RecyclerVie
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 fragmentManager.beginTransaction()
                         .add(R.id.pageContainer, player)
-                        .hide(PersonalActivity.active)
+                        .hide(activity.getActive())
                         .show(player)
                         .addToBackStack(null)
                         .commit();
-                PersonalActivity.active = player;
+                activity.setActive(player);
             });
         } catch (Exception e) {
             log.error("ERROR: ", e);
@@ -107,7 +107,7 @@ public class RecyclerViewPlayersAdapter extends RecyclerView.Adapter<RecyclerVie
         }
     }
 
-    public void dataChanged(List<String> allPlayers1){
+    public void dataChanged(List<String> allPlayers1) {
         allPlayers.clear();
         allPlayers.addAll(allPlayers1);
         notifyDataSetChanged();

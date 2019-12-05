@@ -2,7 +2,6 @@ package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.PersonTeams;
-import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.user.activity.UserCommands;
@@ -23,7 +21,6 @@ import baikal.web.footballapp.user.activity.UserCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdapter.ViewHolder>{
@@ -48,7 +45,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         Team personTeams = list.get(position);
 //        League league = personTeams.getLeague();
         League league = null;
-        for (League league1 : PersonalActivity.tournaments){
+        for (League league1 : MankindKeeper.getInstance().allLeagues){
             if (league1.getId().equals(personTeams.getLeague())){
                 league = league1;
                 break;
@@ -76,7 +73,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
 //            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
 //        }
         Tourney tourney = null;
-        for(Tourney tr: PersonalActivity.allTourneys ){
+        for(Tourney tr: MankindKeeper.getInstance().allTourneys ){
             if(tr.getId().equals(league.getTourney())){
                 tourney = tr;
             }
