@@ -62,34 +62,36 @@ public class ComingMatches extends Fragment{
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
         String strDate =">="+sdf.format(now);
-        Log.d("UpcomingMatches", "msg1");
-        Log.d("UpcomingMatches", strDate);
         String query = "";
+        Log.d("UpcomingMatches", "leagues "+leagues.toString());
         for(String l : leagues){
             query+=","+l;
         }
-        Log.d("UpcomingMatches", query);
+        Log.d("UpcomingMatches", "query "+query);
         Controller.getApi().getUpcomingMatches(strDate, query, "20").enqueue(new Callback<List<ActiveMatch>>(){
             @Override
             public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
+                        Log.d("UpcomingMatches","msg1");
                         matches.clear();
                         matches.addAll(response.body());
                         adapter.notifyDataSetChanged();
-
+                        Log.d("UpcomingMatches","matches1 "+matches.size());
                     }
-                    Log.d("UpcomingMatches", ""+matches.size());
-                    Log.d("RVUpcomingMatches","matches1 "+matches.size());
+                    else {
+                        Log.d("UpcomingMatches", "error1");
+                    }
                 }
             }
             @Override
             public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
-
+                Log.d("UpcomingMatches", "error2");
             }
         });
         try {
-            Log.d("RVUpcomingMatches","matches2 "+matches.size());
+
+            Log.d("UpcomingMatches","matches2 "+matches.size());
             adapter = new RVComingMatchesAdapter(getActivity(), matches);
             recyclerView.setAdapter(adapter);
         }catch (NullPointerException e){

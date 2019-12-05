@@ -43,6 +43,7 @@ public class MainPage extends Fragment {
         tabLayout = view.findViewById(R.id.mainPageTab);
         viewPager = view.findViewById(R.id.mainPageViewPager);
         tabLayout.setupWithViewPager(viewPager);
+        setupViewPager(viewPager);
         setCustomFont();
         Controller.getApi().getFavTourneysId(PersonalActivity.id).enqueue(new Callback<List<Person>>() {
             @Override
@@ -51,6 +52,7 @@ public class MainPage extends Fragment {
                     if (response.body() != null && response.body().size()>0) {
                         favTourneysId.clear();
                         favTourneysId.addAll(response.body().get(0).getFavouriteTourney());
+                        Log.d("RVUpcomingMatches", "favLeaguesId 1 "+favLeaguesId.toString());
                         String s="";
                         for(String str : favTourneysId){
                             s= s+','+str;
@@ -66,7 +68,13 @@ public class MainPage extends Fragment {
                                         for(League l :favLeagues){
                                             favLeaguesId.add(l.getId());
                                         }
-                                        setupViewPager(viewPager);
+                                        Log.d("RVUpcomingMatches", "favLeaguesId onResponse: "+ favLeaguesId.toString());
+                                    }
+                                } else{
+                                    try {
+                                        Log.d("RVUpcomingMatches", response.errorBody().string());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
                                     }
                                 }
                             }
@@ -89,6 +97,7 @@ public class MainPage extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         NewsAndAds newsAndAds = new NewsAndAds();
+        Log.d("RVUpcomingMatches", "favLeaguesId setupView: "+ favLeaguesId.toString());
         ComingMatches comingMatches = new ComingMatches(favLeaguesId);
 
         try {
