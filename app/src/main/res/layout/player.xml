@@ -48,15 +48,14 @@
                 android:text="@string/commandPlayer"
                 android:textColor="@color/colorBottomNavigationUnChecked" />
 
-            <TextView
-                android:id="@+id/playerInfoDOB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_regular"
-                android:paddingTop="1dp"
-                android:text="@string/newsSomeDate"
-                android:textColor="@color/colorLightGrayForText"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/playerInfoDOB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_regular"
+                    android:paddingTop="1dp"
+                    android:textColor="@color/colorLightGrayForText"
+                    android:textSize="14sp" />
             </LinearLayout>
         </RelativeLayout>
         <View

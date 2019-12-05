@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.core.widget.NestedScrollView;
@@ -75,7 +76,6 @@ public class PlayersPage extends Fragment {
 
         getAllPlayers("10", "0");
 
-        NestedScrollView scroller = view.findViewById(R.id.scrollerPlayersPage);
         searchView = view.findViewById(R.id.searchView);
 
         Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf");
@@ -88,16 +88,6 @@ public class PlayersPage extends Fragment {
         icon.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
         ImageView searchViewClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
-        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                offset++;
-                int temp = limit * offset;
-                if (temp <= allPeople.size()) {
-                    String str = String.valueOf(temp);
-                    getAllPlayers("10", str);
-                }
-            }
-        });
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -112,17 +102,14 @@ public class PlayersPage extends Fragment {
             }
         });
 
-        searchView.setOnCloseListener(() -> {
-            adapter.dataChanged(allPeople);
-            return false;
-        });
+        searchView.setOnCloseListener(() -> false);
 
 
         return view;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         super.onCreateOptionsMenu(menu, menuInflater);
         menuInflater.inflate(R.menu.player_search, menu);
         searchView.setIconified(true);

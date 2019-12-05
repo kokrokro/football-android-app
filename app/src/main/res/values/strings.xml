@@ -163,4 +163,6 @@
     <string name="ProtocolToSend">Протокол</string>
     <string name="editTeamTrainer">Тренер:</string>
     <string name="editTeamNumber">Номер тренера:</string>
+    <string name="content_description_image">Изображение</string>
+    <string name="content_description_button_add">Кнопка добавить игрока</string>
 </resources>

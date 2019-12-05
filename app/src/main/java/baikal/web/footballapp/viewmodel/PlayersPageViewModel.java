@@ -14,6 +14,8 @@ public class PlayersPageViewModel extends ViewModel {
     public PlayersPageViewModel() {
         PagedList.Config config = new PagedList.Config.Builder()
                 .setEnablePlaceholders(false)
+                .setInitialLoadSizeHint(20)
+
                 .build();
         PlayersDataSourceFactory dataSourceFactory = new PlayersDataSourceFactory();
         playersList = new LivePagedListBuilder<>(dataSourceFactory, config).build();
