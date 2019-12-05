@@ -93,7 +93,9 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
         }
         SetImage setImage = new SetImage();
         assert club != null;
-        setImage.setImage(holder.image.getContext(), holder.image, club.getLogo());
+        try {
+            setImage.setImage(holder.image.getContext(), holder.image, club.getLogo());
+        } catch (Exception ignored) {}
     }
 
     @Override
