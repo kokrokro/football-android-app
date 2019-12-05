@@ -23,7 +23,6 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.News_;
-import baikal.web.footballapp.protocol.ProtocolPage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

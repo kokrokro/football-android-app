@@ -4,6 +4,8 @@ package baikal.web.footballapp.tournament.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -70,9 +72,14 @@ public class ShowProtocol extends AppCompatActivity {
             textTitle1.setText(str);
             str = teams.get("TeamTwo").getName();
             textTitle2.setText(str);
-            TeamTitleClubLogoMatchEvents entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
+
+            TeamTitleClubLogoMatchEvents entry = null;
+            if (match != null)
+                entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
+
             try {
-                playerEvents = new ArrayList<>(entry.getPlayerEvents());
+                if (entry != null)
+                    playerEvents = new ArrayList<>(entry.getPlayerEvents());
             } catch (NullPointerException e) {
                 playerEvents = new ArrayList<>();
             }
@@ -183,8 +190,7 @@ public class ShowProtocol extends AppCompatActivity {
         return teams;
     }
 
-    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, Match match, Team team1, Team team2) {
-
+    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, Match match, @Nullable Team team1, @Nullable Team team2) {
         log.error(match.getId());
         List<PlayerEvent> playerEvents1 = new ArrayList<>();
         String teamOne = team1.getName();

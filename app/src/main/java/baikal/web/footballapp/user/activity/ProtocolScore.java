@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.ImageButton;
 
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.protocol.Adapters.RVCommandEventListAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,8 @@ public class ProtocolScore extends AppCompatActivity{
     private final Logger log = LoggerFactory.getLogger(ProtocolMatchScore.class);
     private RecyclerView firstTeamListRecyclerView;
     private RecyclerView secondTeamListRecyclerView;
-
+    private RVCommandEventListAdapter adapter1;
+    private RVCommandEventListAdapter adapter2;
 
 
     @Override

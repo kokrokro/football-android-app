@@ -46,7 +46,7 @@
         <activity android:name=".user.activity.AddTournament" />
 
         <activity
-            android:name=".protocol.ProtocolPage"
+            android:name=".protocol.Activity.ProtocolPage"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity

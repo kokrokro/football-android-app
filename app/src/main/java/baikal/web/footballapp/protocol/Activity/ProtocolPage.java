@@ -1,7 +1,6 @@
-package baikal.web.footballapp.protocol;
+package baikal.web.footballapp.protocol.Activity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -15,7 +14,6 @@ import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.user.activity.ConfirmProtocol;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
