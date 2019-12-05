@@ -176,7 +176,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
 //            str = "-";
 //        }
 
-        holder.textScore.setText(str);
+//        holder.textScore.setText(str);
         try{
             str = match.getPenalty();
             if (!str.equals("")){
@@ -185,38 +185,22 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             }
         }catch (NullPointerException ignored){}
 
-        try{
-            List<Referee> referees = new ArrayList<>(match.getReferees());
-            for (Referee referee : referees){
-                if (referee.getType().equals("3 судья") && referee.getPerson().equals(SaveSharedPreference.getObject().getUser().getId())){
-                    check = true;
-                    break;
-                }
-            }
-        }catch (NullPointerException e){
-            check=false;
-        }
-
-        if (check){
-            holder.button.setVisibility(View.VISIBLE);
+//        if (check){
+//            holder.showProtocol.setVisibility(View.VISIBLE);
             final Team finalTeam = team1;
             final Team finalTeam1 = team2;
-            final String finalClub = null;
-            final String finalClub1 = null;
-            holder.button.setOnClickListener(v -> {
+            holder.showProtocol.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
                 int count = MyMatches.matches.indexOf(match);
                 bundle.putSerializable("PROTOCOLMATCH", match);
                 bundle.putSerializable("PROTOCOLTEAM1", finalTeam);
                 bundle.putSerializable("PROTOCOLTEAM2", finalTeam1);
-                bundle.putString("PROTOCOLCLUB1", finalClub);
-                bundle.putString("PROTOCOLCLUB2", finalClub1);
                 bundle.putInt("MATCHPOSITION", count);
-//                intent.putExtras(bundle);
-//                context.startActivity(intent);
+                intent.putExtras(bundle);
+                context.startActivity(intent);
             });
-        }
+//        }
         if (position==(matches.size()-1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
@@ -243,6 +227,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         final RelativeLayout layout;
         final View line;
         final TextView textPenalty;
+        final TextView showProtocol;
         ViewHolder(View item) {
             super(item);
             button = item.findViewById(R.id.myMatchEdit);
@@ -258,6 +243,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             layout = item.findViewById(R.id.myMatchShowProtocol);
             line = item.findViewById(R.id.myMatchLine);
             textPenalty = item.findViewById(R.id.myMatchPenalty);
+            showProtocol = item.findViewById(R.id.showProtocol);
         }
     }
     private String TimeToString(String str)  {
