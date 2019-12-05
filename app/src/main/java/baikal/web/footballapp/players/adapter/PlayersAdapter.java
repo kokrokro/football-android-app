@@ -95,7 +95,7 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
         }
 
         void bindTo(@NonNull Person person) {
-            String name = person.getName() + " " + person.getLastname();
+            String name = person.getNameWithSurname();
             textName.setText(name);
 
             Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);

@@ -17,24 +17,16 @@ public class PlayersDataSource extends ItemKeyedDataSource<String, Person> {
     @SuppressLint("CheckResult")
     @Override
     public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull LoadInitialCallback<Person> callback) {
-        Log.d(TAG, "requestedLoadSize:" + String.valueOf(params.requestedLoadSize));
-        Controller.getApi().getAllPersons(null, String.valueOf(params.requestedLoadSize), "0")
+        Log.d(TAG, "requestedLoadSize:" + params.requestedLoadSize);
+        Controller.getApi().getAllPersonsWithSort(null, String.valueOf(params.requestedLoadSize), null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onResult);
-        Controller.getApi().getAllPersons(null, String.valueOf(params.requestedLoadSize), "0")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(personList -> {
-                    for (Person person : personList) {
-                        Log.d(TAG, person.getBirthdate());
-                    }
-                });
     }
 
     @Override
     public void loadAfter(@NonNull LoadParams<String> params, @NonNull LoadCallback<Person> callback) {
-        Controller.getApi().getAllPersons(null, String.valueOf(params.requestedLoadSize), params.key)
+        Controller.getApi().getAllPersonsWithSort(null, String.valueOf(params.requestedLoadSize), "<" + params.key)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onResult);
@@ -46,9 +38,10 @@ public class PlayersDataSource extends ItemKeyedDataSource<String, Person> {
 
     }
 
+
     @NonNull
     @Override
     public String getKey(@NonNull Person person) {
-        return person.getId();
+        return person.getCreatedAt();
     }
 }

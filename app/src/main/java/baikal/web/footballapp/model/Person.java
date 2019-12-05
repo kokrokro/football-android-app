@@ -97,6 +97,20 @@ public class Person implements Serializable {
         return p1 + p2 + p3;
     }
 
+    public String getNameWithSurname() {
+        String result = "";
+
+        if (name != null) {
+            result = name;
+        }
+
+        if (surname != null) {
+           result = result + " " + surname;
+        }
+
+        return result;
+    }
+
     public List<String> getFavouriteTourney() {  return favoriteTourney;    }
 
     public void setFavouriteTourney(List<String> favouriteTourney) {  this.favoriteTourney = favouriteTourney; }

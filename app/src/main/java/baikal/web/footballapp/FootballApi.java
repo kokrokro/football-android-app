@@ -116,6 +116,10 @@ public interface FootballApi {
     Observable<People> getAllUsers(@Query("type") String type, @Query("search") String search, @Query("limit") String limit, @Query("offset") String offset);
     @GET("/api/crud/person")
     Observable<List<Person> >getAllPersons( @Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
+
+    @GET("/api/crud/person?_sort=-createdAt")
+    Observable<List<Person> >getAllPersonsWithSort( @Query("surname") String surname,@Query("_limit") String limit, @Query("createdAt") String createdAt);
+
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
     @GET("/api/crud/tourney")
