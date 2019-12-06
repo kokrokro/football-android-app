@@ -242,8 +242,9 @@ public class NewCommand extends AppCompatActivity {
 //                finish();
             }
         });
-    }@Override
+    }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         super.onActivityResult(requestCode, resultCode, data);

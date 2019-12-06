@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -69,33 +70,43 @@ public class ConfirmProtocol extends AppCompatActivity {
         textTitle2 = findViewById(R.id.confirmProtocolCommand2Title);
         imageClose.setOnClickListener(v -> finish());
         try {
-            String str;
+            String str = "error";
             MatchPopulate match = (MatchPopulate) getIntent().getExtras().getSerializable("CONFIRMPROTOCOL");
-            HashMap<String, Team> teams = getTeams(match);
-            fab.setOnClickListener(v -> {
-                try {
-                    List<Event> list = new ArrayList<>();
-                    for (PlayerEvent playerEvent : playerEvents)
-                        list.add(playerEvent.getEvent());
+            HashMap<String, Team> teams = null;
+            if (match != null) {
+                teams = getTeams(match);
+                HashMap<String, Team> finalTeams = teams;
+                fab.setOnClickListener(v -> {
+                    try {
+                        List<Event> list = new ArrayList<>();
+                        for (PlayerEvent playerEvent : playerEvents)
+                            list.add(playerEvent.getEvent());
 
-                    TeamTitleClubLogoMatchEvents playerEv = getPlayerEvent(list, match, teams.get("TeamOne"), teams.get("TeamTwo"));
-                    Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("PROTOCOLMATCH", match);
-                    bundle.putSerializable("PROTOCOLEVENTS", playerEv);
-                    intent.putExtras(bundle);
+                        TeamTitleClubLogoMatchEvents playerEv = getPlayerEvent(list, match,
+                                Objects.requireNonNull(finalTeams.get("TeamOne")),
+                                Objects.requireNonNull(finalTeams.get("TeamTwo")));
 
-                    Log.d("ConfirmProtocol.java", "trying to enter to work protocol...");
+                        Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("PROTOCOLMATCH", match);
+                        bundle.putSerializable("PROTOCOLEVENTS", playerEv);
+                        intent.putExtras(bundle);
 
-                    startActivity(intent);
-                } catch (Exception e) {
-                    log.error("ERROR", e);
-                }
-            });
+                        Log.d("ConfirmProtocol.java", "trying to enter to work protocol...");
 
-            str = teams.get("TeamOne").getName();
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        log.error("ERROR", e);
+                    }
+                });
+            }
+
+            if (teams != null)
+                str = Objects.requireNonNull(teams.get("TeamOne")).getName();
             textTitle1.setText(str);
-            str = teams.get("TeamTwo").getName();
+            if (teams != null)
+                str = Objects.requireNonNull(teams.get("TeamTwo")).getName();
+
             textTitle2.setText(str);
             TeamTitleClubLogoMatchEvents entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
             try {
@@ -104,11 +115,12 @@ public class ConfirmProtocol extends AppCompatActivity {
                 playerEvents = new ArrayList<>();
             }
             imageSave.setOnClickListener(v -> confirmProtocol(match.getId()));
+            HashMap<String, Team> finalTeams1 = teams;
             buttonCommand1.setOnClickListener(v -> {
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", teams.get("TeamOne"));
+                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1.get("TeamOne"));
                 intent.putExtras(bundle);
 
                 Log.d("ConfirmProtocol: ", "team1 ...");
@@ -119,7 +131,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", teams.get("TeamTwo"));
+                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1.get("TeamTwo"));
                 intent.putExtras(bundle);
 
                 Log.d("ConfirmProtocol: ", "team2 ...");
@@ -199,26 +211,25 @@ public class ConfirmProtocol extends AppCompatActivity {
         SetImage setImage = new SetImage();
                             teams.put("TeamOne", match.getTeamOne());
                             teams.put("TeamTwo", match.getTeamTwo());
-        //TODO
-        //MAKE ACCESS THROUGH SINGLETON
-                        for (Club club : MankindKeeper.getInstance().allClubs) {
-                            if (match.getTeamOne().getClub().equals(club.getId())) {
-                                try {
-                                    clubOne = club.getLogo();
-                                } catch (NullPointerException e) {
-                                    clubOne = "";
-                                }
-                                setImage.setImage(image1.getContext(), image1, club.getLogo());
-                            }
-                            if (match.getTeamTwo().getClub().equals(club.getId())) {
-                                try {
-                                    clubTwo = club.getLogo();
-                                } catch (NullPointerException e) {
-                                    clubTwo = "";
-                                }
-                                setImage.setImage(image2.getContext(), image2, club.getLogo());
-                            }
-                        }
+
+        for (Club club : MankindKeeper.getInstance().allClubs) {
+            if (match.getTeamOne().getClub().equals(club.getId())) {
+                try {
+                    clubOne = club.getLogo();
+                } catch (NullPointerException e) {
+                    clubOne = "";
+                }
+                setImage.setImage(image1.getContext(), image1, club.getLogo());
+            }
+            if (match.getTeamTwo().getClub().equals(club.getId())) {
+                try {
+                    clubTwo = club.getLogo();
+                } catch (NullPointerException e) {
+                    clubTwo = "";
+                }
+                setImage.setImage(image2.getContext(), image2, club.getLogo());
+            }
+        }
         return teams;
     }
 
