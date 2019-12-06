@@ -2,12 +2,14 @@ package baikal.web.footballapp.home.activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
+
 import com.google.android.material.tabs.TabLayout;
+
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +36,6 @@ public class MainPage extends Fragment {
     private List<String> favTourneysId = new ArrayList<>();
     private List<String> favLeaguesId = new ArrayList<>();
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -43,38 +44,32 @@ public class MainPage extends Fragment {
         tabLayout = view.findViewById(R.id.mainPageTab);
         viewPager = view.findViewById(R.id.mainPageViewPager);
         tabLayout.setupWithViewPager(viewPager);
-        setupViewPager(viewPager);
-        setCustomFont();
+        /*setupViewPager(viewPager);
+        setCustomFont();*/
         Controller.getApi().getFavTourneysId(PersonalActivity.id).enqueue(new Callback<List<Person>>() {
             @Override
             public void onResponse(Call<List<Person>> call, Response<List<Person>> response) {
-                if (response.isSuccessful()){
-                    if (response.body() != null && response.body().size()>0) {
+                if (response.isSuccessful()) {
+                    if (response.body() != null && response.body().size() > 0) {
                         favTourneysId.clear();
                         favTourneysId.addAll(response.body().get(0).getFavouriteTourney());
-                        Log.d("RVUpcomingMatches", "favLeaguesId 1 "+favLeaguesId.toString());
-                        String s="";
-                        for(String str : favTourneysId){
-                            s= s+','+str;
+                        String s = "";
+                        for (String str : favTourneysId) {
+                            s = s + ',' + str;
                         }
                         Controller.getApi().getLeaguesByTourney(s).enqueue(new Callback<List<League>>() {
                             @Override
                             public void onResponse(Call<List<League>> call, Response<List<League>> response) {
-                                if(response.isSuccessful()){
-                                    if(response.body()!=null){
+                                if (response.isSuccessful()) {
+                                    if (response.body() != null) {
                                         favLeagues.clear();
                                         favLeagues.addAll(response.body());
                                         favLeaguesId.clear();
-                                        for(League l :favLeagues){
+                                        for (League l : favLeagues) {
                                             favLeaguesId.add(l.getId());
                                         }
-                                        Log.d("RVUpcomingMatches", "favLeaguesId onResponse: "+ favLeaguesId.toString());
-                                    }
-                                } else{
-                                    try {
-                                        Log.d("RVUpcomingMatches", response.errorBody().string());
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
+                                        setupViewPager(viewPager);
+                                        setCustomFont();
                                     }
                                 }
                             }
@@ -86,6 +81,7 @@ public class MainPage extends Fragment {
                     }
                 }
             }
+
             @Override
             public void onFailure(Call<List<Person>> call, Throwable t) {
 
@@ -97,9 +93,7 @@ public class MainPage extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         NewsAndAds newsAndAds = new NewsAndAds();
-        Log.d("RVUpcomingMatches", "favLeaguesId setupView: "+ favLeaguesId.toString());
         ComingMatches comingMatches = new ComingMatches(favLeaguesId);
-
         try {
             ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(this.getChildFragmentManager());
             adapter.addFragment(newsAndAds, "Новости");

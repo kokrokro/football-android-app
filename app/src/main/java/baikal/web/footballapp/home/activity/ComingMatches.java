@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +47,7 @@ public class ComingMatches extends Fragment{
     public ComingMatches( List<String> favLeagues){
         this.leagues = favLeagues;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -63,37 +63,28 @@ public class ComingMatches extends Fragment{
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
         String strDate =">="+sdf.format(now);
         String query = "";
-        Log.d("UpcomingMatches", "leagues "+leagues.toString());
         for(String l : leagues){
             query+=","+l;
         }
-        Log.d("UpcomingMatches", "query "+query);
         Controller.getApi().getUpcomingMatches(strDate, query, "20").enqueue(new Callback<List<ActiveMatch>>(){
             @Override
             public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
-                        Log.d("UpcomingMatches","msg1");
                         matches.clear();
                         matches.addAll(response.body());
                         adapter.notifyDataSetChanged();
-                        Log.d("UpcomingMatches","matches1 "+matches.size());
-                    }
-                    else {
-                        Log.d("UpcomingMatches", "error1");
                     }
                 }
             }
             @Override
             public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
-                Log.d("UpcomingMatches", "error2");
             }
         });
         try {
-
-            Log.d("UpcomingMatches","matches2 "+matches.size());
             adapter = new RVComingMatchesAdapter(getActivity(), matches);
             recyclerView.setAdapter(adapter);
+            layout.setVisibility(View.GONE);
         }catch (NullPointerException e){
             layout.setVisibility(View.VISIBLE);
         }

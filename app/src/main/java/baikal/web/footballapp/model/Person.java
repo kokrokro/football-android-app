@@ -97,7 +97,9 @@ public class Person implements Serializable {
         return p1 + p2 + p3;
     }
 
-    public List<String> getFavouriteTourney() {  return favoriteTourney;    }
+    public List<String> getFavouriteTourney() {
+        return favoriteTourney;
+    }
 
     public void setFavouriteTourney(List<String> favouriteTourney) {  this.favoriteTourney = favouriteTourney; }
 

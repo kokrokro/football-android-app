@@ -5,7 +5,6 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,9 +83,6 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
                 setImage.setImage(activity, holder.imgCommandLogo1, club.getLogo());
             }
         }
-        Log.d("RVUpcomingMatches", str);
-        Log.d("RVUpcomingMatches", "team1.getPlayers(): "+team1.getPlayers().size());
-
         for (Player player : team1.getPlayers()) {
             if (player.getActiveDisquals() != 0) {
                 new QBadgeView(activity)
