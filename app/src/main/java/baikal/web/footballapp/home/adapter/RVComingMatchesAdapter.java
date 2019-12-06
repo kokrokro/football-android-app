@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +19,8 @@ import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Club;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 
@@ -34,9 +35,9 @@ import q.rorbin.badgeview.QBadgeView;
 public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatchesAdapter.ViewHolder> {
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
     private final PersonalActivity activity;
-    private final List<ActiveMatch> matches;
+    private final List<MatchPopulate> matches;
 
-    public RVComingMatchesAdapter(Activity activity, List<ActiveMatch> matches) {
+    public RVComingMatchesAdapter(Activity activity, List<MatchPopulate> matches) {
         this.activity = (PersonalActivity) activity;
         this.matches = matches;
     }
@@ -51,7 +52,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         log.error("++++++++++++++++++++++++++++++++++++++++++");
-        ActiveMatch match = matches.get(position);
+        MatchPopulate match = matches.get(position);
         String str;
         str = match.getDate();
         DateToString dateToString = new DateToString();
@@ -61,14 +62,12 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         } catch (NullPointerException e) {
             holder.textTime.setText(str);
         }
-        str = match.getPlace();
-        try {
-            String[] stadium;
-            stadium = str.split(":", 1);
-            holder.textStadium.setText(stadium[0]);
-        } catch (NullPointerException e) {
+        str = match.getPlace().getName();
+        //try {
             holder.textStadium.setText(str);
-        }
+        /*} catch (NullPointerException e) {
+            holder.textStadium.setText(str);
+        }*/
 
         str = match.getTour();
         holder.textTour.setText(str);
@@ -128,9 +127,9 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         holder.textScore.setText(str);
 
         if (!str.equals("-")) {
-            List<ActiveMatch> list = new ArrayList<>(matches);
+            List<MatchPopulate> list = new ArrayList<>(matches);
             list.remove(match);
-            for (ActiveMatch match1 : list) {
+            for (MatchPopulate match1 : list) {
                 try {
                     str = match1.getScore();
                     if (!str.equals("")
@@ -207,7 +206,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         }
     }
 
-    public void dataChanged(List<ActiveMatch> allPlayers1) {
+    public void dataChanged(List<MatchPopulate> allPlayers1) {
         log.error("*******************************************");
         matches.clear();
         matches.addAll(allPlayers1);

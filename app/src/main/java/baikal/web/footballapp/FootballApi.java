@@ -76,8 +76,8 @@ public interface FootballApi {
     Observable<Advertisings> getAdvertising(@Query("limit") String limit, @Query("offset") String offset);
     @GET("/api/crud/league?status=started&_select=_id")
     Call<List<League>> getStartedLeagues();
-    @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
-    Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
+    @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo+place")
+    Call<List<MatchPopulate>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
 
     //get all clubs
     @GET("/api/clubs")
@@ -94,19 +94,6 @@ public interface FootballApi {
     @GET("/api/crud/league")
     Observable<GetLeagueInfo> getLeagueInfo(@Query("_id") String id);
 //    Call<GetLeagueInfo> getLeagueInfo(@Path("id") String id);
-
-
-
-    //get active matches
-    @GET("/api/matches/active")
-    Observable<ActiveMatches> getActiveMatches(@Query("limit") String limit, @Query("offset") String  offset,
-                                               @Query("played") Boolean played);
-
-
-    //get coming matches
-    @GET("/api/matches/upcoming")
-    Observable<ActiveMatches> getComingMatches();
-
 
 
 
