@@ -96,12 +96,14 @@ public class ChooseTrainer extends AppCompatActivity {
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            adapter = new TrainerAdapter(this, allPeople, (id) -> {
+            adapter = new TrainerAdapter(this, allPeople, (id, name, surname) -> {
                 Intent data = new Intent();
 //---set the data to pass back---
                 data.setData(Uri.parse(id));
                 setResult(RESULT_OK, data);
 //---close the activity---
+                data.putExtra("name",name );
+                data.putExtra("surname", surname);
                 finish();
             });
             recyclerView.setAdapter(adapter);

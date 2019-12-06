@@ -244,7 +244,12 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         }
 
     }
+    @Override
+    public void onPause() {
 
+        super.onPause();
+        setFavTourneys();
+    }
     @Override
     public void onFinishEditDialog(int pos) {
         SearchTournaments(null,regionsId.get(pos));

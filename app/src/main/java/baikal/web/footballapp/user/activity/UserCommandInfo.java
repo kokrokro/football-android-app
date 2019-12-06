@@ -103,7 +103,7 @@ public class UserCommandInfo extends AppCompatActivity {
             league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
             teamName.setText(team.getName());
             String str = team.getTrainer();
-            isCreator = team.getCreator().equals(PersonalActivity.id);
+            isCreator = team.getCreator().equals(SaveSharedPreference.getObject().getUser().get_id());
             if (MankindKeeper.getInstance().allPlayers.containsKey(team.getTrainer())) {
                 Person p = MankindKeeper.getInstance().allPlayers.get(team.getTrainer());
                 str = p.getSurname()+" "+p.getName();
@@ -209,7 +209,7 @@ public class UserCommandInfo extends AppCompatActivity {
                 });
             }
             else {
-                buttonSave.setVisibility(View.GONE);
+                buttonSave.setVisibility(View.INVISIBLE);
             }
 
             buttonClose.setOnClickListener(v -> finish());

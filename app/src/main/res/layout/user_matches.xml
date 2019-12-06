@@ -6,6 +6,7 @@
     android:background="@color/colorWhite">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollTeams"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="50dp"

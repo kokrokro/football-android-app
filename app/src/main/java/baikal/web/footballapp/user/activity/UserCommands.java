@@ -50,6 +50,12 @@ public class UserCommands extends Fragment {
     private RecyclerView trainerRecyclerView;
     private static List<Team> trainerTeams = new ArrayList<>();
     private static List<Team> teams = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private RecyclerView recyclerView2;
+    private NestedScrollView scroller;
+    private LinearLayout linearLayout;
+    private LinearLayout linearOwnCommand ;
+    private LinearLayout linearUserCommand ;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,14 +69,11 @@ public class UserCommands extends Fragment {
         View view;
         log.info("INFO: onCreateView onCreate");
 //        final FloatingActionButton fab;
-        RecyclerView recyclerView;
-        RecyclerView recyclerView2;
-        NestedScrollView scroller;
-        LinearLayout linearLayout;
-        LinearLayout linear;
+
+
         view = inflater.inflate(R.layout.user_commands, container, false);
-        LinearLayout linearOwnCommand = view.findViewById(R.id.ownCommands);
-        LinearLayout linearUserCommand = view.findViewById(R.id.userCommands);
+        linearOwnCommand = view.findViewById(R.id.ownCommands);
+         linearUserCommand = view.findViewById(R.id.userCommands);
         line = view.findViewById(R.id.userCommandsLine);
         textView = view.findViewById(R.id.userCommandsText);
         textView2 = view.findViewById(R.id.userCommandsText2);
@@ -123,7 +126,25 @@ public class UserCommands extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
 //        recyclerView.setAdapter(AuthoUser.adapterCommand);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
+        RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(),teams, (t,l)->{
+            DialogTeam dialogRegion =  new DialogTeam(i->{
+                if(i==0){
+
+                }
+                else {
+                    Intent intent = new Intent(getActivity(), UserCommandInfo.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    getActivity().startActivity(intent);
+                }
+            });
+
+            dialogRegion.show(getChildFragmentManager(), "fragment_edit_name");
+        });
 
         RVUserCommandAdapter adapter1 = new RVUserCommandAdapter(getActivity(),AuthoUser.personCommand, (t,l) ->{});
         recyclerView.setAdapter(adapter1);
@@ -220,7 +241,7 @@ public class UserCommands extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEWCOMMAND) {
-                if (num==0){
+                if (num == 0){
                     FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
 //                    FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
                     try {

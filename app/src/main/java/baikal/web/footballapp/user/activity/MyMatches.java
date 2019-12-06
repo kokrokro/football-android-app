@@ -3,6 +3,7 @@ package baikal.web.footballapp.user.activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -35,6 +36,7 @@ public class MyMatches extends Fragment {
     private final Logger log = LoggerFactory.getLogger(MyMatches.class);
     static RVMyMatchesAdapter adapter;
     public static List<MatchPopulate> matches = new ArrayList<>();
+    private NestedScrollView scrollView;
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
@@ -45,17 +47,20 @@ public class MyMatches extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         LinearLayout layout = view.findViewById(R.id.emptyMatch);
         adapter = new RVMyMatchesAdapter(getActivity(),this, matches);
+        recyclerView.setVisibility(View.INVISIBLE);
         recyclerView.setAdapter(adapter);
-        Controller.getApi().getMatches(null, PersonalActivity.id).enqueue(new Callback<List<MatchPopulate>>() {
+
+        Controller.getApi().getMatches(null,SaveSharedPreference.getObject().getUser().get_id() ).enqueue(new Callback<List<MatchPopulate>>() {
             @Override
             public void onResponse(Call<List<MatchPopulate>> call, Response<List<MatchPopulate>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
-                        matches.clear();
-                        matches.addAll(response.body());
-                        if(matches.size()>0){
+                        if(response.body().size()>0){
                             layout.setVisibility(View.GONE);
                         }
+                        matches.clear();
+                        matches.addAll(response.body());
+                        recyclerView.setVisibility(View.VISIBLE);
                         adapter.notifyDataSetChanged();
                     }
                 }

@@ -179,7 +179,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
 //            holder.showProtocol.setVisibility(View.VISIBLE);
             final Team finalTeam = team1;
             final Team finalTeam1 = team2;
-            holder.showProtocol.setOnClickListener(v -> {
+            holder.layout.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
                 int count = MyMatches.matches.indexOf(match);
@@ -217,7 +217,6 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         final RelativeLayout layout;
         final View line;
         final TextView textPenalty;
-        final TextView showProtocol;
         ViewHolder(View item) {
             super(item);
             button = item.findViewById(R.id.myMatchEdit);
@@ -233,7 +232,6 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             layout = item.findViewById(R.id.myMatchShowProtocol);
             line = item.findViewById(R.id.myMatchLine);
             textPenalty = item.findViewById(R.id.myMatchPenalty);
-            showProtocol = item.findViewById(R.id.showProtocol);
         }
     }
     private String TimeToString(String str)  {

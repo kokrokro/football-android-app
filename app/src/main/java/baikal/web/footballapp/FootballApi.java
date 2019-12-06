@@ -89,7 +89,8 @@ public interface FootballApi {
     @GET("/api/matches/upcoming")
     Observable<ActiveMatches> getComingMatches();
 
-
+    @PATCH("/api/matches/changePlayers/{id}")
+    Call<Match> assignTeamOnMatch(@Path("id") String id, @Body Match match);
 
 
     //get referees type==referee

@@ -38,7 +38,7 @@
     <string name="showAllNews">Показать все новости</string>
     <string name="showAllAds">Показать все объявления</string>
     <string name="tournamentTime">13:30</string>
-    <string name="tournamentStadium">с/з ВСГУТУ</string>
+    <string name="tournamentStadium">Не назначено</string>
     <string name="tournamentCommandTitle1">Лара</string>
     <string name="myCommands">Мои команды</string>
     <string name="myCommands2">Команды</string>
@@ -61,7 +61,7 @@
     <string name="editClub">Редактировать клуб</string>
     <string name="protocol">Протокол</string>
     <string name="editProtocol">Редактировать протокол</string>
-    <string name="confirmProtocol">Рабочий протокол</string>
+    <string name="confirmProtocol">Обзор матча</string>
     <string name="editProtocolResponsiblePersons">Ответственные лица</string>
     <string name="protocolScore">Текущий счет</string>
     <string name="addEvent">Добавить событие</string>
@@ -120,7 +120,9 @@
     <string name="commandTitle">Название команды:</string>
     <string name="commandTitle2">Название команды</string>
     <string name="structure">Состав</string>
-    <string name="editTeam">Редактирование информации</string>
+    <string name="editTeam">Редактирование команды</string>
+    <string name="teamsMatches">Посмотреть матчи</string>
+
     <string name="buttonOk">Принять</string>
     <string name="buttonCancel">Отклонить</string>
     <string name="playersInv">Приглашенные игроки</string>
