@@ -100,7 +100,7 @@ public class TimeTableFragment extends Fragment {
                if(!m.getPlayed())
                    str.append(",").append(m.getId());
 
-        Controller.getApi().getMatches(str.toString()).enqueue(new Callback<List<MatchPopulate>>() {
+        Controller.getApi().getMatches(str.toString(),null).enqueue(new Callback<List<MatchPopulate>>() {
             @Override
             public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
                 if(response.isSuccessful())

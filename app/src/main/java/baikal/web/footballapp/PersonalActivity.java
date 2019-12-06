@@ -39,6 +39,8 @@ import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
@@ -72,6 +74,12 @@ public class PersonalActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
+    public static List<Region> regions = new ArrayList<>();
+    public static List<TeamStats> teamStats = new ArrayList<>();
+    public static List<Team> allTeams = new ArrayList<>();
+    public static String id ;
+    public static String token;
+    public static boolean status;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -133,6 +141,8 @@ public class PersonalActivity extends AppCompatActivity {
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Загрузка...");
 
+//        checkConnection();
+//        checkConnectionSingle();
         showSnack();
         checkConnectionSingle();
 
@@ -245,12 +255,34 @@ public class PersonalActivity extends AppCompatActivity {
         //all clubs
 //        GetAllClubs();
         GetAllRegions();
+        getAllTeams();
         if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
             log.error("REFRESH USER");
             RefreshUser();
         }
     }
+    private void getAllMatches(){
 
+    }
+
+    private void getAllTeams(){
+        Controller.getApi().getTeams(null).enqueue(new Callback<List<Team>>() {
+            @Override
+            public void onResponse(Call<List<Team>> call, Response<List<Team>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        allTeams.clear();
+                        allTeams.addAll(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Team>> call, Throwable t) {
+
+            }
+        });
+    }
     private void GetAllRegions() {
         Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
             @Override
@@ -268,7 +300,22 @@ public class PersonalActivity extends AppCompatActivity {
             }
         });
     }
+    @SuppressLint("CheckResult")
+    private void getAllTeamStats(){
+        Controller.getApi().getTeamStats(null).
+                subscribeOn(Schedulers.io()).
+                observeOn(AndroidSchedulers.mainThread())
+                .subscribe(stats->{
+                    teamStats.clear();
+                    teamStats.addAll(stats);
+                },error -> {
+                    CheckError checkError = new CheckError();
+                    checkError.checkError(this, error);
+                });
 
+
+
+    }
     @SuppressLint("CheckResult")
     private void RefreshUser() {
         //noinspection ResultOfMethodCallIgnored

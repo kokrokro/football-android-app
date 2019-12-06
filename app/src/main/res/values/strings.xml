@@ -42,6 +42,7 @@
     <string name="tournamentCommandTitle1">Лара</string>
     <string name="myCommands">Мои команды</string>
     <string name="myCommands2">Команды</string>
+    <string name="myCommands3">Тренерство</string>
     <string name="commandPlayer">Игрок</string>
     <string name="commandPlayer2">Игрок:</string>
     <string name="commandAbbrev1">№ - Место в турнире</string>
@@ -128,6 +129,7 @@
     <string name="desc">Описание:</string>
     <string name="desc2">Описание</string>
     <string name="addPlayer">Добавить игрока</string>
+    <string name="showProtocol">Показать протокол</string>
     <string name="empty">Ничего нет</string>
     <string name="empty2">Не назначено</string>
     <string name="not_inv">Здесь будут отображаться приглашения от команд</string>

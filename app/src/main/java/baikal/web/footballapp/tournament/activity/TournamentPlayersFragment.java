@@ -28,6 +28,7 @@ import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.PlayerGoalsComparator;
+import baikal.web.footballapp.tournament.PlayerMatchComparator;
 import baikal.web.footballapp.tournament.PlayerRCComparator;
 import baikal.web.footballapp.tournament.PlayerYCComparator;
 import baikal.web.footballapp.tournament.adapter.RVTournamentPlayersAdapter;
@@ -68,7 +69,19 @@ public class TournamentPlayersFragment extends Fragment {
         List<Team> team = (List<Team>) arguments.getSerializable("TOURNAMENTINFOTEAMS");
         League league = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
         List<String> clubs = new ArrayList<>();
+        view = inflater.inflate(R.layout.tournament_info_tab_players, container, false);
+        layout = view.findViewById(R.id.tournamentPlayersEmpty);
+        layout1 = view.findViewById(R.id.mainview);
+//        LayoutInflater factory = getLayoutInflater();
+//        View newRow = factory.inflate(R.layout.tournament_info_two, null,   false);
+//        fab = (FloatingActionButton) view.findViewById(R.id.playersInfoButton);
+        Tournament tournament = (Tournament) this.getParentFragment();
+        fab = tournament.getFabPlayers();
+        spinner = view.findViewById(R.id.playersSpinner);
+        scroller = view.findViewById(R.id.tournamentInfoPlayersScroll);
+        recyclerView = view.findViewById(R.id.recyclerViewTournamentPlayersStats);
         StringBuilder playersId= new StringBuilder();
+
         for (Team team1 : team) {
             //                if (team1.getClub().)
             //                clubs.add(team1.getClub());
@@ -84,6 +97,8 @@ public class TournamentPlayersFragment extends Fragment {
                     if(response.body()!=null){
                         personStats.clear();
                         personStats.addAll(response.body());
+                        adapter.notifyDataSetChanged();
+                        recyclerView.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -93,25 +108,14 @@ public class TournamentPlayersFragment extends Fragment {
 
             }
         });
-
 //        Collections.sort(playerList, new PlayerMatchComparator());
-        view = inflater.inflate(R.layout.tournament_info_tab_players, container, false);
-        layout = view.findViewById(R.id.tournamentPlayersEmpty);
-        layout1 = view.findViewById(R.id.mainview);
-//        LayoutInflater factory = getLayoutInflater();
-//        View newRow = factory.inflate(R.layout.tournament_info_two, null,   false);
-//        fab = (FloatingActionButton) view.findViewById(R.id.playersInfoButton);
-        Tournament tournament = (Tournament) this.getParentFragment();
-        fab = tournament.getFabPlayers();
-        spinner = view.findViewById(R.id.playersSpinner);
-        scroller = view.findViewById(R.id.tournamentInfoPlayersScroll);
-        recyclerView = view.findViewById(R.id.recyclerViewTournamentPlayersStats);
+
         scrollStatus = false;
-        adapter = new RVTournamentPlayersAdapter(playerList, clubs);
+        adapter = new RVTournamentPlayersAdapter(this, playerList, personStats);
         recyclerView.setAdapter(adapter);
         final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-
+        recyclerView.setVisibility(View.INVISIBLE);
 
         if (playerList.size() != 0) {
             layout.setVisibility(View.GONE);
@@ -149,30 +153,30 @@ public class TournamentPlayersFragment extends Fragment {
                 switch (choose[position]) {
                     case "по проведенным матчам": {
                         log.error("по проведенным матчам");
-                        List<Player> players = new ArrayList<>(playerList);
-//                        Collections.sort(players, new PlayerMatchComparator());
-                        adapter.dataChanged(players);
+                        List<PersonStats> players = new ArrayList<>(personStats);
+                        Collections.sort(players, new PlayerMatchComparator());
+                        adapter.notifyDataSetChanged();
                         break;
                     }
                     case "по забитым мячам": {
                         log.error("по забитым мячам");
-                        List<Player> players = new ArrayList<>(playerList);
+                        List<PersonStats> players = new ArrayList<>(personStats);
                         Collections.sort(players, new PlayerGoalsComparator());
-                        adapter.dataChanged(players);
+                        adapter.notifyDataSetChanged();
                         break;
                     }
                     case "по количеству ЖК": {
                         log.error("по количеству ЖК");
-                        List<Player> players = new ArrayList<>(playerList);
+                        List<PersonStats> players = new ArrayList<>(personStats);
                         Collections.sort(players, new PlayerYCComparator());
-                        adapter.dataChanged(players);
+                        adapter.notifyDataSetChanged();
                         break;
                     }
                     case "по количеству КК": {
                         log.error("по количеству КК");
-                        List<Player> players = new ArrayList<>(playerList);
+                        List<PersonStats> players = new ArrayList<>(personStats);
                         Collections.sort(players, new PlayerRCComparator());
-                        adapter.dataChanged(players);
+                        adapter.notifyDataSetChanged();
                         break;
                     }
                 }

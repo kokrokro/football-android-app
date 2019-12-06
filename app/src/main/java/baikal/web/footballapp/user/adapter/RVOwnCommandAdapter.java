@@ -121,8 +121,6 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
         if (position== (list.size() - 1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
-        final Team finalTeamLeague = personTeams;
-        League finalLeague = league;
         Controller.getApi().getParticipation(teamId).enqueue(new Callback<List<ParticipationRequest>>() {
             @Override
             public void onResponse(Call<List<ParticipationRequest>> call, Response<List<ParticipationRequest>> response) {

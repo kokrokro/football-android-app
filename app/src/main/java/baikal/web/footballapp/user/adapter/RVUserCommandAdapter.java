@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import baikal.web.footballapp.DateToString;
@@ -28,11 +29,17 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
     UserCommands context;
     private final PersonalActivity activity;
     private final List<Team> list;
-    public RVUserCommandAdapter (Activity activity, List<Team> list){
+    private final Listener listener;
+    public RVUserCommandAdapter (Activity activity, List<Team> list, Listener listener){
         this.activity = (PersonalActivity) activity;
 //        this.context = context;
         this.list = list;
+        this.listener = listener;
     }
+    public interface Listener{
+         void onClick(Team team, League league);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,6 +58,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
                 break;
             }
         }
+        final League currentLeague = league;
         String teamId = personTeams.getId();
         Team teamLeague = personTeams;
 //        Team team = personTeams.getTeam();
@@ -97,6 +105,9 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         if (position== (list.size() - 1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
+        holder.linearLayout.setOnClickListener(v -> {
+            listener.onClick(personTeams, currentLeague);
+        });
     }
 
     @Override
@@ -113,6 +124,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         final TextView textPlayersNum;
         final TextView textStatus;
         final View line;
+        final LinearLayout linearLayout;
         ViewHolder(View item) {
             super(item);
             textTournamentTitle = item.findViewById(R.id.userCommandTournamentTitle);
@@ -122,6 +134,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
             textPlayersNum = item.findViewById(R.id.userCommandInfoPlayersNum);
             textStatus = item.findViewById(R.id.teamStatus);
            line = item.findViewById(R.id.userCommandLine);
+           linearLayout = item.findViewById(R.id.userCommandShow);
         }
     }
 

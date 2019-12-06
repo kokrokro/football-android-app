@@ -224,7 +224,19 @@
                 android:layout_height="wrap_content"
                 android:text="@string/protocol"/>
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/showProtocol"
+            android:fontFamily="@font/manrope_regular"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textSize="12sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/showProtocol"
+            android:layout_gravity="right"
+            android:layout_marginRight="18dp"
+            android:layout_marginBottom="14dp"
+            android:textColor="@color/colorPrimary"/>
         <View
             android:id="@+id/myMatchLine"
             android:layout_width="match_parent"

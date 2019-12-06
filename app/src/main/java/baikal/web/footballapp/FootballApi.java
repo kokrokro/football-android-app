@@ -31,6 +31,8 @@ import baikal.web.footballapp.model.SetRefereeList;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.TeamStats;
+import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 
@@ -82,19 +84,6 @@ public interface FootballApi {
 
 
 
-    //get tournament's info
-    //@GET("/api/leagues/league/{id}")
-    @GET("/api/crud/league")
-    Observable<GetLeagueInfo> getLeagueInfo(@Query("_id") String id);
-//    Call<GetLeagueInfo> getLeagueInfo(@Path("id") String id);
-
-
-
-    //get active matches
-    @GET("/api/matches/active")
-    Observable<ActiveMatches> getActiveMatches(@Query("limit") String limit, @Query("offset") String  offset,
-                                               @Query("played") Boolean played);
-
 
     //get coming matches
     @GET("/api/matches/upcoming")
@@ -102,6 +91,9 @@ public interface FootballApi {
 
 
 
+
+    //get referees type==referee
+    //get players type==player
     @GET("/api/crud/person")
     Observable<List<Person>> getAllPersons(@Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/person")
@@ -117,7 +109,7 @@ public interface FootballApi {
     @GET("/api/crud/match?_sort=date")
     Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
     @GET("api/crud/match?_populate=teamOne+teamTwo+place")
-    Call<List<MatchPopulate>> getMatches(@Query("_id") String id);
+    Call<List<MatchPopulate>> getMatches(@Query("_id") String id, @Query("referees.person") String referee);
     //edit web
     @PATCH("/api/crud/match/{id}")
     Call<Match> editMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
@@ -211,6 +203,9 @@ public interface FootballApi {
 
     @GET("/api/crud/team")
     Call<List<Team>> getTeam(@Query("_id") String id);
+
+    @GET("/api/stats/team")
+    Observable<List<TeamStats>> getTeamStats(@Query("_id") String id);
 
     //add new club
     @Multipart
