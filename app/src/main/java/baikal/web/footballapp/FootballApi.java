@@ -76,7 +76,7 @@ public interface FootballApi {
     Observable<Advertisings> getAdvertising(@Query("limit") String limit, @Query("offset") String offset);
     @GET("/api/crud/league?status=started&_select=_id")
     Call<List<League>> getStartedLeagues();
-    @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo+place")
+    @GET("/api/crud/match?played=false&_sort=date+place&_populate=teamOne+teamTwo+place")
     Call<List<MatchPopulate>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
 
     //get all clubs

@@ -63,11 +63,11 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
             holder.textTime.setText(str);
         }
         str = match.getPlace().getName();
-        //try {
+        try {
             holder.textStadium.setText(str);
-        /*} catch (NullPointerException e) {
-            holder.textStadium.setText(str);
-        }*/
+        } catch (NullPointerException e) {
+            holder.textStadium.setText("ERROR");
+        }
 
         str = match.getTour();
         holder.textTour.setText(str);
