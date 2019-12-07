@@ -1,6 +1,7 @@
 package baikal.web.footballapp.user.activity;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,31 +12,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
-import android.webkit.HttpAuthHandler;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.tournament.activity.TournamentPage;
 
 public class AddTournamentFragment extends Fragment {
 
     private static final String admin = "https://football.bwadm.ru";
-    public AddTournamentFragment() {
-        // Required empty public constructor
-    }
+    public AddTournamentFragment() { }
 
-
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -46,12 +37,17 @@ public class AddTournamentFragment extends Fragment {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webView.setVerticalScrollBarEnabled(true);
-//        webview.setHorizontalScrollBarEnabled(true);
-        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ PersonalActivity.token +"');", null);
+
+        String token = null;
+
+        try {
+            token = SaveSharedPreference.getObject().getToken();
+        } catch (Exception ignored) { }
+
+        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ token +"');", null);
         webView.loadUrl(admin);
 
         webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
-       // webView.clearCache(true);
         webSettings.setDomStorageEnabled(true);
         webSettings.setDatabaseEnabled(true);
         webSettings.setMinimumFontSize(1);
@@ -61,8 +57,6 @@ public class AddTournamentFragment extends Fragment {
         webSettings.setAllowContentAccess(true);
 
        // getContext().deleteDatabase(webSettings.getDatabasePath());
-
-
         return view;
     }
     private class MyWebViewClient extends WebViewClient {
@@ -76,9 +70,10 @@ public class AddTournamentFragment extends Fragment {
             startActivity(intent);
             return true;
         }
+
         @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view,
-                                                          WebResourceRequest request) {
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            //noinspection deprecation
             return shouldInterceptRequest(view, request.getUrl().toString());
         }
     }

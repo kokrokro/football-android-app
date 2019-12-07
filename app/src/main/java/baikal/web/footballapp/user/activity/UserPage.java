@@ -26,7 +26,6 @@ import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.players.activity.PlayersPage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -181,11 +180,11 @@ public class UserPage extends Fragment {
                 //for getting error in network put here Toast, so get the error on network
                 log.error("ERROR: SignIn() onResponse ", t);
                 Toast.makeText(getActivity(), "Ошибка сервера.", Toast.LENGTH_SHORT).show();
-                try {
-                    Objects.requireNonNull(getActivity()).finishAndRemoveTask();
-                } catch (Exception e) {
-                    log.error(TAG, e);
-                }
+//                try {
+//                    Objects.requireNonNull(getActivity()).finishAndRemoveTask();
+//                } catch (Exception e) {
+//                    log.error(TAG, e);
+//                }
             }
         });
 

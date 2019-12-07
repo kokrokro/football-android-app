@@ -3,6 +3,8 @@ package baikal.web.footballapp.user.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -71,7 +73,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         imageClose.setOnClickListener(v -> finish());
         try {
             String str = "error";
-            MatchPopulate match = (MatchPopulate) getIntent().getExtras().getSerializable("CONFIRMPROTOCOL");
+            MatchPopulate match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("CONFIRMPROTOCOL");
             HashMap<String, Team> teams = null;
             if (match != null) {
                 teams = getTeams(match);
@@ -108,19 +110,24 @@ public class ConfirmProtocol extends AppCompatActivity {
                 str = Objects.requireNonNull(teams.get("TeamTwo")).getName();
 
             textTitle2.setText(str);
-            TeamTitleClubLogoMatchEvents entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
+            TeamTitleClubLogoMatchEvents entry = null;
+            if (match != null) {
+                if (teams != null) {
+                    entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
+                }
+            }
             try {
-                playerEvents = new ArrayList<>(entry.getPlayerEvents());
+                playerEvents = new ArrayList<>(Objects.requireNonNull(entry).getPlayerEvents());
             } catch (NullPointerException e) {
                 playerEvents = new ArrayList<>();
             }
-            imageSave.setOnClickListener(v -> confirmProtocol(match.getId()));
+            imageSave.setOnClickListener(v -> confirmProtocol(match != null ? match.getId() : null));
             HashMap<String, Team> finalTeams1 = teams;
             buttonCommand1.setOnClickListener(v -> {
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1.get("TeamOne"));
+                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1 != null ? finalTeams1.get("TeamOne") : null);
                 intent.putExtras(bundle);
 
                 Log.d("ConfirmProtocol: ", "team1 ...");
@@ -131,7 +138,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1.get("TeamTwo"));
+                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1 != null ? finalTeams1.get("TeamTwo") : null);
                 intent.putExtras(bundle);
 
                 Log.d("ConfirmProtocol: ", "team2 ...");
@@ -148,20 +155,22 @@ public class ConfirmProtocol extends AppCompatActivity {
                 refIds.add("");
                 refIds.add("");
 
-                for (Referee r : match.getReferees())
-                    switch (r.getType()) {
-                        case "firstReferee":
-                            refIds.set(0, r.getPerson());
-                            break;
-                        case "secondReferee":
-                            refIds.set(1, r.getPerson());
-                            break;
-                        case "thirdReferee":
-                            refIds.set(2, r.getPerson());
-                            break;
-                        case "timekeeper":
-                            refIds.set(3, r.getPerson());
-                    }
+                if (match != null)
+                    for (Referee r : match.getReferees())
+                        switch (r.getType()) {
+                            case "firstReferee":
+                                refIds.set(0, r.getPerson());
+                                break;
+                            case "secondReferee":
+                                refIds.set(1, r.getPerson());
+                                break;
+                            case "thirdReferee":
+                                refIds.set(2, r.getPerson());
+                                break;
+                            case "timekeeper":
+                                refIds.set(3, r.getPerson());
+                        }
+
 
                 bundle.putCharSequenceArrayList("CONFIRMPROTOCOLREFEREES", refIds);
                 intent.putExtras(bundle);
@@ -179,12 +188,18 @@ public class ConfirmProtocol extends AppCompatActivity {
     }
 
     @SuppressLint("CheckResult")
-    private void confirmProtocol(String id) {
+    private void confirmProtocol(@Nullable String id) {
+        if (id == null)
+            return;
         CheckError checkError = new CheckError();
+        //noinspection ResultOfMethodCallIgnored
         Controller.getApi().confirmProtocol(SaveSharedPreference.getObject().getToken(), id)
                 .map(responseBody -> {
                     if (!responseBody.isSuccessful()) {
-                        String srt = responseBody.errorBody().string();
+                        String srt = "[ERROR]: {ConfirmProtocol: 188}";
+                        if (responseBody.errorBody() != null) {
+                            srt = responseBody.errorBody().string();
+                        }
                         log.error(srt + " 141");
                         showToast(srt);
                     }
@@ -233,27 +248,30 @@ public class ConfirmProtocol extends AppCompatActivity {
         return teams;
     }
 
-    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, MatchPopulate match, Team team1, Team team2) {
+    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, MatchPopulate match, @Nullable Team team1, @Nullable Team team2) {
         List<PlayerEvent> playerEvents1 = new ArrayList<>();
-        String teamOne = team1.getName();
-        String teamTwo = team2.getName();
+        String teamOne = team1 != null ? team1.getName() : null;
+        String teamTwo = team2 != null ? team2.getName() : null;
         String clubEvent = "";
         String teamName = "";
         for (Event event : events) {
             Person person = MankindKeeper.getInstance().allPlayers.get(event.getPlayer());
 
-            for (Player player : team1.getPlayers()) {
-                if (player.getPlayerId().equals(person.getId())) {
-                    clubEvent = clubOne;
-                    teamName = team1.getName();
+            if (team1 != null)
+                for (Player player : team1.getPlayers()) {
+                    if (person != null && player.getPlayerId().equals(person.getId())) {
+                        clubEvent = clubOne;
+                        teamName = team1.getName();
+                    }
                 }
-            }
-            for (Player player : team2.getPlayers()) {
-                if (player.getPlayerId().equals(person.getId())) {
-                    clubEvent = clubTwo;
-                    teamName = team2.getName();
+
+            if (team2 != null)
+                for (Player player : team2.getPlayers()) {
+                    if (person != null && player.getPlayerId().equals(person.getId())) {
+                        clubEvent = clubTwo;
+                        teamName = team2.getName();
+                    }
                 }
-            }
 
             PlayerEvent playerEvent = new PlayerEvent();
             playerEvent.setPerson(person);

@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -35,7 +32,6 @@ import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.home.activity.MainPage;
 import baikal.web.footballapp.model.Advertisings;
-import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
@@ -51,7 +47,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class PersonalActivity extends AppCompatActivity {
@@ -64,72 +59,61 @@ public class PersonalActivity extends AppCompatActivity {
     private static final String PLAYERS = "PLAYERS_PAGE";
     private static final String USER    = "USER_PAGE";
 
-    private AuthoUser authoUser         = new AuthoUser(this);
     private Fragment fragmentUser       = new UserPage(this);
     private Fragment fragmentMain       = new MainPage();
-    private Fragment fragmentTournament;
-    private Fragment fragmentClub       = new ClubPage();
-    private Fragment fragmentPlayers    = new PlayersPage();
     private Fragment active = fragmentMain;
 
     private BottomNavigationView bottomNavigationView;
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
-    public static List<Region> regions = new ArrayList<>();
+
     public static List<TeamStats> teamStats = new ArrayList<>();
     public static List<Team> allTeams = new ArrayList<>();
     public static String id ;
-    public static String token;
-    public static boolean status;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    switch (item.getItemId()) {
-                        case R.id.navigation_home:
-                            active = fragmentMain = new MainPage();
-                            beginTransaction(fragmentManager, R.id.pageContainer, active, MAIN);
-                            return true;
-                        case R.id.navigation_tournament:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new TournamentPage(PersonalActivity.this)).addToBackStack(TOURNAMENT).commit();
-                            active = fragmentTournament;
-                            return true;
-                        case R.id.navigation_club:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new ClubPage()).addToBackStack(CLUB).commit();
-                            active = fragmentClub;
-                            return true;
-                        case R.id.navigation_players:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new PlayersPage()).addToBackStack(PLAYERS).commit();
-                            active = fragmentPlayers;
-                            return true;
-                        case R.id.navigation_user:
+            item -> {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        active = fragmentMain = new MainPage();
+                        beginTransaction(fragmentManager, active, MAIN);
+                        return true;
+                    case R.id.navigation_tournament:
+                        active = new TournamentPage(PersonalActivity.this);
+                        beginTransaction(fragmentManager, active, TOURNAMENT);
+                        return true;
+                    case R.id.navigation_club:
+                        active = new ClubPage();
+                        beginTransaction(fragmentManager, active, CLUB);
+                        return true;
+                    case R.id.navigation_players:
+                        active = new PlayersPage();
+                        beginTransaction(fragmentManager, active, PLAYERS);
+                        return true;
+                    case R.id.navigation_user:
 
-                            boolean status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
-                            if (status) {
-                                log.debug("ЗАРЕГАН");
-                                log.debug(SaveSharedPreference.getObject().getToken());
-                                Log.d(TAG, "User ID: " + SaveSharedPreference.getObject().getUser().getId());
+                        boolean status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
+                        if (status) {
+                            log.debug("ЗАРЕГАН");
+                            log.debug(SaveSharedPreference.getObject().getToken());
+                            Log.d(TAG, "User ID: " + SaveSharedPreference.getObject().getUser().getId());
 
-                                fragmentManager.beginTransaction().replace(R.id.pageContainer, new AuthoUser(PersonalActivity.this)).addToBackStack(USER).commit();
-                                active = authoUser;
-                            } else {
-                                log.error("НЕ ЗАРЕГАН");
-                                fragmentManager.beginTransaction().replace(R.id.pageContainer, new UserPage(PersonalActivity.this)).addToBackStack(USER).commit();
-                                active = fragmentUser;
-                            }
-                            return true;
-                    }
-                    return false;
+                            active = new AuthoUser(PersonalActivity.this);
+                            beginTransaction(fragmentManager, active, USER);
+                        } else {
+                            log.error("НЕ ЗАРЕГАН");
+                            active = fragmentUser = new UserPage(PersonalActivity.this);
+                            beginTransaction(fragmentManager, active, USER);
+                        }
+                        return true;
                 }
+                return false;
             };
 
-    private void beginTransaction (FragmentManager fragmentManager, int resourceId, Fragment fragment, String backStack) {
-        fragmentManager.beginTransaction().replace(resourceId, fragment).addToBackStack(backStack).commit();
+    private void beginTransaction (FragmentManager fragmentManager, Fragment fragment, String backStack) {
+        fragmentManager.beginTransaction().replace(R.id.pageContainer, fragment).addToBackStack(backStack).commit();
     }
 
-    public PersonalActivity() {
-        fragmentTournament = new TournamentPage(this);
-    }
+    public PersonalActivity() { }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,14 +245,11 @@ public class PersonalActivity extends AppCompatActivity {
             RefreshUser();
         }
     }
-    private void getAllMatches(){
-
-    }
 
     private void getAllTeams(){
         Controller.getApi().getTeams(null).enqueue(new Callback<List<Team>>() {
             @Override
-            public void onResponse(Call<List<Team>> call, Response<List<Team>> response) {
+            public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
                         allTeams.clear();
@@ -278,7 +259,7 @@ public class PersonalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<Team>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
 
             }
         });
@@ -300,26 +281,32 @@ public class PersonalActivity extends AppCompatActivity {
             }
         });
     }
-    @SuppressLint("CheckResult")
-    private void getAllTeamStats(){
-        Controller.getApi().getTeamStats(null).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread())
-                .subscribe(stats->{
-                    teamStats.clear();
-                    teamStats.addAll(stats);
-                },error -> {
-                    CheckError checkError = new CheckError();
-                    checkError.checkError(this, error);
-                });
+//    @SuppressLint("CheckResult")
+//    private void getAllTeamStats(){
+//        Controller.getApi().getTeamStats(null).
+//                subscribeOn(Schedulers.io()).
+//                observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(stats->{
+//                    teamStats.clear();
+//                    teamStats.addAll(stats);
+//                },error -> {
+//                    CheckError checkError = new CheckError();
+//                    checkError.checkError(this, error);
+//                });
+//    }
 
-
-
-    }
     @SuppressLint("CheckResult")
     private void RefreshUser() {
+        String token;
+
+        try {
+            token = SaveSharedPreference.getObject().getToken();
+        } catch (Exception ignored) {
+            return;
+        }
+
         //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().refreshUser(SaveSharedPreference.getObject().getToken())
+        Controller.getApi().refreshUser(token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
@@ -382,21 +369,21 @@ public class PersonalActivity extends AppCompatActivity {
                 );
     }
 
-    private void GetAllClubs() {
-        Controller.getApi().getAllClubs().enqueue(new Callback<List<Club>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Club>> call, @NonNull Response<List<Club>> response) {
-                MankindKeeper.getInstance().allClubs.clear();
-                if (response.body() != null)
-                    MankindKeeper.getInstance().allClubs.addAll(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Club>> call, @NonNull Throwable t) {
-                (new CheckError()).toastError(PersonalActivity.this, t);
-            }
-        });
-    }
+//    private void GetAllClubs() {
+//        Controller.getApi().getAllClubs().enqueue(new Callback<List<Club>>() {
+//            @Override
+//            public void onResponse(@NonNull Call<List<Club>> call, @NonNull Response<List<Club>> response) {
+//                MankindKeeper.getInstance().allClubs.clear();
+//                if (response.body() != null)
+//                    MankindKeeper.getInstance().allClubs.addAll(response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<List<Club>> call, @NonNull Throwable t) {
+//                (new CheckError()).toastError(PersonalActivity.this, t);
+//            }
+//        });
+//    }
 
     public void setAnimation() {
         Slide slide = new Slide();

@@ -1,27 +1,20 @@
 package baikal.web.footballapp.viewmodel;
 
-import android.util.Log;
-
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.repository.MainRepository;
-import baikal.web.footballapp.tournament.activity.TournamentsFragment;
-import baikal.web.footballapp.tournament.adapter.RVFavTourneyAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -53,7 +46,7 @@ public class MainViewModel extends ViewModel {
     private void loadTeams() {
         new MainRepository().getTeams(null, new Callback<List<Team>>() {
             @Override
-            public void onResponse(Call<List<Team>> call, Response<List<Team>> response) {
+            public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                 if (response.isSuccessful()){
                     if (response.body() != null ){
                         allTeams.setValue(response.body());
@@ -62,7 +55,7 @@ public class MainViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<Team>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
 
             }
         });
@@ -71,7 +64,7 @@ public class MainViewModel extends ViewModel {
     private void loadStadiums() {
         new MainRepository().getStadiums(null, null, new Callback<List<Stadium>>() {
             @Override
-            public void onResponse(Call<List<Stadium>> call, Response<List<Stadium>> response) {
+            public void onResponse(@NonNull Call<List<Stadium>> call, @NonNull Response<List<Stadium>> response) {
                 if (response.isSuccessful()){
                     if (response.body() != null ){
                         allStadiums.setValue(response.body());
@@ -80,7 +73,7 @@ public class MainViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<Stadium>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Stadium>> call, @NonNull Throwable t) {
 
             }
         });
@@ -96,7 +89,7 @@ public class MainViewModel extends ViewModel {
     private void loadInvites() {
         new MainRepository().getInvites(null, null, new Callback<List<Invite>>() {
             @Override
-            public void onResponse(Call<List<Invite>> call, Response<List<Invite>> response) {
+            public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null ){
                         allInvites.setValue(response.body());
@@ -105,7 +98,7 @@ public class MainViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<Invite>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) {
 
             }
         });
@@ -158,7 +151,7 @@ public class MainViewModel extends ViewModel {
     private void loadTourneys(String id){
         new MainRepository().getFavTourneys(id, new Callback<List<PersonPopulate>>() {
             @Override
-            public void onResponse(Call<List<PersonPopulate>> call, Response<List<PersonPopulate>> response) {
+            public void onResponse(@NonNull Call<List<PersonPopulate>> call, @NonNull Response<List<PersonPopulate>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null && response.body().size()>0) {
                         List<Tourney> tourneys = response.body().get(0).getFavouriteTourney();
@@ -168,7 +161,7 @@ public class MainViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<PersonPopulate>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<PersonPopulate>> call, @NonNull Throwable t) {
 
             }
         });
@@ -177,7 +170,7 @@ public class MainViewModel extends ViewModel {
     private void loadData(String limit, String offset) {
         new MainRepository().getNews(limit, offset, new Callback<List<News_>>() {
             @Override
-            public void onResponse(Call<List<News_>> call, Response<List<News_>> response) {
+            public void onResponse(@NonNull Call<List<News_>> call, @NonNull Response<List<News_>> response) {
                 if (response.isSuccessful())
                     if (response.body() != null) {
                         List<News_> news = response.body();
@@ -186,7 +179,7 @@ public class MainViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<News_>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<News_>> call, @NonNull Throwable t) {
 
             }
         })
@@ -195,7 +188,7 @@ public class MainViewModel extends ViewModel {
     private void loadFavLeagues(String tourney){
         new MainRepository().getLegues(tourney, new Callback<List<League>>() {
             @Override
-            public void onResponse(Call<List<League>> call, Response<List<League>> response) {
+            public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
                         favLeagues.setValue(response.body());
@@ -204,7 +197,7 @@ public class MainViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<List<League>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) {
 
             }
         });

@@ -16,12 +16,12 @@ public class SaveSharedPreference {
     @Expose
     public static User user;
     public static String id;
-    public  static  final String ID = "ID";
     private static SharedPreferences sharedPreferences;
     private static SharedPreferences.Editor editor;
-    public static SharedPreferences getPreferences(Context context) {
+    private static SharedPreferences getPreferences(Context context) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         editor = sharedPreferences.edit();
+        editor.apply();
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 

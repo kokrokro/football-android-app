@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,21 +19,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.adapter.RVOwnCommandAdapter;
 import baikal.web.footballapp.user.adapter.RVUserCommandAdapter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -44,27 +43,14 @@ public class UserCommands extends Fragment {
     private View line;
     private TextView textView;
     private TextView textView2;
-    private LinearLayout linearLayoutTrainerTeams;
-    private TextView textTrainerTeams;
-    private View lineTrainer;
-    private RecyclerView trainerRecyclerView;
     private static List<Team> trainerTeams = new ArrayList<>();
-    private static List<Team> teams = new ArrayList<>();
-    private RecyclerView recyclerView;
-    private RecyclerView recyclerView2;
-    private NestedScrollView scroller;
-    private LinearLayout linearLayout;
-    private LinearLayout linearOwnCommand ;
-    private LinearLayout linearUserCommand ;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         log.info("INFO: UserCommands onCreate");
     }
 
-    public static UserCommands newInstance() {
-        return new UserCommands();
-    }
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
         log.info("INFO: onCreateView onCreate");
@@ -72,19 +58,27 @@ public class UserCommands extends Fragment {
 
 
         view = inflater.inflate(R.layout.user_commands, container, false);
-        linearOwnCommand = view.findViewById(R.id.ownCommands);
-         linearUserCommand = view.findViewById(R.id.userCommands);
+        LinearLayout linearOwnCommand = view.findViewById(R.id.ownCommands);
+        LinearLayout linearUserCommand = view.findViewById(R.id.userCommands);
         line = view.findViewById(R.id.userCommandsLine);
         textView = view.findViewById(R.id.userCommandsText);
         textView2 = view.findViewById(R.id.userCommandsText2);
-        linearLayoutTrainerTeams = view.findViewById(R.id.userCommandsTrainer);
-        textTrainerTeams = view.findViewById(R.id.userCommandsTex3);
-        lineTrainer  = view.findViewById(R.id.userCommandsLine2);
-        teams = AuthoUser.createdTeams;
+        LinearLayout linearLayoutTrainerTeams = view.findViewById(R.id.userCommandsTrainer);
+        TextView textTrainerTeams = view.findViewById(R.id.userCommandsTex3);
+        View lineTrainer = view.findViewById(R.id.userCommandsLine2);
+        List<Team> teams = AuthoUser.createdTeams;
 
+        String id;
+
+        try {
+            id = SaveSharedPreference.getObject().getUser().getId();
+        } catch (Exception e) {
+            Log.e("UserCommands", e.toString());
+            id = "";
+        }
 
         for(Team team : PersonalActivity.allTeams){
-            if(team.getTrainer().equals(PersonalActivity.id)){
+            if(team.getTrainer().equals(id)){
                 trainerTeams.add(team);
             }
         }
@@ -114,7 +108,7 @@ public class UserCommands extends Fragment {
             lineTrainer.setVisibility(View.VISIBLE);
         }
 
-        linearLayout = view.findViewById(R.id.emptyCommand);
+        LinearLayout linearLayout = view.findViewById(R.id.emptyCommand);
         if(teams.size()==0 && AuthoUser.personCommand.size()==0 && trainerTeams.size()==0){
             linearLayout.setVisibility(View.VISIBLE);
         }
@@ -122,14 +116,14 @@ public class UserCommands extends Fragment {
             linearLayout.setVisibility(View.GONE);
         }
 
-        scroller = view.findViewById(R.id.userCommandScroll);
-        recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
+        NestedScrollView scroller = view.findViewById(R.id.userCommandScroll);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
 //        recyclerView.setAdapter(AuthoUser.adapterCommand);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(),teams, (t,l)->{
+        RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(), teams, (t, l)->{
             DialogTeam dialogRegion =  new DialogTeam(i->{
                 if(i==0){
-
+                    Log.d("UserCommands", "LoL ?");
                 }
                 else {
                     Intent intent = new Intent(getActivity(), UserCommandInfo.class);
@@ -139,7 +133,7 @@ public class UserCommands extends Fragment {
                     bundle1.putSerializable("COMMANDEDITLEAGUE", l);
                     intent.putExtras( bundle);
                     intent.putExtras( bundle1);
-                    getActivity().startActivity(intent);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
                 }
             });
 
@@ -148,10 +142,10 @@ public class UserCommands extends Fragment {
 
         RVUserCommandAdapter adapter1 = new RVUserCommandAdapter(getActivity(),AuthoUser.personCommand, (t,l) ->{});
         recyclerView.setAdapter(adapter1);
-        recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
+        RecyclerView recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
         recyclerView2.setAdapter(adapter);
         recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
-        trainerRecyclerView = view.findViewById(R.id.recyclerViewUserCommandTrainer);
+        RecyclerView trainerRecyclerView = view.findViewById(R.id.recyclerViewUserCommandTrainer);
         trainerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         RVUserCommandAdapter adapter2 = new RVUserCommandAdapter(getActivity(),trainerTeams, (t,l) ->{
@@ -162,13 +156,12 @@ public class UserCommands extends Fragment {
             bundle1.putSerializable("COMMANDEDITLEAGUE", l);
             intent.putExtras( bundle);
             intent.putExtras( bundle1);
-            getActivity().startActivity(intent);
+            Objects.requireNonNull(getActivity()).startActivity(intent);
         });
         trainerRecyclerView.setAdapter(adapter2);
         scrollStatus = false;
 
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY > oldScrollY) {}
             if (scrollY < oldScrollY) {
                 scrollStatus = false;
             }
@@ -179,12 +172,12 @@ public class UserCommands extends Fragment {
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 //nothing to do
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     AuthoUser.fab.show();
@@ -200,12 +193,12 @@ public class UserCommands extends Fragment {
 
         recyclerView2.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 //nothing to do
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     AuthoUser.fab.show();
@@ -242,16 +235,12 @@ public class UserCommands extends Fragment {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEWCOMMAND) {
                 if (num == 0){
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                    FragmentTransaction ft = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
 //                    FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
                     try {
                         ft.detach(this).attach(this).commit();
-                    }catch (Exception e ){
-
-                    }
-
-                }
-                else{
+                    } catch (Exception ignored) { }
+                } else {
                     AuthoUser.adapterCommand.notifyDataSetChanged();
                     Toast.makeText(getContext(), "Команда добавлена", Toast.LENGTH_LONG).show();
                 }
@@ -263,9 +252,8 @@ public class UserCommands extends Fragment {
                     textView2.setVisibility(View.VISIBLE);
                 }
             }
-        } else {
+        } else
             log.error("ERROR: onActivityResult");
-        }
     }
 
     @Override
