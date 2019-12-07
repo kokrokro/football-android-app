@@ -56,7 +56,7 @@ public class TournamentPage extends Fragment {
     }
     private void setupViewPager(ViewPager viewPager) {
         TournamentsFragment tournamentsFragment = new TournamentsFragment(activity);
-        SearchTournaments searchTournaments = new SearchTournaments(this);
+        SearchTournaments searchTournaments = new SearchTournaments();
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

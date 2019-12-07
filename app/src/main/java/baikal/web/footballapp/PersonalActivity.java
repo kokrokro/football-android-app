@@ -68,7 +68,6 @@ public class PersonalActivity extends AppCompatActivity {
 
     public static List<TeamStats> teamStats = new ArrayList<>();
     public static List<Team> allTeams = new ArrayList<>();
-    public static String id ;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
             item -> {
