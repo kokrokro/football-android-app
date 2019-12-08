@@ -211,7 +211,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
 //        count = tourneys.size();
         this.tourneyList.clear();
         this.tourneyList.addAll(tourneys);
-        adapter.dataChanged(tourneyList);
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressLint("CheckResult")
