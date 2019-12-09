@@ -2,7 +2,6 @@ package baikal.web.footballapp.home.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,41 +21,30 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.home.adapter.RecyclerViewMainAdsAdapter;
 import baikal.web.footballapp.home.adapter.RecyclerViewMainNewsAdapter;
 import baikal.web.footballapp.model.Announce;
-import baikal.web.footballapp.model.Announces;
-import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News_;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class NewsAndAds extends Fragment {
     private final Logger log = LoggerFactory.getLogger(MainPage.class);
-    private final NewsFragment newsFragment = new NewsFragment();
-    private final AdsPage adsPage = new AdsPage();
     private final List<Announce> announces = new ArrayList<>();
-    private RecyclerView recyclerViewNews;
-    private RecyclerView recyclerViewAds;
     private List<News_> allNews = new ArrayList<>();
     private RecyclerViewMainNewsAdapter newsAdapter;
     private RecyclerViewMainAdsAdapter adsAdapter;
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
-        final FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        final FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         view = inflater.inflate(R.layout.activity_main_page, container, false);
 
 
@@ -82,7 +70,7 @@ public class NewsAndAds extends Fragment {
                     .commit();
         });
         try {
-            recyclerViewNews = view.findViewById(R.id.recyclerViewMainNews);
+            RecyclerView recyclerViewNews = view.findViewById(R.id.recyclerViewMainNews);
             recyclerViewNews.setLayoutManager(new LinearLayoutManager(getActivity()));
             newsAdapter = new RecyclerViewMainNewsAdapter(getActivity(), NewsAndAds.this, allNews);
             recyclerViewNews.setAdapter(newsAdapter);
@@ -92,7 +80,7 @@ public class NewsAndAds extends Fragment {
 
 
         try {
-            recyclerViewAds = view.findViewById(R.id.recyclerViewMainAds);
+            RecyclerView recyclerViewAds = view.findViewById(R.id.recyclerViewMainAds);
             recyclerViewAds.setLayoutManager(new LinearLayoutManager(getActivity()));
             adsAdapter = new RecyclerViewMainAdsAdapter(getActivity(), NewsAndAds.this, announces);
             recyclerViewAds.setAdapter(adsAdapter);
@@ -100,21 +88,17 @@ public class NewsAndAds extends Fragment {
             log.error("ERROR: ", e);
         }
 
-        mainViewModel.getNews("2","0").observe(this, news_ -> {
-//            Log.d("News and ads", "data is changed size " + news_.size());
-//            for (int i = 0; i < news_.size(); i++) {
-//                Log.d("News and ads", news_.get(i).getCaption());
-//            }
-            newsAdapter.dataChanged(news_);
-        });
+        mainViewModel.getNews("2","0").observe(this,
+                news_ -> newsAdapter.dataChanged(news_) );
 
         return view;
     }
 
     @SuppressLint("CheckResult")
     private void checkConnection() {
+        //noinspection ResultOfMethodCallIgnored
         ReactiveNetwork
-                .observeNetworkConnectivity(getActivity().getApplicationContext())
+                .observeNetworkConnectivity(Objects.requireNonNull(getActivity()).getApplicationContext())
                 .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -129,6 +113,7 @@ public class NewsAndAds extends Fragment {
 
     @SuppressLint("CheckResult")
     private void GetAllAds() {
+        //noinspection ResultOfMethodCallIgnored
         Controller.getApi().getAllAnnounce("2", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

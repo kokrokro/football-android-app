@@ -18,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -186,14 +187,16 @@ public class AuthoUser extends Fragment {
             for (int i = 0; i < m.size(); i++) {
                 MenuItem mi = m.getItem(i);
 
+                Log.d(TAG, mi.toString());
                 //for applying a font to subMenu ...
                 SubMenu subMenu = mi.getSubMenu();
                 if (subMenu != null && subMenu.size() > 0)
                     for (int j = 0; j < subMenu.size(); j++) {
                         MenuItem subMenuItem = subMenu.getItem(j);
+                        Log.d(TAG, subMenuItem.toString());
                         applyFontToMenuItem(subMenuItem);
                     }
-                applyFontToMenuItem(mi);
+//                applyFontToMenuItem(mi);
             }
 
         } catch (NullPointerException | IllegalStateException e) {
@@ -218,7 +221,13 @@ public class AuthoUser extends Fragment {
         fab1 = view.findViewById(R.id.buttonEditClub);
         fab1.setVisibility(View.INVISIBLE);
 
-        selectDrawerItem(nvDrawer.getMenu().getItem(0));
+        try {
+            selectDrawerItem(nvDrawer.getMenu().getItem(0).getSubMenu().getItem(0));
+        } catch (Exception e) {
+            log.error(TAG, e);
+        }
+
+        Log.d(TAG, nvDrawer.getMenu().toString());
 
         // Setup drawer view
         setupDrawerContent(nvDrawer);
@@ -261,10 +270,42 @@ public class AuthoUser extends Fragment {
     private void selectDrawerItem(MenuItem menuItem) {
         FragmentTransaction menuFragmentTransaction = this.getChildFragmentManager().beginTransaction();
         switch (menuItem.getItemId()) {
+            case R.id.nav_first_fragment:
+                try {
+                    setItemColor(0, 0);
+                    menuFragmentTransaction.replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
+                    categoryTitle.setText(activity.getText(R.string.invitation));
+                    fab.setVisibility(View.INVISIBLE);
+                    fab1.setVisibility(View.INVISIBLE);
+                } catch (Exception e) {
+                    log.error("ERROR: ", e);
+                }
+                break;
+            case R.id.nav_third_fragment:
+                try {
+                    setItemColor(0, 1);
+                    menuFragmentTransaction.replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
+                    categoryTitle.setText(activity.getText(R.string.matches));
+                    fab.setVisibility(View.INVISIBLE);
+                    fab1.setVisibility(View.INVISIBLE);
+                } catch (Exception e) {
+                    log.error("ERROR: ", e);
+                }
+                break;
+            case R.id.nav_command_fragment:
+                try {
+                    setItemColor(1, 0);
+                    menuFragmentTransaction.replace(R.id.flContent, commands).show(commands).commit();
+                    categoryTitle.setText(activity.getText(R.string.commands));
+                    fab.setVisibility(View.VISIBLE);
+                    fab1.setVisibility(View.INVISIBLE);
+                } catch (Exception e) {
+                    log.error("ERROR: ", e);
+                }
+                break;
             case R.id.nav_default_fragment:
                 try {
-                    setItemColor(1);
-                    clearItemColor(1);
+                    setItemColor(2, 0);
                     menuFragmentTransaction.replace(R.id.flContent, defaultFragment, "ONGOINGTOURNAMENT").show(defaultFragment).commit();
                     categoryTitle.setText(activity.getText(R.string.title_tournament));
                     fab.setVisibility(View.INVISIBLE);
@@ -274,46 +315,9 @@ public class AuthoUser extends Fragment {
                     log.error("ERROR: ", e);
                 }
                 break;
-            case R.id.nav_first_fragment:
-                try {
-                    setItemColor(0);
-                    clearItemColor(0);
-                    menuFragmentTransaction.replace(R.id.flContent, firstFragment, "INVITATIONFRAGMENT").show(firstFragment).commit();
-                    categoryTitle.setText(activity.getText(R.string.invitation));
-                    fab.setVisibility(View.INVISIBLE);
-                    fab1.setVisibility(View.INVISIBLE);
-                } catch (Exception e) {
-                    log.error("ERROR: ", e);
-                }
-                break;
-            case R.id.nav_command_fragment:
-                try {
-                    setItemColor(2);
-                    clearItemColor(2);
-                    menuFragmentTransaction.replace(R.id.flContent, commands).show(commands).commit();
-                    categoryTitle.setText(activity.getText(R.string.commands));
-                    fab.setVisibility(View.VISIBLE);
-                    fab1.setVisibility(View.INVISIBLE);
-                } catch (Exception e) {
-                    log.error("ERROR: ", e);
-                }
-                break;
-            case R.id.nav_third_fragment:
-                try {
-                    setItemColor(4);
-                    clearItemColor(4);
-                    menuFragmentTransaction.replace(R.id.flContent, myMatches, "MYMATCHESFRAGMENT").show(myMatches).commit();
-                    categoryTitle.setText(activity.getText(R.string.matches));
-                    fab.setVisibility(View.INVISIBLE);
-                    fab1.setVisibility(View.INVISIBLE);
-                } catch (Exception e) {
-                    log.error("ERROR: ", e);
-                }
-                break;
             case R.id.nav_timetable_fragment:
                 try {
-                    setItemColor(3);
-                    clearItemColor(3);
+                    setItemColor(2, 1);
                     menuFragmentTransaction.replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     categoryTitle.setText(activity.getText(R.string.tournamentInfoTimetable));
                     fab.setVisibility(View.INVISIBLE);
@@ -350,29 +354,29 @@ public class AuthoUser extends Fragment {
         drawer.closeDrawers();
     }
 
-    private void clearItemColor(int itemColor) {
+    private void clearItemColor() {
         m = nvDrawer.getMenu();
         for (int i = 0; i < m.size(); i++) {
-            if (i != itemColor){
-                MenuItem mi = m.getItem(i);
+            MenuItem mi = m.getItem(i);
 
-                try {
-                    SpannableString s = new SpannableString(mi.getTitle());
-                    s.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
-                    mi.setTitle(s);
-                } catch (Exception e) {
-                    log.error(TAG, e);
-                }
-                //for aapplying a font to subMenu ...
-                SubMenu subMenu = mi.getSubMenu();
-                if (subMenu != null && subMenu.size() > 0)
-                    for (int j = 0; j < subMenu.size(); j++) {
-                        MenuItem subMenuItem = subMenu.getItem(j);
-                        applyFontToMenuItem(subMenuItem);
-                    }
-
-                applyFontToMenuItem(mi);
+            try {
+                SpannableString s = new SpannableString(mi.getTitle());
+                s.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
+                mi.setTitle(s);
+            } catch (Exception e) {
+                log.error(TAG, e);
             }
+            //for aapplying a font to subMenu ...
+            SubMenu subMenu = mi.getSubMenu();
+            if (subMenu != null && subMenu.size() > 0)
+                for (int j = 0; j < subMenu.size(); j++) {
+                    MenuItem subMenuItem = subMenu.getItem(j);
+                    SpannableString s = new SpannableString(subMenuItem.getTitle());
+                    s.setSpan(new ForegroundColorSpan(activity.getResources().getColor(R.color.colorBottomNavigationUnChecked)), 0, s.length(), 0);
+                    subMenuItem.setTitle(s);
+                    applyFontToMenuItem(subMenuItem);
+                }
+//            applyFontToMenuItem(mi);
         }
     }
 
@@ -493,22 +497,25 @@ public class AuthoUser extends Fragment {
         }
     }
 
-    private void setItemColor(int itemColor) {
-        MenuItem mi = m.getItem(itemColor);
+    private void setItemColor(int itemColor, int submenuItemColor) {
+        clearItemColor();
         try {
+            MenuItem mi = m.getItem(itemColor).getSubMenu().getItem(submenuItemColor);
+
             SpannableString s = new SpannableString(mi.getTitle());
             s.setSpan(new ForegroundColorSpan(Objects.requireNonNull(getActivity()).getResources().getColor(R.color.colorAccent)), 0, s.length(), 0);
             mi.setTitle(s);
+
+            SubMenu subMenu = mi.getSubMenu();
+            if (subMenu != null && subMenu.size() > 0)
+                for (int j = 0; j < subMenu.size(); j++) {
+                    MenuItem subMenuItem = subMenu.getItem(j);
+                    applyFontToMenuItem(subMenuItem);
+                }
+
+//          applyFontToMenuItem(mi);
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
-        SubMenu subMenu = mi.getSubMenu();
-        if (subMenu != null && subMenu.size() > 0) {
-            for (int j = 0; j < subMenu.size(); j++) {
-                MenuItem subMenuItem = subMenu.getItem(j);
-                applyFontToMenuItem(subMenuItem);
-            }
-        }
-        applyFontToMenuItem(mi);
     }
 }

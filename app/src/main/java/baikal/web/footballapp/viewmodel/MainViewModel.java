@@ -118,12 +118,12 @@ public class MainViewModel extends ViewModel {
         }
         this.favTourneysId.setValue(favTourney);
     }
-    private LiveData<List<String>> getFavTourneysId(){
-        if(favTourneysId==null){
-            favTourneysId = new MutableLiveData<>();
-        }
-        return favTourneysId;
-    }
+//    private LiveData<List<String>> getFavTourneysId(){
+//        if(favTourneysId==null){
+//            favTourneysId = new MutableLiveData<>();
+//        }
+//        return favTourneysId;
+//    }
     public LiveData<List<News_>> getNews(String limit, String offset) {
         if (newsData == null) {
             newsData = new MutableLiveData<>();

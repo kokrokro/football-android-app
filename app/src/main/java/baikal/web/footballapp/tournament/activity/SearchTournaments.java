@@ -170,7 +170,15 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         for(int i = 0; i < favTourneysId.size(); i++){
             favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneysId.get(i)));
         }
-        Controller.getApi().editPlayerInfo(SaveSharedPreference.getObject().getUser().getId(),SaveSharedPreference.getObject().getToken(),favTourneyNew).enqueue(new Callback<EditProfile>() {
+
+        String id = "";
+        String token = "";
+        try {
+            id = SaveSharedPreference.getObject().getUser().getId();
+            token = SaveSharedPreference.getObject().getToken();
+        } catch (Exception ignored) { }
+
+        Controller.getApi().editPlayerInfo(id, token, favTourneyNew).enqueue(new Callback<EditProfile>() {
             @Override
             public void onResponse(@NonNull Call<EditProfile> call, @NonNull Response<EditProfile> response) {
                 StringBuilder tourneyIds = new StringBuilder();
