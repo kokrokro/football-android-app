@@ -11,43 +11,31 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.EditCommand;
-import baikal.web.footballapp.model.EditCommandResponse;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerAdapter;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerInvAdapter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import baikal.web.footballapp.user.adapter.TrainerAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

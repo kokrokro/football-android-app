@@ -47,9 +47,7 @@ public class NewCommand extends AppCompatActivity {
     private final List<Club> allClubs = new ArrayList<>();
     private final List<League> allTournaments = new ArrayList<>();
     private Spinner spinnerTournament;
-    private Club itemClub;
     private League itemTournament;
-    private Spinner spinnerClubs;
     private Team team;
     private EditText textTitle;
     private EditText number;
