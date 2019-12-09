@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +32,6 @@ import java.util.List;
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.adapter.PlayersAdapter;
@@ -45,11 +43,9 @@ import io.reactivex.schedulers.Schedulers;
 public class PlayersPage extends Fragment {
     private static final String TAG = "PlayerPage";
     private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
-    private final int limit = 10;
     private final List<String> allPeople = new ArrayList<>();
     public RecyclerViewPlayersAdapter adapter;
     private RecyclerView recyclerView;
-    private int offset = 0;
     private SearchView searchView;
     private PlayersPageViewModel playersPageViewModel;
     private PlayersAdapter playersAdapter;
@@ -59,11 +55,11 @@ public class PlayersPage extends Fragment {
 
 //        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
 
-        final View view = inflater.inflate(R.layout.page_players, container, false);
+        final View view = inflater.inflate(R.layout.page_players2, container, false);
 
         try {
             recyclerView = view.findViewById(R.id.recyclerViewPlayers);
-            recyclerView.setNestedScrollingEnabled(false);
+            recyclerView.setNestedScrollingEnabled(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             playersAdapter = new PlayersAdapter();
             recyclerView.setAdapter(playersAdapter);
