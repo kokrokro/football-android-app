@@ -1,35 +1,37 @@
 package baikal.web.footballapp.players.datasource;
 
-import android.annotation.SuppressLint;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.paging.ItemKeyedDataSource;
 
+import java.util.List;
+
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.model.Person;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import retrofit2.Callback;
 
 public class PlayersDataSource extends ItemKeyedDataSource<String, Person> {
     private static final String TAG = "PlayersDataSource";
+    private final Callback<List<Person>> loadInitialCallback;
+    private final Callback<List<Person>> loadAfterCallback;
 
-    @SuppressLint("CheckResult")
+    public PlayersDataSource(Callback<List<Person>> loadInitialCallback, Callback<List<Person>> loadAfterCallback) {
+        this.loadInitialCallback = loadInitialCallback;
+        this.loadAfterCallback = loadAfterCallback;
+    }
+
     @Override
     public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull LoadInitialCallback<Person> callback) {
         Log.d(TAG, "requestedLoadSize:" + params.requestedLoadSize);
         Controller.getApi().getAllPersonsWithSort(null, String.valueOf(params.requestedLoadSize), null)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callback::onResult);
+                .enqueue(loadInitialCallback);
     }
 
     @Override
     public void loadAfter(@NonNull LoadParams<String> params, @NonNull LoadCallback<Person> callback) {
         Controller.getApi().getAllPersonsWithSort(null, String.valueOf(params.requestedLoadSize), "<" + params.key)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callback::onResult);
+                .enqueue(loadAfterCallback);
 
     }
 

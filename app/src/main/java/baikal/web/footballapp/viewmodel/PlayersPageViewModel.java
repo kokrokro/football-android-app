@@ -8,20 +8,22 @@ import androidx.paging.PagedList;
 
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.datasource.PlayersDataSourceFactory;
+import baikal.web.footballapp.repository.PlayersPageRepository;
 
 public class PlayersPageViewModel extends ViewModel {
     public LiveData<PagedList<Person>> playersList;
     private MutableLiveData<Boolean> progressBarVisible;
+    private final PlayersPageRepository playersPageRepository;
 
     public PlayersPageViewModel() {
-        PagedList.Config config = new PagedList.Config.Builder()
-                .setEnablePlaceholders(false)
-                .setPageSize(7)
-                .build();
-        PlayersDataSourceFactory dataSourceFactory = new PlayersDataSourceFactory();
-        playersList = new LivePagedListBuilder<>(dataSourceFactory, config).build();
+        this.playersPageRepository = new PlayersPageRepository();
+        initPlayersPageList();
 
         progressBarVisible = new MutableLiveData<>(true);
+    }
+
+    public void initPlayersPageList() {
+        playersList = playersPageRepository.getPlayersInitial();
     }
 
     public void onQueryTextChange(String txt) {}
