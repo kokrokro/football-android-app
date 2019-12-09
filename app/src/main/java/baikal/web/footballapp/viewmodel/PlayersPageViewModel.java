@@ -1,6 +1,7 @@
 package baikal.web.footballapp.viewmodel;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
@@ -10,6 +11,7 @@ import baikal.web.footballapp.players.datasource.PlayersDataSourceFactory;
 
 public class PlayersPageViewModel extends ViewModel {
     public LiveData<PagedList<Person>> playersList;
+    private MutableLiveData<Boolean> progressBarVisible;
 
     public PlayersPageViewModel() {
         PagedList.Config config = new PagedList.Config.Builder()
@@ -18,5 +20,9 @@ public class PlayersPageViewModel extends ViewModel {
                 .build();
         PlayersDataSourceFactory dataSourceFactory = new PlayersDataSourceFactory();
         playersList = new LivePagedListBuilder<>(dataSourceFactory, config).build();
+
+        progressBarVisible = new MutableLiveData<>(true);
     }
+
+    public void onQueryTextChange(String txt) {}
 }

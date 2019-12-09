@@ -52,25 +52,19 @@ public class PlayersPage extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-//        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
-
         final View view = inflater.inflate(R.layout.page_players2, container, false);
 
         try {
             recyclerView = view.findViewById(R.id.recyclerViewPlayers);
-            recyclerView.setNestedScrollingEnabled(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             playersAdapter = new PlayersAdapter();
             recyclerView.setAdapter(playersAdapter);
-
-            playersPageViewModel = ViewModelProviders.of(this).get(PlayersPageViewModel.class);
-            playersPageViewModel.playersList.observe(this, playersAdapter::submitList);
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
 
-        getAllPlayers("10", "0");
+        playersPageViewModel = ViewModelProviders.of(this).get(PlayersPageViewModel.class);
+        playersPageViewModel.playersList.observe(this, playersAdapter::submitList);
 
         searchView = view.findViewById(R.id.searchView);
 
@@ -94,6 +88,7 @@ public class PlayersPage extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 return false;
             }
         });
@@ -139,38 +134,10 @@ public class PlayersPage extends Fragment {
         adapter.dataChanged(res);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
     private void showDialog() {
     }
 
     private void hideDialog() {
-    }
-
-
-    @SuppressLint("CheckResult")
-    private void getAllPlayers(String limit, String offset) {
-        CheckError checkError = new CheckError();
-        String type = "player";
-        Controller.getApi().getAllPersons(null, limit, offset)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveAllPlayers,
-                        error -> checkError.checkError(getActivity(), error)
-                );
-    }
-
-    private void saveAllPlayers(List<Person> peopleList) {
-        Log.d(TAG, "saved all players " + peopleList.size());
-        for (Person p : peopleList)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
-                allPeople.add(p.getId());
-            }
-        adapter.dataChanged(allPeople);
     }
 }
 
