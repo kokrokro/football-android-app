@@ -197,6 +197,13 @@ public class AuthoUser extends Fragment {
                         applyFontToMenuItem(subMenuItem);
                     }
 //                applyFontToMenuItem(mi);
+//
+//                if (i == m.size()-1) {
+//                    Typeface font = Typeface.createFromAsset(activity.getAssets(), "fonts/manrope_regular.otf");
+//                    SpannableString mNewTitle = new SpannableString(mi.getTitle());
+//                    mNewTitle.setSpan(new CustomTypefaceSpan("", font), 0, mNewTitle.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+//                    mi.setTitle(mNewTitle);
+//                }
             }
 
         } catch (NullPointerException | IllegalStateException e) {

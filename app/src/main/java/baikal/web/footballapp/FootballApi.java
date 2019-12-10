@@ -102,7 +102,7 @@ public interface FootballApi {
     //edit web
     @PATCH("/api/crud/match/{id}")
     Call<Match> editMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
-    @PATCH("/api/crud/match/{id}")
+    @POST("/api/matches/changeProtocol/{id}")
     Observable<Match> editProtocolMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
 
     @Multipart
