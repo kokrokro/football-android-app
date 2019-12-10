@@ -114,7 +114,7 @@ public class UserCommands extends Fragment {
         RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(), teams, (t, l)->{
             DialogTeam dialogRegion =  new DialogTeam(i->{
                 if(i==0){
-                    Log.d("UserCommands", " вика получишь щас ");
+                    Log.d("UserCommands", " за что? что я сделал не так? 0_о ");
                     Intent intent = new Intent(getActivity(), TeamMatches.class);
                     Bundle bundle = new Bundle();
                     Bundle bundle1 = new Bundle();
