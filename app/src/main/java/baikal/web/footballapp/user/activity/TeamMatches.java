@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -29,6 +30,12 @@ public class TeamMatches extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_team_matches);
+        ImageButton buttonBack = findViewById(R.id.teamMatchesBack);
+
+        buttonBack.setOnClickListener(v -> {
+            finish();
+        });
+
         Intent intent = getIntent();
         team = (Team) Objects.requireNonNull(intent.getExtras()).getSerializable("COMMANDEDIT");
         league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
@@ -48,6 +55,7 @@ public class TeamMatches extends AppCompatActivity {
             Intent intent1 = new Intent(this, ChangePlayersForMatch.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("MATCH", match);
+            bundle.putSerializable("TEAM", team);
             intent1.putExtras( bundle);
             Objects.requireNonNull(this).startActivity(intent1);
         });

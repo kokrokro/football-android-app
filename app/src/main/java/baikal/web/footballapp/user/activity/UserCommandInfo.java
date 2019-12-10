@@ -3,6 +3,7 @@ package baikal.web.footballapp.user.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -130,12 +132,50 @@ public class UserCommandInfo extends AppCompatActivity {
             buttonSave = findViewById(R.id.userCommandSave);
             buttonClose = findViewById(R.id.userCommandClose);
             recyclerViewPlayer = findViewById(R.id.recyclerViewUserCommandPlayers);
-            adapter = new RVUserCommandPlayerAdapter(this, players);
+            adapter = new RVUserCommandPlayerAdapter(this, players, position -> {
+                UserCommandInfo.players.remove(players.get(position));
+                UserCommandInfo.adapter.notifyDataSetChanged();
+                Log.d("cancel invite id ", ""+UserCommandInfo.accepted.get(position).get_id());
+                Controller.getApi()
+                        .cancelInv(UserCommandInfo.accepted.get(position).get_id(), SaveSharedPreference.getObject().getToken())
+                        .enqueue(new Callback<Invite>() {
+                            @Override
+                            public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
+                                if(response.isSuccessful()){
+                                    if(response.body()!=null){
+                                        Log.d("cancel invite", "__SUCCCESS");
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
+                                Log.d("cancel invite", "__FAIL");
+                            }
+                        });
+            });
             recyclerViewPlayer.setAdapter(adapter);
             recyclerViewPlayer.setLayoutManager(new LinearLayoutManager(this));
             recyclerViewPlayer.setVisibility(View.GONE);
             recyclerViewPlayerInv = findViewById(R.id.recyclerViewUserCommandPlayersInv);
-            adapterInv = new RVUserCommandPlayerInvAdapter(this, playersInv);
+            adapterInv = new RVUserCommandPlayerInvAdapter(this, playersInv, position -> {
+                Controller.getApi().cancelInv(UserCommandInfo.allInvites.get(position).get_id(), SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
+                        if(response.isSuccessful()){
+//                            Toast.makeText(context,"Приглашение отменено", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
+//                        Toast.makeText(context,"Не удалось", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                UserCommandInfo.playersInv.remove(players.get(position));
+//            List<String> players = new ArrayList<>(UserCommandInfo.playersInv);
+                UserCommandInfo.adapterInv.notifyDataSetChanged();
+            }, "UserCommandInfo");
             recyclerViewPlayerInv.setAdapter(adapterInv);
             recyclerViewPlayerInv.setLayoutManager(new LinearLayoutManager(this));
             MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);

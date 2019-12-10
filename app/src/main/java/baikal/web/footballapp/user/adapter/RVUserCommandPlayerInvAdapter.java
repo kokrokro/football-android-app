@@ -1,43 +1,41 @@
 package baikal.web.footballapp.user.adapter;
 
+import android.app.Activity;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.user.activity.UserCommandInfo;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.util.List;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCommandPlayerInvAdapter.ViewHolder>{
-    private final UserCommandInfo context;
+    private final Activity context;
     private final List<String> players;
+    private final RVUserCommandPlayerAdapter.Listener listener;
+    private final String tag;
 
-    public RVUserCommandPlayerInvAdapter (UserCommandInfo context, List<String> players){
+    public RVUserCommandPlayerInvAdapter(Activity context, List<String> players, RVUserCommandPlayerAdapter.Listener listener, String tag){
         this.context = context;
         this.players = players;
+        this.listener = listener;
+        this.tag = tag;
     }
     @NonNull
     @Override
@@ -53,7 +51,9 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         String str = String.valueOf(count);
         holder.textNum.setText(str);
         Person player;
-
+        if(tag.equals("ChangePlayersForMatch")){
+            holder.buttonDelete.setImageResource(R.drawable.ic_plus);
+        }
         player = MankindKeeper.getInstance().getPersonById(players.get(position));
 
         try {
@@ -82,24 +82,7 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         }
         holder.buttonDelete.setOnClickListener(v -> {
             //post
-            Controller.getApi().cancelInv(UserCommandInfo.allInvites.get(position).get_id(), SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
-                @Override
-                public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
-                    if(response.isSuccessful()){
-                        Log.d("Debug", "____________");
-                        Toast.makeText(context,"Приглашение отменено", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                @Override
-                public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
-                    Toast.makeText(context,"Не удалось", Toast.LENGTH_SHORT).show();
-                    Log.d("Debug", "neeeet");
-                }
-            });
-
-            UserCommandInfo.playersInv.remove(players.get(position));
-//            List<String> players = new ArrayList<>(UserCommandInfo.playersInv);
-            UserCommandInfo.adapterInv.notifyDataSetChanged();
+           listener.onClick(position);
         });
     }
 

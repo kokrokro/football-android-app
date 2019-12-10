@@ -39,6 +39,7 @@ import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.PATCH;
 import retrofit2.http.POST;
@@ -199,7 +200,8 @@ public interface FootballApi {
     Call<List<Region>> getRegions();
     @GET("/api/crud/tourney")
     Call<List<Tourney>> getAllTourneys();
+
     @POST("api/matches/changePlayers/{id}")
-    Call<Match> changePlayersForMatch(@Path("id") String id, @Header("auth") String token, @Body List<RequestBody> players);
+    Call<Match> changePlayersForMatch(@Path("id") String id, @Header("auth") String token, @Body List<String> players);
 }
 

@@ -35,15 +35,19 @@ import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserCommandPlayerAdapter.ViewHolder> {
     private final List<Player> players;
-    private final UserCommandInfo context;
+    private final Activity context;
+    private final Listener listener;
 
 
 
-    public RVUserCommandPlayerAdapter(Activity context, List<Player> players) {
-        this.context = (UserCommandInfo) context;
+    public RVUserCommandPlayerAdapter(Activity context, List<Player> players, Listener listener) {
+        this.context = context;
         this.players = players;
+        this.listener = listener;
     }
-
+    public interface Listener{
+        void onClick(int position);
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -91,26 +95,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
 //        }
         holder.buttonDelete.setOnClickListener(v -> {
             //post
-            UserCommandInfo.players.remove(players.get(position));
-            UserCommandInfo.adapter.notifyDataSetChanged();
-            Log.d("cancel invite id ", ""+UserCommandInfo.accepted.get(position).get_id());
-            Controller.getApi()
-                    .cancelInv(UserCommandInfo.accepted.get(position).get_id(), SaveSharedPreference.getObject().getToken())
-                    .enqueue(new Callback<Invite>() {
-                @Override
-                public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
-                    if(response.isSuccessful()){
-                        if(response.body()!=null){
-                            Log.d("cancel invite", "__SUCCCESS");
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
-                    Log.d("cancel invite", "__FAIL");
-                }
-            });
+            listener.onClick(position);
         });
         holder.editNum.getBackground().setColorFilter(context.getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         holder.editNum.setOnFocusChangeListener((v, hasFocus) -> {

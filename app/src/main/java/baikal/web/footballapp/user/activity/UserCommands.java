@@ -114,7 +114,7 @@ public class UserCommands extends Fragment {
         RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(), teams, (t, l)->{
             DialogTeam dialogRegion =  new DialogTeam(i->{
                 if(i==0){
-                    Log.d("UserCommands", " за что? что я сделал не так? 0_о ");
+                    Log.d("UserCommands", "просто так кстати твоя вода здесь лежит много дней");
                     Intent intent = new Intent(getActivity(), TeamMatches.class);
                     Bundle bundle = new Bundle();
                     Bundle bundle1 = new Bundle();
@@ -148,14 +148,30 @@ public class UserCommands extends Fragment {
         trainerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         RVUserCommandAdapter adapter2 = new RVUserCommandAdapter(getActivity(),trainerTeams, (t,l) ->{
-            Intent intent = new Intent(getActivity(), UserCommandInfo.class);
-            Bundle bundle = new Bundle();
-            Bundle bundle1 = new Bundle();
-            bundle.putSerializable("COMMANDEDIT", t);
-            bundle1.putSerializable("COMMANDEDITLEAGUE", l);
-            intent.putExtras( bundle);
-            intent.putExtras( bundle1);
-            Objects.requireNonNull(getActivity()).startActivity(intent);
+            DialogTeam dialogRegion =  new DialogTeam(i->{
+                if(i==0){
+                    Intent intent = new Intent(getActivity(), TeamMatches.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(getActivity(), UserCommandInfo.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
+                }
+            });
+
+            dialogRegion.show(getChildFragmentManager(), "fragment_edit_name");
         });
         trainerRecyclerView.setAdapter(adapter2);
         scrollStatus = false;
