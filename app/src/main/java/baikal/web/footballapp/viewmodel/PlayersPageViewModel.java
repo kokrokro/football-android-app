@@ -3,11 +3,9 @@ package baikal.web.footballapp.viewmodel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.paging.LivePagedListBuilder;
 import androidx.paging.PagedList;
 
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.players.datasource.PlayersDataSourceFactory;
 import baikal.web.footballapp.repository.PlayersPageRepository;
 
 public class PlayersPageViewModel extends ViewModel {
