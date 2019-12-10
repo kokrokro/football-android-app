@@ -46,7 +46,7 @@ public class ChangePlayersForMatch extends AppCompatActivity {
         TextView textView = findViewById(R.id.userCommandPlayersInvText);
         textView.setText("Не участвующие:");
         textView = findViewById(R.id.editTeamTitleToolbar);
-        textView.setText("Редактировать состав");
+        textView.setText("Редактировать состав на матч");
 
         Match match = (Match) intent.getExtras().getSerializable("MATCH");
         Team team = (Team) intent.getExtras().getSerializable("TEAM");

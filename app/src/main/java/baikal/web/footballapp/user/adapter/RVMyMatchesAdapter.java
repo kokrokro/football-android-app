@@ -18,9 +18,11 @@ import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.ConfirmProtocol;
 import baikal.web.footballapp.user.activity.MyMatches;
@@ -68,21 +70,17 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         }catch (NullPointerException e){
             holder.textTime.setText(str);
         }
-        str = match.getPlace().getName();
-        try{
-            String[] stadium;
-            stadium = str.split(":", 1);
-            holder.textStadium.setText(stadium[0]);
-        }catch (NullPointerException e){
-            holder.textStadium.setText(str);
-        }
 
-        str = match.getTour();
-        holder.textTour.setText(str);
-        int score1 = 0;
-        int score2 = 0;
-        List<String> teamPlayers1 = new ArrayList<>();
-        List<String> teamPlayers2 = new ArrayList<>();
+        try{
+            str = match.getPlace().getName();
+            holder.textStadium.setText(str);
+        }catch (NullPointerException e){
+            holder.textStadium.setText("Неизвестно");
+        }
+        try{
+            str = match.getTour();
+            holder.textTour.setText(str);
+        }catch (NullPointerException ignored){}
 
         League league = null;
         for (League league1 : MankindKeeper.getInstance().allLeagues){
@@ -98,11 +96,33 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         try {
             holder.textCommand1.setText(team1.getName());
             holder.textCommand2.setText(team2.getName());
-        }catch (NullPointerException e){
+        }catch (NullPointerException ignored){
 
         }
+        str = "Ваш статус: ";
+        boolean isProtocolAvailable = false;
+        for(Referee referee : match.getReferees()){
+            if(referee.getPerson().equals(SaveSharedPreference.getObject().getUser().get_id())){
+                switch (referee.getType()){
+                    case "firstReferee":
+                        str += "1 судья";
+                        break;
+                    case "secondReferee":
+                        str += "2 судья";
+                        break;
+                    case "thirdReferee":
+                        str += "3 судья";
+                        isProtocolAvailable = true;
+                        break;
+                    case "timekeeper":
+                        str += "хронометрист";
+                        break;
+                }
+                break;
+            }
+        }
 
-
+        holder.matchStatus.setText(str);
 //        for (Team team: league.getTeams()){
 //            if (team.getId().equals(match.getTeamOne())){
 //                team1 = team;
@@ -178,16 +198,14 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
 
 //        if (check){
 //            holder.showProtocol.setVisibility(View.VISIBLE);
+            final boolean status = isProtocolAvailable;
             final Team finalTeam = team1;
             final Team finalTeam1 = team2;
             holder.layout.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
-                int count = MyMatches.matches.indexOf(match);
-                bundle.putSerializable("PROTOCOLMATCH", match);
-                bundle.putSerializable("PROTOCOLTEAM1", finalTeam);
-                bundle.putSerializable("PROTOCOLTEAM2", finalTeam1);
-                bundle.putInt("MATCHPOSITION", count);
+                bundle.putSerializable("CONFIRMPROTOCOL", match);
+                bundle.putBoolean("STATUS", status );
                 intent.putExtras(bundle);
                 activity.startActivity(intent);
             });
@@ -214,13 +232,13 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         final TextView textCommand2;
         final ImageView image1;
         final ImageView image2;
-        final Button button;
+        final TextView matchStatus;
         final RelativeLayout layout;
         final View line;
         final TextView textPenalty;
         ViewHolder(View item) {
             super(item);
-            button = item.findViewById(R.id.myMatchEdit);
+            matchStatus = item.findViewById(R.id.matchStatus);
             textDate = item.findViewById(R.id.myMatchDate);
             textTime = item.findViewById(R.id.myMatchTime);
             textTour = item.findViewById(R.id.myMatchLeague);

@@ -1,6 +1,8 @@
 package baikal.web.footballapp.user.activity;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,20 +17,26 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.adapter.RVUserCommandAdapter;
+import baikal.web.footballapp.user.adapter.SpinnerTournamentAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -241,6 +249,37 @@ public class UserCommands extends Fragment {
 //        else {
 //            linearLayout.setVisibility(View.GONE);
 //        }
+
+
+
+
+
+
+
+
+
+
+
+
+//        List<String> filterArray = Arrays.asList("Созданные", "Участие", "Тренерство");
+//
+//        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(getContext(),  R.layout.spinner_item, filterArray);
+//
+//        adapterSpinner.setDropDownViewResource(R.layout.spinner_dropdown);
+//        Spinner spinner = view.findViewById(R.id.userCommandFilterSpinner);
+//        Drawable spinnerDrawable = spinner.getBackground().getConstantState().newDrawable();
+//        spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+//        spinner.setBackground(spinnerDrawable);
+//        spinner.setSelection(0);
+//        spinner.setAdapter(adapterSpinner);
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+//                String currentOption = (String) parent.getItemAtPosition(pos);
+//            }
+//
+//
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }});
         return view;
     }
 

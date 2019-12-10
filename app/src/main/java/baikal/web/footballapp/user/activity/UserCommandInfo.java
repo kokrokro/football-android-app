@@ -17,6 +17,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
@@ -75,12 +77,12 @@ public class UserCommandInfo extends AppCompatActivity {
         ImageButton buttonSave;
         Button buttonAdd;
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_command_info);
         teamName = findViewById(R.id.editTeamTitle);
         teamTrainer = findViewById(R.id.newCommandTrainer);
         teamNumber = findViewById(R.id.newCommandNumber);
+
         try {
 
 
@@ -94,7 +96,10 @@ public class UserCommandInfo extends AppCompatActivity {
             teamName.setText(team.getName());
             String str = team.getTrainer();
             isCreator = team.getCreator().equals(SaveSharedPreference.getObject().getUser().get_id());
-
+            if(!isCreator){
+                LinearLayout linearLayout = findViewById(R.id.linLayoutInformationTeam);
+                linearLayout.setVisibility(View.GONE);
+            }
             Person trainer = MankindKeeper.getInstance().getPersonById(team.getTrainer());
             if (trainer != null)
                 str = trainer.getSurname()+" "+trainer.getName();

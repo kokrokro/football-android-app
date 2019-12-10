@@ -59,13 +59,11 @@ public class RVTeamMatchesAdapter extends RecyclerView.Adapter<RVTeamMatchesAdap
         final TextView textCommand2;
         final ImageView image1;
         final ImageView image2;
-        final Button button;
         final RelativeLayout layout;
         final View line;
         final TextView textPenalty;
         ViewHolder(View item) {
             super(item);
-            button = item.findViewById(R.id.myMatchEdit);
             textDate = item.findViewById(R.id.myMatchDate);
             textTime = item.findViewById(R.id.myMatchTime);
             textTour = item.findViewById(R.id.myMatchLeague);

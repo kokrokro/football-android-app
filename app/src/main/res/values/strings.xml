@@ -38,8 +38,10 @@
     <string name="showAllAds">Показать все объявления</string>
     <string name="tournamentTime">13:30</string>
     <string name="tournamentStadium">Не назначено</string>
+    <string name="matchStatus">Статус</string>
     <string name="tournamentCommandTitle1">Лара</string>
     <string name="myCommands">Мои команды</string>
+    <string name="userCommandFilter">Показать:</string>
     <string name="myCommands2">Команды</string>
     <string name="myCommands3">Тренерство</string>
     <string name="commandPlayer">Игрок</string>

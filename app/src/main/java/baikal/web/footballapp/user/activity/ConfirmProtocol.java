@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,6 +46,7 @@ public class ConfirmProtocol extends AppCompatActivity {
     private final Logger log = LoggerFactory.getLogger(ConfirmProtocol.class);
     private MatchPopulate match;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
@@ -68,8 +70,15 @@ public class ConfirmProtocol extends AppCompatActivity {
         textTitle1 = findViewById(R.id.confirmProtocolCommand1Title);
         textTitle2 = findViewById(R.id.confirmProtocolCommand2Title);
         imageClose.setOnClickListener(v -> finish());
+        Intent initialIntent = getIntent();
+        try{
+            boolean status = initialIntent.getExtras().getBoolean("STATUS");
+            if(!status){
+                fab.setVisibility(View.GONE);
+            }
+        }catch (Exception ignored){}
         try {
-            match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("CONFIRMPROTOCOL");
+            match = (MatchPopulate) Objects.requireNonNull(initialIntent.getExtras()).getSerializable("CONFIRMPROTOCOL");
             HashMap<String, Team> teams = null;
             if (match != null) {
                 teams = getTeams(match);
@@ -88,6 +97,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                     }
                 });
             }
+
 
             if (teams != null && teams.get("TeamOne") != null)
                 textTitle1.setText(Objects.requireNonNull(teams.get("TeamOne")).getName());
