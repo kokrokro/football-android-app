@@ -199,5 +199,7 @@ public interface FootballApi {
     Call<List<Region>> getRegions();
     @GET("/api/crud/tourney")
     Call<List<Tourney>> getAllTourneys();
+    @POST("api/matches/changePlayers/{id}")
+    Call<Match> changePlayersForMatch(@Path("id") String id, @Header("auth") String token, @Body List<RequestBody> players);
 }
 

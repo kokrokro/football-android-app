@@ -70,17 +70,17 @@ public class AdsPage extends Fragment {
 
     @SuppressLint("CheckResult")
     private void checkConnection() {
-        ReactiveNetwork
-                .observeNetworkConnectivity(getActivity().getApplicationContext())
-                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isConnected -> {
-                    // isConnected can be true or false
-                    if (isConnected) {
+//        ReactiveNetwork
+//                .observeNetworkConnectivity(getActivity().getApplicationContext())
+//                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(isConnected -> {
+//                    // isConnected can be true or false
+//                    if (isConnected) {
                         GetAllAds("5", "0");
-                    }
-                });
+//                    }
+//                });
     }
 
     @SuppressLint("CheckResult")

@@ -1,6 +1,7 @@
 package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -188,7 +189,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
                 bundle.putSerializable("PROTOCOLTEAM2", finalTeam1);
                 bundle.putInt("MATCHPOSITION", count);
                 intent.putExtras(bundle);
-                context.startActivity(intent);
+                activity.startActivity(intent);
             });
 //        }
         if (position==(matches.size()-1)){
@@ -234,7 +235,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             textPenalty = item.findViewById(R.id.myMatchPenalty);
         }
     }
-    private String TimeToString(String str)  {
+    public String TimeToString(String str)  {
         String dateDOB = "";
         try {
             SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);

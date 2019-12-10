@@ -113,8 +113,17 @@ public class UserCommands extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(), teams, (t, l)->{
             DialogTeam dialogRegion =  new DialogTeam(i->{
-                if(i==0)
-                    Log.d("UserCommands", "LoL ?");
+                if(i==0){
+                    Log.d("UserCommands", " вика получишь щас ");
+                    Intent intent = new Intent(getActivity(), TeamMatches.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
+                }
                 else {
                     Intent intent = new Intent(getActivity(), UserCommandInfo.class);
                     Bundle bundle = new Bundle();
