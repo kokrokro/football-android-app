@@ -49,7 +49,7 @@ public class ChooseTrainer extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(this, R.style.MyProgressDialogTheme);
         mProgressDialog.setIndeterminate(true);
 
-        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
+        allPeople.addAll(MankindKeeper.getInstance().allPerson.keySet());
 //        mProgressDialog.setMessage("Загрузка...");
         getAllPlayers("10", "0");
         NestedScrollView scroller = findViewById(R.id.scrollerPlayersPage);
@@ -131,8 +131,8 @@ public class ChooseTrainer extends AppCompatActivity {
     private void savePlayers(List<Person> people) {
         List<String> res = new ArrayList<>();
         for (Person p: people)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (MankindKeeper.getInstance().getPersonById(p.get_id()) == null) {
+                MankindKeeper.getInstance().addPerson(p);
                 res.add(p.getId());
             }
         adapter.dataChanged(res);
@@ -169,8 +169,8 @@ public class ChooseTrainer extends AppCompatActivity {
 
     private void saveAllPlayers(List<Person> peopleList) {
         for (Person p: peopleList)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (MankindKeeper.getInstance().getPersonById(p.get_id()) == null) {
+                MankindKeeper.getInstance().addPerson(p);
                 allPeople.add(p.getId());
             }
         adapter.dataChanged(allPeople);

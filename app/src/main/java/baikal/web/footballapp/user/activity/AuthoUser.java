@@ -421,23 +421,6 @@ public class AuthoUser extends Fragment {
 //        Log.d(TAG,subscribe.toString());
 //    }
 
-//    private void getParticipation(GetLeagueInfo getLeagueInfo, String teamId, PersonTeams team) {
-//        for (Team team1 : getLeagueInfo.getLeagueInfo().getTeams()) {
-//            if (team1.getId().equals(teamId)) {
-//                if (team1.getCreator().equals(person.getId())) {
-//                    if (!personOwnCommand.contains(team)) {
-//                        personOwnCommand.add(team);
-//                    }
-//                } else {
-//                    if (!personCommand.contains(team)) {
-//                        personCommand.add(team);
-//                    }
-//                }
-//                break;
-//            }
-//        }
-//    }
-
     @SuppressLint("SetTextI18n")
     public void SetInvNum(Activity activity, int position) {
         Typeface font = Typeface.createFromAsset(activity.getAssets(), "fonts/manrope_bold.otf");
@@ -492,7 +475,7 @@ public class AuthoUser extends Fragment {
                 user.setUser(person);
                 SaveSharedPreference.saveObject(user);
 
-                MankindKeeper.getInstance().allPlayers.put(person.getId(), person);
+                MankindKeeper.getInstance().addPerson(person);
             }
         }
     }

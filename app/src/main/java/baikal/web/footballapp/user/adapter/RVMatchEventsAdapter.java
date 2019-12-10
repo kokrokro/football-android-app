@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Event;
 import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.user.activity.MatchEvents;
 
@@ -24,8 +25,8 @@ public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdap
     Logger log = LoggerFactory.getLogger(MatchEvents.class);
     private final MatchEvents context;
     private final HashMap<Integer, String> halves;
-    private final List<PlayerEvent> playerAllEvents;
-    public RVMatchEventsAdapter(Activity context, HashMap<Integer, String> halves, List<PlayerEvent> playerAllEvents){
+    private final List<Event> playerAllEvents;
+    public RVMatchEventsAdapter(Activity context, HashMap<Integer, String> halves, List<Event> playerAllEvents){
         this.context = (MatchEvents) context;
         this.halves = halves;
         this.playerAllEvents = playerAllEvents;
@@ -41,16 +42,12 @@ public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdap
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String half = halves.get(position);
         holder.textHalf.setText(half);
-        List<PlayerEvent> playerEvents = new ArrayList<>();
-        for (PlayerEvent playerEvent : playerAllEvents){
-            if (playerEvent.getEvent().getTime().equals(half)){
+        List<Event> playerEvents = new ArrayList<>();
+        for (Event playerEvent : playerAllEvents){
+            if (playerEvent.getTime().equals(half)){
                 playerEvents.add(playerEvent);
             }
         }
-        RVEventsAdapter adapter = new RVEventsAdapter(context, playerEvents);
-        holder.recyclerView.setAdapter(adapter);
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
     }
 
     @Override

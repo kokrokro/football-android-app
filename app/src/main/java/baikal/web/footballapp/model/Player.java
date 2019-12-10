@@ -12,7 +12,7 @@ public class Player implements Serializable {
     private String inviteStatus;
     @SerializedName("number")
     @Expose
-    private String number;
+    private Integer number;
     @SerializedName("activeYellowCards")
     @Expose
     private Integer activeYellowCards;
@@ -52,11 +52,11 @@ public class Player implements Serializable {
         this.inviteStatus = inviteStatus;
     }
 
-    public String getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(String number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 

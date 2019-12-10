@@ -18,7 +18,6 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.home.adapter.RecyclerViewAdsAdapter;
 import baikal.web.footballapp.model.Announce;
-import baikal.web.footballapp.model.Announces;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 
 import org.slf4j.Logger;

@@ -15,7 +15,7 @@ public class Event implements Serializable {
     private String eventType;
     @SerializedName("person")
     @Expose
-    private String player;
+    private String person;
     @SerializedName("time")
     @Expose
     private String time;
@@ -39,12 +39,12 @@ public class Event implements Serializable {
         this.eventType = eventType;
     }
 
-    public String getPlayer() {
-        return player;
+    public String getPerson() {
+        return person;
     }
 
-    public void setPlayer(String player) {
-        this.player = player;
+    public void setPerson(String player) {
+        this.person = player;
     }
 
     public String getTime() {
@@ -61,5 +61,17 @@ public class Event implements Serializable {
 
     public void setTeam(String team) {
         this.team = team;
+    }
+
+    public String toString()
+    {
+        String ans = "";
+
+        ans += "_id: " + getId() + "\n";
+        ans += "eventType: " + getEventType() + "\n";
+        ans += "team: " + getTeam() + "\n";
+        ans += "time: " + getTime() + "\n";
+
+        return ans;
     }
 }

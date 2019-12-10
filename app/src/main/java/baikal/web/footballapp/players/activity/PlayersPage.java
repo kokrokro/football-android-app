@@ -59,8 +59,8 @@ public class PlayersPage extends Fragment {
         mProgressDialog = new ProgressDialog(getActivity(), R.style.MyProgressDialogTheme);
         mProgressDialog.setIndeterminate(true);
 
-        Log.d(TAG, "OnCreateView: " + MankindKeeper.getInstance().allPlayers.keySet().toString());
-        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
+//        Log.d(TAG, "OnCreateView: " + MankindKeeper.getInstance().allPerson.keySet().toString());
+        allPeople.addAll(MankindKeeper.getInstance().allPerson.keySet());
 
 //        mProgressDialog.setMessage("Загрузка...");
         final View view;
@@ -144,8 +144,8 @@ public class PlayersPage extends Fragment {
     private void savePlayers(List<Person> people) {
         List<String> res = new ArrayList<>();
         for (Person p: people)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (MankindKeeper.getInstance().getPersonById(p.get_id()) != null) {
+                MankindKeeper.getInstance().addPerson(p);
                 res.add(p.getId());
             }
         adapter.dataChanged(res);
@@ -181,18 +181,18 @@ public class PlayersPage extends Fragment {
         Log.d(TAG, "saved all players " + peopleList.size());
         for (Person p: peopleList) {
 //            Log.d(TAG, p.toString());
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (!MankindKeeper.getInstance().allPerson.containsKey(p.get_id())) {
+                MankindKeeper.getInstance().allPerson.put(p.get_id(), p);
                 allPeople.add(p.getId());
             }
         }
 
-        if (allPeople.size() != MankindKeeper.getInstance().allPlayers.size()) {
+        if (allPeople.size() != MankindKeeper.getInstance().allPerson.size()) {
             allPeople.clear();
-            allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
+            allPeople.addAll(MankindKeeper.getInstance().allPerson.keySet());
         }
 
-        Log.d(TAG, MankindKeeper.getInstance().allPlayers.keySet().toString());
+        Log.d(TAG, MankindKeeper.getInstance().allPerson.keySet().toString());
 
         Log.d(TAG, "AllPeople:\n");
         for (String p: allPeople)

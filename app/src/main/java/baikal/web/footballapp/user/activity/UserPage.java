@@ -107,7 +107,7 @@ public class UserPage extends Fragment {
                 authoUser = new AuthoUser(activity);
                 User user = (User) Objects.requireNonNull(data.getExtras()).getSerializable("PERSONREGINFO");
                 Person person = Objects.requireNonNull(user).getUser();
-                MankindKeeper.getInstance().allPlayers.put(person.get_id(), person);
+                MankindKeeper.getInstance().allPerson.put(person.get_id(), person);
                 SaveSharedPreference.setLoggedIn(Objects.requireNonNull(getActivity()).getApplicationContext(), true);
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

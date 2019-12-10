@@ -52,7 +52,7 @@ public class TrainerAdapter extends RecyclerView.Adapter<TrainerAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         try {
-            Person currentPlayer = MankindKeeper.getInstance().allPlayers.get(allPlayers.get(position));
+            Person currentPlayer = MankindKeeper.getInstance().getPersonById(allPlayers.get(position));
             String DOB = currentPlayer != null ? currentPlayer.getBirthdate() : "error";
             DateToString dateToString = new DateToString();
             holder.textDOB.setText(dateToString.ChangeDate(DOB));

@@ -71,6 +71,16 @@ public class Person implements Serializable {
     @Expose
     private List<PendingTeamInvite> pendingTeamInvites = null;
 
+    public String getSurnameAndName() {
+        String p1 = "";
+        if (surname != null)
+            p1 = surname;
+
+        if (name != null)
+            p1 += " " + name;
+
+        return p1;
+    }
 
     public String getSurnameWithInitials() {
         String p1 = "";

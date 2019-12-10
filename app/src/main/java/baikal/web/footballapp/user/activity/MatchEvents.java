@@ -14,6 +14,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
 import baikal.web.footballapp.user.adapter.RVMatchEventsAdapter;
@@ -82,19 +84,19 @@ public class MatchEvents extends AppCompatActivity {
         });
         try {
             Intent arguments = getIntent();
-            TeamTitleClubLogoMatchEvents playerEvents = (TeamTitleClubLogoMatchEvents) Objects.requireNonNull(arguments.getExtras()).getSerializable("PROTOCOLEVENTS");
+            MatchPopulate match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("MATCH");
             halves = new HashMap<>();
             int i = 0;
-            if (playerEvents.getPlayerEvents() != null) {
-                for (PlayerEvent playerEvent : playerEvents.getPlayerEvents()) {
-                    if (!halves.containsValue(playerEvent.getEvent().getTime())) {
-                        halves.put(i, playerEvent.getEvent().getTime());
+            if (match != null && match.getEvents() != null) {
+                for (Event playerEvent : match.getEvents()) {
+                    if (!halves.containsValue(playerEvent.getTime())) {
+                        halves.put(i, playerEvent.getTime());
                         i++;
                     }
                 }
             }
 //            Collections.sort(halves, new HalvesComparator());
-            RVMatchEventsAdapter adapter = new RVMatchEventsAdapter(this, halves, playerEvents.getPlayerEvents());
+            RVMatchEventsAdapter adapter = new RVMatchEventsAdapter(this, halves, match.getEvents());
             recyclerView.setAdapter(adapter);
         } catch (NullPointerException e) {
             LinearLayout layout = findViewById(R.id.emptyEvents);

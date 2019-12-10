@@ -30,6 +30,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
     private final PersonalActivity activity;
     private final List<Team> list;
     private final Listener listener;
+
     public RVUserCommandAdapter (Activity activity, List<Team> list, Listener listener){
         this.activity = (PersonalActivity) activity;
 //        this.context = context;

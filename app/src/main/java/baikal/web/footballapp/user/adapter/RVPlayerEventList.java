@@ -6,8 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class RVCommandEventListAdapter extends RecyclerView.Adapter<RVCommandEventListAdapter.ViewHolder> {
-
+public class RVPlayerEventList extends RecyclerView.Adapter<RVPlayerEventList.ViewHolder> {
 
     @NonNull
     @Override
@@ -25,7 +24,7 @@ public class RVCommandEventListAdapter extends RecyclerView.Adapter<RVCommandEve
         return 0;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder  {
+    class ViewHolder extends RecyclerView.ViewHolder {
         ViewHolder(View itemView) {
             super(itemView);
         }

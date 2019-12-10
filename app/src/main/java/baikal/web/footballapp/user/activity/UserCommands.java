@@ -77,44 +77,35 @@ public class UserCommands extends Fragment {
             id = "";
         }
 
-        for(Team team : PersonalActivity.allTeams){
-            if(team.getTrainer().equals(id)){
+        for(Team team : PersonalActivity.allTeams)
+            if(team.getTrainer().equals(id))
                 trainerTeams.add(team);
-            }
-        }
-        if (teams.size()==0){
-            linearOwnCommand.setVisibility(View.GONE);
-        }
-        else {
-            textView2.setVisibility(View.VISIBLE);
-        }
-        if (AuthoUser.personCommand.size()==0){
-            linearUserCommand.setVisibility(View.GONE);
-        }
-        else {
-            textView.setVisibility(View.VISIBLE);
-        }
-        if(trainerTeams.size()==0){
-            linearLayoutTrainerTeams.setVisibility(View.GONE);
-        }
-        else {
-            textTrainerTeams.setVisibility(View.VISIBLE);
-        }
 
-        if(teams.size()!=0 && (AuthoUser.personCommand.size()!=0 || trainerTeams.size()!=0)){
+        if (teams.size()==0)
+            linearOwnCommand.setVisibility(View.GONE);
+        else
+            textView2.setVisibility(View.VISIBLE);
+
+        if (AuthoUser.personCommand.size()==0)
+            linearUserCommand.setVisibility(View.GONE);
+        else
+            textView.setVisibility(View.VISIBLE);
+
+        if(trainerTeams.size()==0)
+            linearLayoutTrainerTeams.setVisibility(View.GONE);
+        else
+            textTrainerTeams.setVisibility(View.VISIBLE);
+
+        if(teams.size()!=0 && (AuthoUser.personCommand.size()!=0 || trainerTeams.size()!=0))
             line.setVisibility(View.VISIBLE);
-        }
-        if((teams.size()==0 || AuthoUser.personCommand.size()!=0) && trainerTeams.size()!=0){
+        if((teams.size()==0 || AuthoUser.personCommand.size()!=0) && trainerTeams.size()!=0)
             lineTrainer.setVisibility(View.VISIBLE);
-        }
 
         LinearLayout linearLayout = view.findViewById(R.id.emptyCommand);
-        if(teams.size()==0 && AuthoUser.personCommand.size()==0 && trainerTeams.size()==0){
+        if(teams.size()==0 && AuthoUser.personCommand.size()==0 && trainerTeams.size()==0)
             linearLayout.setVisibility(View.VISIBLE);
-        }
-        else {
+        else
             linearLayout.setVisibility(View.GONE);
-        }
 
         NestedScrollView scroller = view.findViewById(R.id.userCommandScroll);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
@@ -122,9 +113,8 @@ public class UserCommands extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(), teams, (t, l)->{
             DialogTeam dialogRegion =  new DialogTeam(i->{
-                if(i==0){
+                if(i==0)
                     Log.d("UserCommands", "LoL ?");
-                }
                 else {
                     Intent intent = new Intent(getActivity(), UserCommandInfo.class);
                     Bundle bundle = new Bundle();

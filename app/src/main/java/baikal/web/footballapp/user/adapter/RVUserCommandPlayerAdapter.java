@@ -15,29 +15,20 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.RequestOptions;
-import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.UserCommandInfo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
@@ -66,16 +57,15 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
 //        String str = Integer.toString(count);
         String str = String.valueOf(count);
         holder.textNum.setText(str);
-        Person player = null;
+        Person player;
 
-        if (MankindKeeper.getInstance().allPlayers.containsKey(players.get(position).getPerson()))
-            player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getPerson());
+        player = MankindKeeper.getInstance().getPersonById(players.get(position).getPerson());
 
         holder.textName.setText(player.getSurnameWithInitials());
-        str = players.get(position).getNumber();
+        str = String.valueOf(players.get(position).getNumber());
         try {
             holder.editNum.setText(str);
-        } catch (Exception e){}
+        } catch (Exception ignored){}
         try {
 
             String uriPic = BASE_URL;
@@ -88,9 +78,8 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
                     intent.putExtra("player_photo", finalUriPic);
                     context.startActivity(intent);
                 }
-
             });
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -109,7 +98,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
                     .cancelInv(UserCommandInfo.accepted.get(position).get_id(), SaveSharedPreference.getObject().getToken())
                     .enqueue(new Callback<Invite>() {
                 @Override
-                public void onResponse(Call<Invite> call, Response<Invite> response) {
+                public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
                     if(response.isSuccessful()){
                         if(response.body()!=null){
                             Log.d("cancel invite", "__SUCCCESS");
@@ -118,7 +107,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
                 }
 
                 @Override
-                public void onFailure(Call<Invite> call, Throwable t) {
+                public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
                     Log.d("cancel invite", "__FAIL");
                 }
             });

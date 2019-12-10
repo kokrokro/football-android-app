@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
@@ -37,7 +36,7 @@ public class RVCommandStructureAdapter extends RecyclerView.Adapter<RVCommandStr
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Person player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getId());
+        Person player = MankindKeeper.getInstance().getPersonById(players.get(position).getId());
         
         try {
             String str;

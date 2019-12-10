@@ -51,7 +51,7 @@ public class CommandStructureFragment extends Fragment {
         textCouch = view.findViewById(R.id.commandTrainer);
         recyclerView = view.findViewById(R.id.recyclerViewCommandStructure);
         imageCoach = view.findViewById(R.id.commandTrainerPhoto);
-        Person coach = MankindKeeper.getInstance().allPlayers.get(team.getCreator());
+        Person coach = MankindKeeper.getInstance().getPersonById(team.getCreator());
 
         SetImage setImage = new SetImage();
         String str;

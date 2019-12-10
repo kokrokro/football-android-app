@@ -69,10 +69,9 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         String str;
-        String uriPic = BASE_URL;
         Invite pendingTeamInvite = list.get(position);
         League league = null;
-        Person person = null;
+        Person person;
         Tourney tourney = null;
         Team team = pendingTeamInvite.getTeam();
         for (League tournament : MankindKeeper.getInstance().allLeagues) {
@@ -88,15 +87,9 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             }
         }
 
-        for (Map.Entry<String, Person> p: MankindKeeper.getInstance().allPlayers.entrySet()) {
+        person = MankindKeeper.getInstance().getPersonById(team.getTrainer());
 
-        }
-
-        if (MankindKeeper.getInstance().allPlayers.containsKey(team.getTrainer())) {
-            person = MankindKeeper.getInstance().allPlayers.get(team.getTrainer());
-        }
-
-        try {
+        if (tourney != null) {
             str = tourney.getName() + ". " + league.getName();
             holder.textTournamentTitle.setText(str);
             DateToString dateToString = new DateToString();
@@ -104,13 +97,17 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             holder.textTournamentDate.setText(str);
             str = "Тренер: ";
             CheckName checkName = new CheckName();
-            str += checkName.check(person.getSurname(), person.getName(), person.getLastname());
+
+            try {
+                str += checkName.check(person.getSurname(), person.getName(), person.getLastname());
+            } catch (Exception ignored) { str = ""; }
+
             holder.textCoach.setText(str);
 
             str = "Команда: ";
             str += team.getName();
             holder.textCommand.setText(str);
-        } catch (Exception e) {}
+        }
 
         final League finalLeague = league;
         final Team finalTeam = team;
@@ -124,14 +121,14 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             //post
             Controller.getApi().rejectInv(pendingTeamInvite.get_id(),SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
                 @Override
-                public void onResponse(Call<Invite> call, Response<Invite> response) {
+                public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
                     if(response.isSuccessful()){
                         Toast.makeText(context, "Вы отклонили принлашение", Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Invite> call, Throwable t) {
+                public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
                     Toast.makeText(context, "Не удалось отклонить приглашение", Toast.LENGTH_LONG).show();
                 }
             });
@@ -169,7 +166,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
         Call<User> call = Controller.getApi().playerInv(invite, SaveSharedPreference.getObject().getToken());
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         User user = response.body();
@@ -256,7 +253,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
 
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 log.error("ERROR: onResponse", t);
                 Toast.makeText(activity, "Ошибка", Toast.LENGTH_LONG).show();
             }

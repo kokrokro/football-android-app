@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:padding="6dp">
+
+    <ImageButton
+        android:id="@+id/event_goal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_event_goal"
+        android:padding="28dp"
+        android:layout_margin="4dp"/>
+
+    <ImageButton
+        android:id="@+id/event_yellow_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_event_yellow_card"
+        android:layout_margin="6dp"/>
+
+    <ImageButton
+        android:id="@+id/event_red_card"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_event_red_card"
+        android:layout_margin="6dp"/>
+
+    <ImageButton
+        android:id="@+id/event_penalty_success"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_event_penalty_success"
+        android:padding="28dp"
+        android:layout_margin="4dp"/>
+
+    <ImageButton
+        android:id="@+id/event_penalty_failure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_event_penalty_failure"
+        android:padding="28dp"
+        android:layout_margin="4dp"/>
+</LinearLayout>

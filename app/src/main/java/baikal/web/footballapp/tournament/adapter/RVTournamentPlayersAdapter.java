@@ -11,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStats;
@@ -42,8 +41,8 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
         Person player = null;
         try {
             Log.d(TAG, players.get(position).getId());
-            Log.d(TAG, String.valueOf(MankindKeeper.getInstance().allPlayers.containsKey(players.get(position).getId())));
-            player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getId());
+//            Log.d(TAG, String.valueOf(MankindKeeper.getInstance().allPerson.containsKey(players.get(position).getId())));
+            player = MankindKeeper.getInstance().getPersonById(players.get(position).getId());
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }

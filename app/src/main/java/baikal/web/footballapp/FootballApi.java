@@ -2,18 +2,11 @@ package baikal.web.footballapp;
 
 import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.ActiveMatches;
-import baikal.web.footballapp.model.AddTeam;
 import baikal.web.footballapp.model.Advertisings;
 import baikal.web.footballapp.model.Announce;
-import baikal.web.footballapp.model.Announces;
 import baikal.web.footballapp.model.Club;
-import baikal.web.footballapp.model.Clubs;
 import baikal.web.footballapp.model.DataClub;
-import baikal.web.footballapp.model.EditCommand;
-import baikal.web.footballapp.model.EditCommandResponse;
 import baikal.web.footballapp.model.EditProfile;
-import baikal.web.footballapp.model.EditProtocolBody;
-import baikal.web.footballapp.model.GetLeagueInfo;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
@@ -32,7 +25,6 @@ import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamStats;
-import baikal.web.footballapp.model.Tournaments;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 
@@ -45,8 +37,6 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -77,7 +67,6 @@ public interface FootballApi {
     //get all clubs
     @GET("/api/clubs")
     Call<List<Club>> getAllClubs();
-//    Call<Clubs> getAllClubs();
 
     @GET("/api/stats/person?_populate=person")
     Call<List<PersonStats>> getPersonStats(@Query("person") String person, @Query("on_") String on);
@@ -88,10 +77,6 @@ public interface FootballApi {
     //get coming matches
     @GET("/api/matches/upcoming")
     Observable<ActiveMatches> getComingMatches();
-
-    @PATCH("/api/matches/changePlayers/{id}")
-    Call<Match> assignTeamOnMatch(@Path("id") String id, @Body Match match);
-
 
     //get referees type==referee
     //get players type==player
@@ -111,18 +96,20 @@ public interface FootballApi {
     Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
     @GET("api/crud/match?_populate=teamOne+teamTwo+place")
     Call<List<MatchPopulate>> getMatches(@Query("_id") String id, @Query("referees.person") String referee);
+    @GET("api/crud/match?_populate=teamOne+teamTwo+place")
+    Call<List<MatchPopulate>> getMatchById(@Query("_id") String id);
     //edit web
     @PATCH("/api/crud/match/{id}")
     Call<Match> editMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
+    @PATCH("/api/crud/match/{id}")
+    Observable<Match> editProtocolMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
+
     @Multipart
     @PATCH("/api/crud/person/{id}")
     Call<Person> editProfile(@Path("id") String id, @Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
     @Multipart
     @PATCH("/api/crud/person/{id}")
     Call<EditProfile> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Part("favoriteTourney") List<RequestBody> favoriteTourney);
-    //edit web profile
-    @POST("/api/editPlayerInfo")
-    Call<EditProfile> editProfileText(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
     @GET("/api/crud/person?_populate=favoriteTourney&_select=favoriteTourney")
     Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);
@@ -133,19 +120,9 @@ public interface FootballApi {
     @GET("api/crud/person")
     Call<List<Person>> getPerson(@Query("_id") String id);
 
-    //edit match protocol event and playerList
-    @POST("/api/matches/changeProtocol")
-    Call<Matches> editProtocol(@Header("auth") String authorization, @Body EditProtocolBody body);
-
     //edit match protocol referees
     @POST("/api/matches/setreferees")
     Observable<Response<Matches>> editProtocolReferees(@Header("auth") String authorization, @Body RefereeRequestList body);
-
-
-    //confirm protocol
-    @FormUrlEncoded
-    @POST("/api/matches/acceptProtocol")
-    Observable<Response<ServerResponse>> confirmProtocol(@Header("auth") String authorization, @Field("_id") String id);
 
     //set referee
     @POST("/api/matches/setmultireferees")
@@ -202,7 +179,7 @@ public interface FootballApi {
     @GET("api/crud/league?_populate=matches")
     Call<List<League>> getMainRefsLeagues(@Query("mainReferee") String mainRefId);
 
-    @GET("/api/crud/team")
+    @GET("/api/crud/team?_populate=players")
     Call<List<Team>> getTeam(@Query("_id") String id);
 
     @GET("/api/stats/team")

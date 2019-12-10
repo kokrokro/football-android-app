@@ -54,7 +54,7 @@ public class RecyclerViewPlayersAdapter extends RecyclerView.Adapter<RecyclerVie
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         try {
             Log.d(TAG, String.valueOf(position));
-            Person p = MankindKeeper.getInstance().allPlayers.get(allPlayers.get(position));
+            Person p = MankindKeeper.getInstance().getPersonById(allPlayers.get(position));
             String DOB = p != null ? p.getBirthdate() : "error";
             DateToString dateToString = new DateToString();
             holder.textDOB.setText(dateToString.ChangeDate(DOB));

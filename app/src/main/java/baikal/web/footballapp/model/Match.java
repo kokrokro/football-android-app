@@ -74,7 +74,33 @@ public class Match implements Serializable {
     @Expose
     private String fouls;
 
+    public Match () {}
 
+    public Match (MatchPopulate matchPopulate) {
+        setId(matchPopulate.getId());
+        setDate(matchPopulate.getDate());
+        setStage(matchPopulate.getStage());
+        setPlayed(matchPopulate.getPlayed());
+        setTour(matchPopulate.getTour());
+        setPlayersList(matchPopulate.getPlayersList());
+        setLeague(matchPopulate.getLeague());
+        setEvents(matchPopulate.getEvents());
+        setCreatedAt(matchPopulate.getCreatedAt());
+        setUpdatedAt(matchPopulate.getUpdatedAt());
+        setReferees(matchPopulate.getReferees());
+        setScore(matchPopulate.getScore());
+        setAutoGoal(matchPopulate.getAutoGoal());
+        setPenalty(matchPopulate.getPenalty());
+        setWinner(matchPopulate.getWinner());
+        setRound(matchPopulate.getRound());
+        setGroup(matchPopulate.getGroup());
+        setFouls(matchPopulate.getFouls());
+        setV(matchPopulate.getV());
+
+        setPlace(matchPopulate.getPlace().get_id());
+        setTeamOne(matchPopulate.getTeamOne().getId());
+        setTeamTwo(matchPopulate.getTeamTwo().getId());
+    }
 
     public String getId() {
         return id;

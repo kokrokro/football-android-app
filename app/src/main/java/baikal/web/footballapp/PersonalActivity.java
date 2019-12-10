@@ -351,8 +351,8 @@ public class PersonalActivity extends AppCompatActivity {
 
     private void savePlayers(List<Person> people1) {
         for (Person p: people1)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id()))
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (!MankindKeeper.getInstance().allPerson.containsKey(p.get_id()))
+                MankindKeeper.getInstance().addPerson(p);
     }
 
     @SuppressLint("CheckResult")
