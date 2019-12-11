@@ -90,7 +90,6 @@ public class PlayersPage extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                SearchUsers(query);
                 return false;
             }
 
@@ -114,32 +113,6 @@ public class PlayersPage extends Fragment {
         searchView.setIconified(true);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) item.getActionView();
-    }
-
-    @SuppressLint("CheckResult")
-    private void SearchUsers(String search) {
-        Controller.getApi().getAllPersons(search, "50", "0")
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe(__ -> showDialog())
-                .doOnTerminate(this::hideDialog)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::savePlayers,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
-
-    }
-
-    private void savePlayers(List<Person> people) {
-        List<String> res = new ArrayList<>();
-        for (Person p : people)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
-                res.add(p.getId());
-            }
-        adapter.dataChanged(res);
     }
 
     private void showDialog() {
