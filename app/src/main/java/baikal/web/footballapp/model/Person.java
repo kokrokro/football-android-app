@@ -51,6 +51,7 @@ public class Person implements Serializable {
     @Expose
     private String id;
 
+
     @SerializedName("participationMatches")
     @Expose
     private List<Match> participationMatches = null;
@@ -60,25 +61,26 @@ public class Person implements Serializable {
     @SerializedName("pastLeagues")
     @Expose
     private List<PastLeague> pastLeagues = null;
-
     @SerializedName("club")
     @Expose
     private String club;
-//    private Club club;
     @SerializedName("pendingClubInvites")
     @Expose
     private List<Object> pendingClubInvites = null;
-
-
-    @SerializedName("type")
-    @Expose
-    private String type;
-
-
     @SerializedName("pendingTeamInvites")
     @Expose
     private List<PendingTeamInvite> pendingTeamInvites = null;
 
+    public String getSurnameAndName() {
+        String p1 = "";
+        if (surname != null)
+            p1 = surname;
+
+        if (name != null)
+            p1 += " " + name;
+
+        return p1;
+    }
 
     public String getSurnameWithInitials() {
         String p1 = "";
@@ -207,14 +209,6 @@ public class Person implements Serializable {
         this.password = password;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
@@ -266,5 +260,27 @@ public class Person implements Serializable {
 
     public void set_id(String _id) {
         this._id = _id;
+    }
+
+    public String toString()
+    {
+        String ans = " \n\n";
+
+        ans += "surname: "; ans += getName() + "\n";
+        ans += "name: "; ans += getSurname() + "\n";
+        ans += "lastname: "; ans += getLastname() + "\n";
+        ans += "photo: "; ans += getPhoto() + "\n";
+        ans += "favoriteTourney: "; ans += getFavouriteTourney().toString() + "\n";
+        ans += "_id: "; ans += get_id() + "\n";
+        ans += "login: "; ans += getLogin() + "\n";
+        ans += "password: "; ans += getPassword() + "\n";
+        ans += "region: "; ans += getRegion() + "\n";
+        ans += "birthdate: "; ans += getBirthdate() + "\n";
+        ans += "createdAt: "; ans += getCreatedAt() + "\n";
+        ans += "updatedAt: "; ans += getUpdatedAt() + "\n";
+        ans += "__v: "; ans += getV() + "\n";
+        ans += "id: "; ans += getId() + "\n";
+
+        return ans + " \n\n";
     }
 }

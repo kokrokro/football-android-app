@@ -77,11 +77,9 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
 
         holder.textCommandNum.setText(str);
-        holder.favBtn.setChecked(favTourneys.contains(id));
 
-        holder.favBtn.setOnCheckedChangeListener((v,c)-> {
-            mListener.onClick(id,c);
-        });
+        holder.bind(position);
+
     }
 
     @Override
@@ -114,10 +112,21 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
 
 //            mProgressDialog.setIndeterminate(true);
         }
+        void bind(int position){
+            if(favTourneys.contains(tourneys.get(position).getId())){
+                favBtn.setChecked(true);
+            }
+            else {
+                favBtn.setChecked(false);
+            }
+            favBtn.setOnClickListener((v)-> {
+                mListener.onClick(tourneys.get(position).getId(),favBtn.isChecked());
+            });
+        }
     }
     public void dataChanged(List<Tourney> tourneys){
-        this.tourneys.clear();
-        this.tourneys.addAll(tourneys);
+//        this.tourneys.clear();
+//        this.tourneys.addAll(tourneys);
         notifyDataSetChanged();
     }
     public interface MyListener {

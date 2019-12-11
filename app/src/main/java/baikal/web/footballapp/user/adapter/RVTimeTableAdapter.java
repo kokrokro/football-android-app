@@ -170,7 +170,7 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
             Person p;
 
             try {
-                p = MankindKeeper.getInstance().allPlayers.get(r.getPerson());
+                p = MankindKeeper.getInstance().getPersonById(r.getPerson());
             } catch (Exception e) {
                 log.error(TAG, e);
                 p = null;
@@ -183,7 +183,7 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
                         if (response.isSuccessful())
                             if (response.body() != null && response.body().size()>0) {
                                 Person pp = response.body().get(0);
-                                MankindKeeper.getInstance().allPlayers.put(pp.get_id(), pp);
+                                MankindKeeper.getInstance().addPerson(pp);
                                 setRefereeToTextView(textViewRefs.get(r.getType()), pp);
                             }
 

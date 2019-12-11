@@ -17,6 +17,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.FullScreenImage;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -73,7 +74,7 @@ public class RVPlayerInvAdapter extends RecyclerView.Adapter<RVPlayerInvAdapter.
         PersonTeams personTeams = leagues.get(position);
 //        final League league = personTeams.getLeague();
         League league = null;
-        for (League league1 : PersonalActivity.tournaments){
+        for (League league1 : MankindKeeper.getInstance().allLeagues){
             if (league1.getId().equals(personTeams.getLeague())){
                 league = league1;
                 break;
@@ -89,7 +90,7 @@ public class RVPlayerInvAdapter extends RecyclerView.Adapter<RVPlayerInvAdapter.
             }
         }
         Club clubLeague = null;
-        for (Club club : PersonalActivity.allClubs){
+        for (Club club : MankindKeeper.getInstance().allClubs){
             if (club.getId().equals(teamLeague.getClub()) ){
                 clubLeague = club;
                 break;
@@ -175,13 +176,12 @@ final ImageButton button;
 //            }
 //        }
         Map<String, RequestBody> map = new HashMap<>();
-        RequestBody request = RequestBody.create(MediaType.parse("text/plain"), personId);
-        map.put("playerId", request);
-        request = RequestBody.create(MediaType.parse("text/plain"), league.getId());
-        map.put("_id", request);
-        request = RequestBody.create(MediaType.parse("text/plain"), team.getId());
-        map.put("teamId", request);
+        RequestBody request = RequestBody.create(MediaType.parse("text/plain"), personId);  map.put("playerId", request);
+        request = RequestBody.create(MediaType.parse("text/plain"), league.getId());        map.put("_id", request);
+        request = RequestBody.create(MediaType.parse("text/plain"), team.getId());          map.put("teamId", request);
+
         Call<ServerResponse> call = Controller.getApi().addPlayerToTeam(SaveSharedPreference.getObject().getToken(), map);
+
         final League finalLeague = league;
         call.enqueue(new Callback<ServerResponse>() {
             @Override

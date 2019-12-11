@@ -2,6 +2,8 @@ package baikal.web.footballapp.players.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.fragment.app.Fragment;
@@ -33,10 +35,10 @@ import static android.app.Activity.RESULT_OK;
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class Player extends Fragment {
-    boolean scrollStatus;
-    final Logger log = LoggerFactory.getLogger(Player.class);
-    final int REQUEST_CODE_PLAYERINV = 286;
-    Person person;
+    private boolean scrollStatus;
+    private final Logger log = LoggerFactory.getLogger(Player.class);
+    private final int REQUEST_CODE_PLAYERINV = 286;
+    private Person person;
     public static FloatingActionButton fab;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,7 +60,9 @@ public class Player extends Fragment {
 
         try {
             Bundle bundle = this.getArguments();
-            person = (Person) bundle.getSerializable("PLAYERINFO");
+            if (bundle != null) {
+                person = (Person) bundle.getSerializable("PLAYERINFO");
+            }
             String str;
             CheckName checkName = new CheckName();
             str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
@@ -68,8 +72,7 @@ public class Player extends Fragment {
             String uriPic = BASE_URL;
             try {
                 uriPic += "/" + person.getPhoto();
-            } catch (Exception e) {
-            }
+            } catch (Exception ignored) { }
 
             fab.setOnClickListener(v -> {
                 try {
@@ -132,12 +135,12 @@ public class Player extends Fragment {
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
                 @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 //nothing to do
                 }
 
                 @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         fab.show();

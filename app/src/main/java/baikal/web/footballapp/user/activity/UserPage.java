@@ -26,7 +26,6 @@ import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.players.activity.PlayersPage;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +51,12 @@ public class UserPage extends Fragment {
     private EditText textLogin;
     private EditText textPass;
     private static User user;
+
+    private PersonalActivity activity;
+
+    public UserPage(PersonalActivity activity) {
+        this.activity = activity;
+    }
 
     private void resetLoginPassEditText() {
         textLogin.setText("");
@@ -99,15 +104,15 @@ public class UserPage extends Fragment {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_REGISTRATION) {
                 //pass token
-                authoUser = new AuthoUser();
+                authoUser = new AuthoUser(activity);
                 User user = (User) Objects.requireNonNull(data.getExtras()).getSerializable("PERSONREGINFO");
                 Person person = Objects.requireNonNull(user).getUser();
-                MankindKeeper.getInstance().allPlayers.put(person.get_id(), person);
+                MankindKeeper.getInstance().allPerson.put(person.get_id(), person);
                 SaveSharedPreference.setLoggedIn(Objects.requireNonNull(getActivity()).getApplicationContext(), true);
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser, "AUTHOUSERPAGE").hide(this).show(authoUser).commit();
-                PersonalActivity.active = authoUser;
+                authoUser.activity.setActive(authoUser);
             }
         } else {
             log.error("ERROR: onActivityResult");
@@ -137,19 +142,22 @@ public class UserPage extends Fragment {
                         //all is ok
                         user = response.body();
                         try {
-                            authoUser = new AuthoUser();
+                            authoUser = new AuthoUser(activity);
                             FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-                            fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser).hide(PersonalActivity.active).show(authoUser).commit();
-                            PersonalActivity.active = authoUser;
+                            fragmentManager.beginTransaction()
+                                    .add(R.id.pageContainer, authoUser)
+                                    .hide(authoUser.activity.getActive())
+                                    .show(authoUser)
+                                    .commit();
+                            authoUser.activity.setActive(authoUser);
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                             SaveSharedPreference.saveObject(user);
-                            PersonalActivity.token = user.getToken();
-                            PersonalActivity.id = user.getUser().getId();
 
                             resetLoginPassEditText();
 
                         } catch (Exception e) {
                             Toast.makeText(getActivity(), "Ошибка!", Toast.LENGTH_LONG).show();
+                            log.error(TAG, e);
                         }
                     }
                 }
@@ -172,11 +180,11 @@ public class UserPage extends Fragment {
                 //for getting error in network put here Toast, so get the error on network
                 log.error("ERROR: SignIn() onResponse ", t);
                 Toast.makeText(getActivity(), "Ошибка сервера.", Toast.LENGTH_SHORT).show();
-                try {
-                    Objects.requireNonNull(getActivity()).finishAndRemoveTask();
-                } catch (Exception e) {
-                    log.error(TAG, e);
-                }
+//                try {
+//                    Objects.requireNonNull(getActivity()).finishAndRemoveTask();
+//                } catch (Exception e) {
+//                    log.error(TAG, e);
+//                }
             }
         });
 

@@ -18,7 +18,6 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.home.adapter.RecyclerViewAdsAdapter;
 import baikal.web.footballapp.model.Announce;
-import baikal.web.footballapp.model.Announces;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 
 import org.slf4j.Logger;
@@ -71,17 +70,17 @@ public class AdsPage extends Fragment {
 
     @SuppressLint("CheckResult")
     private void checkConnection() {
-        ReactiveNetwork
-                .observeNetworkConnectivity(getActivity().getApplicationContext())
-                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isConnected -> {
-                    // isConnected can be true or false
-                    if (isConnected) {
+//        ReactiveNetwork
+//                .observeNetworkConnectivity(getActivity().getApplicationContext())
+//                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(isConnected -> {
+//                    // isConnected can be true or false
+//                    if (isConnected) {
                         GetAllAds("5", "0");
-                    }
-                });
+//                    }
+//                });
     }
 
     @SuppressLint("CheckResult")

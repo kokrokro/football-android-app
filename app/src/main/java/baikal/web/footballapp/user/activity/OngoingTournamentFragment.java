@@ -1,8 +1,5 @@
 package baikal.web.footballapp.user.activity;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.net.sip.SipSession;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
@@ -50,7 +48,7 @@ public class OngoingTournamentFragment extends Fragment{
             String teamId = personTeams.getTeam();
 //            League league = personTeams.getLeague();
             League league = null;
-            for (League league1 : PersonalActivity.tournaments){
+            for (League league1 : MankindKeeper.getInstance().allLeagues){
                 if (league1.getId().equals(personTeams.getLeague())){
                     league = league1;
                     break;

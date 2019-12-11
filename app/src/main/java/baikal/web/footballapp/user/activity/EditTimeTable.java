@@ -17,8 +17,8 @@ import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
@@ -29,7 +29,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -95,7 +94,7 @@ public class EditTimeTable extends AppCompatActivity {
                 Person p;
 
                 try {
-                    p = MankindKeeper.getInstance().allPlayers.get(ref.getPerson());
+                    p = MankindKeeper.getInstance().getPersonById(ref.getPerson());
                 } catch (Exception e) {
                     log.error(TAG, e);
                     p = null;
@@ -108,7 +107,7 @@ public class EditTimeTable extends AppCompatActivity {
                             if (response.isSuccessful())
                                 if (response.body() != null && response.body().size()>0) {
                                     Person pp = response.body().get(0);
-                                    MankindKeeper.getInstance().allPlayers.put(pp.get_id(), pp);
+                                    MankindKeeper.getInstance().addPerson(pp);
                                     setPersonInitialsToTextView(pp, Objects.requireNonNull(textViewRefs.get(ref.getType())));
                                 }
                         }
@@ -173,7 +172,7 @@ public class EditTimeTable extends AppCompatActivity {
         Match newMatch = new Match();
         newMatch.setReferees(refereeRequests);
         Controller.getApi().
-                editMatch(match.getId(), PersonalActivity.token, newMatch)
+                editMatch(match.getId(), SaveSharedPreference.getObject().getToken(), newMatch)
                .enqueue(new Callback<Match>() {
            @Override
            public void onResponse(@NonNull Call<Match> call, @NonNull Response<Match> response) {
@@ -245,7 +244,7 @@ public class EditTimeTable extends AppCompatActivity {
 
             try {
                 refIds.set(requestCode - 1, id);
-                setPersonInitialsToTextView(Objects.requireNonNull(MankindKeeper.getInstance().allPlayers.get(id)), refs.get(requestCode - 1));
+                setPersonInitialsToTextView(Objects.requireNonNull(MankindKeeper.getInstance().getPersonById(id)), refs.get(requestCode - 1));
             } catch (Exception ignored) {}
         }
     }

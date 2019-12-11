@@ -9,12 +9,9 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.tournament.activity.TournamentPage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +54,7 @@ public class MatchResponsiblePersons extends AppCompatActivity {
 
             List<Person> personList = new ArrayList<>();
             for (CharSequence referee : Objects.requireNonNull(referees))
-                personList.add(MankindKeeper.getInstance().allPlayers.get(referee.toString()));
+                personList.add(MankindKeeper.getInstance().getPersonById(referee.toString()));
 
             setRefereesView(personList.get(0), textReferee1, imageReferee1);
             setRefereesView(personList.get(1), textReferee2, imageReferee2);

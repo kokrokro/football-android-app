@@ -41,6 +41,9 @@ public class UserInfo extends AppCompatActivity {
     private static final String TAG = "UserInfo: ";
     private final Logger log = LoggerFactory.getLogger(UserInfo.class);
 
+    private String id;
+    private String token;
+
     private final PersonalInfo personalInfo = new PersonalInfo(this, true);
 
     private Person person;
@@ -48,8 +51,8 @@ public class UserInfo extends AppCompatActivity {
     public UserInfo() {
         try {
             User user = SaveSharedPreference.getObject();
-            PersonalActivity.token = user.getToken();
-            PersonalActivity.id = user.getUser().getId();
+            token = user.getToken();
+            id = user.getUser().getId();
             this.person = user.getUser();
             Log.d(TAG, person.getId());
         } catch (Exception e) {
@@ -91,7 +94,7 @@ public class UserInfo extends AppCompatActivity {
         RequestBody requestLogin = RequestBody.create(MediaType.parse("text/plain"), login);
         RequestBody requestRegion = RequestBody.create(MediaType.parse("text/plain"),region);
         RequestBody requestDOB = RequestBody.create(MediaType.parse("text/plain"),DOB);
-        RequestBody requestId = RequestBody.create(MediaType.parse("text/plain"), PersonalActivity.id);
+        RequestBody requestId = RequestBody.create(MediaType.parse("text/plain"), id);
 
         map.put("name", requestName);
         map.put("surname", requestSurname);
@@ -126,9 +129,9 @@ public class UserInfo extends AppCompatActivity {
         RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
         MultipartBody.Part body = MultipartBody.Part.createFormData("photo", file.getName(), requestFile);
 
-        Log.d(TAG, person.getId() + "\n" + PersonalActivity.token);
+        Log.d(TAG, person.getId() + "\n" + token);
 
-        Controller.getApi().editProfile(person.getId(), PersonalActivity.token, map, body).enqueue(new Callback<Person>() {
+        Controller.getApi().editProfile(person.getId(), token, map, body).enqueue(new Callback<Person>() {
             @Override
             public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
                 if (response.isSuccessful()) {

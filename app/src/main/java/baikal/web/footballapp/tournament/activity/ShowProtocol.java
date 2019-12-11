@@ -4,13 +4,14 @@ package baikal.web.footballapp.tournament.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
@@ -70,9 +71,14 @@ public class ShowProtocol extends AppCompatActivity {
             textTitle1.setText(str);
             str = teams.get("TeamTwo").getName();
             textTitle2.setText(str);
-            TeamTitleClubLogoMatchEvents entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
+
+            TeamTitleClubLogoMatchEvents entry = null;
+            if (match != null)
+                entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
+
             try {
-                playerEvents = new ArrayList<>(entry.getPlayerEvents());
+                if (entry != null)
+                    playerEvents = new ArrayList<>(entry.getPlayerEvents());
             } catch (NullPointerException e) {
                 playerEvents = new ArrayList<>();
             }
@@ -144,7 +150,7 @@ public class ShowProtocol extends AppCompatActivity {
         ImageView image1 = findViewById(R.id.confirmProtocolCommand1Logo);
         ImageView image2 = findViewById(R.id.confirmProtocolCommand2Logo);
         SetImage setImage = new SetImage();
-        for (League league : PersonalActivity.tournaments) {
+        for (League league : MankindKeeper.getInstance().allLeagues) {
             if (teams.size() != 2 && match.getLeague().equals(league.getId())) {
                 for (Team team : league.getTeams()) {
                     if (team.getId().equals(match.getTeamOne())
@@ -155,7 +161,7 @@ public class ShowProtocol extends AppCompatActivity {
                         if (team.getId().equals(match.getTeamTwo())) {
                             teams.put("TeamTwo", team);
                         }
-                        for (Club club : PersonalActivity.allClubs) {
+                        for (Club club : MankindKeeper.getInstance().allClubs) {
                             if (team.getId().equals(match.getTeamOne())
                                     && team.getClub().equals(club.getId())) {
                                 try {
@@ -183,8 +189,7 @@ public class ShowProtocol extends AppCompatActivity {
         return teams;
     }
 
-    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, Match match, Team team1, Team team2) {
-
+    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, Match match, @Nullable Team team1, @Nullable Team team2) {
         log.error(match.getId());
         List<PlayerEvent> playerEvents1 = new ArrayList<>();
         String teamOne = team1.getName();
@@ -192,7 +197,7 @@ public class ShowProtocol extends AppCompatActivity {
         String clubEvent = "";
         String teamName = "";
         for (Event event : events) {
-            Person person = MankindKeeper.getInstance().allPlayers.get(event.getPlayer());
+            Person person = MankindKeeper.getInstance().allPerson.get(event.getPerson());
 
             for (Player player : team1.getPlayers()) {
                 if (player.getPlayerId().equals(person.getId())) {

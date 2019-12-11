@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -46,7 +47,7 @@ public class RVOngoingTournamentAdapter extends RecyclerView.Adapter<RVOngoingTo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         PersonTeams personTeams = leagues.get(position);
         League league = null;
-        for (League league1 : PersonalActivity.tournaments){
+        for (League league1 : MankindKeeper.getInstance().allLeagues){
             if (league1.getId().equals(personTeams.getLeague())){
                 league = league1;
                 break;
@@ -61,7 +62,7 @@ public class RVOngoingTournamentAdapter extends RecyclerView.Adapter<RVOngoingTo
             }
         }
         Club clubLeague = null;
-        for (Club club : PersonalActivity.allClubs){
+        for (Club club : MankindKeeper.getInstance().allClubs){
             if (club.getId().equals(teamLeague.getClub())){
                 clubLeague = club;
             }

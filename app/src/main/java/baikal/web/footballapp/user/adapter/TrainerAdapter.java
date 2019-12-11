@@ -46,13 +46,13 @@ public class TrainerAdapter extends RecyclerView.Adapter<TrainerAdapter.ViewHold
         return new ViewHolder(view);
     }
     public interface MyListener {
-        void onClick(String id);
+        void onClick(String id, String name, String surname);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         try {
-            Person currentPlayer = MankindKeeper.getInstance().allPlayers.get(allPlayers.get(position));
+            Person currentPlayer = MankindKeeper.getInstance().getPersonById(allPlayers.get(position));
             String DOB = currentPlayer != null ? currentPlayer.getBirthdate() : "error";
             DateToString dateToString = new DateToString();
             holder.textDOB.setText(dateToString.ChangeDate(DOB));
@@ -63,7 +63,7 @@ public class TrainerAdapter extends RecyclerView.Adapter<TrainerAdapter.ViewHold
             SetImage setImage = new SetImage();
             setImage.setImage(context, holder.imageLogo, currentPlayer.getPhoto());
 
-            holder.buttonShow2.setOnClickListener(v -> myListener.onClick(currentPlayer.getId()));
+            holder.buttonShow2.setOnClickListener(v -> myListener.onClick(currentPlayer.getId(), currentPlayer.getName(),currentPlayer.getSurname()));
             if (position == (allPlayers.size() - 1)) {
                 holder.line.setVisibility(View.INVISIBLE);
             }

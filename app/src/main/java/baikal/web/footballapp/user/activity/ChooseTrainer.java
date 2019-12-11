@@ -49,7 +49,7 @@ public class ChooseTrainer extends AppCompatActivity {
         mProgressDialog = new ProgressDialog(this, R.style.MyProgressDialogTheme);
         mProgressDialog.setIndeterminate(true);
 
-        allPeople.addAll(MankindKeeper.getInstance().allPlayers.keySet());
+        allPeople.addAll(MankindKeeper.getInstance().allPerson.keySet());
 //        mProgressDialog.setMessage("Загрузка...");
         getAllPlayers("10", "0");
         NestedScrollView scroller = findViewById(R.id.scrollerPlayersPage);
@@ -96,12 +96,14 @@ public class ChooseTrainer extends AppCompatActivity {
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-            adapter = new TrainerAdapter(this, allPeople, (id) -> {
+            adapter = new TrainerAdapter(this, allPeople, (id, name, surname) -> {
                 Intent data = new Intent();
 //---set the data to pass back---
                 data.setData(Uri.parse(id));
                 setResult(RESULT_OK, data);
 //---close the activity---
+                data.putExtra("name",name );
+                data.putExtra("surname", surname);
                 finish();
             });
             recyclerView.setAdapter(adapter);
@@ -129,8 +131,8 @@ public class ChooseTrainer extends AppCompatActivity {
     private void savePlayers(List<Person> people) {
         List<String> res = new ArrayList<>();
         for (Person p: people)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (MankindKeeper.getInstance().getPersonById(p.get_id()) == null) {
+                MankindKeeper.getInstance().addPerson(p);
                 res.add(p.getId());
             }
         adapter.dataChanged(res);
@@ -167,8 +169,8 @@ public class ChooseTrainer extends AppCompatActivity {
 
     private void saveAllPlayers(List<Person> peopleList) {
         for (Person p: peopleList)
-            if (!MankindKeeper.getInstance().allPlayers.containsKey(p.get_id())) {
-                MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (MankindKeeper.getInstance().getPersonById(p.get_id()) == null) {
+                MankindKeeper.getInstance().addPerson(p);
                 allPeople.add(p.getId());
             }
         adapter.dataChanged(allPeople);

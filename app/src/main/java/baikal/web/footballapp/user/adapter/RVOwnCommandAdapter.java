@@ -2,10 +2,8 @@ package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.ContentObservable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +14,12 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.ParticipationRequest;
 import baikal.web.footballapp.model.PersonTeams;
-import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.user.activity.UserCommandInfo;
@@ -34,7 +32,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -63,14 +60,15 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
         Team personTeams = list.get(position);
 //        final League league = personTeams.getLeague();
         League league = null;
-        for (League league1 : activity.tournaments){
+        for (League league1 : MankindKeeper.getInstance().allLeagues){
             if (league1.getId().equals(personTeams.getLeague())){
                 league = league1;
                 break;
             }
         }
+
         String nameTourney = league.getTourney();
-        for(Tourney tr : activity.allTourneys){
+        for(Tourney tr : MankindKeeper.getInstance().allTourneys){
             if(tr.getId().equals(nameTourney)){
                 nameTourney = tr.getName();
                 break;
@@ -123,8 +121,6 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
         if (position== (list.size() - 1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
-        final Team finalTeamLeague = personTeams;
-        League finalLeague = league;
         Controller.getApi().getParticipation(teamId).enqueue(new Callback<List<ParticipationRequest>>() {
             @Override
             public void onResponse(Call<List<ParticipationRequest>> call, Response<List<ParticipationRequest>> response) {

@@ -5,12 +5,10 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,7 +22,6 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.PendingTeamInvite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
@@ -39,12 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,17 +69,16 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         String str;
-        String uriPic = BASE_URL;
         Invite pendingTeamInvite = list.get(position);
         League league = null;
-        Person person = null;
+        Person person;
         Tourney tourney = null;
         Team team = pendingTeamInvite.getTeam();
-        for (League tournament : PersonalActivity.tournaments) {
+        for (League tournament : MankindKeeper.getInstance().allLeagues) {
             if (tournament.getId().equals(team.getLeague())) {
                 league = tournament;
                 String tourneyId = league.getTourney();
-                for(Tourney tr : PersonalActivity.allTourneys){
+                for(Tourney tr : MankindKeeper.getInstance().allTourneys){
                     if(tr.getId().equals(tourneyId)){
                         tourney = tr;
                     }
@@ -94,15 +87,9 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             }
         }
 
-        for (Map.Entry<String, Person> p: MankindKeeper.getInstance().allPlayers.entrySet()) {
+        person = MankindKeeper.getInstance().getPersonById(team.getTrainer());
 
-        }
-
-        if (MankindKeeper.getInstance().allPlayers.containsKey(team.getTrainer())) {
-            person = MankindKeeper.getInstance().allPlayers.get(team.getTrainer());
-        }
-
-        try {
+        if (tourney != null) {
             str = tourney.getName() + ". " + league.getName();
             holder.textTournamentTitle.setText(str);
             DateToString dateToString = new DateToString();
@@ -110,13 +97,17 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             holder.textTournamentDate.setText(str);
             str = "Тренер: ";
             CheckName checkName = new CheckName();
-            str += checkName.check(person.getSurname(), person.getName(), person.getLastname());
+
+            try {
+                str += checkName.check(person.getSurname(), person.getName(), person.getLastname());
+            } catch (Exception ignored) { str = ""; }
+
             holder.textCoach.setText(str);
 
             str = "Команда: ";
             str += team.getName();
             holder.textCommand.setText(str);
-        } catch (Exception e) {}
+        }
 
         final League finalLeague = league;
         final Team finalTeam = team;
@@ -128,16 +119,16 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
 
         holder.buttonCancel.setOnClickListener(v -> {
             //post
-            Controller.getApi().rejectInv(pendingTeamInvite.get_id(),PersonalActivity.token).enqueue(new Callback<Invite>() {
+            Controller.getApi().rejectInv(pendingTeamInvite.get_id(),SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
                 @Override
-                public void onResponse(Call<Invite> call, Response<Invite> response) {
+                public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
                     if(response.isSuccessful()){
                         Toast.makeText(context, "Вы отклонили принлашение", Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<Invite> call, Throwable t) {
+                public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
                     Toast.makeText(context, "Не удалось отклонить приглашение", Toast.LENGTH_LONG).show();
                 }
             });
@@ -172,10 +163,10 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
 
     private void AcceptRequest(String invite, String league, final String team, final String status, final League league1, final int position) {
 //        Call<ServerResponse> call = Controller.getApi().playerInv(token, map);
-        Call<User> call = Controller.getApi().playerInv(invite,PersonalActivity.token);
+        Call<User> call = Controller.getApi().playerInv(invite, SaveSharedPreference.getObject().getToken());
         call.enqueue(new Callback<User>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         User user = response.body();
@@ -228,9 +219,9 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
 //                        league1.getTeams().remove(teamLeague);
 //                        league1.getTeams().add(teamLeague);
 
-                        for (int i = 0; i< PersonalActivity.tournaments.size(); i++){
-                            if (league1.getId().equals(PersonalActivity.tournaments.get(i).getId())){
-                                PersonalActivity.tournaments.set(i, league1);
+                        for (int i = 0; i< MankindKeeper.getInstance().allLeagues.size(); i++){
+                            if (league1.getId().equals(MankindKeeper.getInstance().allLeagues.get(i).getId())){
+                                MankindKeeper.getInstance().allLeagues.set(i, league1);
                             }
                         }
 
@@ -262,7 +253,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
 
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 log.error("ERROR: onResponse", t);
                 Toast.makeText(activity, "Ошибка", Toast.LENGTH_LONG).show();
             }

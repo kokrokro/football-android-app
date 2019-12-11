@@ -19,27 +19,12 @@ public class Team implements Serializable {
     @SerializedName("group")
     @Expose
     private String group;
-    @SerializedName("goals")
-    @Expose
-    private Integer goals;
-    @SerializedName("goalsReceived")
-    @Expose
-    private Integer goalsReceived;
-    @SerializedName("wins")
-    @Expose
-    private Integer wins;
     @SerializedName("place")
     @Expose
     private Integer place;
     @SerializedName("playoffPlace")
     @Expose
     private Integer playoffPlace;
-    @SerializedName("losses")
-    @Expose
-    private Integer losses;
-    @SerializedName("draws")
-    @Expose
-    private Integer draws;
     @SerializedName("groupScore")
     @Expose
     private int groupScore;
@@ -64,6 +49,10 @@ public class Team implements Serializable {
     @SerializedName("league")
     @Expose
     private String league;
+
+    @SerializedName("teamStats")
+    @Expose
+    private TeamStats teamStats;
 
     public String getLeague(){ return league;}
     public void setLeague(String league){this.league = league;}
@@ -93,12 +82,13 @@ public class Team implements Serializable {
     }
 
     public Integer getGoals() {
-        return goals;
+        return teamStats.getGoals();
     }
 
     public void setGoals(Integer goals) {
-        this.goals = goals;
+        teamStats.setGoals(goals);
     }
+
     public Boolean getMadeToPlayoff() {
         return madeToPlayoff;
     }
@@ -116,19 +106,17 @@ public class Team implements Serializable {
     }
 
     public Integer getGoalsReceived() {
-        return goalsReceived;
+        return teamStats.getGoalsReceived();
     }
 
-    public void setGoalsReceived(Integer goalsReceived) {
-        this.goalsReceived = goalsReceived;
-    }
+    public void setGoalsReceived(Integer goalsReceived) { teamStats.setGoalsReceived(goalsReceived); }
 
     public Integer getWins() {
-        return wins;
+        return teamStats.getWins();
     }
 
     public void setWins(Integer wins) {
-        this.wins = wins;
+        teamStats.setWins(wins);
     }
 
     public Integer getPlace() {
@@ -140,19 +128,19 @@ public class Team implements Serializable {
     }
 
     public Integer getLosses() {
-        return losses;
+        return teamStats.getLosses();
     }
 
     public void setLosses(Integer losses) {
-        this.losses = losses;
+        teamStats.setLosses(losses);
     }
 
     public Integer getDraws() {
-        return draws;
+        return teamStats.getDraws();
     }
 
     public void setDraws(Integer draws) {
-        this.draws = draws;
+        teamStats.setDraws(draws);
     }
 
     public int getGroupScore() {
@@ -201,5 +189,13 @@ public class Team implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public TeamStats getTeamStats() {
+        return teamStats;
+    }
+
+    public void setTeamStats(TeamStats teamStats) {
+        this.teamStats = teamStats;
     }
 }

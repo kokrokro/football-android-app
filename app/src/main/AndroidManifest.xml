@@ -22,14 +22,15 @@
     <application
         android:name=".App"
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:ignore="GoogleAppIndexingWarning"
-        android:fullBackupContent="true">
-
+        tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".user.activity.ChangePlayersForMatch"></activity>
+        <activity android:name=".user.activity.TeamMatches" />
         <activity
             android:name=".SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -41,12 +42,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".user.activity.ChooseTrainer" />
         <activity android:name=".user.activity.AddTournament" />
-
         <activity
-            android:name=".protocol.ProtocolPage"
+            android:name=".protocol.Activity.ProtocolPage"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity

@@ -1,9 +1,7 @@
 package baikal.web.footballapp;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
@@ -12,10 +10,8 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,8 +23,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -38,11 +32,11 @@ import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.home.activity.MainPage;
 import baikal.web.footballapp.model.Advertisings;
-import baikal.web.footballapp.model.Club;
-import baikal.web.footballapp.model.Clubs;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
@@ -53,116 +47,86 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class PersonalActivity extends AppCompatActivity {
     private static final String TAG = "PersonalActivity";
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
-    private static final String MAIN = "MAIN_PAGE";
+    private static final String MAIN    = "MAIN_PAGE";
     private static final String TOURNAMENT = "TOURNAMENT_PAGE";
-    private static final String CLUB = "CLUB_PAGE";
+    private static final String CLUB    = "CLUB_PAGE";
     private static final String PLAYERS = "PLAYERS_PAGE";
-    private static final String USER = "USER_PAGE";
+    private static final String USER    = "USER_PAGE";
 
+    private Fragment fragmentUser       = new UserPage(this);
+    private Fragment fragmentMain       = new MainPage();
+    private Fragment active = fragmentMain;
 
-    private final AuthoUser authoUser = new AuthoUser();
-    private static final Fragment fragmentMain = new MainPage();
-    public static final Fragment fragmentUser = new UserPage();
-    private final Fragment fragmentTournament;
-    private final Fragment fragmentClub = new ClubPage();
-    private final Fragment fragmentPlayers = new PlayersPage();
-    public static Fragment active = fragmentMain;
-
-    private static BottomNavigationView bottomNavigationView;
+    private BottomNavigationView bottomNavigationView;
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
 
-    //TODO
-    //to prevent memleak need to be replaced to the singleton MankindKeeper...
-    public static List<League> tournaments = new ArrayList<>();
-    public static List<Club> allClubs = new ArrayList<>();
-    public static List<Tourney> allTourneys = new ArrayList<>();
-    public static List<Region> regions = new ArrayList<>();
-    public static String id ;
-    public static String token;
-    public static boolean status;
+    public static List<TeamStats> teamStats = new ArrayList<>();
+    public static List<Team> allTeams = new ArrayList<>();
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
-            new BottomNavigationView.OnNavigationItemSelectedListener() {
-                @Override
-                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+            item -> {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        active = fragmentMain = new MainPage();
+                        beginTransaction(fragmentManager, active, MAIN);
+                        return true;
+                    case R.id.navigation_tournament:
+                        active = new TournamentPage(PersonalActivity.this);
+                        beginTransaction(fragmentManager, active, TOURNAMENT);
+                        return true;
+                    case R.id.navigation_club:
+                        active = new ClubPage();
+                        beginTransaction(fragmentManager, active, CLUB);
+                        return true;
+                    case R.id.navigation_players:
+                        active = new PlayersPage();
+                        beginTransaction(fragmentManager, active, PLAYERS);
+                        return true;
+                    case R.id.navigation_user:
 
-                    switch (item.getItemId()) {
-                        case R.id.navigation_home:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new MainPage()).addToBackStack(MAIN).commit();
-                            active = fragmentMain;
-                            return true;
-                        case R.id.navigation_tournament:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new TournamentPage()).addToBackStack(TOURNAMENT).commit();
-                            active = fragmentTournament;
-                            return true;
-                        case R.id.navigation_club:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new ClubPage()).addToBackStack(CLUB).commit();
-                            active = fragmentClub;
-                            return true;
-                        case R.id.navigation_players:
-                            fragmentManager.beginTransaction().replace(R.id.pageContainer, new PlayersPage()).addToBackStack(PLAYERS).commit();
-                            active = fragmentPlayers;
-                            return true;
-                        case R.id.navigation_user:
+                        boolean status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
+                        if (status) {
+                            log.debug("ЗАРЕГАН");
+                            log.debug(SaveSharedPreference.getObject().getToken());
+                            Log.d(TAG, "User ID: " + SaveSharedPreference.getObject().getUser().getId());
 
-                            status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
-                            if (status) {
-                                log.debug("ЗАРЕГАН");
-                                log.debug(SaveSharedPreference.getObject().getToken());
-                                id = SaveSharedPreference.getObject().getUser().getId();
-                                Log.d(TAG, "User ID: " + id);
-//                                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                                //     ft.detach(authoUser).attach(authoUser).commit();
-                                //                        fragmentManager.beginTransaction().hide(active).show(UserPage.authoUser).addToBackStack(null).commit();
-                                fragmentManager.beginTransaction().replace(R.id.pageContainer, new AuthoUser()).addToBackStack(USER).commit();
-                                //                        active = UserPage.authoUser;
-                                active = authoUser;
-                            } else {
-                                log.error("НЕ ЗАРЕГАН");
-                                fragmentManager.beginTransaction().replace(R.id.pageContainer, new UserPage()).addToBackStack(USER).commit();
-                                active = fragmentUser;
-                            }
-                            return true;
-                    }
-                    return false;
+                            active = new AuthoUser(PersonalActivity.this);
+                            beginTransaction(fragmentManager, active, USER);
+                        } else {
+                            log.error("НЕ ЗАРЕГАН");
+                            active = fragmentUser = new UserPage(PersonalActivity.this);
+                            beginTransaction(fragmentManager, active, USER);
+                        }
+                        return true;
                 }
+                return false;
             };
 
-    public PersonalActivity() {
-        fragmentTournament = new TournamentPage();
+    private void beginTransaction (FragmentManager fragmentManager, Fragment fragment, String backStack) {
+        fragmentManager.beginTransaction().replace(R.id.pageContainer, fragment).addToBackStack(backStack).commit();
     }
 
-    public static void saveData(List<League> tournaments1) {
-        tournaments.clear();
-        tournaments.addAll(tournaments1);
-//        TournamentPage.adapter.dataChanged(tournaments1.getLeagues());
-    }
+    public PersonalActivity() { }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setAnimation();
         setContentView(R.layout.activity_personal);
-        status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
-        //     FragmentManager.enableDebugLogging(true);
-        if (status) {
-            //log.debug(SaveSharedPreference.getObject().getToken());
-            id = SaveSharedPreference.getObject().getUser().getId();
-            token = SaveSharedPreference.getObject().getToken();
-        }
         ProgressDialog mProgressDialog = new ProgressDialog(this);
 
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Загрузка...");
 
-        checkConnection();
+//        checkConnection();
+//        checkConnectionSingle();
+        showSnack();
         checkConnectionSingle();
 
         try {
@@ -234,15 +198,17 @@ public class PersonalActivity extends AppCompatActivity {
     @SuppressLint("CheckResult")
     private void checkConnectionSingle() {
         Single<Boolean> single = ReactiveNetwork.checkInternetConnectivity();
+        //noinspection ResultOfMethodCallIgnored
         single
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isConnectedToInternet -> GetAdvertising("1", "0"));
+                .subscribe(isConnectedToInternet -> GetAdvertising());
     }
 
     @SuppressLint("CheckResult")
-    private void GetAdvertising(String limit, String offset) {
-        Controller.getApi().getAdvertising(limit, offset)
+    private void GetAdvertising() {
+        //noinspection ResultOfMethodCallIgnored
+        Controller.getApi().getAdvertising("1", "0")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::showAds
@@ -264,47 +230,47 @@ public class PersonalActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("CheckResult")
-    private void checkConnection() {
-//        ReactiveNetwork
-//                .observeNetworkConnectivity(getApplicationContext())
-//                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(isConnected -> {
-//                    // isConnected can be true or false
-//                    if (isConnected) {
-                        showSnack();
-//                    } else {
-//                        String str = "Отсутствует интернет соединение";
-//                        if(App.wasInBackground)
-//                            showToast(str);
-//                    }
-//                });
-    }
-
     private void showSnack() {
-        //all tournaments
+        //all allLeagues
         GetAllTournaments();
         //all players
         GetAllPlayers();
         //all clubs
 //        GetAllClubs();
         GetAllRegions();
+        getAllTeams();
         if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
             log.error("REFRESH USER");
             RefreshUser();
         }
     }
 
+    private void getAllTeams(){
+        Controller.getApi().getTeams(null).enqueue(new Callback<List<Team>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        allTeams.clear();
+                        allTeams.addAll(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
     private void GetAllRegions() {
         Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
             @Override
             public void onResponse(@NonNull Call<List<Region>> call, @NonNull Response<List<Region>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        regions.clear();
-                        regions.addAll(response.body());
+                        MankindKeeper.getInstance().regions.clear();
+                        MankindKeeper.getInstance().regions.addAll(response.body());
                     }
                 }}
 
@@ -314,37 +280,63 @@ public class PersonalActivity extends AppCompatActivity {
             }
         });
     }
+//    @SuppressLint("CheckResult")
+//    private void getAllTeamStats(){
+//        Controller.getApi().getTeamStats(null).
+//                subscribeOn(Schedulers.io()).
+//                observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(stats->{
+//                    teamStats.clear();
+//                    teamStats.addAll(stats);
+//                },error -> {
+//                    CheckError checkError = new CheckError();
+//                    checkError.checkError(this, error);
+//                });
+//    }
 
     @SuppressLint("CheckResult")
     private void RefreshUser() {
-        Controller.getApi().refreshUser(SaveSharedPreference.getObject().getToken())
+        String token;
+
+        try {
+            token = SaveSharedPreference.getObject().getToken();
+        } catch (Exception ignored) {
+            return;
+        }
+
+        //noinspection ResultOfMethodCallIgnored
+        Controller.getApi().refreshUser(token)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(SaveSharedPreference::editObject
-                        ,
-                        this::getError
+                .subscribe(SaveSharedPreference::editObject,
+                        error -> (new CheckError()).toastError(PersonalActivity.this, error)
                 );
     }
 
-    @SuppressLint("CheckResult")
     private void GetAllTournaments() {
-        tournaments = new ArrayList<>();
-        Controller.getApi().getAllLeagues("32575", "0")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                //.repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(PersonalActivity::saveData
-                        ,
-                        this::getError
-                );
+        Controller.getApi().getAllLeagues("25", "0").enqueue(new Callback<List<League>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
+                if (response.body() != null)
+                    for (League l: response.body())
+                        if (!MankindKeeper.getInstance().allLeagues.contains(l))
+                            MankindKeeper.getInstance().allLeagues.add(l);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) {
+                (new CheckError()).toastError(PersonalActivity.this, t);
+            }
+        });
+
         Controller.getApi().getAllTourneys().enqueue(new Callback<List<Tourney>>() {
             @Override
             public void onResponse(@NonNull Call<List<Tourney>> call, @NonNull Response<List<Tourney>> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
-                        allTourneys.clear();
-                        allTourneys.addAll(response.body());
+                        MankindKeeper.getInstance().allTourneys.clear();
+                        MankindKeeper.getInstance().allTourneys.addAll(response.body());
                     }
                 }
 
@@ -357,88 +349,40 @@ public class PersonalActivity extends AppCompatActivity {
 
     }
 
-    private void getError(Throwable error) {
-        String str = "";
-        try {
-            if (error instanceof HttpException) {
-                HttpException exception = (HttpException) error;
-                switch (exception.code()) {
-                    case 408:
-                        str = "Истекло время ожидания, попробуйте позже";
-                        break;
-                    case 500:
-                        str = "Неполадки на сервере. Попробуйте позже";
-                        break;
-                    case 522:
-                        str = "Отсутствует соединение";
-                        break;
-                    case 410:
-                        str = "Wrong api request";
-                    default:
-                        break;
-                }
-
-                if(App.wasInBackground)
-                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
-            }
-            if (error instanceof SocketTimeoutException) {
-                str = "Неполадки на сервере. Попробуйте позже.";
-                if(App.wasInBackground)
-                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
-            }
-            if (error instanceof ConnectException) {
-                str = "Отсутствует соединение.";
-                if(App.wasInBackground)
-                    Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
-            }
-        } catch (ClassCastException n) {
-            str = "Неполадки на сервере. Попробуйте позже.";
-            if(App.wasInBackground)
-                Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show();
-        }
-    }
-
     private void savePlayers(List<Person> people1) {
-        MankindKeeper.getInstance().allPlayers.clear();
         for (Person p: people1)
-            MankindKeeper.getInstance().allPlayers.put(p.get_id(), p);
+            if (!MankindKeeper.getInstance().allPerson.containsKey(p.get_id()))
+                MankindKeeper.getInstance().addPerson(p);
     }
 
     @SuppressLint("CheckResult")
     private void GetAllPlayers() {
-        Controller.getApi().getAllPersons( null, "32575", "0")
+        //noinspection ResultOfMethodCallIgnored
+        Controller.getApi().getAllPersons( null, "25", "0")
                 .subscribeOn(Schedulers.io())
                 .retryWhen(throwableObservable -> throwableObservable.take(3).delay(30, TimeUnit.SECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
                 .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
                 .subscribe(this::savePlayers,
-                        this::getError
+                        (error) -> (new CheckError()).toastError(PersonalActivity.this, error)
                 );
     }
 
-
-    @SuppressLint("CheckResult")
-    private void GetAllClubs() {
-        allClubs = new ArrayList<>();
-        Controller.getApi().getAllClubs()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(this::saveClubs,
-                        this::getError
-                );
-    }
-
-    private void saveClubs(Clubs clubs) {
-        allClubs.clear();
-        allClubs.addAll(clubs.getClubs());
-        ClubPage.adapter.dataChanged(clubs.getClubs());
-//        ClubPage.adapter.notifyDataSetChanged();
-    }
-
-    private void showToast(String str) {
-        this.runOnUiThread(() -> Toast.makeText(PersonalActivity.this, str, Toast.LENGTH_SHORT).show());
-    }
+//    private void GetAllClubs() {
+//        Controller.getApi().getAllClubs().enqueue(new Callback<List<Club>>() {
+//            @Override
+//            public void onResponse(@NonNull Call<List<Club>> call, @NonNull Response<List<Club>> response) {
+//                MankindKeeper.getInstance().allClubs.clear();
+//                if (response.body() != null)
+//                    MankindKeeper.getInstance().allClubs.addAll(response.body());
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<List<Club>> call, @NonNull Throwable t) {
+//                (new CheckError()).toastError(PersonalActivity.this, t);
+//            }
+//        });
+//    }
 
     public void setAnimation() {
         Slide slide = new Slide();
@@ -449,13 +393,20 @@ public class PersonalActivity extends AppCompatActivity {
         getWindow().setEnterTransition(slide);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public Fragment getActive() {
+        return active;
+    }
 
-        if (requestCode == Activity.RESULT_OK) {
+    public void setActive(Fragment active) {
+        this.active = active;
+    }
 
-        }
+    public Fragment getFragmentUser() {
+        return fragmentUser;
+    }
+
+    public void setFragmentUser(Fragment fragmentUser) {
+        this.fragmentUser = fragmentUser;
     }
 }
 

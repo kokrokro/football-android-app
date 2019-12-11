@@ -45,13 +45,11 @@ public class SpinnerTournamentAdapter extends ArrayAdapter<League> {
     private View createItemView(int position, View convertView, ViewGroup parent){
 
         final View view = inflater.inflate(resource, parent, false);
-        League club = tournaments.get(position);
 
 //        View rowview = inflater.inflate(R.layout.spinner_item,null,true);
 
         TextView txtTitle = view.findViewById(R.id.text1);
-        txtTitle.setText(club.getName());
-
+        txtTitle.setText(tournaments.get(position).getName());
 //        ImageView imageView = (ImageView) rowview.findViewById(R.id.icon);
 //        imageView.setImageResource(rowItem.getLogo());
 

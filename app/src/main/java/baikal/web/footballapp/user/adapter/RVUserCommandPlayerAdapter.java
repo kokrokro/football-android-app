@@ -15,44 +15,39 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.request.RequestOptions;
-import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.UserCommandInfo;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserCommandPlayerAdapter.ViewHolder> {
     private final List<Player> players;
-    private final UserCommandInfo context;
+    private final Activity context;
+    private final Listener listener;
 
 
 
-    public RVUserCommandPlayerAdapter(Activity context, List<Player> players) {
-        this.context = (UserCommandInfo) context;
+    public RVUserCommandPlayerAdapter(Activity context, List<Player> players, Listener listener) {
+        this.context = context;
         this.players = players;
+        this.listener = listener;
     }
-
+    public interface Listener{
+        void onClick(int position);
+    }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,16 +61,15 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
 //        String str = Integer.toString(count);
         String str = String.valueOf(count);
         holder.textNum.setText(str);
-        Person player = null;
+        Person player;
 
-        if (MankindKeeper.getInstance().allPlayers.containsKey(players.get(position).getPerson()))
-            player = MankindKeeper.getInstance().allPlayers.get(players.get(position).getPerson());
+        player = MankindKeeper.getInstance().getPersonById(players.get(position).getPerson());
 
         holder.textName.setText(player.getSurnameWithInitials());
-        str = players.get(position).getNumber();
+        str = String.valueOf(players.get(position).getNumber());
         try {
             holder.editNum.setText(str);
-        } catch (Exception e){}
+        } catch (Exception ignored){}
         try {
 
             String uriPic = BASE_URL;
@@ -88,9 +82,8 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
                     intent.putExtra("player_photo", finalUriPic);
                     context.startActivity(intent);
                 }
-
             });
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
 
@@ -102,26 +95,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
 //        }
         holder.buttonDelete.setOnClickListener(v -> {
             //post
-            UserCommandInfo.players.remove(players.get(position));
-            UserCommandInfo.adapter.notifyDataSetChanged();
-            Log.d("cancel invite id ", ""+UserCommandInfo.accepted.get(position).get_id());
-            Controller.getApi()
-                    .cancelInv(UserCommandInfo.accepted.get(position).get_id(),PersonalActivity.token)
-                    .enqueue(new Callback<Invite>() {
-                @Override
-                public void onResponse(Call<Invite> call, Response<Invite> response) {
-                    if(response.isSuccessful()){
-                        if(response.body()!=null){
-                            Log.d("cancel invite", "__SUCCCESS");
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<Invite> call, Throwable t) {
-                    Log.d("cancel invite", "__FAIL");
-                }
-            });
+            listener.onClick(position);
         });
         holder.editNum.getBackground().setColorFilter(context.getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         holder.editNum.setOnFocusChangeListener((v, hasFocus) -> {

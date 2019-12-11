@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MatchPopulate implements Serializable {
@@ -75,7 +76,28 @@ public class MatchPopulate implements Serializable {
     @Expose
     private String fouls;
 
-
+    public void onProtocolEdited(Match match)
+    {
+        setId(match.getId());
+        setDate(match.getDate());
+        setStage(match.getStage());
+        setPlayed(match.getPlayed());
+        setTour(match.getTour());
+        setPlayersList(match.getPlayersList());
+        setLeague(match.getLeague());
+        setEvents(match.getEvents());
+        setCreatedAt(match.getCreatedAt());
+        setUpdatedAt(match.getUpdatedAt());
+        setReferees(match.getReferees());
+        setScore(match.getScore());
+        setAutoGoal(match.getAutoGoal());
+        setPenalty(match.getPenalty());
+        setWinner(match.getWinner());
+        setRound(match.getRound());
+        setGroup(match.getGroup());
+        setFouls(match.getFouls());
+        setV(match.getV());
+    }
 
     public String getId() {
         return id;
@@ -163,6 +185,13 @@ public class MatchPopulate implements Serializable {
 
     public void setEvents(List<Event> events) {
         this.events = events;
+    }
+
+    public void addEvent(Event event) {
+        if (events == null)
+            events = new ArrayList<>();
+
+        events.add(event);
     }
 
     public String getCreatedAt() {

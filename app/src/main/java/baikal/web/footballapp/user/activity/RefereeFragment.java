@@ -24,8 +24,8 @@ public class RefereeFragment extends Fragment{
         view = inflater.inflate(R.layout.user_referees, container, false);
         recyclerView = view.findViewById(R.id.recyclerViewReferees);
         recyclerView.setNestedScrollingEnabled(false);
-//        RVRefereesAdapter adapter = new RVRefereesAdapter(getActivity(),this, AuthoUser.allReferees);
-//        recyclerView.setAdapter(adapter);
+        RVRefereesAdapter adapter = new RVRefereesAdapter(getActivity(),this, AuthoUser.allReferees);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         return view;
     }

@@ -3,6 +3,7 @@ package baikal.web.footballapp.user.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -16,37 +17,29 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.EditCommand;
-import baikal.web.footballapp.model.EditCommandResponse;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerAdapter;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerInvAdapter;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import baikal.web.footballapp.user.adapter.TrainerAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -71,6 +64,7 @@ public class UserCommandInfo extends AppCompatActivity {
     private Button teamTrainer;
     private EditText teamNumber;
     private String newTrainerId;
+    private Boolean isCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +77,12 @@ public class UserCommandInfo extends AppCompatActivity {
         ImageButton buttonSave;
         Button buttonAdd;
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_command_info);
         teamName = findViewById(R.id.editTeamTitle);
         teamTrainer = findViewById(R.id.newCommandTrainer);
         teamNumber = findViewById(R.id.newCommandNumber);
+
         try {
 
 
@@ -101,15 +95,30 @@ public class UserCommandInfo extends AppCompatActivity {
             league = (League) intent.getExtras().getSerializable("COMMANDEDITLEAGUE");
             teamName.setText(team.getName());
             String str = team.getTrainer();
-            if (MankindKeeper.getInstance().allPlayers.containsKey(team.getTrainer())) {
-                Person p = MankindKeeper.getInstance().allPlayers.get(team.getTrainer());
-                str = p.getSurname()+" "+p.getName();
+            isCreator = team.getCreator().equals(SaveSharedPreference.getObject().getUser().get_id());
+            if(!isCreator){
+                LinearLayout linearLayout = findViewById(R.id.linLayoutInformationTeam);
+                linearLayout.setVisibility(View.GONE);
             }
+            Person trainer = MankindKeeper.getInstance().getPersonById(team.getTrainer());
+            if (trainer != null)
+                str = trainer.getSurname()+" "+trainer.getName();
+
 
             teamTrainer.setOnClickListener(v -> {
                 Intent intent1 = new Intent(this, ChooseTrainer.class);
                 startActivityForResult(intent1, 1);
             });
+            if( isCreator){
+                teamTrainer.setOnClickListener(v -> {
+                    Intent intent1 = new Intent(this, ChooseTrainer.class);
+                    startActivityForResult(intent1, 1);
+                });
+            }
+            else {
+                teamName.getFreezesText();
+                teamNumber.getFreezesText();
+            }
             teamTrainer.setText(str);
             players.addAll(team.getPlayers());
             teamNumber.setText(team.getCreatorPhone());
@@ -128,12 +137,50 @@ public class UserCommandInfo extends AppCompatActivity {
             buttonSave = findViewById(R.id.userCommandSave);
             buttonClose = findViewById(R.id.userCommandClose);
             recyclerViewPlayer = findViewById(R.id.recyclerViewUserCommandPlayers);
-            adapter = new RVUserCommandPlayerAdapter(this, players);
+            adapter = new RVUserCommandPlayerAdapter(this, players, position -> {
+                UserCommandInfo.players.remove(players.get(position));
+                UserCommandInfo.adapter.notifyDataSetChanged();
+                Log.d("cancel invite id ", ""+UserCommandInfo.accepted.get(position).get_id());
+                Controller.getApi()
+                        .cancelInv(UserCommandInfo.accepted.get(position).get_id(), SaveSharedPreference.getObject().getToken())
+                        .enqueue(new Callback<Invite>() {
+                            @Override
+                            public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
+                                if(response.isSuccessful()){
+                                    if(response.body()!=null){
+                                        Log.d("cancel invite", "__SUCCCESS");
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
+                                Log.d("cancel invite", "__FAIL");
+                            }
+                        });
+            });
             recyclerViewPlayer.setAdapter(adapter);
             recyclerViewPlayer.setLayoutManager(new LinearLayoutManager(this));
             recyclerViewPlayer.setVisibility(View.GONE);
             recyclerViewPlayerInv = findViewById(R.id.recyclerViewUserCommandPlayersInv);
-            adapterInv = new RVUserCommandPlayerInvAdapter(this, playersInv);
+            adapterInv = new RVUserCommandPlayerInvAdapter(this, playersInv, position -> {
+                Controller.getApi().cancelInv(UserCommandInfo.allInvites.get(position).get_id(), SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
+                    @Override
+                    public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
+                        if(response.isSuccessful()){
+//                            Toast.makeText(context,"Приглашение отменено", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
+//                        Toast.makeText(context,"Не удалось", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                UserCommandInfo.playersInv.remove(players.get(position));
+//            List<String> players = new ArrayList<>(UserCommandInfo.playersInv);
+                UserCommandInfo.adapterInv.notifyDataSetChanged();
+            }, "UserCommandInfo");
             recyclerViewPlayerInv.setAdapter(adapterInv);
             recyclerViewPlayerInv.setLayoutManager(new LinearLayoutManager(this));
             MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -159,15 +206,15 @@ public class UserCommandInfo extends AppCompatActivity {
 
                 }
                 adapterInv.notifyDataSetChanged();
-                for(Player player : players){
-                    for(String personId : canceled){
-                        if(player.getPerson().equals(personId)){
-                            players.remove(player);
-
-                            break;
-                        }
-                    }
-                }
+//                for(Player player : players){
+//                    for(String personId : canceled){
+//                        if(player.getPerson().equals(personId)){
+//                            players.remove(player);
+//
+//                            break;
+//                        }
+//                    }
+//                }
                 adapter.notifyDataSetChanged();
                 recyclerViewPlayer.setVisibility(View.VISIBLE);
             });
@@ -188,11 +235,17 @@ public class UserCommandInfo extends AppCompatActivity {
                 intent1.putExtras(bundle2);
                 startActivity(intent1);
             });
-            buttonSave.setOnClickListener(v -> {
-                editTeam(team.getId());
-                //post
-                finish();
-            });
+            if(isCreator){
+                buttonSave.setOnClickListener(v -> {
+                    editTeam(team.getId());
+                    //post
+                    finish();
+                });
+            }
+            else {
+                buttonSave.setVisibility(View.INVISIBLE);
+            }
+
             buttonClose.setOnClickListener(v -> finish());
         } catch (Exception e) {
             log.error("ERROR: ", e);
@@ -205,7 +258,7 @@ public class UserCommandInfo extends AppCompatActivity {
            editTeam.setTrainer(newTrainerId);
        }
        editTeam.setCreatorPhone(teamNumber.getText().toString());
-       Controller.getApi().editTeam(id, PersonalActivity.token,editTeam).enqueue(new Callback<Team>() {
+       Controller.getApi().editTeam(id, SaveSharedPreference.getObject().getToken(),editTeam).enqueue(new Callback<Team>() {
            @Override
            public void onResponse(Call<Team> call, Response<Team> response) {
                if(response.isSuccessful()){
@@ -227,7 +280,7 @@ public class UserCommandInfo extends AppCompatActivity {
         super.onActivityResult(requestCode,resultCode,data);
         if (requestCode == 1) {
             if (resultCode == RESULT_OK) {
-                newTrainerId = data.getData().toString();
+                newTrainerId = Objects.requireNonNull(data.getData()).toString();
                 String str  = data.getSerializableExtra("surname") +" "+data.getSerializableExtra("name");
                 teamTrainer.setText(str);
             }

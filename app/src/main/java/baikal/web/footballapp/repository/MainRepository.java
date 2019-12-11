@@ -8,14 +8,15 @@ import java.util.List;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.News;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.Tourney;
+import retrofit2.Callback;
 
 public class MainRepository {
+
+
     public LiveData<List<Team>> getTeams(String creator, retrofit2.Callback<List<Team>> callback) {
         MutableLiveData<List<Team>> returnNews = new MutableLiveData<>();
         Controller
@@ -25,47 +26,37 @@ public class MainRepository {
         return returnNews;
     }
 
-    public LiveData<List<News_>> getNews(String limit, String offset, retrofit2.Callback<List<News_>> callback) {
-        MutableLiveData<List<News_>> returnNews = new MutableLiveData<>();
+    public void getNews(String limit, String offset, Callback<List<News_>> callback) {
         Controller
                 .getApi()
                 .getAllNewsCrud(limit, offset)
                 .enqueue(callback);
-        return returnNews;
     }
-    public LiveData<List<Stadium>> getStadiums(String tourney, String id, retrofit2.Callback<List<Stadium>> callback) {
-        MutableLiveData<List<Stadium>> returnNews = new MutableLiveData<>();
+    public void getStadiums(String tourney, String id, Callback<List<Stadium>> callback) {
         Controller
                 .getApi()
                 .getStadium(tourney,id)
                 .enqueue(callback);
-        return returnNews;
     }
 
-    public LiveData<List<PersonPopulate>> getFavTourneys(String id, retrofit2.Callback<List<PersonPopulate>> callback) {
-        MutableLiveData<List<PersonPopulate>> returnNews = new MutableLiveData<>();
+    public void getFavTourneys(String id, Callback<List<PersonPopulate>> callback) {
         Controller
                 .getApi()
                 .getFavTourneysByPerson(id)
                 .enqueue(callback);
-        return returnNews;
     }
 
-    public LiveData<List<Invite>> getInvites(String person, String team, retrofit2.Callback<List<Invite>> callback) {
-        MutableLiveData<List<Invite>> invites = new MutableLiveData<>();
+    public void getInvites(String person, String team, Callback<List<Invite>> callback) {
         Controller
                 .getApi()
                 .getInvites(person, team, null)
                 .enqueue(callback);
 
-        return invites;
     }
-    public LiveData<List<League>> getLegues(String tourney, retrofit2.Callback<List<League>> callback){
-        MutableLiveData<List<League>> returnNews = new MutableLiveData<>();
+    public void getLegues(String tourney, Callback<List<League>> callback){
         Controller
                 .getApi()
                 .getLeaguesByTourney(tourney)
                 .enqueue(callback);
-        return returnNews;
     }
 }

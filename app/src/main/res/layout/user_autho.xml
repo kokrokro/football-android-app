@@ -79,6 +79,7 @@
         android:layout_gravity="end"
         app:headerLayout="@layout/navigation_header"
         android:background="@android:color/white"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu"
+        android:paddingBottom="45dp"/>
 </androidx.drawerlayout.widget.DrawerLayout>
 <!--</android.support.design.widget.CoordinatorLayout>-->

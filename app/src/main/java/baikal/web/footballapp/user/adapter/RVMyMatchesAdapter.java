@@ -1,11 +1,11 @@
 package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,16 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Match;
-import baikal.web.footballapp.model.Player;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.ConfirmProtocol;
 import baikal.web.footballapp.user.activity.MyMatches;
@@ -41,14 +39,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import q.rorbin.badgeview.QBadgeView;
-
 public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.ViewHolder>{
     private final MyMatches context;
-    private final List<Match> matches;
+    private final List<MatchPopulate> matches;
     Logger log = LoggerFactory.getLogger(PlayerAddToTeam.class);
     private final PersonalActivity activity;
-    public RVMyMatchesAdapter(Activity activity, MyMatches context, List<Match> matches){
+    public RVMyMatchesAdapter(Activity activity, MyMatches context, List<MatchPopulate> matches){
         this.context =  context;
         this.activity = (PersonalActivity) activity;
         this.matches = matches;
@@ -63,9 +59,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         try{
-        final Match match = matches.get(position);
-
-        boolean check = false;
+        final MatchPopulate match = matches.get(position);
 
         String str;
         str = match.getDate();
@@ -76,24 +70,20 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         }catch (NullPointerException e){
             holder.textTime.setText(str);
         }
-        str = match.getPlace();
-        try{
-            String[] stadium;
-            stadium = str.split(":", 1);
-            holder.textStadium.setText(stadium[0]);
-        }catch (NullPointerException e){
-            holder.textStadium.setText(str);
-        }
 
-        str = match.getTour();
-        holder.textTour.setText(str);
-        int score1 = 0;
-        int score2 = 0;
-        List<String> teamPlayers1 = new ArrayList<>();
-        List<String> teamPlayers2 = new ArrayList<>();
+        try{
+            str = match.getPlace().getName();
+            holder.textStadium.setText(str);
+        }catch (NullPointerException e){
+            holder.textStadium.setText("Неизвестно");
+        }
+        try{
+            str = match.getTour();
+            holder.textTour.setText(str);
+        }catch (NullPointerException ignored){}
 
         League league = null;
-        for (League league1 : PersonalActivity.tournaments){
+        for (League league1 : MankindKeeper.getInstance().allLeagues){
             if (league1.getId().equals(match.getLeague())){
                 league = league1;
                 break;
@@ -101,113 +91,125 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         }
 
             SetImage setImage = new SetImage();
-        Team team1 = null;
-        Team team2 = null;
-        String club1 = "";
-        String club2 = "";
-        for (Team team: league.getTeams()){
-            if (team.getId().equals(match.getTeamOne())){
-                team1 = team;
-                str = team.getName();
-                holder.textCommand1.setText(str);
-                for (Club club : PersonalActivity.allClubs){
-                    if (club.getId().equals(team.getClub())){
-                        setImage.setImage(activity, holder.image1, club.getLogo());
-                    }
-                }
-                for (Player player: team.getPlayers()){
-                    teamPlayers1.add(player.getId());
-                    if (player.getActiveDisquals()!=0 ){
-                        new QBadgeView(activity)
-                                .bindTarget(holder.image1)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5,true)
-                                .setBadgeGravity(Gravity.END|Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-                    }
-//                    score1+=player.getGoals();
-                }
-            }
-            if (team.getId().equals(match.getTeamTwo())){
-                team2 = team;
-                str = team.getName();
-                holder.textCommand2.setText(str);
-                for (Club club : PersonalActivity.allClubs){
-                    if (club.getId().equals(team.getClub())){
-                        setImage.setImage(activity, holder.image2, club.getLogo());
-                    }
-                }
-                for (Player player: team.getPlayers()){
-                    teamPlayers2.add(player.getId());
-                    if (player.getActiveDisquals()!=0 ){
-                        new QBadgeView(activity)
-                                .bindTarget(holder.image2)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5,true)
-                                .setBadgeGravity(Gravity.END|Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-                    }
-                }
-            }
+        Team team1 = match.getTeamOne();
+        Team team2 = match.getTeamTwo();
+        try {
+            holder.textCommand1.setText(team1.getName());
+            holder.textCommand2.setText(team2.getName());
+        }catch (NullPointerException ignored){
+
         }
-        try{
-            if (!match.getScore().equals("")){
-                str = match.getScore();
+        str = "Ваш статус: ";
+        boolean isProtocolAvailable = false;
+        for(Referee referee : match.getReferees()){
+            if(referee.getPerson().equals(SaveSharedPreference.getObject().getUser().get_id())){
+                switch (referee.getType()){
+                    case "firstReferee":
+                        str += "1 судья";
+                        break;
+                    case "secondReferee":
+                        str += "2 судья";
+                        break;
+                    case "thirdReferee":
+                        str += "3 судья";
+                        isProtocolAvailable = true;
+                        break;
+                    case "timekeeper":
+                        str += "хронометрист";
+                        break;
+                }
+                break;
             }
-            else {
-                str = "-";
-            }
-        }catch (NullPointerException e){
-            str = "-";
         }
 
-        holder.textScore.setText(str);
+        holder.matchStatus.setText(str);
+//        for (Team team: league.getTeams()){
+//            if (team.getId().equals(match.getTeamOne())){
+//                team1 = team;
+//                str = team.getName();
+//                holder.textCommand1.setText(str);
+//                for (Club club : PersonalActivity.allClubs){
+//                    if (club.getId().equals(team.getClub())){
+//                        setImage.setImage(activity, holder.image1, club.getLogo());
+//                    }
+//                }
+//                for (Player player: team.getPlayers()){
+//                    teamPlayers1.add(player.getId());
+//                    if (player.getActiveDisquals()!=0 ){
+//                        new QBadgeView(activity)
+//                                .bindTarget(holder.image1)
+//                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+//                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+//                                .setBadgeTextSize(5, true)
+//                                .setBadgePadding(5,true)
+//                                .setBadgeGravity(Gravity.END|Gravity.BOTTOM)
+//                                .setGravityOffset(-3, 1, true)
+//                                .setBadgeNumber(3);
+//                    }
+////                    score1+=player.getGoals();
+//                }
+//            }
+//            if (team.getId().equals(match.getTeamTwo())){
+//                team2 = team;
+//                str = team.getName();
+//                holder.textCommand2.setText(str);
+//                for (Club club : PersonalActivity.allClubs){
+//                    if (club.getId().equals(team.getClub())){
+//                        setImage.setImage(activity, holder.image2, club.getLogo());
+//                    }
+//                }
+//                for (Player player: team.getPlayers()){
+//                    teamPlayers2.add(player.getId());
+//                    if (player.getActiveDisquals()!=0 ){
+//                        new QBadgeView(activity)
+//                                .bindTarget(holder.image2)
+//                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+//                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+//                                .setBadgeTextSize(5, true)
+//                                .setBadgePadding(5,true)
+//                                .setBadgeGravity(Gravity.END|Gravity.BOTTOM)
+//                                .setGravityOffset(-3, 1, true)
+//                                .setBadgeNumber(3);
+//                    }
+//                }
+//            }
+//        }
+
+
+//        try{
+//            if (!match.getScore().equals("")){
+//                str = match.getScore();
+//            }
+//            else {
+//                str = "-";
+//            }
+//        }catch (NullPointerException e){
+//            str = "-";
+//        }
+
+//        holder.textScore.setText(str);
         try{
             str = match.getPenalty();
             if (!str.equals("")){
                 holder.textPenalty.setText(str);
                 holder.textPenalty.setVisibility(View.VISIBLE);
             }
-        }catch (NullPointerException e){}
+        }catch (NullPointerException ignored){}
 
-        try{
-            List<Referee> referees = new ArrayList<>(match.getReferees());
-            for (Referee referee : referees){
-                if (referee.getType().equals("3 судья") && referee.getPerson().equals(SaveSharedPreference.getObject().getUser().getId())){
-                    check = true;
-                    break;
-                }
-            }
-        }catch (NullPointerException e){
-            check=false;
-        }
-
-        if (check){
-            holder.button.setVisibility(View.VISIBLE);
+//        if (check){
+//            holder.showProtocol.setVisibility(View.VISIBLE);
+            final boolean status = isProtocolAvailable;
             final Team finalTeam = team1;
             final Team finalTeam1 = team2;
-            final String finalClub = club1;
-            final String finalClub1 = club2;
-            holder.button.setOnClickListener(v -> {
+            holder.layout.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
-                int count = MyMatches.matches.indexOf(match);
-                bundle.putSerializable("PROTOCOLMATCH", match);
-                bundle.putSerializable("PROTOCOLTEAM1", finalTeam);
-                bundle.putSerializable("PROTOCOLTEAM2", finalTeam1);
-                bundle.putString("PROTOCOLCLUB1", finalClub);
-                bundle.putString("PROTOCOLCLUB2", finalClub1);
-                bundle.putInt("MATCHPOSITION", count);
-//                intent.putExtras(bundle);
-//                context.startActivity(intent);
+                bundle.putSerializable("CONFIRMPROTOCOL", match);
+                bundle.putBoolean("STATUS", status );
+                intent.putExtras(bundle);
+                activity.startActivity(intent);
             });
-        }
+//        }
         if (position==(matches.size()-1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
@@ -230,13 +232,13 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         final TextView textCommand2;
         final ImageView image1;
         final ImageView image2;
-        final Button button;
+        final TextView matchStatus;
         final RelativeLayout layout;
         final View line;
         final TextView textPenalty;
         ViewHolder(View item) {
             super(item);
-            button = item.findViewById(R.id.myMatchEdit);
+            matchStatus = item.findViewById(R.id.matchStatus);
             textDate = item.findViewById(R.id.myMatchDate);
             textTime = item.findViewById(R.id.myMatchTime);
             textTour = item.findViewById(R.id.myMatchLeague);
@@ -251,7 +253,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             textPenalty = item.findViewById(R.id.myMatchPenalty);
         }
     }
-    private String TimeToString(String str)  {
+    public String TimeToString(String str)  {
         String dateDOB = "";
         try {
             SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -298,7 +300,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         return dateDOB;
     }
 
-    public void dataChanged(List<Match> allPlayers1) {
+    public void dataChanged(List<MatchPopulate> allPlayers1) {
         matches.clear();
         matches.addAll(allPlayers1);
         notifyDataSetChanged();

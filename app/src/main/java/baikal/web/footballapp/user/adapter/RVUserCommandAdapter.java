@@ -2,20 +2,19 @@ package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.PersonTeams;
-import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.user.activity.UserCommands;
@@ -23,7 +22,6 @@ import baikal.web.footballapp.user.activity.UserCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdapter.ViewHolder>{
@@ -31,11 +29,18 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
     UserCommands context;
     private final PersonalActivity activity;
     private final List<Team> list;
-    public RVUserCommandAdapter (Activity activity, List<Team> list){
+    private final Listener listener;
+
+    public RVUserCommandAdapter (Activity activity, List<Team> list, Listener listener){
         this.activity = (PersonalActivity) activity;
 //        this.context = context;
         this.list = list;
+        this.listener = listener;
     }
+    public interface Listener{
+         void onClick(Team team, League league);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,12 +53,13 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         Team personTeams = list.get(position);
 //        League league = personTeams.getLeague();
         League league = null;
-        for (League league1 : PersonalActivity.tournaments){
+        for (League league1 : MankindKeeper.getInstance().allLeagues){
             if (league1.getId().equals(personTeams.getLeague())){
                 league = league1;
                 break;
             }
         }
+        final League currentLeague = league;
         String teamId = personTeams.getId();
         Team teamLeague = personTeams;
 //        Team team = personTeams.getTeam();
@@ -76,7 +82,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
 //            holder.textStatus.setTextColor(ContextCompat.getColor(activity, R.color.colorPrimary));
 //        }
         Tourney tourney = null;
-        for(Tourney tr: PersonalActivity.allTourneys ){
+        for(Tourney tr: MankindKeeper.getInstance().allTourneys ){
             if(tr.getId().equals(league.getTourney())){
                 tourney = tr;
             }
@@ -100,6 +106,9 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         if (position== (list.size() - 1)){
             holder.line.setVisibility(View.INVISIBLE);
         }
+        holder.linearLayout.setOnClickListener(v -> {
+            listener.onClick(personTeams, currentLeague);
+        });
     }
 
     @Override
@@ -116,6 +125,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         final TextView textPlayersNum;
         final TextView textStatus;
         final View line;
+        final LinearLayout linearLayout;
         ViewHolder(View item) {
             super(item);
             textTournamentTitle = item.findViewById(R.id.userCommandTournamentTitle);
@@ -125,6 +135,7 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
             textPlayersNum = item.findViewById(R.id.userCommandInfoPlayersNum);
             textStatus = item.findViewById(R.id.teamStatus);
            line = item.findViewById(R.id.userCommandLine);
+           linearLayout = item.findViewById(R.id.userCommandShow);
         }
     }
 

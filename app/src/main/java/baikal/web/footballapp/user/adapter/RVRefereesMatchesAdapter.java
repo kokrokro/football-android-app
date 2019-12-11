@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -82,7 +83,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
         Team team2 = match.getTeamTwo();
         str = team1.getName();
         holder.textCommandTitle1.setText(str);
-        for (Club club : PersonalActivity.allClubs) {
+        for (Club club : MankindKeeper.getInstance().allClubs) {
             if (club.getId().equals(team1.getClub())) {
                 setImage.setImage(context, holder.image1, club.getLogo());
             }
@@ -103,7 +104,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
 
         str = team2.getName();
         holder.textCommandTitle2.setText(str);
-        for (Club club : PersonalActivity.allClubs) {
+        for (Club club : MankindKeeper.getInstance().allClubs) {
             if (club.getId().equals(team2.getClub())) {
                 setImage.setImage(context, holder.image2, club.getLogo());
             }

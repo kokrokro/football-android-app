@@ -3,49 +3,50 @@ package baikal.web.footballapp.user.activity;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
-import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ConfirmProtocol extends AppCompatActivity {
+    private static final String TAG = "ConfirmProtocol";
+    private static final int EDIT_PROTOCOL_SUCCESS = 9741;
     private final Logger log = LoggerFactory.getLogger(ConfirmProtocol.class);
-    private List<PlayerEvent> playerEvents;
-    private String clubOne;
-    private String clubTwo;
+    private MatchPopulate match;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ImageButton imageClose;
@@ -69,61 +70,65 @@ public class ConfirmProtocol extends AppCompatActivity {
         textTitle1 = findViewById(R.id.confirmProtocolCommand1Title);
         textTitle2 = findViewById(R.id.confirmProtocolCommand2Title);
         imageClose.setOnClickListener(v -> finish());
-        try {
-            String str;
-            MatchPopulate match = (MatchPopulate) getIntent().getExtras().getSerializable("CONFIRMPROTOCOL");
-            HashMap<String, Team> teams = getTeams(match);
-            fab.setOnClickListener(v -> {
-                try {
-                    List<Event> list = new ArrayList<>();
-                    for (PlayerEvent playerEvent : playerEvents)
-                        list.add(playerEvent.getEvent());
-
-                    TeamTitleClubLogoMatchEvents playerEv = getPlayerEvent(list, match, teams.get("TeamOne"), teams.get("TeamTwo"));
-                    Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("PROTOCOLMATCH", match);
-                    bundle.putSerializable("PROTOCOLEVENTS", playerEv);
-                    intent.putExtras(bundle);
-
-                    Log.d("ConfirmProtocol.java", "trying to enter to work protocol...");
-
-                    startActivity(intent);
-                } catch (Exception e) {
-                    log.error("ERROR", e);
-                }
-            });
-
-            str = teams.get("TeamOne").getName();
-            textTitle1.setText(str);
-            str = teams.get("TeamTwo").getName();
-            textTitle2.setText(str);
-            TeamTitleClubLogoMatchEvents entry = getPlayerEvent(match.getEvents(), match, teams.get("TeamOne"), teams.get("TeamTwo"));
-            try {
-                playerEvents = new ArrayList<>(entry.getPlayerEvents());
-            } catch (NullPointerException e) {
-                playerEvents = new ArrayList<>();
+        Intent initialIntent = getIntent();
+        try{
+            boolean status = initialIntent.getExtras().getBoolean("STATUS");
+            if(!status){
+                fab.setVisibility(View.GONE);
             }
-            imageSave.setOnClickListener(v -> confirmProtocol(match.getId()));
+        }catch (Exception ignored){}
+        try {
+            match = (MatchPopulate) Objects.requireNonNull(initialIntent.getExtras()).getSerializable("CONFIRMPROTOCOL");
+            HashMap<String, Team> teams = null;
+            if (match != null) {
+                teams = getTeams(match);
+                fab.setOnClickListener(v -> {
+                    try {
+                        Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("MATCH", match);
+                        intent.putExtras(bundle);
+
+                        Log.d(TAG, "trying to enter to work protocol...");
+
+                        startActivityForResult(intent, EDIT_PROTOCOL_SUCCESS);
+                    } catch (Exception e) {
+                        log.error("ERROR", e);
+                    }
+                });
+            }
+
+
+            if (teams != null && teams.get("TeamOne") != null)
+                textTitle1.setText(Objects.requireNonNull(teams.get("TeamOne")).getName());
+            if (teams != null && teams.get("TeamTwo") != null)
+                textTitle2.setText(Objects.requireNonNull(teams.get("TeamTwo")).getName());
+
+            imageSave.setOnClickListener(v -> confirmProtocol(match != null ? match.getId() : null));
+            HashMap<String, Team> finalTeams1 = teams;
             buttonCommand1.setOnClickListener(v -> {
+                if (match != null && match.getTeamOne() == null)
+                    return;
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", teams.get("TeamOne"));
+                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1 != null ? finalTeams1.get("TeamOne") : null);
                 intent.putExtras(bundle);
 
-                Log.d("ConfirmProtocol: ", "team1 ...");
+                Log.d(TAG, "team1 ...");
 
                 startActivity(intent);
             });
             buttonCommand2.setOnClickListener(v -> {
+                if (match != null && match.getTeamTwo() == null)
+                    return;
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", teams.get("TeamTwo"));
+                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1 != null ? finalTeams1.get("TeamTwo") : null);
                 intent.putExtras(bundle);
 
-                Log.d("ConfirmProtocol: ", "team2 ...");
+                Log.d(TAG, "team2 ...");
 
                 startActivity(intent);
             });
@@ -137,20 +142,21 @@ public class ConfirmProtocol extends AppCompatActivity {
                 refIds.add("");
                 refIds.add("");
 
-                for (Referee r : match.getReferees())
-                    switch (r.getType()) {
-                        case "firstReferee":
-                            refIds.set(0, r.getPerson());
-                            break;
-                        case "secondReferee":
-                            refIds.set(1, r.getPerson());
-                            break;
-                        case "thirdReferee":
-                            refIds.set(2, r.getPerson());
-                            break;
-                        case "timekeeper":
-                            refIds.set(3, r.getPerson());
-                    }
+                if (match != null)
+                    for (Referee r : match.getReferees())
+                        switch (r.getType()) {
+                            case "firstReferee":
+                                refIds.set(0, r.getPerson());
+                                break;
+                            case "secondReferee":
+                                refIds.set(1, r.getPerson());
+                                break;
+                            case "thirdReferee":
+                                refIds.set(2, r.getPerson());
+                                break;
+                            case "timekeeper":
+                                refIds.set(3, r.getPerson());
+                        }
 
                 bundle.putCharSequenceArrayList("CONFIRMPROTOCOLREFEREES", refIds);
                 intent.putExtras(bundle);
@@ -159,38 +165,47 @@ public class ConfirmProtocol extends AppCompatActivity {
 
             buttonEvents.setOnClickListener(v -> {
                 Intent intent = new Intent(ConfirmProtocol.this, MatchEvents.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("MATCH", match);
+                intent.putExtras(bundle);
+
                 startActivity(intent);
             });
         } catch (Exception e) {
             log.error("ERROR", e);
-            Log.d("ConfirmProtocol.java", "132");
+            Log.d(TAG, "132");
         }
     }
 
     @SuppressLint("CheckResult")
-    private void confirmProtocol(String id) {
-        CheckError checkError = new CheckError();
-        Controller.getApi().confirmProtocol(SaveSharedPreference.getObject().getToken(), id)
-                .map(responseBody -> {
-                    if (!responseBody.isSuccessful()) {
-                        String srt = responseBody.errorBody().string();
-                        log.error(srt + " 141");
-                        showToast(srt);
-                    }
-                    if (responseBody.errorBody() != null) {
-                        checkError.checkHttpError(this, responseBody.errorBody().string());
-                    }
-                    return responseBody.body();
-                })
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
-                            String str = "Изменения сохранены";
-                            showToastResult(str);
-                            finish();
-                        },
-                        error -> checkError.checkError(this, error));
+    private void confirmProtocol(@Nullable String id) {
+        if (id == null)
+            return;
 
+        match.setPlayed(true);
+
+        String token = SaveSharedPreference.getObject().getToken();
+        Match newMatch = new Match(match);
+        //noinspection ResultOfMethodCallIgnored
+        Controller.getApi().editProtocolMatch(id, token, newMatch)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(newMatch2 -> {
+                            if (newMatch2 != null) {
+                                match.onProtocolEdited(newMatch2);
+                                Toast.makeText(ConfirmProtocol.this, "Протокол сохранён", Toast.LENGTH_SHORT).show();
+                            }
+                        },
+                        error -> {
+                            log.debug("===================================");
+
+                            if (error.getMessage() != null) {
+                                Log.e(TAG, error.getMessage());
+
+                                if (error.getMessage().contains("HTTP 500"))
+                                    syncProtocolOneMoreTime();
+                            }
+                        });
     }
 
     private HashMap<String, Team> getTeams(MatchPopulate match) {
@@ -200,88 +215,64 @@ public class ConfirmProtocol extends AppCompatActivity {
         SetImage setImage = new SetImage();
                             teams.put("TeamOne", match.getTeamOne());
                             teams.put("TeamTwo", match.getTeamTwo());
-                        for (Club club : PersonalActivity.allClubs) {
-                            if (match.getTeamOne().getClub().equals(club.getId())) {
-                                try {
-                                    clubOne = club.getLogo();
-                                } catch (NullPointerException e) {
-                                    clubOne = "";
-                                }
-                                setImage.setImage(image1.getContext(), image1, club.getLogo());
-                            }
-                            if (match.getTeamTwo().getClub().equals(club.getId())) {
-                                try {
-                                    clubTwo = club.getLogo();
-                                } catch (NullPointerException e) {
-                                    clubTwo = "";
-                                }
-                                setImage.setImage(image2.getContext(), image2, club.getLogo());
-                            }
-                        }
+
+        for (Club club : MankindKeeper.getInstance().allClubs) {
+            if (match.getTeamOne().getClub().equals(club.getId()))
+                setImage.setImage(image1.getContext(), image1, club.getLogo());
+            if (match.getTeamTwo().getClub().equals(club.getId()))
+                setImage.setImage(image2.getContext(), image2, club.getLogo());
+        }
         return teams;
     }
 
-    private TeamTitleClubLogoMatchEvents getPlayerEvent(List<Event> events, MatchPopulate match, Team team1, Team team2) {
-        List<PlayerEvent> playerEvents1 = new ArrayList<>();
-        String teamOne = team1.getName();
-        String teamTwo = team2.getName();
-        String clubEvent = "";
-        String teamName = "";
-        for (Event event : events) {
-            Person person = MankindKeeper.getInstance().allPlayers.get(event.getPlayer());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-            for (Player player : team1.getPlayers()) {
-                if (player.getPlayerId().equals(person.getId())) {
-                    clubEvent = clubOne;
-                    teamName = team1.getName();
-                }
-            }
-            for (Player player : team2.getPlayers()) {
-                if (player.getPlayerId().equals(person.getId())) {
-                    clubEvent = clubTwo;
-                    teamName = team2.getName();
-                }
-            }
-
-            PlayerEvent playerEvent = new PlayerEvent();
-            playerEvent.setPerson(person);
-            try {
-                playerEvent.setClubLogo(clubEvent);
-            } catch (Exception e) {
-                playerEvent.setClubLogo(null);
-            }
-            playerEvent.setEvent(event);
-            playerEvent.setNameTeam(teamName);
-            playerEvents1.add(playerEvent);
+        if (requestCode == EDIT_PROTOCOL_SUCCESS) {
+            if (data != null && data.getExtras() != null)
+                match = (MatchPopulate) data.getExtras().getSerializable("FINISHED_MATCH");
         }
-        if (match.getEvents().isEmpty()) {
-            playerEvents1 = null;
-        }
-
-        TeamTitleClubLogoMatchEvents entry = new TeamTitleClubLogoMatchEvents();
-        entry.setPlayerEvents(playerEvents1);
-        entry.setClubLogo1(clubOne);
-        entry.setClubLogo2(clubTwo);
-        entry.setNameTeam1(teamOne);
-        entry.setNameTeam2(teamTwo);
-//        return playerEvents;
-        return entry;
     }
 
+    @SuppressLint("CheckResult")
+    void syncProtocolOneMoreTime() {
+        Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    match.setV(response.body().get(0).getV());
+                    String token = SaveSharedPreference.getObject().getToken();
+                    Match newMatch = new Match(match);
 
-    private void showToast(String str) {
-        try {
-            JSONObject jsonObject = new JSONObject(str);
-            String str1 = jsonObject.getString("message");
-            log.error(str + " 246");
-            this.runOnUiThread(() -> Toast.makeText(ConfirmProtocol.this, str1, Toast.LENGTH_SHORT).show());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+                    //noinspection ResultOfMethodCallIgnored
+                    Controller.getApi().editProtocolMatch(match.getId(), token, newMatch)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(newMatch2 -> {
+                                        if (newMatch2 != null) {
+                                            match.onProtocolEdited(newMatch2);
+                                            Toast.makeText(ConfirmProtocol.this, "Протокол сохранён", Toast.LENGTH_SHORT).show();
+                                        }
+                                    },
+                                    error -> {
+                                        log.debug("===================================");
 
-    }
-    private void showToastResult(String str) {
-            this.runOnUiThread(() -> Toast.makeText(ConfirmProtocol.this, str, Toast.LENGTH_SHORT).show());
+                                        if (error.getMessage() != null) {
+                                            Log.e(TAG, error.getMessage());
+
+                                            if (error.getMessage().contains("HTTP 500"))
+                                                syncProtocolOneMoreTime();
+                                        }
+                                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 }
 

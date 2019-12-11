@@ -1,6 +1,8 @@
 package baikal.web.footballapp.user.activity;
 
 import android.content.Intent;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -9,29 +11,34 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.adapter.RVOwnCommandAdapter;
 import baikal.web.footballapp.user.adapter.RVUserCommandAdapter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import baikal.web.footballapp.user.adapter.SpinnerTournamentAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -44,64 +51,140 @@ public class UserCommands extends Fragment {
     private View line;
     private TextView textView;
     private TextView textView2;
-    private static List<Team> teams = new ArrayList<>();
+    private static List<Team> trainerTeams = new ArrayList<>();
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         log.info("INFO: UserCommands onCreate");
     }
 
-    public static UserCommands newInstance() {
-        return new UserCommands();
-    }
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
         log.info("INFO: onCreateView onCreate");
 //        final FloatingActionButton fab;
-        RecyclerView recyclerView;
-        RecyclerView recyclerView2;
-        NestedScrollView scroller;
-        LinearLayout linearLayout;
-        LinearLayout linear;
+
+
         view = inflater.inflate(R.layout.user_commands, container, false);
         LinearLayout linearOwnCommand = view.findViewById(R.id.ownCommands);
         LinearLayout linearUserCommand = view.findViewById(R.id.userCommands);
         line = view.findViewById(R.id.userCommandsLine);
         textView = view.findViewById(R.id.userCommandsText);
         textView2 = view.findViewById(R.id.userCommandsText2);
+        LinearLayout linearLayoutTrainerTeams = view.findViewById(R.id.userCommandsTrainer);
+        TextView textTrainerTeams = view.findViewById(R.id.userCommandsTex3);
+        View lineTrainer = view.findViewById(R.id.userCommandsLine2);
+        List<Team> teams = AuthoUser.createdTeams;
 
-        teams = AuthoUser.createdTeams;
+        String id;
 
-        if (teams.size()==0){
+        try {
+            id = SaveSharedPreference.getObject().getUser().getId();
+        } catch (Exception e) {
+            Log.e("UserCommands", e.toString());
+            id = "";
+        }
+
+        for(Team team : PersonalActivity.allTeams)
+            if(team.getTrainer().equals(id))
+                trainerTeams.add(team);
+
+        if (teams.size()==0)
             linearOwnCommand.setVisibility(View.GONE);
-        }
-        if (AuthoUser.personCommand.size()==0){
-            linearUserCommand.setVisibility(View.GONE);
-        }
-        if (teams.size() != 0
-                && AuthoUser.personCommand.size() != 0) {
-            line.setVisibility(View.VISIBLE);
-            textView.setVisibility(View.VISIBLE);
+        else
             textView2.setVisibility(View.VISIBLE);
-            linear = view.findViewById(R.id.emptyCommand);
-            linear.setVisibility(View.GONE);
-        }
-        linearLayout = view.findViewById(R.id.notEmptyCommand);
-        scroller = view.findViewById(R.id.userCommandScroll);
-        recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
+
+        if (AuthoUser.personCommand.size()==0)
+            linearUserCommand.setVisibility(View.GONE);
+        else
+            textView.setVisibility(View.VISIBLE);
+
+        if(trainerTeams.size()==0)
+            linearLayoutTrainerTeams.setVisibility(View.GONE);
+        else
+            textTrainerTeams.setVisibility(View.VISIBLE);
+
+        if(teams.size()!=0 && (AuthoUser.personCommand.size()!=0 || trainerTeams.size()!=0))
+            line.setVisibility(View.VISIBLE);
+        if((teams.size()==0 || AuthoUser.personCommand.size()!=0) && trainerTeams.size()!=0)
+            lineTrainer.setVisibility(View.VISIBLE);
+
+        LinearLayout linearLayout = view.findViewById(R.id.emptyCommand);
+        if(teams.size()==0 && AuthoUser.personCommand.size()==0 && trainerTeams.size()==0)
+            linearLayout.setVisibility(View.VISIBLE);
+        else
+            linearLayout.setVisibility(View.GONE);
+
+        NestedScrollView scroller = view.findViewById(R.id.userCommandScroll);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewUserCommand);
 //        recyclerView.setAdapter(AuthoUser.adapterCommand);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RVOwnCommandAdapter adapter = new RVOwnCommandAdapter(getActivity(),teams);
+        RVUserCommandAdapter adapter = new RVUserCommandAdapter(getActivity(), teams, (t, l)->{
+            DialogTeam dialogRegion =  new DialogTeam(i->{
+                if(i==0){
+                    Log.d("UserCommands", "просто так кстати твоя вода здесь лежит много дней");
+                    Intent intent = new Intent(getActivity(), TeamMatches.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(getActivity(), UserCommandInfo.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
+                }
+            });
 
-        RVUserCommandAdapter adapter1 = new RVUserCommandAdapter(getActivity(),AuthoUser.personCommand);
+            dialogRegion.show(getChildFragmentManager(), "fragment_edit_name");
+        });
+
+        RVUserCommandAdapter adapter1 = new RVUserCommandAdapter(getActivity(),AuthoUser.personCommand, (t,l) ->{});
         recyclerView.setAdapter(adapter1);
-        recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
+        RecyclerView recyclerView2 = view.findViewById(R.id.recyclerViewOwnCommand);
         recyclerView2.setAdapter(adapter);
         recyclerView2.setLayoutManager(new LinearLayoutManager(getActivity()));
+        RecyclerView trainerRecyclerView = view.findViewById(R.id.recyclerViewUserCommandTrainer);
+        trainerRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        RVUserCommandAdapter adapter2 = new RVUserCommandAdapter(getActivity(),trainerTeams, (t,l) ->{
+            DialogTeam dialogRegion =  new DialogTeam(i->{
+                if(i==0){
+                    Intent intent = new Intent(getActivity(), TeamMatches.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
+                }
+                else {
+                    Intent intent = new Intent(getActivity(), UserCommandInfo.class);
+                    Bundle bundle = new Bundle();
+                    Bundle bundle1 = new Bundle();
+                    bundle.putSerializable("COMMANDEDIT", t);
+                    bundle1.putSerializable("COMMANDEDITLEAGUE", l);
+                    intent.putExtras( bundle);
+                    intent.putExtras( bundle1);
+                    Objects.requireNonNull(getActivity()).startActivity(intent);
+                }
+            });
+
+            dialogRegion.show(getChildFragmentManager(), "fragment_edit_name");
+        });
+        trainerRecyclerView.setAdapter(adapter2);
         scrollStatus = false;
 
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY > oldScrollY) {}
             if (scrollY < oldScrollY) {
                 scrollStatus = false;
             }
@@ -112,12 +195,12 @@ public class UserCommands extends Fragment {
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 //nothing to do
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     AuthoUser.fab.show();
@@ -133,12 +216,12 @@ public class UserCommands extends Fragment {
 
         recyclerView2.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 //nothing to do
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     AuthoUser.fab.show();
@@ -166,6 +249,37 @@ public class UserCommands extends Fragment {
 //        else {
 //            linearLayout.setVisibility(View.GONE);
 //        }
+
+
+
+
+
+
+
+
+
+
+
+
+//        List<String> filterArray = Arrays.asList("Созданные", "Участие", "Тренерство");
+//
+//        ArrayAdapter<String> adapterSpinner = new ArrayAdapter<>(getContext(),  R.layout.spinner_item, filterArray);
+//
+//        adapterSpinner.setDropDownViewResource(R.layout.spinner_dropdown);
+//        Spinner spinner = view.findViewById(R.id.userCommandFilterSpinner);
+//        Drawable spinnerDrawable = spinner.getBackground().getConstantState().newDrawable();
+//        spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+//        spinner.setBackground(spinnerDrawable);
+//        spinner.setSelection(0);
+//        spinner.setAdapter(adapterSpinner);
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+//                String currentOption = (String) parent.getItemAtPosition(pos);
+//            }
+//
+//
+//            public void onNothingSelected(AdapterView<?> parent) {
+//            }});
         return view;
     }
 
@@ -174,12 +288,13 @@ public class UserCommands extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_CODE_NEWCOMMAND) {
-                if (num==0){
-                    FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+                if (num == 0){
+                    FragmentTransaction ft = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
 //                    FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
-                    ft.detach(this).attach(this).commit();
-                }
-                else{
+                    try {
+                        ft.detach(this).attach(this).commit();
+                    } catch (Exception ignored) { }
+                } else {
                     AuthoUser.adapterCommand.notifyDataSetChanged();
                     Toast.makeText(getContext(), "Команда добавлена", Toast.LENGTH_LONG).show();
                 }
@@ -191,9 +306,8 @@ public class UserCommands extends Fragment {
                     textView2.setVisibility(View.VISIBLE);
                 }
             }
-        } else {
+        } else
             log.error("ERROR: onActivityResult");
-        }
     }
 
     @Override

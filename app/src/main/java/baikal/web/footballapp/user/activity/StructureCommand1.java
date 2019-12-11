@@ -8,9 +8,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
@@ -61,8 +59,8 @@ public class StructureCommand1 extends AppCompatActivity {
             List<Person> personList = new ArrayList<>();
 
             for (String id : playersTeam)
-                if (MankindKeeper.getInstance().allPlayers.containsKey(id))
-                    personList.add(MankindKeeper.getInstance().allPlayers.get(id));
+                if (MankindKeeper.getInstance().getPersonById(id) != null)
+                    personList.add(MankindKeeper.getInstance().getPersonById(id));
             RVProtocolFirstCommandAdapter adapter = new RVProtocolFirstCommandAdapter(this, playersTeam, team.getPlayers(), personList);
             recyclerView.setAdapter(adapter);
         } catch (NullPointerException e){}

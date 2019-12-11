@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
@@ -75,47 +76,51 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         Team team2 = match.getTeamTwo();
 
         SetImage setImage = new SetImage();
-                str = team1.getName();
-                holder.textCommandTitle1.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team1.getClub())) {
-                        setImage.setImage(activity, holder.imgCommandLogo1 ,club.getLogo());
-                    }
+        try {
+            str = team1.getName();
+            holder.textCommandTitle1.setText(str);
+            for (Club club : MankindKeeper.getInstance().allClubs) {
+                if (club.getId().equals(team1.getClub())) {
+                    setImage.setImage(activity, holder.imgCommandLogo1, club.getLogo());
                 }
-                for (Player player : team1.getPlayers()) {
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo1)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-                    }
+            }
+            for (Player player : team1.getPlayers()) {
+                if (player.getActiveDisquals() != 0) {
+                    new QBadgeView(activity)
+                            .bindTarget(holder.imgCommandLogo1)
+                            .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                            .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                            .setBadgeTextSize(5, true)
+                            .setBadgePadding(5, true)
+                            .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                            .setGravityOffset(-3, 1, true)
+                            .setBadgeNumber(3);
                 }
+            }
 
-                str = team2.getName();
-                holder.textCommandTitle2.setText(str);
-                for (Club club : PersonalActivity.allClubs) {
-                    if (club.getId().equals(team2.getClub())) {
-                        setImage.setImage(activity, holder.imgCommandLogo2 ,club.getLogo());
-                    }
+            str = team2.getName();
+            holder.textCommandTitle2.setText(str);
+            for (Club club : MankindKeeper.getInstance().allClubs) {
+                if (club.getId().equals(team2.getClub())) {
+                    setImage.setImage(activity, holder.imgCommandLogo2, club.getLogo());
                 }
-                for (Player player : team2.getPlayers()) {
-                    if (player.getActiveDisquals() != 0) {
-                        new QBadgeView(activity)
-                                .bindTarget(holder.imgCommandLogo2)
-                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                .setBadgeTextSize(5, true)
-                                .setBadgePadding(5, true)
-                                .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                .setGravityOffset(-3, 1, true)
-                                .setBadgeNumber(3);
-                    }
+            }
+            for (Player player : team2.getPlayers()) {
+                if (player.getActiveDisquals() != 0) {
+                    new QBadgeView(activity)
+                            .bindTarget(holder.imgCommandLogo2)
+                            .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                            .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                            .setBadgeTextSize(5, true)
+                            .setBadgePadding(5, true)
+                            .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                            .setGravityOffset(-3, 1, true)
+                            .setBadgeNumber(3);
                 }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         try {
             str = match.getScore();
             if (str.equals("")) {

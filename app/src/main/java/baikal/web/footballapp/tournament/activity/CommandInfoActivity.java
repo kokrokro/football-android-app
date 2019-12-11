@@ -7,6 +7,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import java.util.List;
 
 
 public class CommandInfoActivity extends AppCompatActivity {
+    private static final String TAG = "CommandInfoActivity";
     private Team team;
     private List<Match>  matchList;
     private FloatingActionButton fab;
@@ -40,11 +43,16 @@ public class CommandInfoActivity extends AppCompatActivity {
         team = (Team) intent.getExtras().getSerializable("TOURNAMENTMATCHCOMMANDINFO");
         List<Match> matches = (List<Match>) intent.getExtras().getSerializable("TOURNAMENTMATCHCOMMANDINFOMATCHES");
         matchList = new ArrayList<>();
-        for (Match match : matches){
-            if (match.getTeamOne().equals(team.getId())
-                    || match.getTeamTwo().equals(team.getId())){
-                matchList.add(match);
+
+        try {
+            for (Match match : matches) {
+                if (match.getTeamOne().equals(team.getId())
+                        || match.getTeamTwo().equals(team.getId())) {
+                    matchList.add(match);
+                }
             }
+        } catch (Exception e) {
+            Log.d(TAG, e.toString());
         }
 //        String title = intent.getExtras().getString("COMMANDTITLE");
         buttonBack = findViewById(R.id.commandInfoBack);
