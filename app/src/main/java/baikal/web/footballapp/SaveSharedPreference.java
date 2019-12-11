@@ -49,6 +49,7 @@ public class SaveSharedPreference {
     public static User getObject(){
         Gson gson = new Gson();
         String json = sharedPreferences.getString("MyObject", "");
+
         return user = gson.fromJson(json, User.class);
     }
 

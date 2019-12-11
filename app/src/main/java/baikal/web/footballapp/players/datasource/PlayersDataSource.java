@@ -17,16 +17,18 @@ public class PlayersDataSource extends ItemKeyedDataSource<String, Person> {
     private static final String TAG = "PlayersDataSource";
     private final DoIt doItSoGood;
     private final DoIt dontFeelSoGood;
+    private final String searchString;
 
-    public PlayersDataSource(DoIt doItLocal, DoIt doItBad) {
+    public PlayersDataSource(DoIt doItLocal, DoIt doItBad, String searchString) {
         this.doItSoGood = doItLocal;
         this.dontFeelSoGood = doItBad;
+        this.searchString = searchString;
     }
 
     @Override
     public void loadInitial(@NonNull LoadInitialParams<String> params, @NonNull LoadInitialCallback<Person> callback) {
         Log.d(TAG, "requestedLoadSize:" + params.requestedLoadSize);
-        Controller.getApi().getAllPersonsWithSort(null, String.valueOf(params.requestedLoadSize), null)
+        Controller.getApi().getAllPersonsWithSort(searchString, searchString, searchString, String.valueOf(params.requestedLoadSize), null)
                 .enqueue(new Callback<List<Person>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
@@ -45,7 +47,7 @@ public class PlayersDataSource extends ItemKeyedDataSource<String, Person> {
 
     @Override
     public void loadAfter(@NonNull LoadParams<String> params, @NonNull LoadCallback<Person> callback) {
-        Controller.getApi().getAllPersonsWithSort(null, String.valueOf(params.requestedLoadSize), "<" + params.key)
+        Controller.getApi().getAllPersonsWithSort(searchString, searchString, searchString, String.valueOf(params.requestedLoadSize), "<" + params.key)
                 .enqueue(new Callback<List<Person>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {

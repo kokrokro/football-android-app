@@ -1,10 +1,10 @@
 package baikal.web.footballapp.players.activity;
 
-import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,16 +30,10 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import baikal.web.footballapp.CheckError;
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.adapter.PlayersAdapter;
 import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
 import baikal.web.footballapp.viewmodel.PlayersPageViewModel;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 public class PlayersPage extends Fragment {
     private static final String TAG = "PlayerPage";
@@ -54,22 +49,34 @@ public class PlayersPage extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.page_players2, container, false);
         final ProgressBar progressBar = view.findViewById(R.id.progress);
+        final TextView errorText = view.findViewById(R.id.errorText);
 
-        try {
-            recyclerView = view.findViewById(R.id.recyclerViewPlayers);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            playersAdapter = new PlayersAdapter();
-            recyclerView.setAdapter(playersAdapter);
-        } catch (Exception e) {
-            log.error("ERROR: ", e);
-        }
+        recyclerView = view.findViewById(R.id.recyclerViewPlayers);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        playersAdapter = new PlayersAdapter();
+        recyclerView.setAdapter(playersAdapter);
 
         playersPageViewModel = ViewModelProviders.of(this).get(PlayersPageViewModel.class);
-        playersPageViewModel.getProgressBarVisible().observe(this, visible -> {
-            if (visible) {
-                progressBar.setVisibility(View.VISIBLE);
-            } else {
-                progressBar.setVisibility(View.GONE);
+
+        playersPageViewModel.getLoadDataState().observe(this, loadState -> {
+            switch (loadState) {
+                case Loading:
+                    progressBar.setVisibility(View.VISIBLE);
+                    recyclerView.setVisibility(View.GONE);
+                    errorText.setVisibility(View.GONE);
+                    break;
+
+                case Loaded:
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+                    errorText.setVisibility(View.GONE);
+                    break;
+
+                case Error:
+                    progressBar.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.GONE);
+                    errorText.setVisibility(View.VISIBLE);
+                    break;
             }
         });
         playersPageViewModel.playersList.list.observe(this, playersAdapter::submitList);
@@ -90,17 +97,21 @@ public class PlayersPage extends Fragment {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                playersPageViewModel.onQueryTextSubmit(query);
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-
+                playersPageViewModel.onQueryTextChange(newText);
                 return false;
             }
         });
 
-        searchView.setOnCloseListener(() -> false);
+        searchView.setOnCloseListener(() -> {
+            Log.d("df", "closed listener");
+            return false;
+        });
 
 
         return view;

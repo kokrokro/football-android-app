@@ -1,10 +1,11 @@
 package baikal.web.footballapp.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
-import androidx.paging.PagedList;
 
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.datasource.LoadStates;
@@ -12,34 +13,52 @@ import baikal.web.footballapp.players.datasource.PagedListWithLoadingState;
 import baikal.web.footballapp.repository.PlayersPageRepository;
 
 public class PlayersPageViewModel extends ViewModel {
-    public PagedListWithLoadingState<Person> playersList;
-    private MutableLiveData<Boolean> progressBarVisible;
+    private final String TAG = "PlayersPageViewModel";
+
     private final PlayersPageRepository playersPageRepository;
+    public PagedListWithLoadingState<Person> playersList;
+    private MutableLiveData<LoadStates> loadDataState;
 
     public PlayersPageViewModel() {
-        this.playersPageRepository = new PlayersPageRepository();
-        initPlayersPageList();
+        playersPageRepository = new PlayersPageRepository();
+        loadDataState = new MutableLiveData<>(LoadStates.Loading);
 
-        progressBarVisible = new MutableLiveData<>(true);
+        initPlayersPageList(null);
     }
 
-    public void initPlayersPageList() {
-        playersList = playersPageRepository.getPlayersInitial();
+    public void initPlayersPageList(String searchStr) {
+        playersList = playersPageRepository.getPlayersInitial(searchStr);
         playersList.loadState.observeForever(new Observer<LoadStates>() {
             @Override
-            public void onChanged(LoadStates loadStates) {
-                switch (loadStates) {
-                    case Loaded:
-                        progressBarVisible.setValue(false);
-                        playersList.loadState.removeObserver(this);
+            public void onChanged(LoadStates loadState) {
+                loadDataState.setValue(loadState);
+                if (loadState.compareTo(LoadStates.Loading) != 0) {
+                    playersList.loadState.removeObserver(this);
                 }
             }
         });
     }
 
-    public LiveData<Boolean> getProgressBarVisible() {
-        return progressBarVisible;
+    void searchPlayers(String searchString) {
+        initPlayersPageList(searchString);
     }
 
-    public void onQueryTextChange(String txt) {}
+    public LiveData<LoadStates> getLoadDataState() {
+        return loadDataState;
+    }
+
+//    public LiveData<Boolean>
+
+    public void onQueryTextChange(String txt) {
+        Log.d(TAG, "onQueryTextChange: " + txt);
+    }
+
+    public void onQueryTextSubmit(String txt) {
+        Log.d(TAG, "onQueryTextSubmit: " + txt);
+
+        if (txt.equalsIgnoreCase("")) {
+            return;
+        }
+        searchPlayers(txt);
+    }
 }
