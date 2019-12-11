@@ -5,7 +5,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -53,6 +53,7 @@ public class PlayersPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.page_players2, container, false);
+        final ProgressBar progressBar = view.findViewById(R.id.progress);
 
         try {
             recyclerView = view.findViewById(R.id.recyclerViewPlayers);
@@ -64,7 +65,14 @@ public class PlayersPage extends Fragment {
         }
 
         playersPageViewModel = ViewModelProviders.of(this).get(PlayersPageViewModel.class);
-        playersPageViewModel.playersList.observe(this, playersAdapter::submitList);
+        playersPageViewModel.getProgressBarVisible().observe(this, visible -> {
+            if (visible) {
+                progressBar.setVisibility(View.VISIBLE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+            }
+        });
+        playersPageViewModel.playersList.list.observe(this, playersAdapter::submitList);
 
         searchView = view.findViewById(R.id.searchView);
 
