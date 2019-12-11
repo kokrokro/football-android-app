@@ -2,6 +2,8 @@ package baikal.web.footballapp.user.activity;
 
 import android.content.Intent;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
 import androidx.core.widget.NestedScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,8 +18,6 @@ import android.widget.LinearLayout;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Event;
 import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.PlayerEvent;
-import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
 import baikal.web.footballapp.user.adapter.RVMatchEventsAdapter;
 
 import org.slf4j.Logger;
@@ -28,7 +28,6 @@ import java.util.Objects;
 
 public class MatchEvents extends AppCompatActivity {
     Logger log = LoggerFactory.getLogger(MatchEvents.class);
-    private HashMap<Integer, String> halves;
     private FloatingActionButton fab;
     private boolean scrollStatus;
 
@@ -65,12 +64,12 @@ public class MatchEvents extends AppCompatActivity {
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 //nothing to do
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
                     fab.hide();
                 } else {
@@ -85,7 +84,7 @@ public class MatchEvents extends AppCompatActivity {
         try {
             Intent arguments = getIntent();
             MatchPopulate match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("MATCH");
-            halves = new HashMap<>();
+            HashMap<Integer, String> halves = new HashMap<>();
             int i = 0;
             if (match != null && match.getEvents() != null) {
                 for (Event playerEvent : match.getEvents()) {
@@ -96,7 +95,10 @@ public class MatchEvents extends AppCompatActivity {
                 }
             }
 //            Collections.sort(halves, new HalvesComparator());
-            RVMatchEventsAdapter adapter = new RVMatchEventsAdapter(this, halves, match.getEvents());
+            RVMatchEventsAdapter adapter = null;
+            if (match != null)
+                adapter = new RVMatchEventsAdapter(this, halves, match.getEvents());
+
             recyclerView.setAdapter(adapter);
         } catch (NullPointerException e) {
             LinearLayout layout = findViewById(R.id.emptyEvents);

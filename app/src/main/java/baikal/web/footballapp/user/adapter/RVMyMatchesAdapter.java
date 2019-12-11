@@ -1,7 +1,6 @@
 package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -9,23 +8,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.ConfirmProtocol;
-import baikal.web.footballapp.user.activity.MyMatches;
 import baikal.web.footballapp.user.activity.PlayerAddToTeam;
 
 import org.slf4j.Logger;
@@ -33,19 +27,16 @@ import org.slf4j.LoggerFactory;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.ViewHolder>{
-    private final MyMatches context;
     private final List<MatchPopulate> matches;
     Logger log = LoggerFactory.getLogger(PlayerAddToTeam.class);
     private final PersonalActivity activity;
-    public RVMyMatchesAdapter(Activity activity, MyMatches context, List<MatchPopulate> matches){
-        this.context =  context;
+    public RVMyMatchesAdapter(Activity activity, List<MatchPopulate> matches){
         this.activity = (PersonalActivity) activity;
         this.matches = matches;
     }
@@ -82,15 +73,15 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             holder.textTour.setText(str);
         }catch (NullPointerException ignored){}
 
-        League league = null;
-        for (League league1 : MankindKeeper.getInstance().allLeagues){
-            if (league1.getId().equals(match.getLeague())){
-                league = league1;
-                break;
-            }
-        }
+//        League league = null;
+//        for (League league1 : MankindKeeper.getInstance().allLeagues){
+//            if (league1.getId().equals(match.getLeague())){
+//                league = league1;
+//                break;
+//            }
+//        }
 
-            SetImage setImage = new SetImage();
+
         Team team1 = match.getTeamOne();
         Team team2 = match.getTeamTwo();
         try {
@@ -199,13 +190,12 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
 //        if (check){
 //            holder.showProtocol.setVisibility(View.VISIBLE);
             final boolean status = isProtocolAvailable;
-            final Team finalTeam = team1;
-            final Team finalTeam1 = team2;
+
             holder.layout.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOL", match);
-                bundle.putBoolean("STATUS", status );
+                bundle.putBoolean("STATUS", status);
                 intent.putExtras(bundle);
                 activity.startActivity(intent);
             });
@@ -214,7 +204,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             holder.line.setVisibility(View.INVISIBLE);
         }
 
-        }catch (NullPointerException r){}
+        } catch (NullPointerException ignored){}
     }
 
     @Override
@@ -253,7 +243,7 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             textPenalty = item.findViewById(R.id.myMatchPenalty);
         }
     }
-    public String TimeToString(String str)  {
+    private String TimeToString(String str)  {
         String dateDOB = "";
         try {
             SimpleDateFormat mdformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
@@ -261,7 +251,9 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
             date1 = mdformat.parse(str);
 
             Calendar cal = Calendar.getInstance();
-            cal.setTime(date1);
+            if (date1 != null)
+                cal.setTime(date1);
+
             if (String.valueOf(cal.get(Calendar.HOUR)).length()==1){
                 dateDOB += "0" + cal.get(Calendar.HOUR) + ":";
             }
@@ -281,7 +273,8 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
                 date1 = mdformat.parse(str);
 
                 Calendar cal = Calendar.getInstance();
-                cal.setTime(date1);
+                if (date1 != null)
+                    cal.setTime(date1);
                 if (String.valueOf(cal.get(Calendar.HOUR)).length()==1){
                     dateDOB += "0" + cal.get(Calendar.HOUR) + ":";
                 }

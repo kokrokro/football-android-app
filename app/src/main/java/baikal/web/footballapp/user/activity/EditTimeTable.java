@@ -124,6 +124,8 @@ public class EditTimeTable extends AppCompatActivity {
             fab.setOnClickListener(v -> {
                 Intent intent = new Intent(EditTimeTable.this, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
+//                boolean isProtocolAvailable = getIntent().getExtras().getBoolean("STATUS");
+                bundle.putBoolean("STATUS", true);
                 bundle.putSerializable("CONFIRMPROTOCOL", match);
                 intent.putExtras(bundle);
                 startActivity(intent);

@@ -1,6 +1,7 @@
 package baikal.web.footballapp.user.activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,7 +39,10 @@ import java.util.Objects;
 
 public class ProtocolScore extends AppCompatActivity{
     private static final String TAG = "ProtocolScore: ";
+    private static final int EVENT_LIST_EDITED = 7341;
     private final Logger log = LoggerFactory.getLogger(ProtocolMatchScore.class);
+
+
 
     private String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty", "penaltyFailure",
                                     "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
@@ -87,6 +91,7 @@ public class ProtocolScore extends AppCompatActivity{
         Button btnExtraTime = findViewById(R.id.extraTimeBtn);
         Button btnPenalty = findViewById(R.id.penaltyBtn);
         Button btnEndMatch = findViewById(R.id.endMatchBtn);
+        ImageButton btnShowEvents = findViewById(R.id.PMS_show_events);
 
         ImageButton buttonBack = findViewById(R.id.protocolScoreBack);
         buttonBack.setOnClickListener(v -> finish());
@@ -147,6 +152,15 @@ public class ProtocolScore extends AppCompatActivity{
             setupAdapters();
             calculateScore();
         }
+
+        btnShowEvents.setOnClickListener(v-> {
+            Intent intent = new Intent(this, MatchEvents.class);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("MATCH", match);
+            intent.putExtras(bundle);
+
+            startActivityForResult(intent, EVENT_LIST_EDITED);
+        });
 
         btnEndMatch.setOnClickListener(v -> {
             Intent intent = new Intent();
@@ -350,5 +364,14 @@ public class ProtocolScore extends AppCompatActivity{
 
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == EVENT_LIST_EDITED) {
+            Log.d(TAG, "event list has been changed");
+        }
     }
 }
