@@ -13,14 +13,9 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.RefereeRequest;
 import baikal.web.footballapp.user.adapter.RVMyMatchesAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,7 +41,7 @@ public class MyMatches extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewMyMatches);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         LinearLayout layout = view.findViewById(R.id.emptyMatch);
-        adapter = new RVMyMatchesAdapter(getActivity(),this, matches);
+        adapter = new RVMyMatchesAdapter(getActivity(), matches);
         recyclerView.setVisibility(View.INVISIBLE);
         recyclerView.setAdapter(adapter);
 

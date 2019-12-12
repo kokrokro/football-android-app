@@ -72,7 +72,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         imageClose.setOnClickListener(v -> finish());
         Intent initialIntent = getIntent();
         try{
-            boolean status = initialIntent.getExtras().getBoolean("STATUS");
+            boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("STATUS");
             if(!status){
                 fab.setVisibility(View.GONE);
             }

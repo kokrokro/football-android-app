@@ -35,11 +35,4 @@
         android:padding="28dp"
         android:layout_margin="4dp"/>
 
-    <ImageButton
-        android:id="@+id/event_penalty_failure"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_event_penalty_failure"
-        android:padding="28dp"
-        android:layout_margin="4dp"/>
 </LinearLayout>
