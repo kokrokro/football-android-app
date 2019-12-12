@@ -154,6 +154,7 @@ public class ProtocolScore extends AppCompatActivity{
             Intent intent = new Intent(this, MatchEvents.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("MATCH", match);
+            bundle.putBoolean("IS_EDITABLE", true);
             intent.putExtras(bundle);
 
             startActivityForResult(intent, EVENT_LIST_EDITED);

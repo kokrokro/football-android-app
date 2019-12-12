@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -67,17 +66,11 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scrollMatchEvents"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
-        <!--android:layout_height="wrap_content"-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:id="@+id/emptyEvents"
@@ -119,25 +112,13 @@
             android:layout_height="wrap_content"
             android:background="@color/colorWhite"
             android:orientation="vertical">
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewMatchEvents"
                 android:layout_marginTop="5sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
         </LinearLayout>
 
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/buttonAbbreviation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="25dp"
-        android:layout_marginEnd="20dp"
-        app:backgroundTint="@color/colorPrimary"
-        android:src="@drawable/ic_question" />
-</androidx.coordinatorlayout.widget.CoordinatorLayout><!--</LinearLayout>-->
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
