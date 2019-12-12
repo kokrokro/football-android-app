@@ -1,8 +1,6 @@
 package baikal.web.footballapp.user.adapter;
 
-import android.app.Activity;
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +9,6 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Event;
-import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.user.activity.MatchEvents;
 
 import org.slf4j.Logger;
@@ -23,14 +20,13 @@ import java.util.List;
 
 public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdapter.ViewHolder>{
     Logger log = LoggerFactory.getLogger(MatchEvents.class);
-    private final MatchEvents context;
     private final HashMap<Integer, String> halves;
-    private final List<Event> playerAllEvents;
-    public RVMatchEventsAdapter(Activity context, HashMap<Integer, String> halves, List<Event> playerAllEvents){
-        this.context = (MatchEvents) context;
+    private final List<Event> events;
+    public RVMatchEventsAdapter(HashMap<Integer, String> halves, List<Event> playerAllEvents){
         this.halves = halves;
-        this.playerAllEvents = playerAllEvents;
+        this.events = playerAllEvents;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -43,7 +39,7 @@ public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdap
         String half = halves.get(position);
         holder.textHalf.setText(half);
         List<Event> playerEvents = new ArrayList<>();
-        for (Event playerEvent : playerAllEvents){
+        for (Event playerEvent : events){
             if (playerEvent.getTime().equals(half)){
                 playerEvents.add(playerEvent);
             }

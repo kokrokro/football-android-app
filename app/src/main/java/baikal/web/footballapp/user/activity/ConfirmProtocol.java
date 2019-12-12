@@ -164,9 +164,11 @@ public class ConfirmProtocol extends AppCompatActivity {
             });
 
             buttonEvents.setOnClickListener(v -> {
+                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("STATUS");
                 Intent intent = new Intent(ConfirmProtocol.this, MatchEvents.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("MATCH", match);
+                bundle.putBoolean("IS_EDITABLE", status);
                 intent.putExtras(bundle);
 
                 startActivity(intent);
