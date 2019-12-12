@@ -44,9 +44,7 @@
         </activity>
         <activity android:name=".user.activity.ChooseTrainer" />
         <activity android:name=".user.activity.AddTournament" />
-        <activity
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
+
         <activity
             android:name=".PersonalActivity"
             android:configChanges="orientation"
