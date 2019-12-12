@@ -57,7 +57,7 @@ public class SaveSharedPreference {
         Gson gson = new Gson();
         String json = gson.toJson(myobject);
         editor.putString("MyObject", json);
-        editor.apply();
+        editor.commit();
     }
     public static void editObject(User myobject){
         user = myobject;

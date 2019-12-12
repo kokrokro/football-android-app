@@ -62,6 +62,7 @@
     <string name="teamMatches">Матчи команды</string>
     <string name="editClub">Редактировать клуб</string>
     <string name="protocol">Протокол</string>
+    <string name="setReferee">Назначить на матчи</string>
     <string name="editProtocol">Редактировать протокол</string>
     <string name="confirmProtocol">Обзор матча</string>
     <string name="editProtocolResponsiblePersons">Ответственные лица</string>

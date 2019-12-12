@@ -4,27 +4,20 @@
     android:layout_height="wrap_content"
     android:background="@color/colorLightGray">
 
-
     <LinearLayout
+        android:id="@+id/timetableMatchEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@color/colorWhite">
 
-        <TextView
-            android:id="@+id/refereesMatchLeagueTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/manrope_regular"
-            android:gravity="center"
-            android:padding="10dp"
-            android:textColor="@color/colorBottomNavigationUnChecked" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8sp"
+            android:layout_marginTop="10sp"
             android:orientation="horizontal">
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -33,17 +26,18 @@
                 android:layout_weight="1">
 
 
+
                 <TextView
-                    android:id="@+id/refereesMatchDate"
+                    android:id="@+id/timetableMatchDate"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/manrope_regular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/manrope_regular"
                     android:gravity="center"
-                    android:textColor="@color/colorLightGrayForText"
-                    android:textSize="14sp" />
+                    android:text="@string/newsSomeDate"
+                    android:textColor="@color/colorLightGrayForText" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -51,16 +45,16 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/refereesMatchTime"
+                    android:id="@+id/timetableMatchTime"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/manrope_regular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/manrope_regular"
                     android:gravity="center"
-                    android:textColor="@color/colorLightGrayForText"
-                    android:textSize="14sp" />
+                    android:text="@string/tournamentTime"
+                    android:textColor="@color/colorLightGrayForText" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -68,17 +62,20 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/timetableMatchRefereeLeague"
+                    android:id="@+id/timetableMatchLeague"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/manrope_regular"
                     android:layout_width="50sp"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/manrope_regular"
-                    android:gravity="center"
                     android:maxLines="1"
-                    android:textColor="@color/colorLightGrayForText"
-                    android:textSize="14sp" />
+                    android:ellipsize="end"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/tournamentTime"
+                    android:textColor="@color/colorLightGrayForText" />
             </LinearLayout>
+
+
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -88,25 +85,37 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/refereesMatchStadium"
+                    android:id="@+id/timetableMatchStadium"
+                    android:textSize="14sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:fontFamily="@font/manrope_regular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/manrope_regular"
                     android:gravity="end"
-                    android:maxLines="1"
-                    android:textColor="@color/colorLightGrayForText"
-                    android:textSize="14sp" />
+                    android:text="@string/tournamentStadium"
+                    android:textColor="@color/colorLightGrayForText" />
             </LinearLayout>
         </LinearLayout>
 
 
+        <TextView
+            android:id="@+id/timetableMatchLastScore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:gravity="center_horizontal"
+            android:fontFamily="@font/manrope_regular"
+            android:visibility="gone"
+            android:textColor="@color/colorLightGrayForText"
+            android:textSize="14sp"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6sp"
-            android:layout_marginTop="8sp"
+            android:layout_marginTop="5sp"
+            android:layout_marginBottom="15sp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -116,7 +125,7 @@
                 android:gravity="end|center_vertical">
 
                 <ImageView
-                    android:id="@+id/refereesMatchCommandLogo1"
+                    android:id="@+id/timetableMatchCommandLogo1"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_marginStart="14dp"
@@ -130,15 +139,15 @@
                 android:gravity="end|center_vertical">
 
                 <TextView
-                    android:id="@+id/refereesMatchCommandTitle1"
+                    android:id="@+id/timetableMatchCommandTitle1"
                     android:layout_width="80sp"
+                    android:gravity="end"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical|end"
                     android:layout_marginStart="10sp"
                     android:ellipsize="end"
-                    android:fontFamily="@font/manrope_regular"
-                    android:gravity="end"
                     android:maxLines="1"
+                    android:layout_gravity="center_vertical|end"
+                    android:fontFamily="@font/manrope_regular"
                     android:text="@string/commands"
                     android:textColor="@color/colorBottomNavigationUnChecked"
                     android:textSize="14sp" />
@@ -147,18 +156,19 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5sp">
+                android:layout_margin="5sp"
+                android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/refereesMatchScore"
+                    android:id="@+id/timetableMatchScore"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/manrope_regular"
                     android:layout_width="55dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/manrope_regular"
+                    android:text="4:3"
                     android:gravity="center"
-                    android:textColor="@color/colorBottomNavigationUnChecked"
-                    android:textSize="20sp" />
+                    android:textColor="@color/colorBottomNavigationUnChecked" />
             </LinearLayout>
 
             <LinearLayout
@@ -168,14 +178,14 @@
                 android:gravity="start">
 
                 <TextView
-                    android:id="@+id/refereesMatchCommandTitle2"
+                    android:id="@+id/timetableMatchCommandTitle2"
                     android:layout_width="80sp"
+                    android:gravity="start"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="10sp"
                     android:ellipsize="end"
-                    android:fontFamily="@font/manrope_regular"
-                    android:gravity="start"
                     android:maxLines="1"
+                    android:fontFamily="@font/manrope_regular"
                     android:text="@string/commands"
                     android:textColor="@color/colorBottomNavigationUnChecked"
                     android:textSize="14sp" />
@@ -187,209 +197,74 @@
                 android:gravity="end|center_vertical">
 
                 <ImageView
-                    android:id="@+id/refereesMatchCommandLogo2"
+                    android:id="@+id/timetableMatchCommandLogo2"
+                    android:layout_gravity="start"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:layout_gravity="start"
                     android:layout_marginEnd="14dp"
                     android:src="@drawable/ic_logo2" />
             </LinearLayout>
-
         </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/timetableMatchPenalty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5sp"
+            android:gravity="center_horizontal"
+            android:fontFamily="@font/manrope_regular"
+            android:visibility="gone"
+            android:textColor="@color/colorLightGrayForText"
+            android:textSize="14sp"/>
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
+
+
+
+
+
+
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="14dp"
-                android:layout_marginEnd="14dp"
-                android:orientation="vertical">
-
+                android:orientation="horizontal">
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/manrope_regular"
-                            android:text="@string/referee1"
-                            android:textColor="@color/colorLightGrayForText"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:gravity="center_vertical|end"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/refereesMatchReferee1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/manrope_regular"
-                            android:textColor="@color/colorBottomNavigationUnChecked"
-                            android:textSize="14sp" />
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/refereesMatchSwitch1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|end"
-                            android:layout_marginBottom="2sp"
-                            android:layout_marginTop="2sp"
-                            android:scaleX="0.8"
-                            android:scaleY="0.8"
-                            android:theme="@style/SwitchCompatStyle" />
-                    </LinearLayout>
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/manrope_regular"
-                            android:text="@string/referee2"
-                            android:textColor="@color/colorLightGrayForText"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:gravity="center_vertical|end"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/refereesMatchReferee2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/manrope_regular"
-                            android:textColor="@color/colorBottomNavigationUnChecked"
-                            android:textSize="14sp" />
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/refereesMatchSwitch2"
-                            android:layout_marginTop="2sp"
-                            android:layout_marginBottom="2sp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:scaleX="0.8"
-                            android:scaleY="0.8"
-                            android:layout_gravity="center_vertical|end"
-                            android:theme="@style/SwitchCompatStyle" />
-                    </LinearLayout>
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/manrope_regular"
-                            android:text="@string/referee3"
-                            android:textColor="@color/colorLightGrayForText"
-                            android:textSize="14sp" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center_vertical|end"
-                        android:gravity="center_vertical|end"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/refereesMatchReferee3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/manrope_regular"
-                            android:textColor="@color/colorBottomNavigationUnChecked"
-                            android:textSize="14sp" />
-
-                        <androidx.appcompat.widget.SwitchCompat
-                            android:id="@+id/refereesMatchSwitch3"
-                            android:layout_marginTop="2sp"
-                            android:layout_marginBottom="2sp"
-                            android:scaleX="0.8"
-                            android:scaleY="0.8"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical|end"
-                            android:theme="@style/SwitchCompatStyle" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:gravity="center_vertical"
-                        android:orientation="vertical">
-                <TextView
-                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/manrope_regular"
-                    android:text="@string/referee4"
-                    android:textColor="@color/colorLightGrayForText"
-                    android:textSize="14sp" />
-                    </LinearLayout>
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="14dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/manrope_regular"
+                                android:text="@string/referee1"
+                                android:textColor="@color/colorLightGrayForText"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -398,13 +273,169 @@
                             android:orientation="horizontal">
 
                             <TextView
-                                android:id="@+id/refereesMatchReferee4"
+                                android:id="@+id/timetableMatchReferee1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:fontFamily="@font/manrope_regular"
                                 android:textColor="@color/colorBottomNavigationUnChecked"
                                 android:textSize="14sp" />
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/refereesMatchSwitch"
+                                android:layout_marginTop="2sp"
+                                android:layout_marginBottom="2sp"
+                                android:scaleX="0.8"
+                                android:scaleY="0.8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical|end"
+                                android:theme="@style/SwitchCompatStyle" />
 
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/manrope_regular"
+                                android:text="@string/referee2"
+                                android:textColor="@color/colorLightGrayForText"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical|end"
+                            android:gravity="center_vertical|end"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/timetableMatchReferee2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/manrope_regular"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/refereesMatchSwitch2"
+                                android:layout_marginTop="2sp"
+                                android:layout_marginBottom="2sp"
+                                android:scaleX="0.8"
+                                android:scaleY="0.8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical|end"
+                                android:theme="@style/SwitchCompatStyle" />
+
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/manrope_regular"
+                                android:text="@string/referee3"
+                                android:textColor="@color/colorLightGrayForText"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical|end"
+                            android:gravity="center_vertical|end"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/timetableMatchReferee3"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/manrope_regular"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
+                            <androidx.appcompat.widget.SwitchCompat
+                                android:id="@+id/refereesMatchSwitch3"
+                                android:layout_marginTop="2sp"
+                                android:layout_marginBottom="2sp"
+                                android:scaleX="0.8"
+                                android:scaleY="0.8"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center_vertical|end"
+                                android:theme="@style/SwitchCompatStyle" />
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/manrope_regular"
+                                android:text="@string/referee4"
+                                android:textColor="@color/colorLightGrayForText"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center_vertical|end"
+                            android:gravity="center_vertical|end"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/timetableMatchReferee4"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/manrope_regular"
+                                android:textColor="@color/colorBottomNavigationUnChecked"
+                                android:textSize="14sp" />
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/refereesMatchSwitch4"
                                 android:layout_marginTop="2sp"
@@ -412,36 +443,40 @@
                                 android:scaleX="0.8"
                                 android:scaleY="0.8"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                                android:layout_height="match_parent"
                                 android:layout_gravity="center_vertical|end"
                                 android:theme="@style/SwitchCompatStyle" />
                         </LinearLayout>
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|end"
-                    android:layout_marginTop="12dp"
-                    android:gravity="center_vertical|end"
-                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical|end"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical|end"
+                        android:orientation="horizontal">
+
+
+                    </LinearLayout>
 
 
                 </LinearLayout>
 
 
-            </LinearLayout>
 
+            </LinearLayout>
 
         </LinearLayout>
 
         <View
-            android:id="@+id/timetableLine"
+            android:id="@+id/timetableMatchLine"
             android:layout_width="match_parent"
-            android:layout_height="1dp"
             android:layout_gravity="end"
             android:layout_marginBottom="5dp"
-            android:layout_marginTop="13dp"
+            android:layout_marginTop="15dp"
+            android:layout_height="1dp"
             android:background="@color/colorLightGray" />
     </LinearLayout>
+
 </RelativeLayout>
