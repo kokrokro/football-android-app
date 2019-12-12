@@ -16,11 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
@@ -218,12 +216,14 @@ public class ConfirmProtocol extends AppCompatActivity {
                             teams.put("TeamOne", match.getTeamOne());
                             teams.put("TeamTwo", match.getTeamTwo());
 
-        for (Club club : MankindKeeper.getInstance().allClubs) {
-            if (match.getTeamOne().getClub().equals(club.getId()))
-                setImage.setImage(image1.getContext(), image1, club.getLogo());
-            if (match.getTeamTwo().getClub().equals(club.getId()))
-                setImage.setImage(image2.getContext(), image2, club.getLogo());
-        }
+        setImage.setImage(image1.getContext(), image1, null);
+        setImage.setImage(image2.getContext(), image2, null);
+//        for (Club club : MankindKeeper.getInstance().allClubs) {
+//            if (match.getTeamOne().getClub().equals(club.getId()))
+//                setImage.setImage(image1.getContext(), image1, club.getLogo());
+//            if (match.getTeamTwo().getClub().equals(club.getId()))
+//                setImage.setImage(image2.getContext(), image2, club.getLogo());
+//        }
         return teams;
     }
 

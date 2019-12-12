@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
         <LinearLayout
+            android:id="@+id/PLC_name_holder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -39,18 +40,18 @@
             android:id="@+id/PLC_playerNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:padding="8dp"
             android:text="00"
-            android:textSize="45sp"
             android:textAlignment="viewEnd"
             android:textColor="@color/Black"
+            android:textSize="45sp"
+            android:maxLines="1"
             android:layout_gravity="end"
-            android:layout_weight="1"
-            android:padding="8dp"/>
+            android:layout_weight="1"/>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="@color/colorGray"
-        />
+        android:background="@color/colorGray"/>
 </LinearLayout>

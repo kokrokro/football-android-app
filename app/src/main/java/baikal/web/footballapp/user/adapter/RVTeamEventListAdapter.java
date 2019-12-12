@@ -1,5 +1,7 @@
 package baikal.web.footballapp.user.adapter;
 
+import android.os.Build;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +39,10 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
         this.listener = listener;
         this.players = players;
         this.trainerId = trainerId;
+
+        for (Player p: players)
+            if (p.getPerson().equals(trainerId))
+                trainerId = null;
 
         persons = new ArrayList<>();
         for (int i=0; i<players.size() + (trainerId == null ? 0 : 1); i++)
@@ -117,8 +123,7 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             if (persons.get(position) == null)
                 persons.set(position, MankindKeeper.getInstance().getPersonById(trainerId));
             holder.playerName.setText(persons.get(position).getSurnameAndName());
-            holder.playerNumber.setText("Тренер\n");
-            holder.playerNumber.setTextSize(21);
+            holder.playerNumber.setText("ТР");
             holder.linearLayout.setOnClickListener(v -> listener.onClick(persons.get(position)));
         }
     }
