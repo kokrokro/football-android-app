@@ -3,7 +3,7 @@ package baikal.web.footballapp.players.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.os.ConfigurationCompat;
-import androidx.paging.PagedList;
+import androidx.fragment.app.FragmentManager;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,10 +31,14 @@ import java.util.Locale;
 
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.players.activity.Player;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.ViewHolder> {
+    private static final String TAG = "PlayersAdapter";
+    final FragmentManager fragmentManager; // this is uglyyyy
+
     public static final DiffUtil.ItemCallback<Person> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<Person>() {
                 @Override
@@ -53,10 +56,10 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
                     return oldPerson.getId().equals(newPerson.getId());
                 }
             };
-    private static final String TAG = "PlayersAdapter";
 
-    public PlayersAdapter() {
+    public PlayersAdapter(FragmentManager fragmentManager) {
         super(DIFF_CALLBACK);
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -64,11 +67,6 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
     public PlayersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.player, parent, false);
         return new PlayersAdapter.ViewHolder(view, parent.getContext());
-    }
-
-    @Override
-    public void submitList(@Nullable PagedList<Person> pagedList) {
-        super.submitList(pagedList);
     }
 
     @Override
@@ -137,6 +135,16 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
                         .apply(requestOptions)
                         .into(imageLogo);
             }
+
+            buttonShow2.setOnClickListener(view -> {
+                Player playerFragment = new Player();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("PLAYERINFO", person);
+
+                playerFragment.setArguments(bundle);
+                fragmentManager.beginTransaction().replace(R.id.pageContainer, playerFragment).addToBackStack(null).commit();
+            });
+
         }
 
 

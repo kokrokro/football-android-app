@@ -53,7 +53,8 @@ public class PlayersPage extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerViewPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        playersAdapter = new PlayersAdapter();
+
+        playersAdapter = new PlayersAdapter(getFragmentManager());
         recyclerView.setAdapter(playersAdapter);
 
         playersPageViewModel = ViewModelProviders.of(this).get(PlayersPageViewModel.class);
