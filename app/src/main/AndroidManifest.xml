@@ -45,7 +45,6 @@
         <activity android:name=".user.activity.ChooseTrainer" />
         <activity android:name=".user.activity.AddTournament" />
         <activity
-            android:name=".protocol.Activity.ProtocolPage"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -99,7 +98,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.activity.ProtocolMatchScore"
+            android:name=".user.activity.ProtocolPenalty"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity

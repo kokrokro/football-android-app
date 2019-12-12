@@ -53,13 +53,11 @@ public class DialogProtocol extends DialogFragment {
         ImageButton eventYellowCard     = view.findViewById(R.id.event_yellow_card);
         ImageButton eventRedCard        = view.findViewById(R.id.event_red_card);
         ImageButton eventPenaltySuccess = view.findViewById(R.id.event_penalty_success);
-        ImageButton eventPenaltyFailure = view.findViewById(R.id.event_penalty_failure);
 
         eventGoal.          setOnClickListener(v -> {pos = 0; sendBackResult();});
         eventYellowCard.    setOnClickListener(v -> {pos = 1; sendBackResult();});
         eventRedCard.       setOnClickListener(v -> {pos = 2; sendBackResult();});
         eventPenaltySuccess.setOnClickListener(v -> {pos = 3; sendBackResult();});
-        eventPenaltyFailure.setOnClickListener(v -> {pos = 4; sendBackResult();});
 
         return alertDialogBuilder.create();
     }

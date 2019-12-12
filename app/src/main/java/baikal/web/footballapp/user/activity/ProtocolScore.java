@@ -40,11 +40,9 @@ import java.util.Objects;
 public class ProtocolScore extends AppCompatActivity{
     private static final String TAG = "ProtocolScore: ";
     private static final int EVENT_LIST_EDITED = 7341;
-    private final Logger log = LoggerFactory.getLogger(ProtocolMatchScore.class);
+    private final Logger log = LoggerFactory.getLogger(ProtocolPenalty.class);
 
-
-
-    private String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty", "penaltyFailure",
+    private String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty",
                                     "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
 
     private String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime",            "penaltySeries"};
@@ -149,7 +147,6 @@ public class ProtocolScore extends AppCompatActivity{
             if (match.getTeamTwo() != null)
                 assignTeam(match.getTeamTwo().getId(), "teamTwo");
 
-            setupAdapters();
             calculateScore();
         }
 
@@ -174,7 +171,7 @@ public class ProtocolScore extends AppCompatActivity{
 
     void setupAdapters() {
         if (team1!= null && team1.getPlayers() != null) {
-            RVTeamEventListAdapter adapter1 = new RVTeamEventListAdapter(team1.getPlayers(), person -> {
+            RVTeamEventListAdapter adapter1 = new RVTeamEventListAdapter(team1.getPlayers(), team1.getTrainer(), person -> {
                 DialogProtocol dialog = new DialogProtocol(i ->
                         addEvent(team1.getId(), person.getId(), i)
                 );
@@ -185,7 +182,7 @@ public class ProtocolScore extends AppCompatActivity{
             adapter1.notifyDataSetChanged();
         }
         if (team2 != null && team2.getPlayers() != null) {
-            RVTeamEventListAdapter adapter2 = new RVTeamEventListAdapter(team2.getPlayers(), person -> {
+            RVTeamEventListAdapter adapter2 = new RVTeamEventListAdapter(team2.getPlayers(), team2.getTrainer(), person -> {
                 DialogProtocol dialog = new DialogProtocol(i ->
                         addEvent(team2.getId(), person.getId(), i)
                 );
@@ -256,20 +253,20 @@ public class ProtocolScore extends AppCompatActivity{
             if (team1 != null && e.getTeam().equals(team1.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
                         e.getEventType().equals(eventTypes[3]) ||
-                        e.getEventType().equals(eventTypes[7]))
+                        e.getEventType().equals(eventTypes[6]))
                     goalCntTeam1++;
 
-                if (e.getEventType().equals(eventTypes[5]))
+                if (e.getEventType().equals(eventTypes[4]))
                     goalCntTeam2++;
             }
 
             if (team2 != null && e.getTeam().equals(team2.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
                         e.getEventType().equals(eventTypes[3]) ||
-                        e.getEventType().equals(eventTypes[7]))
+                        e.getEventType().equals(eventTypes[6]))
                     goalCntTeam2++;
 
-                if (e.getEventType().equals(eventTypes[5]))
+                if (e.getEventType().equals(eventTypes[4]))
                     goalCntTeam1++;
             }
         }
