@@ -79,7 +79,7 @@ public class PlayersPage extends Fragment {
                     break;
             }
         });
-        playersPageViewModel.playersList.list.observe(this, playersAdapter::submitList);
+        playersPageViewModel.getPlayers().observe(this, playersAdapter::submitList);
 
         searchView = view.findViewById(R.id.searchView);
 
@@ -109,7 +109,7 @@ public class PlayersPage extends Fragment {
         });
 
         searchView.setOnCloseListener(() -> {
-            Log.d("df", "closed listener");
+            playersPageViewModel.onQueryClose();
             return false;
         });
 
@@ -124,12 +124,6 @@ public class PlayersPage extends Fragment {
         searchView.setIconified(true);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) item.getActionView();
-    }
-
-    private void showDialog() {
-    }
-
-    private void hideDialog() {
     }
 }
 

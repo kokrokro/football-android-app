@@ -12,7 +12,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.os.ConfigurationCompat;
+import androidx.paging.PagedList;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,7 +50,7 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
                         @NonNull Person oldPerson, @NonNull Person newPerson) {
                     // NOTE: if you use equals, your object must properly override Object#equals()
                     // Incorrectly returning false here will result in too many animations.
-                    return oldPerson.getName().equals(newPerson.getName());
+                    return oldPerson.getId().equals(newPerson.getId());
                 }
             };
     private static final String TAG = "PlayersAdapter";
@@ -62,6 +64,11 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
     public PlayersAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.player, parent, false);
         return new PlayersAdapter.ViewHolder(view, parent.getContext());
+    }
+
+    @Override
+    public void submitList(@Nullable PagedList<Person> pagedList) {
+        super.submitList(pagedList);
     }
 
     @Override

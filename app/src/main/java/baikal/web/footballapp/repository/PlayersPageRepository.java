@@ -1,15 +1,16 @@
 package baikal.web.footballapp.repository;
 
 import androidx.arch.core.executor.ArchTaskExecutor;
-import androidx.lifecycle.ComputableLiveData;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.paging.DataSource;
 import androidx.paging.PagedList;
 
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.players.datasource.DoIt;
 import baikal.web.footballapp.players.datasource.LoadStates;
 import baikal.web.footballapp.players.datasource.PagedListWithLoadingState;
-import baikal.web.footballapp.players.datasource.PlayersDataSource;
+import baikal.web.footballapp.players.datasource.PlayersItemDataSource;
+import baikal.web.footballapp.players.datasource.PlayersPositionalDataSource;
 
 public class PlayersPageRepository {
     private static final PagedList.Config config = new PagedList.Config.Builder()
@@ -17,25 +18,37 @@ public class PlayersPageRepository {
             .setPageSize(7)
             .build();
 
-    public PagedListWithLoadingState<Person> getPlayersInitial(String searchStr) {
+    public PagedListWithLoadingState<Person> getPlayers(String searchStr) {
         MutableLiveData<LoadStates> loadStatesLiveData = new MutableLiveData<>(LoadStates.Loading);
+        MutableLiveData<PagedList<Person>> pagedListLiveData = new MutableLiveData<>();
 
-        PlayersDataSource playersDataSource = new PlayersDataSource(
-                () -> loadStatesLiveData.postValue(LoadStates.Loaded),
-                () -> loadStatesLiveData.postValue(LoadStates.Error), searchStr);
+        final DoIt errorCallback = () -> loadStatesLiveData.postValue(LoadStates.Error);
+        final DoIt goodCallback = () -> loadStatesLiveData.postValue(LoadStates.Loaded);
 
-        LiveData<PagedList<Person>> pagedListLiveData = new ComputableLiveData<PagedList<Person>>(ArchTaskExecutor.getIOThreadExecutor()) {
-            @Override
-            protected PagedList<Person> compute() {
-                return new PagedList.Builder<>(playersDataSource, config)
-                        .setNotifyExecutor(ArchTaskExecutor.getMainThreadExecutor())
-                        .setFetchExecutor(ArchTaskExecutor.getIOThreadExecutor())
-                        .build();
-            }
-        }.getLiveData();
+        if (searchStr == null) {
+            PlayersItemDataSource playersItemDataSource = new PlayersItemDataSource(
+                    goodCallback,
+                    errorCallback);
+
+            executeBuildPagedList(pagedListLiveData, playersItemDataSource);
+        } else {
+            PlayersPositionalDataSource playersPositionalDataSource = new PlayersPositionalDataSource(
+                    goodCallback,
+                    errorCallback, searchStr);
+
+            executeBuildPagedList(pagedListLiveData, playersPositionalDataSource);
+        }
 
         return new PagedListWithLoadingState<>(loadStatesLiveData, pagedListLiveData);
-//        return new LivePagedListBuilder<>(dataSourceFactory, config).build();
+    }
+
+    private <K, V> void executeBuildPagedList(MutableLiveData<PagedList<V>> pagedListLive, DataSource<K, V> dataSource) {
+        ArchTaskExecutor.getIOThreadExecutor().execute(() ->
+                pagedListLive.postValue(
+                        new PagedList.Builder<>(dataSource, config)
+                                .setNotifyExecutor(ArchTaskExecutor.getMainThreadExecutor())
+                                .setFetchExecutor(ArchTaskExecutor.getIOThreadExecutor())
+                                .build()));
     }
 
 }
