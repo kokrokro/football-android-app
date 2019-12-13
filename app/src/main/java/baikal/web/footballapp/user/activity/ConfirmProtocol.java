@@ -202,7 +202,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                             if (error.getMessage() != null) {
                                 Log.e(TAG, error.getMessage());
 
-                                if (error.getMessage().contains("HTTP 500"))
+                                if (error.getMessage().contains("version invalid"))
                                     syncProtocolOneMoreTime();
                             }
                         });
@@ -263,7 +263,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                                         if (error.getMessage() != null) {
                                             Log.e(TAG, error.getMessage());
 
-                                            if (error.getMessage().contains("HTTP 500"))
+                                            if (error.getMessage().contains("version invalid"))
                                                 syncProtocolOneMoreTime();
                                         }
                                     });

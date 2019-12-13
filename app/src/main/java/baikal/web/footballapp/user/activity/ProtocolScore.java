@@ -239,7 +239,7 @@ public class ProtocolScore extends AppCompatActivity{
                             if (error.getMessage() != null) {
                                 Log.e(TAG, error.getMessage());
 
-                                if (error.getMessage().contains("HTTP 500"))
+                                if (error.getMessage().contains("version invalid"))
                                     syncProtocolOneMoreTime();
                             }
                         });
@@ -330,6 +330,7 @@ public class ProtocolScore extends AppCompatActivity{
             public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     match.setV(response.body().get(0).getV());
+
                     String token = SaveSharedPreference.getObject().getToken();
                     Match newMatch = new Match(match);
 
@@ -350,7 +351,7 @@ public class ProtocolScore extends AppCompatActivity{
                                         if (error.getMessage() != null) {
                                             Log.e(TAG, error.getMessage());
 
-                                            if (error.getMessage().contains("HTTP 500"))
+                                            if (error.getMessage().contains("version invalid"))
                                                 syncProtocolOneMoreTime();
                                         }
                                     });

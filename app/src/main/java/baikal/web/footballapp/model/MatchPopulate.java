@@ -85,7 +85,9 @@ public class MatchPopulate implements Serializable {
         setTour(match.getTour());
         setPlayersList(match.getPlayersList());
         setLeague(match.getLeague());
-        setEvents(match.getEvents());
+
+        mergeEvents(match.getEvents());
+
         setCreatedAt(match.getCreatedAt());
         setUpdatedAt(match.getUpdatedAt());
         setReferees(match.getReferees());
@@ -97,6 +99,31 @@ public class MatchPopulate implements Serializable {
         setGroup(match.getGroup());
         setFouls(match.getFouls());
         setV(match.getV());
+    }
+
+    private void mergeEvents(List<Event> events) {
+        int it1=0, it2=0;
+        List<Event> newEventList = new ArrayList<>();
+
+        for (;it1 < this.events.size();) {
+            if (it2 < events.size())
+                while (!this.events.get(it1).getId().equals(events.get(it2).getId())) {
+                    newEventList.add(events.get(it2));
+                    it2++;
+
+                    if (it2 == events.size())
+                        break;
+                }
+            newEventList.add(this.events.get(it1));
+            it1++;
+            it2++;
+        }
+
+        for (;it2 < events.size();it2++)
+            newEventList.add(events.get(it2));
+
+        this.events.clear();
+        this.events.addAll(newEventList);
     }
 
     public String getId() {
