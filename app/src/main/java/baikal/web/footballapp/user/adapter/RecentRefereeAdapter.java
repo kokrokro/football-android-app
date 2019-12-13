@@ -2,6 +2,7 @@ package baikal.web.footballapp.user.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,11 +52,16 @@ public class RecentRefereeAdapter extends RecyclerView.Adapter<RecentRefereeAdap
         Person player;
 
         player = MankindKeeper.getInstance().getPersonById(referees.get(position));
+        if(player==null){
+            Log.d("RECENTREFEREE", " NULL PO " +referees.get(position));
+        }
+        try {
+            holder.textName.setText(player.getSurnameWithInitials());
+            holder.setRefereeButton.setOnClickListener(v -> {
+                listener.onClick(player);
+            });
+        }catch (NullPointerException e){}
 
-        holder.textName.setText(player.getSurnameWithInitials());
-        holder.setRefereeButton.setOnClickListener(v -> {
-            listener.onClick(player);
-        });
         try {
 
             String uriPic = BASE_URL;
