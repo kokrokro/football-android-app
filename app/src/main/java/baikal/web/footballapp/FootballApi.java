@@ -68,9 +68,6 @@ public interface FootballApi {
     @GET("/api/clubs")
     Call<List<Club>> getAllClubs();
 
-    @GET("/api/stats/person?_populate=person")
-    Call<List<PersonStats>> getPersonStats(@Query("person") String person, @Query("on_") String on);
-
 
 
 
@@ -183,7 +180,10 @@ public interface FootballApi {
     Call<List<Team>> getTeam(@Query("_id") String id);
 
     @GET("/api/stats/team")
-    Observable<List<TeamStats>> getTeamStats(@Query("_id") String id);
+    Observable<List<TeamStats>> getTeamStats(@Query("_id") String id, @Query("onModel") String onModel, @Query("on_") String on_, @Query("team") String team);
+
+    @GET("api/stats/person")
+    Call<List<PersonStats>> getPersonStats ( @Query("onModel") String onModel, @Query("person") String id , @Query("on_") String on_);
 
     //add new club
     @Multipart

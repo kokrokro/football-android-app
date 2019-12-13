@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class TournamentsFragment extends Fragment {
     public List<Stadium> allStadiums = new ArrayList<>();
     private MainViewModel mainViewModel;
     private PersonalActivity activity;
-
+    private LinearLayout emptyFavTourneys;
     @SuppressLint("ValidFragment")
     TournamentsFragment(PersonalActivity activity) {
         this.activity = activity;
@@ -71,7 +72,7 @@ public class TournamentsFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_tournaments, container, false);
         scroller = view.findViewById(R.id.scrollerLeague);
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
+        emptyFavTourneys = view.findViewById(R.id.emptyFavTourneys);
 
         try {
             mainViewModel.getTeams().observe(this,teams -> {
@@ -110,8 +111,10 @@ public class TournamentsFragment extends Fragment {
                     recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
                     adapter.dataChanged(tourneys);
+                    if(leagues.size()==0){
+                        emptyFavTourneys.setVisibility(View.GONE);
+                    }
                 });
-
 
             });
 

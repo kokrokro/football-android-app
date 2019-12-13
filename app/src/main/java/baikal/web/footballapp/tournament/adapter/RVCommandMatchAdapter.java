@@ -99,67 +99,67 @@ public class RVCommandMatchAdapter extends RecyclerView.Adapter<RVCommandMatchAd
             }
         }
 
-        try {
-            for (Team team : league.getTeams()) {
-                if (team.getId().equals(match.getTeamOne())) {
-                    str = team.getName();
-                    team1 = team;
-                    holder.textCommandTitle1.setText(str);
-                    for (Club club : MankindKeeper.getInstance().allClubs) {
-                        if (club.getId().equals(team.getClub())) {
-                            (new SetImage()).setImage(activity, holder.imgCommandLogo1, club.getLogo());
-                            break;
-                        }
-                    }
-                    for (Player player : team.getPlayers()) {
-                        teamPlayers1.add(player.getId());
-                        if (player.getActiveDisquals() != 0) {
-                            new QBadgeView(activity)
-                                    .bindTarget(holder.imgCommandLogo1)
-                                    .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                    .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                    .setBadgeTextSize(5, true)
-                                    .setBadgePadding(5, true)
-                                    .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                    .setGravityOffset(-3, 1, true)
-                                    .setBadgeNumber(3);
-//                        break;
-                        }
-//                    if (player.getGoals()!=0){
-                        score1 += player.getGoals();
+//        try {
+//            for (Team team : league.getTeams()) {
+//                if (team.getId().equals(match.getTeamOne())) {
+//                    str = team.getName();
+//                    team1 = team;
+//                    holder.textCommandTitle1.setText(str);
+//                    for (Club club : MankindKeeper.getInstance().allClubs) {
+//                        if (club.getId().equals(team.getClub())) {
+//                            (new SetImage()).setImage(activity, holder.imgCommandLogo1, club.getLogo());
+//                            break;
+//                        }
 //                    }
-                    }
-                }
-                if (team.getId().equals(match.getTeamTwo())) {
-                    str = team.getName();
-                    team2 = team;
-                    holder.textCommandTitle2.setText(str);
-                    for (Club club : MankindKeeper.getInstance().allClubs) {
-                        if (club.getId().equals(team.getClub())) {
-                            (new SetImage()).setImage(activity, holder.imgCommandLogo2, club.getLogo());
-                            break;
-                        }
-                    }
-                    for (Player player : team.getPlayers()) {
-                        teamPlayers2.add(player.getId());
-                        if (player.getActiveDisquals() != 0) {
-                            new QBadgeView(activity)
-                                    .bindTarget(holder.imgCommandLogo2)
-                                    .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                                    .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                                    .setBadgeTextSize(5, true)
-                                    .setBadgePadding(5, true)
-                                    .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                                    .setGravityOffset(-3, 1, true)
-                                    .setBadgeNumber(3);
-                        }
-                        score2 += player.getGoals();
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error(TAG, e);
-        }
+//                    for (Player player : team.getPlayers()) {
+//                        teamPlayers1.add(player.getId());
+//                        if (player.getActiveDisquals() != 0) {
+//                            new QBadgeView(activity)
+//                                    .bindTarget(holder.imgCommandLogo1)
+//                                    .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+//                                    .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+//                                    .setBadgeTextSize(5, true)
+//                                    .setBadgePadding(5, true)
+//                                    .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+//                                    .setGravityOffset(-3, 1, true)
+//                                    .setBadgeNumber(3);
+////                        break;
+//                        }
+////                    if (player.getGoals()!=0){
+//                        score1 += player.getGoals();
+////                    }
+//                    }
+//                }
+//                if (team.getId().equals(match.getTeamTwo())) {
+//                    str = team.getName();
+//                    team2 = team;
+//                    holder.textCommandTitle2.setText(str);
+//                    for (Club club : MankindKeeper.getInstance().allClubs) {
+//                        if (club.getId().equals(team.getClub())) {
+//                            (new SetImage()).setImage(activity, holder.imgCommandLogo2, club.getLogo());
+//                            break;
+//                        }
+//                    }
+//                    for (Player player : team.getPlayers()) {
+//                        teamPlayers2.add(player.getId());
+//                        if (player.getActiveDisquals() != 0) {
+//                            new QBadgeView(activity)
+//                                    .bindTarget(holder.imgCommandLogo2)
+//                                    .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+//                                    .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+//                                    .setBadgeTextSize(5, true)
+//                                    .setBadgePadding(5, true)
+//                                    .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+//                                    .setGravityOffset(-3, 1, true)
+//                                    .setBadgeNumber(3);
+//                        }
+//                        score2 += player.getGoals();
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            log.error(TAG, e);
+//        }
         try{
             str = match.getScore();
             if (str.equals("")){

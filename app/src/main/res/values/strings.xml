@@ -145,6 +145,7 @@
     <string name="not_club">Вы пока не состоите ни в одном клубе</string>
     <string name="not_command">Вы пока не участвуете ни в одной команде</string>
     <string name="not_match">Для Вас пока нет ближайших матчей</string>
+    <string name="no_fav_tourneys">У вас пока нет избранных турниров</string>
     <string name="no_team_matches">Для вашей команды пока нет матчей</string>
     <string name="not_matches">Пока нет утвержденных матчей</string>
     <string name="not_coming_match">На этой неделе нет матчей</string>

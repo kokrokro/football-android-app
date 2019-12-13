@@ -8,7 +8,7 @@ import java.io.Serializable;
 public class PersonStats implements Serializable {
     @SerializedName("person")
     @Expose
-    private Person person;
+    private String person;
     @SerializedName("yellowCards")
     @Expose
     private Integer yellowCards;
@@ -34,11 +34,11 @@ public class PersonStats implements Serializable {
     @Expose
     private String onModel;
 
-    public Person getPerson() {
+    public String getPerson() {
         return person;
     }
 
-    public void setPerson(Person person) {
+    public void setPerson(String person) {
         this.person = person;
     }
 
