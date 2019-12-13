@@ -1,7 +1,6 @@
 package baikal.web.footballapp.user.adapter;
 
-import android.os.Build;
-import android.text.Layout;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +8,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import baikal.web.footballapp.Controller;
@@ -27,18 +28,26 @@ import retrofit2.Response;
 public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventListAdapter.ViewHolder> {
     private List<Player> players;
     private List<Person> persons;
+    private HashMap<String, List<Event>> events;
+    private List<Event> eventList;
     private String trainerId;
     private TeamEventListListener listener;
+    private Activity context;
 
     public interface TeamEventListListener {
         void onClick (Person person);
     }
 
-    public RVTeamEventListAdapter(List<Player> players, String trainerId, TeamEventListListener listener)
-    {
+    public RVTeamEventListAdapter(Activity context, List<Player> players, String trainerId,
+                                  List<Event> events, TeamEventListListener listener) {
         this.listener = listener;
         this.players = players;
         this.trainerId = trainerId;
+        this.context = context;
+        this.events = new HashMap<>();
+        eventList = events;
+
+        fillEvents(eventList);
 
         for (Player p: players)
             if (p.getPerson().equals(trainerId))
@@ -62,6 +71,7 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         if (players.size() == position) {
             setupTrainersViewHolder(holder, position);
             return;
@@ -95,7 +105,11 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             holder.playerName.setText(persons.get(position).getSurnameAndName());
             holder.playerNumber.setText(String.valueOf(player.getNumber()));
             holder.linearLayout.setOnClickListener(v -> listener.onClick(persons.get(position)));
+
+            holder.events.clear();
+            holder.events.addAll(events.get(players.get(position).getPerson()));
         }
+
     }
 
     private void setupTrainersViewHolder(ViewHolder holder, int position) {
@@ -125,7 +139,24 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             holder.playerName.setText(persons.get(position).getSurnameAndName());
             holder.playerNumber.setText("ТР");
             holder.linearLayout.setOnClickListener(v -> listener.onClick(persons.get(position)));
+
+            holder.events.clear();
+            holder.events.addAll(events.get(trainerId)==null ? new ArrayList<>() : events.get(trainerId));
         }
+    }
+
+    private void fillEvents(List<Event> events) {
+        for (Event e: events) {
+            if (!this.events.containsKey(e.getPerson()))
+                this.events.put(e.getPerson(), new ArrayList<>());
+            this.events.get(e.getPerson()).add(e);
+        }
+    }
+
+    public void dataChanged()
+    {
+        fillEvents(eventList);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -147,9 +178,10 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             playerName = itemView.findViewById(R.id.PLC_playerName);
             playerNumber = itemView.findViewById(R.id.PLC_playerNumber);
             playerEventList = itemView.findViewById(R.id.PLC_playerEvents);
+            playerEventList.setLayoutManager(new LinearLayoutManager(context));
             linearLayout = itemView.findViewById(R.id.plc_Linear_Layout);
             events = new ArrayList<>();
-            adapter = new RVPlayerEventList(events);
+            adapter = new RVPlayerEventList(context, events);
             if (playerEventList != null)
                 playerEventList.setAdapter(adapter);
         }
