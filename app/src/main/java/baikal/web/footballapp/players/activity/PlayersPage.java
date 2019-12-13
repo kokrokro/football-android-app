@@ -17,7 +17,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,6 +52,9 @@ public class PlayersPage extends Fragment {
         final View view = inflater.inflate(R.layout.page_players2, container, false);
         final ProgressBar progressBar = view.findViewById(R.id.progress);
         final TextView errorText = view.findViewById(R.id.errorText);
+        final Toolbar toolbar = view.findViewById(R.id.toolbarPlayers);
+        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
+
 
         recyclerView = view.findViewById(R.id.recyclerViewPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -120,12 +125,18 @@ public class PlayersPage extends Fragment {
     }
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-        super.onCreateOptionsMenu(menu, menuInflater);
         menuInflater.inflate(R.menu.player_search, menu);
-        searchView.setIconified(true);
+//        searchView.setIconified(true);
         MenuItem item = menu.findItem(R.id.action_search);
         searchView = (SearchView) item.getActionView();
+        super.onCreateOptionsMenu(menu, menuInflater);
     }
 }
 
