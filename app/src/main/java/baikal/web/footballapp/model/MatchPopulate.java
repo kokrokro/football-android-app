@@ -1,10 +1,13 @@
 package baikal.web.footballapp.model;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class MatchPopulate implements Serializable {
@@ -41,7 +44,7 @@ public class MatchPopulate implements Serializable {
     private Team teamTwo;
     @SerializedName("events")
     @Expose
-    private List<Event> events = null;
+    final private List<Event> events = new ArrayList<>();
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -85,9 +88,7 @@ public class MatchPopulate implements Serializable {
         setTour(match.getTour());
         setPlayersList(match.getPlayersList());
         setLeague(match.getLeague());
-
-        mergeEvents(match.getEvents());
-
+        setEvents(match.getEvents());
         setCreatedAt(match.getCreatedAt());
         setUpdatedAt(match.getUpdatedAt());
         setReferees(match.getReferees());
@@ -101,29 +102,15 @@ public class MatchPopulate implements Serializable {
         setV(match.getV());
     }
 
-    private void mergeEvents(List<Event> events) {
-        int it1=0, it2=0;
-        List<Event> newEventList = new ArrayList<>();
-
-        for (;it1 < this.events.size();) {
-            if (it2 < events.size())
-                while (!this.events.get(it1).getId().equals(events.get(it2).getId())) {
-                    newEventList.add(events.get(it2));
-                    it2++;
-
-                    if (it2 == events.size())
-                        break;
-                }
-            newEventList.add(this.events.get(it1));
-            it1++;
-            it2++;
+    public void mergeEvents(List<Event> events) {
+        try {
+            LinkedHashSet<Event> myEvents = new LinkedHashSet<>(events);
+            myEvents.addAll(this.events);
+            this.events.clear();
+            this.events.addAll(myEvents);
+        } catch (Exception e) {
+            Log.e("MATCH_POPULATE", e.toString());
         }
-
-        for (;it2 < events.size();it2++)
-            newEventList.add(events.get(it2));
-
-        this.events.clear();
-        this.events.addAll(newEventList);
     }
 
     public String getId() {
@@ -211,13 +198,11 @@ public class MatchPopulate implements Serializable {
     }
 
     public void setEvents(List<Event> events) {
-        this.events = events;
+        this.events.clear();
+        this.events.addAll(events);
     }
 
     public void addEvent(Event event) {
-        if (events == null)
-            events = new ArrayList<>();
-
         events.add(event);
     }
 

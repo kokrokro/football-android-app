@@ -1,6 +1,7 @@
 package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -28,7 +32,7 @@ import retrofit2.Response;
 public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventListAdapter.ViewHolder> {
     private List<Player> players;
     private List<Person> persons;
-    private HashMap<String, List<Event>> events;
+    private HashMap<String, LinkedHashSet<Event>> events;
     private List<Event> eventList;
     private String trainerId;
     private TeamEventListListener listener;
@@ -47,15 +51,20 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
         this.events = new HashMap<>();
         eventList = events;
 
-        fillEvents(eventList);
-
         for (Player p: players)
-            if (p.getPerson().equals(trainerId))
-                trainerId = null;
+            Log.d("RVTELA", p.getNumber().toString());
+
+        if (trainerId != null)
+            for (Player p: players)
+                if (p.getPerson().equals(trainerId))
+                    this.trainerId = null;
 
         persons = new ArrayList<>();
-        for (int i=0; i<players.size() + (trainerId == null ? 0 : 1); i++)
+        for (int i=0; i<players.size() + (this.trainerId == null ? 0 : 1); i++)
             persons.add(null);
+
+        fillEvents(eventList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -71,7 +80,6 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
         if (players.size() == position) {
             setupTrainersViewHolder(holder, position);
             return;
@@ -80,25 +88,7 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
         Player player = players.get(position);
 
         if (MankindKeeper.getInstance().getPersonById(player.getPerson()) == null)
-            Controller.getApi().getPerson(player.getPerson()).enqueue(new Callback<List<Person>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                    if (response.body() != null && response.body().size() > 0) {
-                        Person person = response.body().get(0);
-                        persons.set(position, person);
-                        MankindKeeper.getInstance().addPerson(person);
-                        notifyDataSetChanged();
-
-                        holder.linearLayout.setOnClickListener(v -> listener.onClick(persons.get(position)));
-                        holder.playerName.setText(persons.get(position).getSurnameAndName());
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) {
-
-                }
-            });
+            getPerson(player.getPerson());
         else {
             if (persons.get(position) == null)
                 persons.set(position, MankindKeeper.getInstance().getPersonById(player.getPerson()));
@@ -107,32 +97,15 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             holder.linearLayout.setOnClickListener(v -> listener.onClick(persons.get(position)));
 
             holder.events.clear();
-            holder.events.addAll(events.get(players.get(position).getPerson()));
+            if (events.containsKey(players.get(position).getPerson()))
+                holder.events.addAll(events.get(players.get(position).getPerson()));
+            holder.adapter.notifyDataSetChanged();
         }
-
     }
 
     private void setupTrainersViewHolder(ViewHolder holder, int position) {
         if (MankindKeeper.getInstance().getPersonById(trainerId) == null)
-            Controller.getApi().getPerson(trainerId).enqueue(new Callback<List<Person>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                    if (response.body() != null && response.body().size() > 0) {
-                        Person person = response.body().get(0);
-                        persons.set(position, person);
-                        MankindKeeper.getInstance().addPerson(person);
-                        notifyDataSetChanged();
-
-                        holder.linearLayout.setOnClickListener(v -> listener.onClick(persons.get(position)));
-                        holder.playerName.setText(persons.get(position).getSurnameAndName());
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) {
-
-                }
-            });
+            getPerson(trainerId);
         else {
             if (persons.get(position) == null)
                 persons.set(position, MankindKeeper.getInstance().getPersonById(trainerId));
@@ -141,14 +114,35 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             holder.linearLayout.setOnClickListener(v -> listener.onClick(persons.get(position)));
 
             holder.events.clear();
-            holder.events.addAll(events.get(trainerId)==null ? new ArrayList<>() : events.get(trainerId));
+            holder.events.addAll(events.get(trainerId)==null ? new LinkedHashSet<>() : events.get(trainerId));
+            holder.adapter.notifyDataSetChanged();
         }
     }
 
+    private void getPerson (String personId)
+    {
+        Controller.getApi().getPerson(personId).enqueue(new Callback<List<Person>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
+                if (response.body() != null && response.body().size() > 0) {
+                    Person person = response.body().get(0);
+                    MankindKeeper.getInstance().addPerson(person);
+                    notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
     private void fillEvents(List<Event> events) {
+        this.events.clear();
         for (Event e: events) {
             if (!this.events.containsKey(e.getPerson()))
-                this.events.put(e.getPerson(), new ArrayList<>());
+                this.events.put(e.getPerson(), new LinkedHashSet<>());
             this.events.get(e.getPerson()).add(e);
         }
     }
@@ -170,7 +164,7 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
         final RecyclerView playerEventList;
         final RVPlayerEventList adapter;
         final LinearLayout linearLayout;
-        final List<Event> events;
+        final Set<Event> events;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -178,12 +172,11 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             playerName = itemView.findViewById(R.id.PLC_playerName);
             playerNumber = itemView.findViewById(R.id.PLC_playerNumber);
             playerEventList = itemView.findViewById(R.id.PLC_playerEvents);
-            playerEventList.setLayoutManager(new LinearLayoutManager(context));
+            playerEventList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             linearLayout = itemView.findViewById(R.id.plc_Linear_Layout);
-            events = new ArrayList<>();
+            events = new HashSet<>();
             adapter = new RVPlayerEventList(context, events);
-            if (playerEventList != null)
-                playerEventList.setAdapter(adapter);
+            playerEventList.setAdapter(adapter);
         }
     }
 }

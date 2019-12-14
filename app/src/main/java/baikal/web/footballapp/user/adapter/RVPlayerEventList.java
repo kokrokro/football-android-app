@@ -22,7 +22,7 @@ import baikal.web.footballapp.model.Event;
 
 public class RVPlayerEventList extends RecyclerView.Adapter<RVPlayerEventList.ViewHolder> {
 
-    private List<Event> events;
+    private Set<Event> events;
     private HashMap<String, Integer> eventsCnt;
     private HashMap<String, Integer> eventsCntToShow;
     private HashMap<String, Integer> eventIconIds;
@@ -32,7 +32,7 @@ public class RVPlayerEventList extends RecyclerView.Adapter<RVPlayerEventList.Vi
     private String[] eventTypes = {"goal", "yellowCard", "redCard", "penalty"};
     private List<String> eventTypesToShow;
 
-    RVPlayerEventList(Activity activity, List<Event> events) {
+    RVPlayerEventList(Activity activity, Set<Event> events) {
         this.events = events;
         this.eventsCnt = new HashMap<>();
         this.eventsCntToShow = new HashMap<>();
@@ -100,13 +100,12 @@ public class RVPlayerEventList extends RecyclerView.Adapter<RVPlayerEventList.Vi
     private int getEventTypeNumber() {
         eventsCntToShow.clear();
         eventTypesToShow.clear();
+        for (String eventType : eventTypes) this.eventsCnt.put(eventType, 0);
 
         for (Event e: events) {
             Integer incr = eventsCnt.get(e.getEventType());
             eventsCnt.put(e.getEventType(), (incr == null ? 0 : incr) + 1);
         }
-
-
 
         Set<String> keys = eventsCnt.keySet();
 

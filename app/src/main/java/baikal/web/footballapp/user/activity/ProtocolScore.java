@@ -45,8 +45,8 @@ public class ProtocolScore extends AppCompatActivity{
     private String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty",
                                     "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
 
-    private String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime",            "penaltySeries"};
-    private String[] matchTimesToShow = {"Первый тайм",   "Второй тайм", "Дополнительное время", "Серия пенальти"};
+    private String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime"};
+    private String[] matchTimesToShow = {"Первый тайм",   "Второй тайм", "Дополнительное время"};
     private int currentMatchTime = 0;
 
     private RecyclerView firstTeamListRecyclerView;
@@ -110,8 +110,7 @@ public class ProtocolScore extends AppCompatActivity{
             textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
         });
         btnPenalty.setOnClickListener(v -> {
-            currentMatchTime = 3;
-            textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
+            Log.d(TAG, "starting penalty series");
         });
 
         textViewFoulsCntTeam1.setOnClickListener(v -> {
@@ -126,13 +125,12 @@ public class ProtocolScore extends AppCompatActivity{
 
         btnAutoGoal1.setOnClickListener(v -> {
             if (team1 != null)
-                addEvent(team1.getId(), null, 5);
+                addEvent(team1.getId(), null, 4);
         });
 
         btnAutoGoal2.setOnClickListener(v -> {
             if (team2 != null)
-                addEvent(team2.getId(), null, 5);
-
+                addEvent(team2.getId(), null, 4);
         });
 
         firstTeamListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -209,7 +207,7 @@ public class ProtocolScore extends AppCompatActivity{
             button.setText("Фолы: " + foulsCntTeam2);
         }
 
-        addEvent(teamId, null, 6);
+        addEvent(teamId, null, 5);
     }
 
     @SuppressLint("CheckResult")
@@ -233,20 +231,17 @@ public class ProtocolScore extends AppCompatActivity{
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(newMatch2 -> {
                             if (newMatch2 != null) {
+                                Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
                                 match.onProtocolEdited(newMatch2);
                                 calculateScore();
-                                Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
+                                adapter2.dataChanged();
+                                adapter1.dataChanged();
                             }
                         },
                         error -> {
-                            log.debug("===================================");
-
-                            if (error.getMessage() != null) {
-                                Log.e(TAG, error.getMessage());
-
-                                if (error.getMessage().contains("version invalid"))
-                                    syncProtocolOneMoreTime();
-                            }
+                            Log.d(TAG, "===================================");
+                            if (error.toString().contains("HTTP 500"))
+                                syncProtocolOneMoreTime();
                         });
     }
 
@@ -254,6 +249,8 @@ public class ProtocolScore extends AppCompatActivity{
     {
         int goalCntTeam1 = 0;
         int goalCntTeam2 = 0;
+
+        Log.d(TAG, (goalCntTeam1) + " " + (goalCntTeam2) + match.getEvents().size());
 
         for (Event e: match.getEvents()) {
             if (team1 != null && e.getTeam().equals(team1.getId())) {
@@ -277,11 +274,9 @@ public class ProtocolScore extends AppCompatActivity{
             }
         }
 
+        Log.d(TAG, (goalCntTeam1) + " " + (goalCntTeam2));
         String score = goalCntTeam1 + ":" + goalCntTeam2;
-        if (goalCntTeam1 /10 > 0 && goalCntTeam2 /10 == 0)
-            score = " " + score;
-        if (goalCntTeam2 /10 > 0 && goalCntTeam1 /10 == 0)
-            score += " ";
+        Log.d(TAG, score);
         textViewMatchScore.setText(score);
     }
 
@@ -335,6 +330,7 @@ public class ProtocolScore extends AppCompatActivity{
             public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     match.setV(response.body().get(0).getV());
+                    match.mergeEvents(response.body().get(0).getEvents());
 
                     String token = SaveSharedPreference.getObject().getToken();
                     Match newMatch = new Match(match);
@@ -347,18 +343,15 @@ public class ProtocolScore extends AppCompatActivity{
                                         if (newMatch2 != null) {
                                             match.onProtocolEdited(newMatch2);
                                             calculateScore();
+                                            adapter2.dataChanged();
+                                            adapter1.dataChanged();
                                             Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
                                         }
                                     },
                                     error -> {
-                                        log.debug("===================================");
-
-                                        if (error.getMessage() != null) {
-                                            Log.e(TAG, error.getMessage());
-
-                                            if (error.getMessage().contains("version invalid"))
-                                                syncProtocolOneMoreTime();
-                                        }
+                                        Log.d(TAG, "===================================");
+                                        if (error.toString().contains("HTTP 500"))
+                                            syncProtocolOneMoreTime();
                                     });
                 }
             }
