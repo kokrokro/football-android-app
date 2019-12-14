@@ -7,10 +7,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -40,7 +45,9 @@ import java.util.Objects;
 public class ProtocolScore extends AppCompatActivity{
     private static final String TAG = "ProtocolScore: ";
     private static final int EVENT_LIST_EDITED = 7341;
-    private final Logger log = LoggerFactory.getLogger(ProtocolPenalty.class);
+    private static final int MATCH_PENALTY = 7321;
+
+    private final Logger log = LoggerFactory.getLogger(ProtocolScore.class);
 
     private String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty",
                                     "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
@@ -110,6 +117,30 @@ public class ProtocolScore extends AppCompatActivity{
             textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
         });
         btnPenalty.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            View view = LayoutInflater.from(this).inflate(R.layout.yes_no_dialog_view, null);
+            builder.setView(view);
+
+            AlertDialog dialog = builder.create();
+
+            TextView textView = view.findViewById(R.id.YNDV_text);
+            Button no = view.findViewById(R.id.YNDV_btn_no);
+            Button yes = view.findViewById(R.id.YNDV_btn_yes);
+            textView.setText("Начать серию пенальти ?");
+            no.setOnClickListener(vv -> dialog.dismiss());
+            yes.setOnClickListener(vv -> {
+                Log.d(TAG,"start penalty activity");
+
+                Intent intent = new Intent(this, ProtocolPenalty.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("MATCH", match);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, MATCH_PENALTY);
+
+                dialog.dismiss();
+            });
+            dialog.show();
             Log.d(TAG, "starting penalty series");
         });
 
@@ -369,6 +400,10 @@ public class ProtocolScore extends AppCompatActivity{
 
         if (requestCode == EVENT_LIST_EDITED) {
             Log.d(TAG, "event list has been changed");
+        }
+
+        if (requestCode == MATCH_PENALTY) {
+            
         }
     }
 }

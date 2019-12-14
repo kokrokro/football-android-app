@@ -1,19 +1,17 @@
 package baikal.web.footballapp.user.adapter;
 
-import android.app.Activity;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PlayerEvent;
+import baikal.web.footballapp.model.Event;
 import baikal.web.footballapp.user.activity.MatchEvents;
 
 import org.slf4j.Logger;
@@ -22,83 +20,39 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHolder>{
-    private final MatchEvents context;
+    private Context context;
     Logger log = LoggerFactory.getLogger(MatchEvents.class);
-    private final List<PlayerEvent> playerEvents;
-    public RVEventsAdapter(Activity context, List<PlayerEvent> playerEvents){
-        this.context = (MatchEvents) context;
-        this.playerEvents = playerEvents;
+    private final List<Event> events;
+    RVEventsAdapter(Context context, List<Event> events){
+        this.context = context;
+        this.events = events;
     }
     @NonNull
     @Override
     public RVEventsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.events, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.public_protocol_event_cell, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RVEventsAdapter.ViewHolder holder, int position) {
-        String str = "";
-        PlayerEvent playerEvent = playerEvents.get(position);
-        switch (playerEvent.getEvent().getEventType()){
-            case "goal":
-                str = "Г";
-                break;
-            case "yellowCard":
-                str = "ЖК";
-                break;
-            case "redCard":
-                str = "КК";
-                break;
-            case "foul":
-                str = "Ф";
-                break;
-            case "autoGoal":
-                str = "А";
-                break;
-            case "penalty":
-                str = "П";
-                break;
-        }
-//        holder.textTime.setText(str);
-        holder.textEvent.setText(str);
-        Person person;
-        try {
-            person = playerEvent.getPerson();
-        }catch (NullPointerException e){
-            person = new Person();
-            person.setSurname("Удален");
-            person.setName("");
-            person.setLastname("");
-        }
-        CheckName checkName = new CheckName();
-        str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
-        holder.textName.setText(str);
-        SetImage setImage = new SetImage();
-        setImage.setImage(context, holder.image, person.getPhoto());
-        if (position==(playerEvents.size()-1)){
-            holder.line.setVisibility(View.INVISIBLE);
-        }
+
     }
 
     @Override
     public int getItemCount() {
-        return playerEvents.size();
+        return events.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        final TextView textTime;
-        final TextView textName;
-        final TextView textEvent;
-        final ImageView image;
-        final View line;
+        final TextView playerNameLeft;
+        final TextView playerNameRight;
+        final ImageButton eventTypeImageBtn;
         ViewHolder(View item) {
             super(item);
-            textTime = item.findViewById(R.id.eventTime);
-            textName = item.findViewById(R.id.eventPlayerName);
-            textEvent = item.findViewById(R.id.eventPlayerEvent);
-            image = item.findViewById(R.id.eventCommandLogo);
-            line = item.findViewById(R.id.eventLine);
+            playerNameLeft = item.findViewById(R.id.PPEC_player_name1);
+            playerNameRight = item.findViewById(R.id.PPEC_player_name2);
+            eventTypeImageBtn = item.findViewById(R.id.PPEC_event_type);
         }
     }
 }
