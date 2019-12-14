@@ -52,6 +52,9 @@ public class ProtocolScore extends AppCompatActivity{
     private RecyclerView firstTeamListRecyclerView;
     private RecyclerView secondTeamListRecyclerView;
 
+    RVTeamEventListAdapter adapter1;
+    RVTeamEventListAdapter adapter2;
+
     private TextView textViewTeam1;
     private TextView textViewTeam2;
     private TextView textViewMatchScore;
@@ -171,27 +174,27 @@ public class ProtocolScore extends AppCompatActivity{
     }
 
     void setupAdapters() {
-        if (team1!= null && team1.getPlayers() != null) {
-            RVTeamEventListAdapter adapter1 = new RVTeamEventListAdapter(team1.getPlayers(), team1.getTrainer(), person -> {
+        if (team1!= null && team1.getPlayers() != null && adapter1 == null) {
+            adapter1 = new RVTeamEventListAdapter(this, team1.getPlayers(), team1.getTrainer(), match.getEvents(), person -> {
                 DialogProtocol dialog = new DialogProtocol(i ->
-                        addEvent(team1.getId(), person.getId(), i)
+                    addEvent(team1.getId(), person.getId(), i)
                 );
 
                 dialog.show(getSupportFragmentManager(), "choose_protocol_event1");
             });
             firstTeamListRecyclerView.setAdapter(adapter1);
-            adapter1.notifyDataSetChanged();
+            adapter1.dataChanged();
         }
-        if (team2 != null && team2.getPlayers() != null) {
-            RVTeamEventListAdapter adapter2 = new RVTeamEventListAdapter(team2.getPlayers(), team2.getTrainer(), person -> {
+        if (team2 != null && team2.getPlayers() != null && adapter2 == null) {
+            adapter2 = new RVTeamEventListAdapter(this, team2.getPlayers(), team2.getTrainer(), match.getEvents(), person -> {
                 DialogProtocol dialog = new DialogProtocol(i ->
-                        addEvent(team2.getId(), person.getId(), i)
+                    addEvent(team2.getId(), person.getId(), i)
                 );
 
                 dialog.show(getSupportFragmentManager(), "choose_protocol_event2");
             });
             secondTeamListRecyclerView.setAdapter(adapter2);
-            adapter2.notifyDataSetChanged();
+            adapter2.dataChanged();
         }
     }
 
@@ -219,6 +222,8 @@ public class ProtocolScore extends AppCompatActivity{
         event.setTeam(teamId);
         calculateScore();
         match.addEvent(event);
+        adapter2.dataChanged();
+        adapter1.dataChanged();
 
         String token = SaveSharedPreference.getObject().getToken();
         Match newMatch = new Match(match);
