@@ -57,7 +57,7 @@ public class PlayersPageViewModel extends ViewModel {
         return loadDataState;
     }
 
-    public void onQueryClose() {
+    public void clearSearchAndReload() {
         initPlayersPageList(null);
     }
 

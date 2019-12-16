@@ -124,6 +124,7 @@
     <string name="structure">Состав</string>
     <string name="editTeam">Редактирование команды</string>
     <string name="teamsMatches">Посмотреть матчи</string>
+    <string name="players">Игроки</string>
 
     <string name="buttonOk">Принять</string>
     <string name="buttonCancel">Отклонить</string>

@@ -38,8 +38,18 @@
         <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
     </style>
 
-    <style name="MyToolbar" parent="AppTheme">
+    <style name="MyToolbar" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="android:queryBackground">@color/Black</item>
+        <item name="android:colorPrimary">@color/colorWhite</item>
+        <item name="android:textColorHint">@color/colorLightGrayForText</item>
+        <item name="android:textColorPrimary">@color/Black</item>
         <item name="android:textColorSecondary">@color/colorNewsDate</item>
+        <item name="android:textColor">@color/Black</item>
+    </style>
+    <style name="ToolbarText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/manrope_regular</item>
+        <item name="android:textSize">16sp</item>
     </style>
     <style name="SwitchCompatStyle" parent="AppTheme">
         <item name="colorControlActivated">@color/colorPrimary</item>
@@ -63,6 +73,7 @@
         <!--&lt;!&ndash; Layout for query suggestion rows &ndash;&gt;-->
         <!--<item name="suggestionRowLayout">...</item>-->
     </style>
+
     <style name="MyProgressDialogTheme" parent="ThemeOverlay.AppCompat.Dialog.Alert">
         <item name="android:textColor">@color/colorLightGrayForText</item>
         <item name="android:fontFamily">@font/manrope_regular</item>

@@ -11,46 +11,30 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbarPlayers"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:theme="@style/MyToolbar">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbarPlayers"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
             android:fitsSystemWindows="true"
             android:visibility="visible"
-            app:expandedTitleGravity="bottom|left"
-            app:expandedTitleMarginBottom="18dp"
-            app:expandedTitleMarginStart="28dp"
             app:layout_scrollFlags="scroll|enterAlways"
+            app:titleEnabled="false"
             tools:visibility="visible">
-
-            <androidx.appcompat.widget.SearchView
-                android:id="@+id/searchView"
-                android:layout_width="232dp"
-                android:layout_height="match_parent"
-                android:elevation="4dp"
-
-
-                android:visibility="gone"
-                app:actionViewClass="androidx.appcompat.widget.SearchView"
-                app:layout_collapseMode="none">
-
-            </androidx.appcompat.widget.SearchView>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbarPlayers"
-                style="@style/MyToolbar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="top"
-                android:background="#D11818"
+                android:layout_height="match_parent"
                 android:minHeight="?attr/actionBarSize"
-                android:textAlignment="center"
+                android:background="@color/colorWhite"
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|enterAlways"
+                app:title="@string/players"
+                app:titleTextAppearance="@style/ToolbarText"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
 

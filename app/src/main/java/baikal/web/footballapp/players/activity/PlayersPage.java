@@ -1,17 +1,12 @@
 package baikal.web.footballapp.players.activity;
 
-import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Html;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -24,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,12 +52,14 @@ public class PlayersPage extends Fragment {
 
         recyclerView = view.findViewById(R.id.recyclerViewPlayers);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setItemAnimator(null); // вырубил  чтобы можно было показывать индикатор загрузки
+        recyclerView.setItemAnimator(null); // вырубил ради индикатора загрузки (анимация смены списка выглядит плохо)
 
         playersAdapter = new PlayersAdapter(getFragmentManager());
         recyclerView.setAdapter(playersAdapter);
 
-        playersPageViewModel = ViewModelProviders.of(this).get(PlayersPageViewModel.class);
+        playersPageViewModel = ViewModelProviders.of(getActivity()).get(PlayersPageViewModel.class);
+
+        playersPageViewModel.clearSearchAndReload();
 
         playersPageViewModel.getLoadDataState().observe(this, loadState -> {
             switch (loadState) {
@@ -88,37 +84,37 @@ public class PlayersPage extends Fragment {
         });
         playersPageViewModel.getPlayers().observe(this, playersAdapter::submitList);
 
-        searchView = view.findViewById(R.id.searchView);
+//        searchView = view.findViewById(R.id.searchView);
 
-        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf");
-        SearchView.SearchAutoComplete theTextArea = searchView.findViewById(R.id.search_src_text);
-        theTextArea.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
-        theTextArea.setTypeface(tf);
-        theTextArea.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-        searchView.setQueryHint(Html.fromHtml("<font color = #63666F>" + getResources().getString(R.string.search) + "</font>"));
-        ImageView icon = searchView.findViewById(androidx.appcompat.R.id.search_button);
-        icon.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
-        ImageView searchViewClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
-        searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
+//        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf");
+//        SearchView.SearchAutoComplete theTextArea = searchView.findViewById(R.id.search_src_text);
+//        theTextArea.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
+//        theTextArea.setTypeface(tf);
+//        theTextArea.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+//        searchView.setQueryHint(Html.fromHtml("<font color = #63666F>" + getResources().getString(R.string.search) + "</font>"));
+//        ImageView icon = searchView.findViewById(androidx.appcompat.R.id.search_button);
+//        icon.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
+//        ImageView searchViewClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
+//        searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                playersPageViewModel.onQueryTextSubmit(query);
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                playersPageViewModel.onQueryTextChange(newText);
-                return false;
-            }
-        });
-
-        searchView.setOnCloseListener(() -> {
-            playersPageViewModel.onQueryClose();
-            return false;
-        });
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                playersPageViewModel.onQueryTextSubmit(query);
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                playersPageViewModel.onQueryTextChange(newText);
+//                return false;
+//            }
+//        });
+//
+//        searchView.setOnCloseListener(() -> {
+//            playersPageViewModel.clearSearchAndReload();
+//            return false;
+//        });
 
 
         return view;
@@ -134,8 +130,37 @@ public class PlayersPage extends Fragment {
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
         menuInflater.inflate(R.menu.player_search, menu);
 //        searchView.setIconified(true);
-        MenuItem item = menu.findItem(R.id.action_search);
-        searchView = (SearchView) item.getActionView();
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        searchView = (SearchView) searchItem.getActionView();
+
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem menuItem) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem menuItem) {
+                playersPageViewModel.clearSearchAndReload();
+                return true;
+            }
+        });
+
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                playersPageViewModel.onQueryTextSubmit(query);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                playersPageViewModel.onQueryTextChange(newText);
+                return false;
+            }
+        });
+
         super.onCreateOptionsMenu(menu, menuInflater);
     }
 }
