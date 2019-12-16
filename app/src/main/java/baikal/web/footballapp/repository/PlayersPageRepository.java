@@ -24,17 +24,19 @@ public class PlayersPageRepository {
 
         final DoIt errorCallback = () -> loadStatesLiveData.postValue(LoadStates.Error);
         final DoIt goodCallback = () -> loadStatesLiveData.postValue(LoadStates.Loaded);
+        final DoIt emptyCallback = () -> loadStatesLiveData.postValue(LoadStates.Empty);
 
         if (searchStr == null) {
             PlayersItemDataSource playersItemDataSource = new PlayersItemDataSource(
                     goodCallback,
-                    errorCallback);
+                    errorCallback,
+                    emptyCallback);
 
             executeBuildPagedList(pagedListLiveData, playersItemDataSource);
         } else {
             PlayersPositionalDataSource playersPositionalDataSource = new PlayersPositionalDataSource(
                     goodCallback,
-                    errorCallback, searchStr);
+                    errorCallback, emptyCallback, searchStr);
 
             executeBuildPagedList(pagedListLiveData, playersPositionalDataSource);
         }

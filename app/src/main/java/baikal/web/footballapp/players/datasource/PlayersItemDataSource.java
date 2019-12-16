@@ -17,10 +17,12 @@ public class PlayersItemDataSource extends ItemKeyedDataSource<String, Person> {
     private static final String TAG = "PlayersItemDataSource";
     private final DoIt doItSoGood;
     private final DoIt dontFeelSoGood;
+    private final DoIt feelEmpty;
 
-    public PlayersItemDataSource(DoIt doItSoGood, DoIt dontFeelSoGood) {
+    public PlayersItemDataSource(DoIt doItSoGood, DoIt dontFeelSoGood, DoIt feelEmpty) {
         this.doItSoGood = doItSoGood;
         this.dontFeelSoGood = dontFeelSoGood;
+        this.feelEmpty = feelEmpty;
     }
 
     @Override
@@ -29,9 +31,13 @@ public class PlayersItemDataSource extends ItemKeyedDataSource<String, Person> {
         Callback<List<Person>> responseCallback = new Callback<List<Person>>() {
             @Override
             public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                doItSoGood.doIt();
                 if (response.body() != null) {
-                    callback.onResult(response.body());
+                    if (response.body().size() == 0) {
+                        feelEmpty.doIt();
+                    } else {
+                        doItSoGood.doIt();
+                    }
+                        callback.onResult(response.body());
                 }
             }
 

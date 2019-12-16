@@ -53,9 +53,13 @@
         <item name="android:textColorSecondary">@color/colorNewsDate</item>
         <item name="android:textColor">@color/Black</item>
     </style>
-    <style name="ToolbarText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <style name="ToolbarTextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/manrope_regular</item>
         <item name="android:textSize">16sp</item>
+    </style>
+    <style name="InfoTextAppearance" parent="TextAppearance.AppCompat.Large">
+        <item name="android:textColor">@color/colorLightGrayForText</item>
+        <item name="android:fontFamily">@font/manrope_regular</item>
     </style>
     <style name="SwitchCompatStyle" parent="AppTheme">
         <item name="colorControlActivated">@color/colorPrimary</item>

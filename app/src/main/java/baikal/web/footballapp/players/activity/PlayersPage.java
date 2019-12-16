@@ -24,11 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.players.adapter.PlayersAdapter;
 import baikal.web.footballapp.players.adapter.RecyclerViewPlayersAdapter;
+import baikal.web.footballapp.players.datasource.LoadStates;
 import baikal.web.footballapp.viewmodel.PlayersPageViewModel;
 
 public class PlayersPage extends Fragment {
@@ -40,17 +43,59 @@ public class PlayersPage extends Fragment {
     private SearchView searchView;
     private PlayersPageViewModel playersPageViewModel;
     private PlayersAdapter playersAdapter;
+    private HashSet<View> switchableViews;
+    private ProgressBar progressBar;
+    private TextView errorText;
+    private TextView emptyText;
+
+    private static void showOneView(View viewToShow, Set<View> views) {
+        for (View view : views) {
+            if (view.hashCode() == viewToShow.hashCode()) {
+                view.setVisibility(View.VISIBLE);
+            } else {
+                view.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void switchViewVisible(LoadStates loadState) {
+        switch (loadState) {
+            case Loading:
+                showOneView(progressBar, switchableViews);
+                break;
+
+            case Loaded:
+                showOneView(recyclerView, switchableViews);
+                break;
+
+            case Error:
+                showOneView(errorText, switchableViews);
+                break;
+
+            case Empty:
+                showOneView(emptyText, switchableViews);
+                break;
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.page_players2, container, false);
-        final ProgressBar progressBar = view.findViewById(R.id.progress);
-        final TextView errorText = view.findViewById(R.id.errorText);
         final Toolbar toolbar = view.findViewById(R.id.toolbarPlayers);
-        ((AppCompatActivity)getActivity()).setSupportActionBar(toolbar);
-
-
+        progressBar = view.findViewById(R.id.progress);
+        errorText = view.findViewById(R.id.errorText);
+        emptyText = view.findViewById(R.id.emptyText);
         recyclerView = view.findViewById(R.id.recyclerViewPlayers);
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+
+        switchableViews = new HashSet<>();
+        switchableViews.add(progressBar);
+        switchableViews.add(errorText);
+        switchableViews.add(emptyText);
+        switchableViews.add(recyclerView);
+
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(null); // вырубил ради индикатора загрузки (анимация смены списка выглядит плохо)
 
@@ -61,60 +106,8 @@ public class PlayersPage extends Fragment {
 
         playersPageViewModel.clearSearchAndReload();
 
-        playersPageViewModel.getLoadDataState().observe(this, loadState -> {
-            switch (loadState) {
-                case Loading:
-                    progressBar.setVisibility(View.VISIBLE);
-                    recyclerView.setVisibility(View.GONE);
-                    errorText.setVisibility(View.GONE);
-                    break;
-
-                case Loaded:
-                    progressBar.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.VISIBLE);
-                    errorText.setVisibility(View.GONE);
-                    break;
-
-                case Error:
-                    progressBar.setVisibility(View.GONE);
-                    recyclerView.setVisibility(View.GONE);
-                    errorText.setVisibility(View.VISIBLE);
-                    break;
-            }
-        });
+        playersPageViewModel.getLoadDataState().observe(this, this::switchViewVisible);
         playersPageViewModel.getPlayers().observe(this, playersAdapter::submitList);
-
-//        searchView = view.findViewById(R.id.searchView);
-
-//        Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf");
-//        SearchView.SearchAutoComplete theTextArea = searchView.findViewById(R.id.search_src_text);
-//        theTextArea.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
-//        theTextArea.setTypeface(tf);
-//        theTextArea.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-//        searchView.setQueryHint(Html.fromHtml("<font color = #63666F>" + getResources().getString(R.string.search) + "</font>"));
-//        ImageView icon = searchView.findViewById(androidx.appcompat.R.id.search_button);
-//        icon.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
-//        ImageView searchViewClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
-//        searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
-
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String query) {
-//                playersPageViewModel.onQueryTextSubmit(query);
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String newText) {
-//                playersPageViewModel.onQueryTextChange(newText);
-//                return false;
-//            }
-//        });
-//
-//        searchView.setOnCloseListener(() -> {
-//            playersPageViewModel.clearSearchAndReload();
-//            return false;
-//        });
 
 
         return view;

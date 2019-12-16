@@ -17,12 +17,14 @@ public class PlayersPositionalDataSource extends PositionalDataSource<Person> {
     private static final String TAG = "PlayersItemDataSource";
     private final DoIt doItSoGood;
     private final DoIt dontFeelSoGood;
+    private final DoIt feelEmpty;
     private final String searchString;
 
-    public PlayersPositionalDataSource(DoIt doItSoGood, DoIt dontFeelSoGood, String searchString) {
+    public PlayersPositionalDataSource(DoIt doItSoGood, DoIt dontFeelSoGood, DoIt feelEmpty, String searchString) {
         this.doItSoGood = doItSoGood;
         this.dontFeelSoGood = dontFeelSoGood;
         this.searchString = searchString;
+        this.feelEmpty = feelEmpty;
     }
 
     @Override
@@ -31,8 +33,12 @@ public class PlayersPositionalDataSource extends PositionalDataSource<Person> {
         Callback<List<Person>> responseCallback = new Callback<List<Person>>() {
             @Override
             public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                doItSoGood.doIt();
                 if (response.body() != null) {
+                    if (response.body().size() == 0) {
+                        feelEmpty.doIt();
+                    } else {
+                        doItSoGood.doIt();
+                    }
                     callback.onResult(response.body(), 0);
                 }
             }

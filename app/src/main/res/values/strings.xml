@@ -126,6 +126,8 @@
     <string name="editTeam">Редактирование команды</string>
     <string name="teamsMatches">Посмотреть матчи</string>
     <string name="players">Игроки</string>
+    <string name="players_not_found">Нет игроков</string>
+    <string name="network_error">Ошибка, проверьте подключение к сети</string>
 
     <string name="buttonOk">Принять</string>
     <string name="buttonCancel">Отклонить</string>
