@@ -21,17 +21,23 @@ public class MankindKeeper {
         return ourInstance;
     }
 
-    public TreeMap<String, Person> allPerson = new TreeMap<>();
+    public final TreeMap<String, Person> allPerson;
+    private final TreeMap<String, Team> allTeamsTree;
+    public final List<League>   allLeagues ;
+    public final List<Club>     allClubs   ;
+    public final List<Tourney>  allTourneys;
+    public final List<Region>   regions    ;
+    public final List<String>   allTeams   ;
 
-    private TreeMap<String, Team> allTeamsTree = new TreeMap<>();
-
-    public List<League> allLeagues = new ArrayList<>();
-    public List<Club> allClubs = new ArrayList<>();
-    public List<Tourney> allTourneys = new ArrayList<>();
-    public List<Region> regions = new ArrayList<>();
-    public List<String> allTeams = new ArrayList<>();
-
-    private MankindKeeper() { }
+    private MankindKeeper() {
+        allPerson    = new TreeMap<>();
+        allTeamsTree = new TreeMap<>();
+        allLeagues   = new ArrayList<>();
+        allClubs     = new ArrayList<>();
+        allTourneys  = new ArrayList<>();
+        regions      = new ArrayList<>();
+        allTeams     = new ArrayList<>();
+    }
 
     public void updateClub (Club club) {
         for (int i=0; i<allClubs.size(); i++)

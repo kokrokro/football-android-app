@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/PPS_Appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/PPS_toolbarPenaltySeries"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="top"
+            android:background="@color/colorLightGray2"
+            android:minHeight="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_collapseMode="pin"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="18sp"
+                android:gravity="center_horizontal"
+                android:visibility="visible">
+
+                <ImageButton
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_tick"
+                    android:visibility="invisible"/>
+
+                <TextView
+                    android:id="@+id/AppbarTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="Серия пенальти"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="18sp" />
+
+                <ImageButton
+                    android:id="@+id/PPS_protocolPenaltyBack"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:background="@android:color/transparent"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/ic_arrow_back" />
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/PPS_team_holders_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/PPS_blue_red_holder"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="10dp">
+
+            <LinearLayout
+                android:id="@+id/PPS_team_holder1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@+id/PPS_view_between_team_holders"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/PPS_team_score1"
+                        android:background="@color/colorWhite"
+                        android:fontFamily="@font/manrope_regular"
+                        android:padding="4dp"
+                        android:text="Команда 1"
+                        android:textAlignment="center"
+                        android:textColor="@color/Black"
+                        android:textSize="17sp" />
+
+                    <TextView
+                        android:id="@+id/PPS_team_score1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:background="@color/colorWhite"
+                        android:fontFamily="@font/manrope_regular"
+                        android:padding="4dp"
+                        android:text="0"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/Black"
+                        android:textSize="20sp" />
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/PPS_RV_team1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/PPS_view_between_team_holders"
+                android:layout_width="4dp"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:background="@color/darkBlue" />
+
+            <LinearLayout
+                android:id="@+id/PPS_team_holder2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@+id/PPS_view_between_team_holders"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/PPS_team_score2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:background="@color/colorWhite"
+                        android:fontFamily="@font/manrope_regular"
+                        android:padding="4dp"
+                        android:text="0"
+                        android:textAlignment="viewEnd"
+                        android:textColor="@color/Black"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_toEndOf="@+id/PPS_team_score2"
+                        android:background="@color/colorWhite"
+                        android:fontFamily="@font/manrope_regular"
+                        android:padding="4dp"
+                        android:text="Команда 1"
+                        android:textAlignment="center"
+                        android:textColor="@color/Black"
+                        android:textSize="17sp" />
+
+
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/PPS_RV_team2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/PPS_blue_red_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_above="@+id/PPS_Event_Buttons_Holder"
+            >
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/blue"
+                android:fontFamily="@font/manrope_regular"
+                android:text="0"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:background="@color/red"
+                android:fontFamily="@font/manrope_regular"
+                android:text="0"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/PPS_Event_Buttons_Holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="20dp"
+            android:paddingTop="20dp">
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:fontFamily="@font/manrope_regular"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_event_goal"/>
+
+            <ImageButton
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorWhite"
+                android:fontFamily="@font/manrope_regular"
+                android:textAlignment="center"
+                android:textSize="30sp"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:src="@drawable/ic_event_goal_failure"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+</LinearLayout>

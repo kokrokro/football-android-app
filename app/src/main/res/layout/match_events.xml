@@ -22,8 +22,7 @@
             android:layout_gravity="top"
             android:background="@color/colorLightGray2"
             android:minHeight="?attr/actionBarSize"
-            app:layout_collapseMode="pin"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_collapseMode="none"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
             <RelativeLayout
@@ -34,6 +33,7 @@
                 android:visibility="visible">
 
                 <ImageButton
+                    android:id="@+id/ME_save_events"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"

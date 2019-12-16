@@ -1,5 +1,7 @@
 package baikal.web.footballapp.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -30,4 +32,9 @@ public class Referee implements Serializable {
         this.person = person;
     }
 
+    @NonNull
+    public String toString()
+    {
+        return getType() + " " + getPerson();
+    }
 }

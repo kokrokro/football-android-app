@@ -15,8 +15,8 @@ public class ProtocolPenalty extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate ...");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.protocol_match_score);
-        ImageButton buttonBack = findViewById(R.id.protocolScoreBack);
+        setContentView(R.layout.protocol_penalty_series);
+        ImageButton buttonBack = findViewById(R.id.PPS_protocolPenaltyBack);
         buttonBack.setOnClickListener(v -> finish());
     }
 }

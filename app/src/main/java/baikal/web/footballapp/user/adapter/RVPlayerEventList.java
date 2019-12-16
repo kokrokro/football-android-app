@@ -21,8 +21,7 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Event;
 
 public class RVPlayerEventList extends RecyclerView.Adapter<RVPlayerEventList.ViewHolder> {
-
-    private Set<Event> events;
+    final private List<Event> events;
     private HashMap<String, Integer> eventsCnt;
     private HashMap<String, Integer> eventsCntToShow;
     private HashMap<String, Integer> eventIconIds;
@@ -32,7 +31,7 @@ public class RVPlayerEventList extends RecyclerView.Adapter<RVPlayerEventList.Vi
     private String[] eventTypes = {"goal", "yellowCard", "redCard", "penalty"};
     private List<String> eventTypesToShow;
 
-    RVPlayerEventList(Activity activity, Set<Event> events) {
+    RVPlayerEventList(Activity activity, List<Event> events) {
         this.events = events;
         this.eventsCnt = new HashMap<>();
         this.eventsCntToShow = new HashMap<>();

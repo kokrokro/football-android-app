@@ -46,7 +46,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class TimeTableFragment extends Fragment {
-    private static final String TAG = "TimeTableFragment: ";
+    private static final String TAG = "TimeTableFragment";
     public final int SUCCESSFUL_EDIT_MATCH = 6123;
     private RVTimeTableAdapter adapter;
     private final List<MatchPopulate> matches = new ArrayList<>();
@@ -203,8 +203,6 @@ public class TimeTableFragment extends Fragment {
             bottomSheet.show(getFragmentManager(),"BOTTOMSHEET");
         });
 
-
-
         return view;
     }
 
@@ -258,32 +256,12 @@ public class TimeTableFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode != Activity.RESULT_OK)
-            return;
-
-        if (requestCode == SUCCESSFUL_EDIT_MATCH) {
+        if (requestCode == SUCCESSFUL_EDIT_MATCH && resultCode == Activity.RESULT_OK) {
             int matchIndx = data.getIntExtra("MatchIndex", -1);
             if (matchIndx != -1) {
-                String[] newRefs = data.getStringArrayExtra("refs");
-                if (newRefs == null) return;
-                Log.d(TAG, newRefs.toString());
+                Match match = (Match) data.getExtras().getSerializable("MatchWithNewRefs");
 
-                List<Referee> newReferees = new ArrayList<>();
-                newReferees.add(new Referee());
-                newReferees.add(new Referee());
-                newReferees.add(new Referee());
-                newReferees.add(new Referee());
-
-                newReferees.get(0).setType("firstReferee");
-                newReferees.get(1).setType("secondReferee");
-                newReferees.get(2).setType("thirdReferee");
-                newReferees.get(3).setType("timekeeper");
-
-                newReferees.get(0).setPerson(newRefs[0]);
-                newReferees.get(1).setPerson(newRefs[1]);
-                newReferees.get(2).setPerson(newRefs[2]);
-                newReferees.get(3).setPerson(newRefs[3]);
-                for(Referee referee : newReferees){
+                for(Referee referee : match.getReferees()){
                     if(referee.getPerson()!=null && !recentReferee.contains(referee.getPerson())){
                         recentReferee.add(referee.getPerson());
                     }
@@ -296,7 +274,7 @@ public class TimeTableFragment extends Fragment {
                 user.setRecentReferees(recentReferee);
                 SaveSharedPreference.editObject(user);
 
-                matches.get(matchIndx).setReferees(newReferees);
+                matches.get(matchIndx).setReferees(match.getReferees());
                 adapter.notifyDataSetChanged();
             }
         }

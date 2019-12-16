@@ -19,12 +19,16 @@ public class DialogProtocol extends DialogFragment {
 
     private ProtocolListener mListener;
     private int pos = -1;
+    private boolean isTrainer;
 
     public interface ProtocolListener {
         void OnChooseProtocolEvent(int pos);
     }
 
-    DialogProtocol(ProtocolListener mListener) { this.mListener = mListener; }
+    DialogProtocol(boolean isTrainer, ProtocolListener mListener) {
+        this.isTrainer = isTrainer;
+        this.mListener = mListener;
+    }
 
     private void sendBackResult()
     {
@@ -58,6 +62,11 @@ public class DialogProtocol extends DialogFragment {
         eventYellowCard.    setOnClickListener(v -> {pos = 1; sendBackResult();});
         eventRedCard.       setOnClickListener(v -> {pos = 2; sendBackResult();});
         eventPenaltySuccess.setOnClickListener(v -> {pos = 3; sendBackResult();});
+
+        if (isTrainer) {
+            eventGoal.setVisibility(View.GONE);
+            eventPenaltySuccess.setVisibility(View.GONE);
+        }
 
         return alertDialogBuilder.create();
     }

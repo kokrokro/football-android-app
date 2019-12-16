@@ -180,7 +180,6 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
             newRef.setPerson(person.get_id());
             newRef.setType("firstReferee");
             listener.onClick(match.getReferees(), newRef, match.getId(), isChecked);
-
         });
         holder.switch1.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_DOWN) {

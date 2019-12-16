@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -52,7 +50,7 @@ public class ProtocolScore extends AppCompatActivity{
     private String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty",
                                     "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
 
-    private String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime"};
+    private String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime", "penaltySeries"};
     private String[] matchTimesToShow = {"Первый тайм",   "Второй тайм", "Дополнительное время"};
     private int currentMatchTime = 0;
 
@@ -73,9 +71,6 @@ public class ProtocolScore extends AppCompatActivity{
     private MatchPopulate match;
     private Team team1;
     private Team team2;
-
-    private int foulsCntTeam1 = 0;
-    private int foulsCntTeam2 = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +95,9 @@ public class ProtocolScore extends AppCompatActivity{
         Button btnPenalty = findViewById(R.id.penaltyBtn);
         Button btnEndMatch = findViewById(R.id.endMatchBtn);
         ImageButton btnShowEvents = findViewById(R.id.PMS_show_events);
-
         ImageButton buttonBack = findViewById(R.id.protocolScoreBack);
-        buttonBack.setOnClickListener(v -> finish());
 
+        buttonBack.setOnClickListener(v -> finish());
         btnFirstTime.setOnClickListener(v -> {
             currentMatchTime = 0;
             textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
@@ -119,6 +113,7 @@ public class ProtocolScore extends AppCompatActivity{
         btnPenalty.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+            @SuppressLint("InflateParams")
             View view = LayoutInflater.from(this).inflate(R.layout.yes_no_dialog_view, null);
             builder.setView(view);
 
@@ -146,12 +141,11 @@ public class ProtocolScore extends AppCompatActivity{
 
         textViewFoulsCntTeam1.setOnClickListener(v -> {
             if (team1 != null)
-                addFoul(team1.getId(), textViewFoulsCntTeam1);
+                addEvent(team1.getId(), null, 5);
         });
-
         textViewFoulsCntTeam2.setOnClickListener(v -> {
             if (team2 != null)
-                addFoul(team2.getId(), textViewFoulsCntTeam2);
+                addEvent(team2.getId(), null, 5);
         });
 
         btnAutoGoal1.setOnClickListener(v -> {
@@ -204,10 +198,11 @@ public class ProtocolScore extends AppCompatActivity{
 
     void setupAdapters() {
         if (team1!= null && team1.getPlayers() != null && adapter1 == null) {
-            adapter1 = new RVTeamEventListAdapter(this, team1.getPlayers(), team1.getTrainer(), match.getEvents(), person -> {
-                DialogProtocol dialog = new DialogProtocol(i ->
-                    addEvent(team1.getId(), person.getId(), i)
-                );
+            adapter1 = new RVTeamEventListAdapter(this, team1.getPlayers(), match.getPlayersList(),
+                                                                team1.getTrainer(), match.getEvents(), team1.getId(), person -> {
+                DialogProtocol dialog = new DialogProtocol((person.getId().equals(team1.getTrainer())
+                                                            && !match.getPlayersList().contains(team1.getTrainer())),
+                                                            i -> addEvent(team1.getId(), person.getId(), i));
 
                 dialog.show(getSupportFragmentManager(), "choose_protocol_event1");
             });
@@ -215,10 +210,11 @@ public class ProtocolScore extends AppCompatActivity{
             adapter1.dataChanged();
         }
         if (team2 != null && team2.getPlayers() != null && adapter2 == null) {
-            adapter2 = new RVTeamEventListAdapter(this, team2.getPlayers(), team2.getTrainer(), match.getEvents(), person -> {
-                DialogProtocol dialog = new DialogProtocol(i ->
-                    addEvent(team2.getId(), person.getId(), i)
-                );
+            adapter2 = new RVTeamEventListAdapter(this, team2.getPlayers(), match.getPlayersList(),
+                                                                team2.getTrainer(), match.getEvents(), team2.getId(), person -> {
+                DialogProtocol dialog = new DialogProtocol((person.getId().equals(team2.getTrainer())
+                                                            && !match.getPlayersList().contains(team2.getTrainer())),
+                                                            i -> addEvent(team2.getId(), person.getId(), i));
 
                 dialog.show(getSupportFragmentManager(), "choose_protocol_event2");
             });
@@ -227,23 +223,8 @@ public class ProtocolScore extends AppCompatActivity{
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    void addFoul (String teamId, Button button) {
-        if (team1 != null && teamId.equals(team1.getId())) {
-            foulsCntTeam1++;
-            button.setText("Фолы: " + foulsCntTeam1);
-        }
-        if (team2 != null && teamId.equals(team2.getId())) {
-            foulsCntTeam2++;
-            button.setText("Фолы: " + foulsCntTeam2);
-        }
-
-        addEvent(teamId, null, 5);
-    }
-
     @SuppressLint("CheckResult")
     void addEvent (String teamId, String personId, int i) {
-        Log.d(TAG, "trying to add event ..." + foulsCntTeam1);
         Event event = new Event();
         event.setEventType(eventTypes[i]);
         event.setTime(matchTimes[currentMatchTime]);
@@ -272,16 +253,17 @@ public class ProtocolScore extends AppCompatActivity{
                         error -> {
                             Log.d(TAG, "===================================");
                             if (error.toString().contains("HTTP 500"))
-                                syncProtocolOneMoreTime();
+                                syncProtocolOneMoreTime(true);
                         });
     }
 
+    @SuppressLint("SetTextI18n")
     void calculateScore()
     {
         int goalCntTeam1 = 0;
         int goalCntTeam2 = 0;
-
-        Log.d(TAG, (goalCntTeam1) + " " + (goalCntTeam2) + match.getEvents().size());
+        int foulsCntTeam1 = 0;
+        int foulsCntTeam2 = 0;
 
         for (Event e: match.getEvents()) {
             if (team1 != null && e.getTeam().equals(team1.getId())) {
@@ -292,6 +274,9 @@ public class ProtocolScore extends AppCompatActivity{
 
                 if (e.getEventType().equals(eventTypes[4]))
                     goalCntTeam2++;
+
+                if (e.getEventType().equals(eventTypes[5]))
+                    foulsCntTeam1++;
             }
 
             if (team2 != null && e.getTeam().equals(team2.getId())) {
@@ -302,20 +287,24 @@ public class ProtocolScore extends AppCompatActivity{
 
                 if (e.getEventType().equals(eventTypes[4]))
                     goalCntTeam1++;
+
+                if (e.getEventType().equals(eventTypes[5]))
+                    foulsCntTeam2++;
             }
         }
 
-        Log.d(TAG, (goalCntTeam1) + " " + (goalCntTeam2));
+        textViewFoulsCntTeam1.setText("Фолы: " + foulsCntTeam1);
+        textViewFoulsCntTeam2.setText("Фолы: " + foulsCntTeam2);
+
         String score = goalCntTeam1 + ":" + goalCntTeam2;
-        Log.d(TAG, score);
         textViewMatchScore.setText(score);
     }
 
     void assignTeam (String teamId, String team12)
     {
-        team1 = match.getTeamOne();
-        team2 = match.getTeamTwo();
-        if (MankindKeeper.getInstance().getTeamById(teamId) == null)
+        if (MankindKeeper.getInstance().getTeamById(teamId) == null ||
+                (MankindKeeper.getInstance().getTeamById(teamId) != null &&
+                        MankindKeeper.getInstance().getTeamById(teamId).getPlayers().size() == 0))
             Controller.getApi().getTeam(teamId).enqueue(new Callback<List<Team>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
@@ -355,13 +344,14 @@ public class ProtocolScore extends AppCompatActivity{
     }
 
     @SuppressLint("CheckResult")
-    void syncProtocolOneMoreTime() {
+    void syncProtocolOneMoreTime(boolean isNeedMerge) {
         Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
             @Override
             public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     match.setV(response.body().get(0).getV());
-                    match.mergeEvents(response.body().get(0).getEvents());
+                    if (isNeedMerge)
+                        match.mergeEvents(response.body().get(0).getEvents());
 
                     String token = SaveSharedPreference.getObject().getToken();
                     Match newMatch = new Match(match);
@@ -382,7 +372,7 @@ public class ProtocolScore extends AppCompatActivity{
                                     error -> {
                                         Log.d(TAG, "===================================");
                                         if (error.toString().contains("HTTP 500"))
-                                            syncProtocolOneMoreTime();
+                                            syncProtocolOneMoreTime(isNeedMerge);
                                     });
                 }
             }
@@ -394,16 +384,39 @@ public class ProtocolScore extends AppCompatActivity{
         });
     }
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == EVENT_LIST_EDITED) {
+        if (requestCode == EVENT_LIST_EDITED && resultCode == RESULT_OK) {
             Log.d(TAG, "event list has been changed");
+
+            String token = SaveSharedPreference.getObject().getToken();
+            MatchPopulate newMatchPop = (MatchPopulate) data.getExtras().getSerializable("MATCH");
+            Match newMatch = new Match(newMatchPop);
+            //noinspection ResultOfMethodCallIgnored
+            Controller.getApi().editProtocolMatch(match.getId(), token, newMatch)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(newMatch2 -> {
+                                if (newMatch2 != null) {
+                                    Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
+                                    match.onProtocolEdited(newMatch2);
+                                    calculateScore();
+                                    adapter2.dataChanged();
+                                    adapter1.dataChanged();
+                                }
+                            },
+                            error -> {
+                                Log.d(TAG, "===================================");
+                                if (error.toString().contains("HTTP 500"))
+                                    syncProtocolOneMoreTime(false);
+                            });
         }
 
         if (requestCode == MATCH_PENALTY) {
-            
+            Log.d(TAG, "from penalty series...");
         }
     }
 }

@@ -218,6 +218,15 @@ public class Match implements Serializable {
         return referees;
     }
 
+    public String getRefereesString() {
+        StringBuilder ans = new StringBuilder();
+
+        for (Referee r: referees)
+            ans.append(r.toString()).append("\n");
+
+        return ans.toString();
+    }
+
     public void setReferees(List<Referee> referees) {
         this.referees = referees;
     }

@@ -225,18 +225,6 @@
                     android:layout_marginBottom="20sp"
                     android:background="@color/colorLightGray"
                     />
-
-                <!--<Button-->
-                <!--android:id="@+id/buttonMainRefereeShowProtocol"-->
-                <!--style="@style/Widget.AppCompat.Button.Borderless"-->
-                <!--android:layout_gravity="bottom|end"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:fontFamily="@font/manrope_semibold"-->
-                <!--android:textColor="@color/colorPrimary"-->
-                <!--android:text="@string/protocol"/>-->
-
-
             </LinearLayout>
 
 

@@ -17,10 +17,13 @@
     <!--<color name="colorNewsDate">#276544</color>-->
     <color name="colorNewsDate">#0C78BF</color>
     <color name="colorBlue">#0C78BF</color>
+    <color name="blue">#0225FA</color>
+    <color name="darkBlue">#2242F0</color>
     <color name="colorBottomNavigationUnChecked">#202124</color>
     <color name="colorBottomNavigationBackground">#fbfbfb</color>
     <color name="colorTabUnChecked">#f5f5f5</color>
     <color name="colorBadge">#E24747</color>
+    <color name="red">#F10606</color>
     <!--<color name="colorBadgeScale">#F49EAA</color>-->
     <!--<color name="colorBadgeScale">#F9BDC8</color>-->
     <color name="colorBadgeScale">#FCDDE4</color>

@@ -11,24 +11,20 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.Team;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -41,6 +37,8 @@ import retrofit2.Response;
 public class ConfirmProtocol extends AppCompatActivity {
     private static final String TAG = "ConfirmProtocol";
     private static final int EDIT_PROTOCOL_SUCCESS = 9741;
+    private static final int EDIT_TEAM_ONE = 741;
+    private static final int EDIT_TEAM_TWO = 742;
     private final Logger log = LoggerFactory.getLogger(ConfirmProtocol.class);
     private MatchPopulate match;
 
@@ -70,16 +68,14 @@ public class ConfirmProtocol extends AppCompatActivity {
         imageClose.setOnClickListener(v -> finish());
         Intent initialIntent = getIntent();
         try{
-            boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("STATUS");
+            boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
             if(!status){
                 fab.setVisibility(View.GONE);
             }
         }catch (Exception ignored){}
         try {
             match = (MatchPopulate) Objects.requireNonNull(initialIntent.getExtras()).getSerializable("CONFIRMPROTOCOL");
-            HashMap<String, Team> teams = null;
             if (match != null) {
-                teams = getTeams(match);
                 fab.setOnClickListener(v -> {
                     try {
                         Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
@@ -96,39 +92,41 @@ public class ConfirmProtocol extends AppCompatActivity {
                 });
             }
 
-
-            if (teams != null && teams.get("TeamOne") != null)
-                textTitle1.setText(Objects.requireNonNull(teams.get("TeamOne")).getName());
-            if (teams != null && teams.get("TeamTwo") != null)
-                textTitle2.setText(Objects.requireNonNull(teams.get("TeamTwo")).getName());
+            if (match.getTeamOne() != null)
+                textTitle1.setText(match.getTeamOne().getName());
+            if (match.getTeamTwo() != null)
+                textTitle2.setText(match.getTeamTwo().getName());
 
             imageSave.setOnClickListener(v -> confirmProtocol(match != null ? match.getId() : null));
-            HashMap<String, Team> finalTeams1 = teams;
             buttonCommand1.setOnClickListener(v -> {
                 if (match != null && match.getTeamOne() == null)
                     return;
+                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1 != null ? finalTeams1.get("TeamOne") : null);
+                bundle.putSerializable("MATCH_EDIT_TEAM", match);
+                bundle.putSerializable("TEAM", match.getTeamOne());
+                bundle.putBoolean("IS_EDITABLE", status);
                 intent.putExtras(bundle);
 
                 Log.d(TAG, "team1 ...");
 
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_TEAM_ONE);
             });
             buttonCommand2.setOnClickListener(v -> {
                 if (match != null && match.getTeamTwo() == null)
                     return;
+                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("CONFIRMPROTOCOLMATCH", match);
-                bundle.putSerializable("CONFIRMPROTOCOLCOMMAND", finalTeams1 != null ? finalTeams1.get("TeamTwo") : null);
+                bundle.putSerializable("MATCH_EDIT_TEAM", match);
+                bundle.putSerializable("TEAM", match.getTeamTwo());
+                bundle.putBoolean("IS_EDITABLE", status);
                 intent.putExtras(bundle);
 
                 Log.d(TAG, "team2 ...");
 
-                startActivity(intent);
+                startActivityForResult(intent, EDIT_TEAM_TWO);
             });
             buttonReferees.setOnClickListener(v -> {
                 Intent intent = new Intent(ConfirmProtocol.this, MatchResponsiblePersons.class);
@@ -162,7 +160,7 @@ public class ConfirmProtocol extends AppCompatActivity {
             });
 
             buttonEvents.setOnClickListener(v -> {
-                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("STATUS");
+                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
                 Intent intent = new Intent(ConfirmProtocol.this, MatchEvents.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("MATCH", match);
@@ -183,7 +181,6 @@ public class ConfirmProtocol extends AppCompatActivity {
             return;
 
         match.setPlayed(true);
-
         String token = SaveSharedPreference.getObject().getToken();
         Match newMatch = new Match(match);
         //noinspection ResultOfMethodCallIgnored
@@ -208,33 +205,17 @@ public class ConfirmProtocol extends AppCompatActivity {
                         });
     }
 
-    private HashMap<String, Team> getTeams(MatchPopulate match) {
-        HashMap<String, Team> teams = new HashMap<>();
-        ImageView image1 = findViewById(R.id.confirmProtocolCommand1Logo);
-        ImageView image2 = findViewById(R.id.confirmProtocolCommand2Logo);
-        SetImage setImage = new SetImage();
-                            teams.put("TeamOne", match.getTeamOne());
-                            teams.put("TeamTwo", match.getTeamTwo());
-
-        setImage.setImage(image1.getContext(), image1, null);
-        setImage.setImage(image2.getContext(), image2, null);
-//        for (Club club : MankindKeeper.getInstance().allClubs) {
-//            if (match.getTeamOne().getClub().equals(club.getId()))
-//                setImage.setImage(image1.getContext(), image1, club.getLogo());
-//            if (match.getTeamTwo().getClub().equals(club.getId()))
-//                setImage.setImage(image2.getContext(), image2, club.getLogo());
-//        }
-        return teams;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == EDIT_PROTOCOL_SUCCESS) {
+        if (requestCode == EDIT_PROTOCOL_SUCCESS)
             if (data != null && data.getExtras() != null)
                 match = (MatchPopulate) data.getExtras().getSerializable("FINISHED_MATCH");
-        }
+
+        if ((requestCode == EDIT_TEAM_ONE || requestCode == EDIT_TEAM_TWO) && resultCode == RESULT_OK)
+            if (data != null && data.getExtras() != null)
+                match = (MatchPopulate) data.getExtras().getSerializable("MATCH_EDITED_TEAM");
     }
 
     @SuppressLint("CheckResult")
@@ -244,6 +225,7 @@ public class ConfirmProtocol extends AppCompatActivity {
             public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     match.setV(response.body().get(0).getV());
+                    match.mergeEvents(response.body().get(0).getEvents());
                     String token = SaveSharedPreference.getObject().getToken();
                     Match newMatch = new Match(match);
 

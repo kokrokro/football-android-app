@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -30,34 +28,45 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventListAdapter.ViewHolder> {
+    private static final String TAG = "RV_TeamEvent_LA";
+    private List<String> allowedPlayersId;
+    private final List<Player> allowedPlayers;
     private List<Player> players;
     private List<Person> persons;
-    private HashMap<String, LinkedHashSet<Event>> events;
-    private List<Event> eventList;
+    private HashMap<String, List<Event>> events;
+    final private List<Event> eventList;
     private String trainerId;
     private TeamEventListListener listener;
     private Activity context;
+    private String teamId;
+
 
     public interface TeamEventListListener {
         void onClick (Person person);
     }
 
-    public RVTeamEventListAdapter(Activity context, List<Player> players, String trainerId,
-                                  List<Event> events, TeamEventListListener listener) {
+    public RVTeamEventListAdapter(Activity context, List<Player> players, List<String> allowedPlayersId, String trainerId,
+                                  List<Event> events, String teamId, TeamEventListListener listener) {
         this.listener = listener;
         this.players = players;
         this.trainerId = trainerId;
         this.context = context;
         this.events = new HashMap<>();
+        this.teamId = teamId;
+        this.allowedPlayersId = allowedPlayersId;
         eventList = events;
 
-        for (Player p: players)
-            Log.d("RVTELA", p.getNumber().toString());
+        this.allowedPlayers = new ArrayList<>();
+        getAllowedPlayersCnt();
+
+        Log.d(TAG, teamId + ": " + this.allowedPlayers.toString() + " \n " + players.toString());
 
         if (trainerId != null)
-            for (Player p: players)
-                if (p.getPerson().equals(trainerId))
+            for (Player p: this.allowedPlayers)
+                if (p.getPerson().equals(trainerId)) {
+                    Log.d(TAG, teamId + ": " + trainerId + " " + this.allowedPlayers.toString());
                     this.trainerId = null;
+                }
 
         persons = new ArrayList<>();
         for (int i=0; i<players.size() + (this.trainerId == null ? 0 : 1); i++)
@@ -80,12 +89,12 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        if (players.size() == position) {
+        if (allowedPlayers.size() == position) {
             setupTrainersViewHolder(holder, position);
             return;
         }
 
-        Player player = players.get(position);
+        Player player = allowedPlayers.get(position);
 
         if (MankindKeeper.getInstance().getPersonById(player.getPerson()) == null)
             getPerson(player.getPerson());
@@ -141,9 +150,11 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
     private void fillEvents(List<Event> events) {
         this.events.clear();
         for (Event e: events) {
-            if (!this.events.containsKey(e.getPerson()))
-                this.events.put(e.getPerson(), new LinkedHashSet<>());
-            this.events.get(e.getPerson()).add(e);
+            if (e.getTeam().equals(teamId)) {
+                if (!this.events.containsKey(e.getPerson()))
+                    this.events.put(e.getPerson(), new ArrayList<>());
+                this.events.get(e.getPerson()).add(e);
+            }
         }
     }
 
@@ -155,7 +166,21 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
 
     @Override
     public int getItemCount() {
-        return players.size() + (trainerId == null ? 0 : 1);
+        return getAllowedPlayersCnt();
+    }
+
+    private int getAllowedPlayersCnt() {
+        allowedPlayers.clear();
+        for (Player p: players)
+            if (allowedPlayersId.contains(p.getPerson()))
+                allowedPlayers.add(p);
+
+        if (trainerId != null)
+            for (Player p: allowedPlayers)
+                if (p.getPerson().equals(trainerId))
+                    trainerId = null;
+
+        return allowedPlayers.size() + (trainerId == null ? 0 : 1);
     }
 
     class ViewHolder extends RecyclerView.ViewHolder  {
@@ -164,7 +189,7 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
         final RecyclerView playerEventList;
         final RVPlayerEventList adapter;
         final LinearLayout linearLayout;
-        final Set<Event> events;
+        final List<Event> events;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -174,7 +199,7 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
             playerEventList = itemView.findViewById(R.id.PLC_playerEvents);
             playerEventList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             linearLayout = itemView.findViewById(R.id.plc_Linear_Layout);
-            events = new HashSet<>();
+            events = new ArrayList<>();
             adapter = new RVPlayerEventList(context, events);
             playerEventList.setAdapter(adapter);
         }

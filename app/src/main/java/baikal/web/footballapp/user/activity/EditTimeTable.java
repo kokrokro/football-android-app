@@ -125,7 +125,7 @@ public class EditTimeTable extends AppCompatActivity {
                 Intent intent = new Intent(EditTimeTable.this, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
 //                boolean isProtocolAvailable = getIntent().getExtras().getBoolean("STATUS");
-                bundle.putBoolean("STATUS", true);
+                bundle.putBoolean("IS_EDITABLE", true);
                 bundle.putSerializable("CONFIRMPROTOCOL", match);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -180,11 +180,11 @@ public class EditTimeTable extends AppCompatActivity {
            public void onResponse(@NonNull Call<Match> call, @NonNull Response<Match> response) {
                showToast("Судьи назначены успешно");
 
-               String[] refIdsAr = {refIds.get(0), refIds.get(1), refIds.get(2), refIds.get(3)};
-
                Intent intent = new Intent();
+               Bundle bundle = new Bundle();
+               bundle.putSerializable("MatchWithNewRefs", response.body());
                intent.putExtra("MatchIndex", getIntent().getIntExtra("MatchIndex", -1));
-               intent.putExtra("refs", refIdsAr);
+               intent.putExtras(bundle);
 
                setResult(RESULT_OK, intent);
 

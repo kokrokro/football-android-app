@@ -105,9 +105,23 @@ public class MatchPopulate implements Serializable {
     public void mergeEvents(List<Event> events) {
         try {
             LinkedHashSet<Event> myEvents = new LinkedHashSet<>(events);
+
+            List<Event> eventsToAdd = new ArrayList<>();
+
+            for (Event e: this.events)
+                if (e.getId() == null) {
+                    eventsToAdd.add(e);
+                    this.events.remove(e);
+                }
+
+            for (Event e:  this.events)
+                if (!myEvents.contains(e))
+                    this.events.remove(e);
+
             myEvents.addAll(this.events);
             this.events.clear();
             this.events.addAll(myEvents);
+            this.events.addAll(eventsToAdd);
         } catch (Exception e) {
             Log.e("MATCH_POPULATE", e.toString());
         }

@@ -167,14 +167,11 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
 
         List<Referee> referees = match.getReferees();
         for (Referee r: referees) {
-            Person p;
+            Person p = null;
 
             try {
                 p = MankindKeeper.getInstance().getPersonById(r.getPerson());
-            } catch (Exception e) {
-                log.error(TAG, e);
-                p = null;
-            }
+            } catch (Exception ignored) { }
 
             if (p == null) {
                 Controller.getApi().getPerson(r.getPerson()).enqueue(new Callback<List<Person>>() {
@@ -186,7 +183,6 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
                                 MankindKeeper.getInstance().addPerson(pp);
                                 setRefereeToTextView(textViewRefs.get(r.getType()), pp);
                             }
-
                     }
                     @Override
                     public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }

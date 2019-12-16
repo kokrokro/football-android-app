@@ -33,7 +33,7 @@
                 android:visibility="visible">
 
                 <ImageButton
-                    android:id="@+id/editProtocolCommand1Save"
+                    android:id="@+id/SC_WorkProtocolTeamSave"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
@@ -47,12 +47,14 @@
                     android:id="@+id/command1Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
+                    android:layout_toStartOf="@+id/SC_WorkProtocolTeamSave"
+                    android:layout_toEndOf="@+id/editProtocolCommand1Back"
                     android:layout_centerVertical="true"
                     android:fontFamily="@font/manrope_regular"
+                    android:text="Название команды"
                     android:textColor="@color/colorBottomNavigationUnChecked"
-                    android:text="@string/editProtocol"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:textAlignment="center"/>
 
                 <ImageButton
                     android:id="@+id/editProtocolCommand1Back"
@@ -80,42 +82,41 @@
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-
-            <!--<TextView-->
-                <!--android:id="@+id/editProtocolCommand1"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:fontFamily="@font/manrope_semibold"-->
-                <!--android:paddingBottom="8dp"-->
-                <!--android:paddingTop="8dp"-->
-                <!--android:text="@string/participants"-->
-                <!--android:textColor="@color/colorBottomNavigationUnChecked"-->
-                <!--android:textSize="14sp" />-->
-
-            <!--<LinearLayout-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:orientation="horizontal">-->
-            <!--<TextView-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:fontFamily="@font/manrope_regular"-->
-                <!--android:gravity="start"-->
-                <!--android:textColor="@color/colorLightGrayForText"-->
-                <!--android:textSize="12sp"-->
-                <!--android:paddingEnd="5sp"-->
-                <!--android:text="@string/representative"/>-->
-            <!--<TextView-->
-                <!--android:id="@+id/confirmProtocolCommand1Representative"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:fontFamily="@font/manrope_regular"-->
-                <!--android:textColor="@color/colorBottomNavigationUnChecked"-->
-                <!--android:gravity="center_vertical|bottom"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textSize="13sp"-->
-                <!--android:text="@string/representative"/>-->
-            <!--</LinearLayout>-->
-            <!--android:layout_marginTop="20sp"-->
+            <LinearLayout
+                android:id="@+id/SC_emptyEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_marginTop="65sp"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_marginTop="45sp"
+                    android:layout_marginBottom="45sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:src="@drawable/ic_empty1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="15sp"
+                    android:fontFamily="@font/manrope_regular"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:text="@string/empty"
+                    android:layout_gravity="center_horizontal"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="25sp"
+                    android:paddingStart="25sp"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textColor="@color/colorLightGrayForText"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="Игроков в этой команде нет"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewConfirmProtocolCommand1"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"

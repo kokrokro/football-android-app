@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Team implements Serializable {
@@ -30,7 +31,7 @@ public class Team implements Serializable {
     private int groupScore;
     @SerializedName("players")
     @Expose
-    private List<Player> players = null;
+    final private List<Player> players = new ArrayList<>();
     @SerializedName("_id")
     @Expose
     private String id;
@@ -156,7 +157,8 @@ public class Team implements Serializable {
     }
 
     public void setPlayers(List<Player> players) {
-        this.players = players;
+        this.players.clear();
+        this.players.addAll(players);
     }
 
     public String getId() {
