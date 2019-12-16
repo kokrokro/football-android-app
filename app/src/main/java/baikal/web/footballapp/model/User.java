@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class User implements Serializable {
 
@@ -11,9 +12,11 @@ public class User implements Serializable {
     @Expose
     private Person person;
     @SerializedName("token")
-
     @Expose
     private String token;
+    @SerializedName("recentReferees")
+    @Expose
+    private List<String> recentReferees;
 
     public Person getUser() {
         return person;
@@ -31,4 +34,7 @@ public class User implements Serializable {
         this.token = token;
     }
 
+    public List<String> getRecentReferees() { return recentReferees; }
+
+    public void setRecentReferees(List<String> recentReferees) {this.recentReferees = recentReferees; }
 }

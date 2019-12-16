@@ -16,11 +16,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
@@ -72,7 +70,7 @@ public class ConfirmProtocol extends AppCompatActivity {
         imageClose.setOnClickListener(v -> finish());
         Intent initialIntent = getIntent();
         try{
-            boolean status = initialIntent.getExtras().getBoolean("STATUS");
+            boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("STATUS");
             if(!status){
                 fab.setVisibility(View.GONE);
             }
@@ -164,9 +162,11 @@ public class ConfirmProtocol extends AppCompatActivity {
             });
 
             buttonEvents.setOnClickListener(v -> {
+                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("STATUS");
                 Intent intent = new Intent(ConfirmProtocol.this, MatchEvents.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("MATCH", match);
+                bundle.putBoolean("IS_EDITABLE", status);
                 intent.putExtras(bundle);
 
                 startActivity(intent);
@@ -202,7 +202,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                             if (error.getMessage() != null) {
                                 Log.e(TAG, error.getMessage());
 
-                                if (error.getMessage().contains("HTTP 500"))
+                                if (error.getMessage().contains("version invalid"))
                                     syncProtocolOneMoreTime();
                             }
                         });
@@ -216,12 +216,14 @@ public class ConfirmProtocol extends AppCompatActivity {
                             teams.put("TeamOne", match.getTeamOne());
                             teams.put("TeamTwo", match.getTeamTwo());
 
-        for (Club club : MankindKeeper.getInstance().allClubs) {
-            if (match.getTeamOne().getClub().equals(club.getId()))
-                setImage.setImage(image1.getContext(), image1, club.getLogo());
-            if (match.getTeamTwo().getClub().equals(club.getId()))
-                setImage.setImage(image2.getContext(), image2, club.getLogo());
-        }
+        setImage.setImage(image1.getContext(), image1, null);
+        setImage.setImage(image2.getContext(), image2, null);
+//        for (Club club : MankindKeeper.getInstance().allClubs) {
+//            if (match.getTeamOne().getClub().equals(club.getId()))
+//                setImage.setImage(image1.getContext(), image1, club.getLogo());
+//            if (match.getTeamTwo().getClub().equals(club.getId()))
+//                setImage.setImage(image2.getContext(), image2, club.getLogo());
+//        }
         return teams;
     }
 
@@ -261,7 +263,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                                         if (error.getMessage() != null) {
                                             Log.e(TAG, error.getMessage());
 
-                                            if (error.getMessage().contains("HTTP 500"))
+                                            if (error.getMessage().contains("version invalid"))
                                                 syncProtocolOneMoreTime();
                                         }
                                     });

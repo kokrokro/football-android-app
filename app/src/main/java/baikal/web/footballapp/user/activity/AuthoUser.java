@@ -98,7 +98,9 @@ public class AuthoUser extends Fragment {
     private Menu m;
     private NavigationView nvDrawer;
     private FloatingActionButton fab1;
-
+    public static ImageButton setSingleReferee;
+    public static ImageButton cancelSetSingleReferee;
+    public static ImageButton saveSingleReferee;
     private final int REQUEST_CODE_CLUBEDIT = 276;
     private final int REQUEST_CODE_PROFILE_DATA_EDIT = 4214;
 
@@ -123,6 +125,9 @@ public class AuthoUser extends Fragment {
         View view;
         ImageButton button;
         view = inflater.inflate(R.layout.user_autho, container, false);// Find our drawer view
+        setSingleReferee = view.findViewById(R.id.setSingleReferee);
+        cancelSetSingleReferee = view.findViewById(R.id.cancelSetSingleReferee);
+        saveSingleReferee = view.findViewById(R.id.saveSingleReferee);
         drawer = view.findViewById(R.id.drawer_layout);
         nvDrawer = view.findViewById(R.id.nvView);
         nvDrawer.setItemIconTintList(null);
@@ -284,6 +289,10 @@ public class AuthoUser extends Fragment {
                     categoryTitle.setText(activity.getText(R.string.invitation));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
+                    cancelSetSingleReferee.setVisibility(View.GONE);
+                    saveSingleReferee.setVisibility(View.GONE);
+                    setSingleReferee.setVisibility(View.GONE);
+
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
                 }
@@ -295,6 +304,9 @@ public class AuthoUser extends Fragment {
                     categoryTitle.setText(activity.getText(R.string.matches));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
+                    setSingleReferee.setVisibility(View.GONE);
+                    cancelSetSingleReferee.setVisibility(View.GONE);
+                    saveSingleReferee.setVisibility(View.GONE);
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
                 }
@@ -305,6 +317,9 @@ public class AuthoUser extends Fragment {
                     menuFragmentTransaction.replace(R.id.flContent, commands).show(commands).commit();
                     categoryTitle.setText(activity.getText(R.string.commands));
                     fab.setVisibility(View.VISIBLE);
+                    setSingleReferee.setVisibility(View.GONE);
+                    cancelSetSingleReferee.setVisibility(View.GONE);
+                    saveSingleReferee.setVisibility(View.GONE);
                     fab1.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
@@ -317,7 +332,9 @@ public class AuthoUser extends Fragment {
                     categoryTitle.setText(activity.getText(R.string.title_tournament));
                     fab.setVisibility(View.INVISIBLE);
                     fab1.setVisibility(View.INVISIBLE);
-
+                    setSingleReferee.setVisibility(View.GONE);
+                    cancelSetSingleReferee.setVisibility(View.GONE);
+                    saveSingleReferee.setVisibility(View.GONE);
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
                 }
@@ -327,7 +344,10 @@ public class AuthoUser extends Fragment {
                     setItemColor(2, 1);
                     menuFragmentTransaction.replace(R.id.flContent, timeTableFragment, "TIMETABLEFRAGMENT").show(timeTableFragment).commit();
                     categoryTitle.setText(activity.getText(R.string.tournamentInfoTimetable));
+                    setSingleReferee.setVisibility(View.VISIBLE);
                     fab.setVisibility(View.INVISIBLE);
+                    cancelSetSingleReferee.setVisibility(View.GONE);
+                    saveSingleReferee.setVisibility(View.GONE);
                     fab1.setVisibility(View.INVISIBLE);
                 } catch (Exception e) {
                     log.error("ERROR: ", e);
@@ -338,7 +358,9 @@ public class AuthoUser extends Fragment {
                 SaveSharedPreference.setLoggedIn(activity.getApplicationContext(), false);
                 SaveSharedPreference.saveObject(null);
 //                PersonalActivity.fragmentUser.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-
+                setSingleReferee.setVisibility(View.GONE);
+                cancelSetSingleReferee.setVisibility(View.GONE);
+                saveSingleReferee.setVisibility(View.GONE);
                 try {
                     Fragment userPage = new UserPage(activity);
                     fragmentManager.beginTransaction()

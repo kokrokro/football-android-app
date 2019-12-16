@@ -3,6 +3,7 @@ package baikal.web.footballapp.tournament.adapter;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,7 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
     private static final String TAG = "TournamentPlayersAdap";
     private final List<Player> players;
     private final List<PersonStats> personStats;
-    public RVTournamentPlayersAdapter(TournamentPlayersFragment context, List<Player> players, List<PersonStats> personStats){
+    public RVTournamentPlayersAdapter( List<Player> players, List<PersonStats> personStats){
         this.players = players;
         this.personStats = personStats;
     }
@@ -58,18 +59,16 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
             }
             str = player.getSurnameWithInitials();
             holder.textName.setText(str);
-            int count = players.get(position).getMatches();
+            int count = personStats.get(position).getMatches();
             str = String.valueOf(count);
             holder.textPoint1.setText(str);
-            count = players.get(position).getGoals();
-            str = String.valueOf(count);
-            holder.textPoint2.setText(str);
-            count = players.get(position).getYellowCards();
+            holder.textPoint2.setText(personStats.get(position).getGoals());
+            count = personStats.get(position).getYellowCards();
 //            count = players.get(position).getActiveYellowCards();
             str = String.valueOf(count);
             holder.textPoint3.setText(str);
 //            count = players.get(position).getActiveDisquals();
-            count = players.get(position).getRedCards();
+            count = personStats.get(position).getRedCards();
             str = String.valueOf(count);
             holder.textPoint4.setText(str);
         }catch (NullPointerException e){

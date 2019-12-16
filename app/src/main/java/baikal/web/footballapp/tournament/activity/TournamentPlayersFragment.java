@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,12 +92,13 @@ public class TournamentPlayersFragment extends Fragment {
                 playersId.append(",").append(player.getId());
             }
         }
-        Controller.getApi().getPersonStats(playersId.toString(),league.getId()).enqueue(new Callback<List<PersonStats>>() {
+        Controller.getApi().getPersonStats("league",null,league.getId()).enqueue(new Callback<List<PersonStats>>() {
             @Override
             public void onResponse(Call<List<PersonStats>> call, Response<List<PersonStats>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
                         personStats.clear();
+                        Log.d("RESPONSE STATs", response.body().size()+"");
                         personStats.addAll(response.body());
                         adapter.notifyDataSetChanged();
                         recyclerView.setVisibility(View.VISIBLE);
@@ -111,7 +114,7 @@ public class TournamentPlayersFragment extends Fragment {
 //        Collections.sort(playerList, new PlayerMatchComparator());
 
         scrollStatus = false;
-        adapter = new RVTournamentPlayersAdapter(this, playerList, personStats);
+        adapter = new RVTournamentPlayersAdapter( playerList, personStats);
         recyclerView.setAdapter(adapter);
         final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -155,6 +158,8 @@ public class TournamentPlayersFragment extends Fragment {
                         log.error("по проведенным матчам");
                         List<PersonStats> players = new ArrayList<>(personStats);
                         Collections.sort(players, new PlayerMatchComparator());
+                        personStats.clear();
+                        personStats.addAll(players);
                         adapter.notifyDataSetChanged();
                         break;
                     }
@@ -162,6 +167,8 @@ public class TournamentPlayersFragment extends Fragment {
                         log.error("по забитым мячам");
                         List<PersonStats> players = new ArrayList<>(personStats);
                         Collections.sort(players, new PlayerGoalsComparator());
+                        personStats.clear();
+                        personStats.addAll(players);
                         adapter.notifyDataSetChanged();
                         break;
                     }
@@ -169,6 +176,8 @@ public class TournamentPlayersFragment extends Fragment {
                         log.error("по количеству ЖК");
                         List<PersonStats> players = new ArrayList<>(personStats);
                         Collections.sort(players, new PlayerYCComparator());
+                        personStats.clear();
+                        personStats.addAll(players);
                         adapter.notifyDataSetChanged();
                         break;
                     }
@@ -176,6 +185,8 @@ public class TournamentPlayersFragment extends Fragment {
                         log.error("по количеству КК");
                         List<PersonStats> players = new ArrayList<>(personStats);
                         Collections.sort(players, new PlayerRCComparator());
+                        personStats.clear();
+                        personStats.addAll(players);
                         adapter.notifyDataSetChanged();
                         break;
                     }

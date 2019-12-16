@@ -7,24 +7,19 @@
     android:background="@color/colorWhite">
     <TextView
         android:id="@+id/matchEventsHalf"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/manrope_semibold"
+        android:fontFamily="@font/manrope_light"
         android:paddingBottom="8dp"
-        android:paddingStart="13dp"
         android:paddingTop="8dp"
-        android:text="@string/fouls"
+        android:text="Первый тайм"
+        android:textAlignment="center"
         android:textColor="@color/colorBottomNavigationUnChecked"
-        android:textSize="14sp" />
+        android:textSize="16sp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewHalfEvents"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_gravity="end"
-        android:layout_height="8sp"
-        android:background="@color/colorLightGray2" />
 </LinearLayout>

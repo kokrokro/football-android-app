@@ -127,7 +127,7 @@ public class PersonalActivity extends AppCompatActivity {
 //        checkConnection();
 //        checkConnectionSingle();
         showSnack();
-        checkConnectionSingle();
+//        checkConnectionSingle();
 
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);

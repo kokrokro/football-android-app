@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content" android:layout_height="wrap_content"
+    android:background="@color/colorWhite">
+
+    <TextView
+        android:id="@+id/YNDV_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ЫЫЫЫЫЫЫЫЫЫыыыыыы"
+        android:textColor="@color/Black"
+        android:textSize="18sp"
+        android:fontFamily="@font/manrope_light"
+        android:padding="12dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"/>
+
+    <View
+        android:id="@+id/YNDV_gray_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/colorGray"
+        android:layout_alignBottom="@+id/YNDV_text"
+        android:layout_marginBottom="-2dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/YNDV_gray_line"
+        android:layout_marginTop="8dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/YNDV_btn_no"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:background="@color/colorWhite"
+            android:fontFamily="@font/manrope_light"
+            android:text="Нет"
+            android:textColor="@color/Black"
+            android:textSize="18sp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/YNDV_btn_yes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="1"
+            android:background="@color/colorWhite"
+            android:fontFamily="@font/manrope_light"
+            android:text="Да"
+            android:textColor="@color/Black"
+            android:textSize="18sp"/>
+    </LinearLayout>
+</RelativeLayout>

@@ -46,7 +46,7 @@ public class NewsFragment extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.page_home, container, false);
         scroller = view.findViewById(R.id.scrollerNews);
-        checkConnection();
+//        checkConnection();
         recyclerView = view.findViewById(R.id.recyclerViewHome);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

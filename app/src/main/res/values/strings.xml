@@ -62,6 +62,7 @@
     <string name="teamMatches">Матчи команды</string>
     <string name="editClub">Редактировать клуб</string>
     <string name="protocol">Протокол</string>
+    <string name="setReferee">Назначить на матчи</string>
     <string name="editProtocol">Редактировать протокол</string>
     <string name="confirmProtocol">Обзор матча</string>
     <string name="editProtocolResponsiblePersons">Ответственные лица</string>
@@ -145,6 +146,7 @@
     <string name="not_club">Вы пока не состоите ни в одном клубе</string>
     <string name="not_command">Вы пока не участвуете ни в одной команде</string>
     <string name="not_match">Для Вас пока нет ближайших матчей</string>
+    <string name="no_fav_tourneys">У вас пока нет избранных турниров</string>
     <string name="no_team_matches">Для вашей команды пока нет матчей</string>
     <string name="not_matches">Пока нет утвержденных матчей</string>
     <string name="not_coming_match">На этой неделе нет матчей</string>

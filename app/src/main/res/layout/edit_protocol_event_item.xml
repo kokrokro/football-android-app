@@ -3,9 +3,35 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <ImageButton
-        android:id="@+id/editProtocolEvent"
-        android:layout_width="60dp"
-        android:layout_height="60dp"/>
-
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@color/colorWhite">
+        <ImageView
+            android:id="@+id/EPEI_editProtocolEventIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:src="@drawable/ic_event_red_card"
+            android:alpha="0.95"
+            android:layout_centerInParent="true"/>
+        <TextView
+            android:id="@+id/EPEI_editProtocolEventCntBG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12"
+            android:textSize="25sp"
+            android:textColor="@color/colorWhite"
+            android:fontFamily="@font/manrope_regular"
+            android:layout_centerInParent="true"/>
+        <TextView
+            android:id="@+id/EPEI_editProtocolEventCnt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="12"
+            android:textSize="25sp"
+            android:textColor="@color/Black"
+            android:fontFamily="@font/manrope_regular"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
 </RelativeLayout>

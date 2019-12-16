@@ -105,8 +105,8 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
         }
         int count;
         try{
-            holder.textGame.setText(teamStat.getDraws()+teamStat.getDraws()+ teamStat.getLosses());
-            holder.textDifference.setText(teamStat.getGoals()- teamStat.getGoalsReceived());
+            holder.textGame.setText(String.valueOf(teamStat.getDraws()+teamStat.getDraws()+ teamStat.getLosses()));
+            holder.textDifference.setText(String.valueOf(teamStat.getGoals()- teamStat.getGoalsReceived()));
 
         }catch (NullPointerException e){
 

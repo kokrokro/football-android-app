@@ -1,10 +1,13 @@
 package baikal.web.footballapp.model;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 public class MatchPopulate implements Serializable {
@@ -41,7 +44,7 @@ public class MatchPopulate implements Serializable {
     private Team teamTwo;
     @SerializedName("events")
     @Expose
-    private List<Event> events = null;
+    final private List<Event> events = new ArrayList<>();
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -97,6 +100,17 @@ public class MatchPopulate implements Serializable {
         setGroup(match.getGroup());
         setFouls(match.getFouls());
         setV(match.getV());
+    }
+
+    public void mergeEvents(List<Event> events) {
+        try {
+            LinkedHashSet<Event> myEvents = new LinkedHashSet<>(events);
+            myEvents.addAll(this.events);
+            this.events.clear();
+            this.events.addAll(myEvents);
+        } catch (Exception e) {
+            Log.e("MATCH_POPULATE", e.toString());
+        }
     }
 
     public String getId() {
@@ -184,13 +198,11 @@ public class MatchPopulate implements Serializable {
     }
 
     public void setEvents(List<Event> events) {
-        this.events = events;
+        this.events.clear();
+        this.events.addAll(events);
     }
 
     public void addEvent(Event event) {
-        if (events == null)
-            events = new ArrayList<>();
-
         events.add(event);
     }
 

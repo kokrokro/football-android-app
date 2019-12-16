@@ -1,7 +1,10 @@
 package baikal.web.footballapp;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeMap;
 
 import baikal.web.footballapp.model.Club;
@@ -60,5 +63,20 @@ public class MankindKeeper {
 
     public void addPerson (Person person) {
         allPerson.put(person.get_id(), person);
+    }
+
+    public ArrayList<Person> getNPersons (int n) {
+        Set<String> keys = allPerson.keySet();
+        ArrayList<Person> ans = new ArrayList<>();
+
+        int k=0;
+        for (String key: keys) {
+            if (k==n)
+                break;
+            ans.add(allPerson.get(key));
+            k++;
+        }
+
+        return ans;
     }
 }

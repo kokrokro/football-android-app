@@ -16,8 +16,11 @@ import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
 
+import baikal.web.footballapp.CheckError;
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Team;
@@ -27,6 +30,8 @@ import baikal.web.footballapp.tournament.PlayoffTeamMadeToPlayoffComparator;
 import baikal.web.footballapp.tournament.PlayoffTeamPlaceComparator;
 import baikal.web.footballapp.tournament.adapter.RVLeaguePlayoffCommandAdapter;
 import baikal.web.footballapp.tournament.adapter.RVTournamentCommandAdapter;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,12 +39,15 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TournamentCommandFragment extends Fragment{
     Logger log = LoggerFactory.getLogger(TournamentCommandFragment.class);
     private boolean scrollStatus;
     private FloatingActionButton fab;
-    @SuppressLint("RestrictedApi")
+    private List<TeamStats> teamStatsList = new ArrayList<>();
+    private  RVLeaguePlayoffCommandAdapter adapter;
+    @SuppressLint({"RestrictedApi", "CheckResult"})
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -78,15 +86,19 @@ public class TournamentCommandFragment extends Fragment{
             layout.setVisibility(View.GONE);
             layoutPlayoff.setVisibility(View.VISIBLE);
         }
-        List<TeamStats> teamStatsList = new ArrayList<>();
-        for(TeamStats teamStats : PersonalActivity.teamStats){
-            for(Team team : teams){
-                if(teamStats.getTeam().equals(team.getId())){
-                    teamStatsList.add(teamStats);
-                }
-            }
-        }
-        RVLeaguePlayoffCommandAdapter adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo, teamStatsList);
+
+        Controller.getApi().getTeamStats(null, "league", leagueInfo.getId(), null)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
+                .subscribe(teamStats -> {
+                    teamStatsList.clear();
+                    teamStatsList.addAll(teamStats);
+                    adapter.notifyDataSetChanged();
+                        },
+                        error -> {}
+                );;
+         adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo, teamStatsList);
         recyclerViewPlayoff.setAdapter(adapter);
 
 
