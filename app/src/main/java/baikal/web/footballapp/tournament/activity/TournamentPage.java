@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
@@ -15,12 +16,22 @@ import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.User;
 
 import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
+import baikal.web.footballapp.viewmodel.MainViewModel;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class TournamentPage extends Fragment {
@@ -28,7 +39,7 @@ public class TournamentPage extends Fragment {
     public String token;
     public String id;
     private PersonalActivity activity;
-
+    public static List<PersonStatus> personStatus = new ArrayList<>();
     public TournamentPage (PersonalActivity activity) {
         this.activity = activity;
     }
@@ -50,7 +61,12 @@ public class TournamentPage extends Fragment {
             User user = SaveSharedPreference.getObject();
             token = user.getToken();
         }
+        MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
 
+        mainViewModel.getPersonStatus().observe(this, personStatuses -> {
+            personStatus.clear();
+            personStatus.addAll(personStatuses);
+        });
         setCustomFont();
         return view;
     }

@@ -41,9 +41,9 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
         PersonStats stats = personStats.get(position);
         Person player = null;
         try {
-            Log.d(TAG, players.get(position).getId());
+            Log.d(TAG, personStats.get(position).getPerson());
 //            Log.d(TAG, String.valueOf(MankindKeeper.getInstance().allPerson.containsKey(players.get(position).getId())));
-            player = MankindKeeper.getInstance().getPersonById(players.get(position).getId());
+            player = MankindKeeper.getInstance().getPersonById(personStats.get(position).getPerson());
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
@@ -57,7 +57,7 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
                 player.setSurname("");
                 player.setLastname("");
             }
-            str = player.getSurnameWithInitials();
+            str = player.getSurnameAndName();
             holder.textName.setText(str);
             int count = personStats.get(position).getMatches();
             str = String.valueOf(count);

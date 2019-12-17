@@ -11,6 +11,7 @@ import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
@@ -27,6 +28,7 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<Invite>> allInvites = null;
     private MutableLiveData<List<Stadium>> allStadiums = null;
     private MutableLiveData<List<Team>> allTeams = null;
+    private MutableLiveData<List<PersonStatus>> allPersonStatus =null;
 
     public LiveData<List<Team>> getTeams(){
         if(allTeams==null){
@@ -34,6 +36,31 @@ public class MainViewModel extends ViewModel {
         }
         loadTeams();
         return allTeams;
+    }
+    public LiveData<List<PersonStatus>> getPersonStatus(){
+        if(allPersonStatus == null){
+            allPersonStatus = new MutableLiveData<>();
+        }
+        loadPersonStatus();
+
+        return allPersonStatus;
+    }
+    private void loadPersonStatus(){
+        new MainRepository().getPersonStatus(null, null, null, new Callback<List<PersonStatus>>() {
+            @Override
+            public void onResponse(Call<List<PersonStatus>> call, Response<List<PersonStatus>> response) {
+                if(response.isSuccessful()){
+                    if(response.body()!=null){
+                        allPersonStatus.setValue(response.body());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<PersonStatus>> call, Throwable t) {
+
+            }
+        });
     }
 
     public LiveData<List<Stadium>> getAllStadiums(){

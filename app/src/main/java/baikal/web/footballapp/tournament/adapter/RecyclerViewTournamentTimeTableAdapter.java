@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +19,8 @@ import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.PersonStats;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.activity.ShowProtocol;
@@ -27,7 +31,9 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.tournament.activity.TournamentPage;
 import baikal.web.footballapp.tournament.activity.TournamentsFragment;
+import q.rorbin.badgeview.QBadgeView;
 
 public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter<RecyclerViewTournamentTimeTableAdapter.ViewHolder> {
     Logger log = LoggerFactory.getLogger(PersonalActivity.class);
@@ -97,9 +103,38 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
         }catch (NullPointerException ignored){
 
         }
+        int i = 0;
+        for(PersonStatus personStatus : TournamentPage.personStatus){
+            if(i==2) break;
+            if(personStatus.getTeam().equals(team1) && personStatus.getActiveDisquals()>0){
+                i++;
+                new QBadgeView(activity)
+                        .bindTarget(holder.imgCommandLogo1)
+                        .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                        .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                        .setBadgeTextSize(5, true)
+                        .setBadgePadding(5, true)
+                        .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                        .setGravityOffset(-3, 1, true)
+                        .setBadgeNumber(3);
+            }
+            else if(personStatus.getTeam().equals(team2) && personStatus.getActiveDisquals()>0){
+                i++;
+                new QBadgeView(activity)
+                        .bindTarget(holder.imgCommandLogo2)
+                        .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
+                        .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
+                        .setBadgeTextSize(5, true)
+                        .setBadgePadding(5, true)
+                        .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                        .setGravityOffset(-3, 1, true)
+                        .setBadgeNumber(3);
+            }
+        }
 
         if( teamOne!=null){
             holder.textCommandTitle1.setText(teamOne.getName());
+
         }
         else {
             holder.textCommandTitle1.setText("Неизвестно");

@@ -9,6 +9,9 @@ public class League implements Serializable {
     @SerializedName("creator")
     @Expose
     private String creator;
+    @SerializedName("mainReferee")
+    @Expose
+    private String mainReferee;
     @SerializedName("status")
     @Expose
     private String status;
@@ -193,5 +196,13 @@ public class League implements Serializable {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public String getMainReferee() {
+        return mainReferee;
+    }
+
+    public void setMainReferee(String mainReferee) {
+        this.mainReferee = mainReferee;
     }
 }

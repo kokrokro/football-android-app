@@ -215,6 +215,18 @@ public class AuthoUser extends Fragment {
             log.error("ERROR: ", e);
         }
 
+        MenuItem mainRef = view.findViewById(R.id.nav_timetable_fragment);
+        boolean isMainRef = false;
+        for(League league : MankindKeeper.getInstance().allLeagues){
+            if(league.getMainReferee().equals(SaveSharedPreference.getObject().getUser().get_id())){
+                isMainRef = true;
+                break;
+            }
+        }
+        if(!isMainRef){
+            mainRef.setVisible(false);
+        }
+
         fab = view.findViewById(R.id.addCommandButton);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);

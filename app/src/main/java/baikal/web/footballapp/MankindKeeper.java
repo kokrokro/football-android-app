@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
@@ -28,8 +29,10 @@ public class MankindKeeper {
     public final List<Tourney>  allTourneys;
     public final List<Region>   regions    ;
     public final List<String>   allTeams   ;
+    public final List<PersonStatus> allPersonStatus;
 
     private MankindKeeper() {
+        allPersonStatus = new ArrayList<>();
         allPerson    = new TreeMap<>();
         allTeamsTree = new TreeMap<>();
         allLeagues   = new ArrayList<>();

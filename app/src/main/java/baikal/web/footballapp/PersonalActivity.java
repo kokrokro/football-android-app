@@ -34,6 +34,7 @@ import baikal.web.footballapp.home.activity.MainPage;
 import baikal.web.footballapp.model.Advertisings;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamStats;
@@ -65,8 +66,6 @@ public class PersonalActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
-
-    public static List<TeamStats> teamStats = new ArrayList<>();
     public static List<Team> allTeams = new ArrayList<>();
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
@@ -239,12 +238,30 @@ public class PersonalActivity extends AppCompatActivity {
 //        GetAllClubs();
         GetAllRegions();
         getAllTeams();
+        getAllPersonStatus();
         if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
             log.error("REFRESH USER");
             RefreshUser();
         }
     }
+    private void getAllPersonStatus(){
+        Controller.getApi().getPersonStatus(null, null,null).enqueue(new Callback<List<PersonStatus>>() {
+            @Override
+            public void onResponse(Call<List<PersonStatus>> call, Response<List<PersonStatus>> response) {
+                if(!response.isSuccessful()){
+                    if(response.body()!=null){
+                        MankindKeeper.getInstance().allPersonStatus.clear();
+                        MankindKeeper.getInstance().allPersonStatus.addAll(response.body());
+                    }
+                }
+            }
 
+            @Override
+            public void onFailure(Call<List<PersonStatus>> call, Throwable t) {
+
+            }
+        });
+    }
     private void getAllTeams(){
         Controller.getApi().getTeams(null).enqueue(new Callback<List<Team>>() {
             @Override

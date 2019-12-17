@@ -12,11 +12,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.LeagueInfo;
 import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentTimeTableAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
