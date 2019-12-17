@@ -115,6 +115,8 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             //post
             String status = "Accepted";
             AcceptRequest(pendingTeamInvite.get_id(), finalLeague.getId(), finalTeam.getId(), status, finalLeague, position);
+            list.remove(position);
+            notifyDataSetChanged();
         });
 
         holder.buttonCancel.setOnClickListener(v -> {
@@ -123,7 +125,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                 @Override
                 public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
                     if(response.isSuccessful()){
-                        Toast.makeText(context, "Вы отклонили принлашение", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Вы отклонили приглашение", Toast.LENGTH_LONG).show();
                     }
                 }
 
@@ -132,6 +134,8 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                     Toast.makeText(context, "Не удалось отклонить приглашение", Toast.LENGTH_LONG).show();
                 }
             });
+            list.remove(position);
+            notifyDataSetChanged();
 
         });
     }
@@ -249,6 +253,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                         e.printStackTrace();
                     }
                 }
+
             }
 
 
