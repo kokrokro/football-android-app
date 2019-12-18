@@ -56,6 +56,7 @@ public class TimeTableFragment extends Fragment {
     private List<String> recentReferee = new ArrayList<>();
     private SetRefereesBottomSheet bottomSheet;
     private List<Match> editedMatches ;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,7 +65,7 @@ public class TimeTableFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
-        RecyclerView recyclerView;
+
         RecyclerView recyclerViewSetReferee;
         view = inflater.inflate(R.layout.user_timetable, container, false);
         scroller = view.findViewById(R.id.scrollerTimeTable);
@@ -77,6 +78,7 @@ public class TimeTableFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewTimeTable);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         try {
             adapter = new RVTimeTableAdapter(getActivity(), this, matches);
             recyclerView.setAdapter(adapter);
@@ -214,6 +216,7 @@ public class TimeTableFragment extends Fragment {
                 if(response.isSuccessful())
                     if(response.body()!=null)
                         saveData(response.body(), limit, offset);
+
             }
 
             @Override

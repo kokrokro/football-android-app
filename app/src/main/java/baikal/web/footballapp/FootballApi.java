@@ -18,6 +18,7 @@ import baikal.web.footballapp.model.ParticipationRequest;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.PersonStats;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.RefereeRequestList;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
@@ -203,5 +204,9 @@ public interface FootballApi {
 
     @POST("api/matches/changePlayers/{id}")
     Call<Match> changePlayersForMatch(@Path("id") String id, @Header("auth") String token, @Body List<String> players);
+
+    @GET("api/crud/person_status")
+    Call<List<PersonStatus>> getPersonStatus(@Query("team") String team, @Query("league") String league,@Query("activeDisquals") String activeDisquals);
+
 }
 

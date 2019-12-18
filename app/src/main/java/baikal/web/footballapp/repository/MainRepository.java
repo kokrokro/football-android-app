@@ -9,7 +9,9 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News_;
+import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
+import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import retrofit2.Callback;
@@ -17,6 +19,12 @@ import retrofit2.Callback;
 public class MainRepository {
 
 
+    public void getPersonStatus(String team, String league, String activeDisquals, Callback<List<PersonStatus>> callback) {
+        Controller
+                .getApi()
+                .getPersonStatus(team, league, activeDisquals)
+                .enqueue(callback);
+    }
     public LiveData<List<Team>> getTeams(String creator, retrofit2.Callback<List<Team>> callback) {
         MutableLiveData<List<Team>> returnNews = new MutableLiveData<>();
         Controller

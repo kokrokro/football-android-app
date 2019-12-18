@@ -30,6 +30,7 @@ import java.util.List;
 
 import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.user.adapter.RecentRefereeAdapter;
@@ -87,8 +88,9 @@ public class SetRefereesBottomSheet extends BottomSheetDialogFragment {
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(people -> {
                             referees.clear();
-                            for(Person person : people){
+                            for(Person person : people) {
                                 referees.add(person.getId());
+                                MankindKeeper.getInstance().addPerson(person);
                             }
                             adapter.notifyDataSetChanged();
                                 }
