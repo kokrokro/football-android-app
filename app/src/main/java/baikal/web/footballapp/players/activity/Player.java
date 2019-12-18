@@ -2,14 +2,6 @@ package baikal.web.footballapp.players.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +10,18 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.DateToString;
@@ -28,18 +32,15 @@ import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.adapter.RVPlayersTournamentAdapter;
 import baikal.web.footballapp.user.activity.AuthoUser;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import static android.app.Activity.RESULT_OK;
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class Player extends Fragment {
-    private boolean scrollStatus;
+    public static FloatingActionButton fab;
     private final Logger log = LoggerFactory.getLogger(Player.class);
     private final int REQUEST_CODE_PLAYERINV = 286;
+    private boolean scrollStatus;
     private Person person;
-    public static FloatingActionButton fab;
 
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -63,28 +64,27 @@ public class Player extends Fragment {
             if (bundle != null) {
                 person = (Person) bundle.getSerializable("PLAYERINFO");
             }
-            String str;
             CheckName checkName = new CheckName();
-            str = checkName.check(person.getSurname(), person.getName(), person.getLastname());
+            String str = person.getName() + " " + person.getLastname() + " " + person.getSurname();
             textName.setText(str);
             SetImage setImage = new SetImage();
             setImage.setImage(getActivity(), imageLogo, person.getPhoto());
             String uriPic = BASE_URL;
             try {
                 uriPic += "/" + person.getPhoto();
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
 
             fab.setOnClickListener(v -> {
                 try {
-                    if (AuthoUser.personOngoingLeagues.size()==0){
+                    if (AuthoUser.personOngoingLeagues.size() == 0) {
                         Toast.makeText(getActivity(), "Ошибка! У вас нет ни одной команды", Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                            Intent intent = new Intent(getActivity(), PlayerInv.class);
-                            Bundle bundle1 = new Bundle();
-                            bundle1.putSerializable("PLAYERINV", person);
-                            intent.putExtras(bundle1);
-                            startActivityForResult(intent, REQUEST_CODE_PLAYERINV);
+                    } else {
+                        Intent intent = new Intent(getActivity(), PlayerInv.class);
+                        Bundle bundle1 = new Bundle();
+                        bundle1.putSerializable("PLAYERINV", person);
+                        intent.putExtras(bundle1);
+                        startActivityForResult(intent, REQUEST_CODE_PLAYERINV);
 
                     }
                 } catch (Exception e) {
@@ -120,13 +120,12 @@ public class Player extends Fragment {
             recyclerView = view.findViewById(R.id.recyclerViewPlayerTournaments);
             recyclerView.setNestedScrollingEnabled(false);
             try {
-                if (person.getPastLeagues().size()==0){
+                if (person.getPastLeagues().size() == 0) {
                     layout.setVisibility(View.GONE);
-                }
-                else {
+                } else {
                     recyclerView.setVisibility(View.VISIBLE);
                 }
-            }catch (NullPointerException r){
+            } catch (NullPointerException r) {
                 layout.setVisibility(View.GONE);
             }
 

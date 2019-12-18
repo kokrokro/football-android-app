@@ -125,6 +125,9 @@
     <string name="structure">Состав</string>
     <string name="editTeam">Редактирование команды</string>
     <string name="teamsMatches">Посмотреть матчи</string>
+    <string name="players">Игроки</string>
+    <string name="players_not_found">Нет игроков</string>
+    <string name="network_error">Ошибка, проверьте подключение к сети</string>
 
     <string name="buttonOk">Принять</string>
     <string name="buttonCancel">Отклонить</string>
@@ -171,4 +174,6 @@
     <string name="ProtocolToSend">Протокол</string>
     <string name="editTeamTrainer">Тренер:</string>
     <string name="editTeamNumber">Номер тренера:</string>
+    <string name="content_description_image">Изображение</string>
+    <string name="content_description_button_add">Кнопка добавить игрока</string>
 </resources>
