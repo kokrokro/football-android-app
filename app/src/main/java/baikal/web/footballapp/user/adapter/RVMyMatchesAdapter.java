@@ -19,7 +19,7 @@ import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.activity.ConfirmProtocol;
+import baikal.web.footballapp.user.activity.Protocol.ConfirmProtocol;
 import baikal.web.footballapp.user.activity.PlayerAddToTeam;
 
 import org.slf4j.Logger;

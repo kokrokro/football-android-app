@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.activity;
+package baikal.web.footballapp.user.activity.Protocol;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -17,6 +17,7 @@ import android.widget.Toast;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Event;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
@@ -28,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import baikal.web.footballapp.user.activity.MatchResponsiblePersons;
+import baikal.web.footballapp.user.activity.StructureCommand1;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -180,28 +183,23 @@ public class ConfirmProtocol extends AppCompatActivity {
         if (id == null)
             return;
 
-        match.setPlayed(true);
         String token = SaveSharedPreference.getObject().getToken();
-        Match newMatch = new Match(match);
+        Event event = new Event();
         //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().editProtocolMatch(id, token, newMatch)
+        Controller.getApi().editProtocolMatch(id, token, event)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(newMatch2 -> {
-                            if (newMatch2 != null) {
-                                match.onProtocolEdited(newMatch2);
+                .subscribe(newEvent -> {
+                            if (newEvent != null) {
+                                match.addEvent(newEvent);
                                 Toast.makeText(ConfirmProtocol.this, "Протокол сохранён", Toast.LENGTH_SHORT).show();
                             }
                         },
                         error -> {
                             log.debug("===================================");
 
-                            if (error.getMessage() != null) {
+                            if (error.getMessage() != null)
                                 Log.e(TAG, error.getMessage());
-
-                                if (error.getMessage().contains("version invalid"))
-                                    syncProtocolOneMoreTime();
-                            }
                         });
     }
 
@@ -216,47 +214,6 @@ public class ConfirmProtocol extends AppCompatActivity {
         if ((requestCode == EDIT_TEAM_ONE || requestCode == EDIT_TEAM_TWO) && resultCode == RESULT_OK)
             if (data != null && data.getExtras() != null)
                 match = (MatchPopulate) data.getExtras().getSerializable("MATCH_EDITED_TEAM");
-    }
-
-    @SuppressLint("CheckResult")
-    void syncProtocolOneMoreTime() {
-        Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    match.setV(response.body().get(0).getV());
-                    match.mergeEvents(response.body().get(0).getEvents());
-                    String token = SaveSharedPreference.getObject().getToken();
-                    Match newMatch = new Match(match);
-
-                    //noinspection ResultOfMethodCallIgnored
-                    Controller.getApi().editProtocolMatch(match.getId(), token, newMatch)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(newMatch2 -> {
-                                        if (newMatch2 != null) {
-                                            match.onProtocolEdited(newMatch2);
-                                            Toast.makeText(ConfirmProtocol.this, "Протокол сохранён", Toast.LENGTH_SHORT).show();
-                                        }
-                                    },
-                                    error -> {
-                                        log.debug("===================================");
-
-                                        if (error.getMessage() != null) {
-                                            Log.e(TAG, error.getMessage());
-
-                                            if (error.getMessage().contains("version invalid"))
-                                                syncProtocolOneMoreTime();
-                                        }
-                                    });
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
-
-            }
-        });
     }
 }
 

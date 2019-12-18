@@ -1,15 +1,19 @@
 package baikal.web.footballapp.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 public class Event implements Serializable {
-
     @SerializedName("_id")
     @Expose
     private String id;
+    @SerializedName("event")
+    @Expose
+    private String event;
     @SerializedName("eventType")
     @Expose
     private String eventType;
@@ -63,6 +67,7 @@ public class Event implements Serializable {
         this.team = team;
     }
 
+    @NonNull
     public String toString()
     {
         String ans = "";
@@ -73,5 +78,13 @@ public class Event implements Serializable {
         ans += "time: " + getTime() + "\n";
 
         return ans;
+    }
+
+    public String getEvent() {
+        return event;
+    }
+
+    public void setEvent(String event) {
+        this.event = event;
     }
 }

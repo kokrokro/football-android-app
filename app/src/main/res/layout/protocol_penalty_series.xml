@@ -85,7 +85,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
                 android:layout_toStartOf="@+id/PPS_view_between_team_holders"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -120,6 +123,11 @@
                         android:textColor="@color/Black"
                         android:textSize="20sp" />
                 </RelativeLayout>
+                
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLightGray"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/PPS_RV_team1"
@@ -140,7 +148,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@+id/PPS_view_between_team_holders"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true">
 
                 <RelativeLayout
                     android:layout_width="wrap_content"
@@ -177,6 +188,11 @@
 
 
                 </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLightGray"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/PPS_RV_team2"
@@ -225,7 +241,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="8dp">
 
             <ImageButton
                 android:id="@+id/PPS_penalty_successful"
@@ -239,8 +257,8 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/ic_event_goal"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"/>
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
 
             <ImageButton
                 android:id="@+id/PPS_penalty_failure"
@@ -254,8 +272,8 @@
                 android:layout_weight="1"
                 android:layout_marginStart="10dp"
                 android:src="@drawable/ic_event_goal_failure"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp"/>
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"/>
 
         </LinearLayout>
 

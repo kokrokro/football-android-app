@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.adapter;
+package baikal.web.footballapp.user.activity.Protocol.Adapters;
 
 import android.app.Activity;
 import android.util.Log;
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.TreeSet;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -149,11 +150,23 @@ public class RVTeamEventListAdapter extends RecyclerView.Adapter<RVTeamEventList
 
     private void fillEvents(List<Event> events) {
         this.events.clear();
+
+        TreeSet<String> disabledEvents = new TreeSet<>();
+
+        for (Event e: events)
+            if (e.getEventType().equals("disable"))
+                disabledEvents.add(e.getEvent());
+            else if (e.getEventType().equals("enable"))
+                disabledEvents.remove(e.getEvent());
+
         for (Event e: events) {
-            if (e.getTeam().equals(teamId)) {
-                if (!this.events.containsKey(e.getPerson()))
+            if (e.getTeam() != null && e.getTeam().equals(teamId)) {
+                if (e.getPerson() != null && !this.events.containsKey(e.getPerson()) &&
+                        (e.getId() != null && !disabledEvents.contains(e.getId())))
                     this.events.put(e.getPerson(), new ArrayList<>());
-                this.events.get(e.getPerson()).add(e);
+                if (e.getPerson() != null && (e.getId() != null && !disabledEvents.contains(e.getId())) &&
+                        !e.getEventType().equals("disable") && !e.getEventType().equals("enable"))
+                    this.events.get(e.getPerson()).add(e);
             }
         }
     }

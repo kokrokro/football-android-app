@@ -7,6 +7,7 @@ import baikal.web.footballapp.model.Announce;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.DataClub;
 import baikal.web.footballapp.model.EditProfile;
+import baikal.web.footballapp.model.Event;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
@@ -98,8 +99,8 @@ public interface FootballApi {
     //edit web
     @PATCH("/api/crud/match/{id}")
     Call<Match> editMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
-    @POST("/api/matches/changeProtocol/{id}")
-    Observable<Match> editProtocolMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
+    @POST("/api/matches/addEvent/{id}")
+    Observable<Event> editProtocolMatch(@Path("id") String id, @Header("auth") String authorization, @Body Event event);
 
     @Multipart
     @PATCH("/api/crud/person/{id}")

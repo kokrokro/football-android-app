@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.adapter;
+package baikal.web.footballapp.user.activity.Protocol.Adapters;
 
 import android.app.Activity;
 import android.graphics.Typeface;

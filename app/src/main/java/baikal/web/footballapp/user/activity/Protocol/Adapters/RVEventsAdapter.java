@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.adapter;
+package baikal.web.footballapp.user.activity.Protocol.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,22 +15,20 @@ import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Event;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.user.activity.MatchEvents;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHolder> {
     private static final String TAG = "RVEventsAdapter";
-    Logger log = LoggerFactory.getLogger(MatchEvents.class);
+//    private Logger log = LoggerFactory.getLogger(MatchEvents.class);
     private final List<Event> events;
     private final List<Event> eventsForTime;
     private String eventTime;
@@ -39,6 +37,7 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
     private HashMap<String, Integer> eventIconIds;
     private HashMap<String, String> eventTypeToShow;
     final private Set<Integer> eventsToDelete;
+    final private TreeSet<String> disabledEvents;
     private boolean isEditable;
 
     RVEventsAdapter(List<Event> events, String teamId1, String teamId2,
@@ -47,13 +46,15 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
         this.teamId1 = teamId1;
         this.teamId2 = teamId2;
         this.isEditable = isEditable;
-
         this.eventsToDelete = eventsToDelete;
+
+        disabledEvents = new TreeSet<>();
         eventsForTime = new ArrayList<>();
         getEventCnt();
 
         String[] eventTypes = {"goal", "yellowCard", "redCard", "penalty",
                 "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
+
         this.eventIconIds = new HashMap<>();
         this.eventIconIds.put(eventTypes[0], R.drawable.ic_event_goal);
         this.eventIconIds.put(eventTypes[1], R.drawable.ic_event_yellow_card);
@@ -67,6 +68,8 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
         this.eventTypeToShow = new HashMap<>();
         this.eventTypeToShow.put(eventTypes[4], "Автогол");
         this.eventTypeToShow.put(eventTypes[5], "Фол");
+        this.eventTypeToShow.put(eventTypes[6], "Гол");
+        this.eventTypeToShow.put(eventTypes[7], "Не гол");
     }
 
     @NonNull
@@ -86,7 +89,7 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
 
         holder.eventTypeImageBtn.setOnClickListener(v -> deleteEvent(position));
 
-        if (event.getPerson() != null) {
+        if (event.getPerson() != null && !event.getPerson().equals("")) {
             if (MankindKeeper.getInstance().allPerson.containsKey(event.getPerson())) {
                 Person p = MankindKeeper.getInstance().allPerson.get(event.getPerson());
 
@@ -98,9 +101,9 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
                 getPerson(event.getPerson());
         }
         else {
-            if (event.getTeam().equals(teamId1) && event.getPerson() != null)
+            if (event.getTeam().equals(teamId1))
                 holder.playerNameLeft.setText(eventTypeToShow.get(event.getEventType()));
-            if (event.getTeam().equals(teamId2) && event.getPerson() != null)
+            if (event.getTeam().equals(teamId2))
                 holder.playerNameRight.setText(eventTypeToShow.get(event.getEventType()));
         }
         holder.eventTypeImageBtn.setImageResource(eventIconIds.get(event.getEventType()));
@@ -110,7 +113,11 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
     {
         int k=0, i=0;
         for (; i<events.size(); i++) {
-            if (events.get(i).getTime().equals(eventTime) && !eventsToDelete.contains(i))
+            if (!eventsToDelete.contains(i) &&
+                    !events.get(i).getEventType().equals("disable") &&
+                    !events.get(i).getEventType().equals("enable") &&
+                    !disabledEvents.contains(events.get(i).getId()) &&
+                    events.get(i).getTime().equals(eventTime))
                 k++;
             if (k-1 == position)
                 break;
@@ -129,11 +136,22 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
     private int getEventCnt()
     {
         eventsForTime.clear();
-        for (int i=0; i<events.size(); i++) {
-//            Log.e(TAG, events.get(i).getTime() + " " + eventTime);
-            if (events.get(i).getTime().equals(eventTime) && !eventsToDelete.contains(i))
+        disabledEvents.clear();
+
+        for (Event e: events)
+            if (e.getEventType().equals("disable"))
+                disabledEvents.add(e.getEvent());
+            else if (e.getEventType().equals("enable"))
+                disabledEvents.remove(e.getEvent());
+
+        for (int i=0; i<events.size(); i++)
+            if (events.get(i).getTime() != null &&
+                    events.get(i).getTime().equals(eventTime) &&
+                    !eventsToDelete.contains(i) &&
+                    !events.get(i).getEventType().equals("disable") &&
+                    !events.get(i).getEventType().equals("enable") &&
+                    (events.get(i).getId()==null || !disabledEvents.contains(events.get(i).getId())))
                 eventsForTime.add(events.get(i));
-        }
 
         Log.d(TAG, String.valueOf(eventsForTime.size()));
         return eventsForTime.size();
@@ -173,6 +191,4 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
             eventTypeImageBtn = item.findViewById(R.id.PPEC_event_type);
         }
     }
-
-
 }

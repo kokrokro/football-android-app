@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.activity;
+package baikal.web.footballapp.user.activity.Protocol;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -65,6 +65,7 @@ public class DialogProtocol extends DialogFragment {
 
         if (isTrainer) {
             eventGoal.setVisibility(View.GONE);
+            eventYellowCard.setVisibility(View.GONE);
             eventPenaltySuccess.setVisibility(View.GONE);
         }
 

@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.activity;
+package baikal.web.footballapp.user.activity.Protocol;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +24,10 @@ import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Event;
-import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.EventList;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.adapter.RVTeamEventListAdapter;
+import baikal.web.footballapp.user.activity.Protocol.Adapters.RVTeamEventListAdapter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -37,8 +37,11 @@ import retrofit2.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.TreeSet;
 
 public class ProtocolScore extends AppCompatActivity{
     private static final String TAG = "ProtocolScore: ";
@@ -57,8 +60,8 @@ public class ProtocolScore extends AppCompatActivity{
     private RecyclerView firstTeamListRecyclerView;
     private RecyclerView secondTeamListRecyclerView;
 
-    RVTeamEventListAdapter adapter1;
-    RVTeamEventListAdapter adapter2;
+    private RVTeamEventListAdapter adapter1;
+    private RVTeamEventListAdapter adapter2;
 
     private TextView textViewTeam1;
     private TextView textViewTeam2;
@@ -71,6 +74,8 @@ public class ProtocolScore extends AppCompatActivity{
     private MatchPopulate match;
     private Team team1;
     private Team team2;
+
+    private LinkedList<Event> eventsToSend;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +101,8 @@ public class ProtocolScore extends AppCompatActivity{
         Button btnEndMatch = findViewById(R.id.endMatchBtn);
         ImageButton btnShowEvents = findViewById(R.id.PMS_show_events);
         ImageButton buttonBack = findViewById(R.id.protocolScoreBack);
+
+        eventsToSend = new LinkedList<>();
 
         buttonBack.setOnClickListener(v -> finish());
         btnFirstTime.setOnClickListener(v -> {
@@ -223,38 +230,46 @@ public class ProtocolScore extends AppCompatActivity{
         }
     }
 
-    @SuppressLint("CheckResult")
+
     void addEvent (String teamId, String personId, int i) {
         Event event = new Event();
+        event.setId(null);
         event.setEventType(eventTypes[i]);
         event.setTime(matchTimes[currentMatchTime]);
         event.setPerson(personId);
         event.setTeam(teamId);
-        calculateScore();
         match.addEvent(event);
+        calculateScore();
         adapter2.dataChanged();
         adapter1.dataChanged();
+        eventsToSend.addLast(event);
+        sendEvents();
+    }
 
-        String token = SaveSharedPreference.getObject().getToken();
-        Match newMatch = new Match(match);
-        //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().editProtocolMatch(match.getId(), token, newMatch)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(newMatch2 -> {
-                            if (newMatch2 != null) {
-                                Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
-                                match.onProtocolEdited(newMatch2);
-                                calculateScore();
-                                adapter2.dataChanged();
-                                adapter1.dataChanged();
-                            }
-                        },
-                        error -> {
-                            Log.d(TAG, "===================================");
-                            if (error.toString().contains("HTTP 500"))
-                                syncProtocolOneMoreTime(true);
-                        });
+    @SuppressLint("CheckResult")
+    void sendEvents() {
+        if (eventsToSend.size() != 0) {
+            Event event = eventsToSend.getFirst();
+            eventsToSend.removeFirst();
+            String token = SaveSharedPreference.getObject().getToken();
+            //noinspection ResultOfMethodCallIgnored
+            Controller.getApi().editProtocolMatch(match.getId(), token, event)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(newEvent -> {
+                                if (newEvent != null) {
+                                    Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
+                                    match.addEventWithId(newEvent);
+                                    calculateScore();
+                                    adapter2.dataChanged();
+                                    adapter1.dataChanged();
+                                    sendEvents();
+                                }
+                            },
+                            error ->
+                                    Log.d(TAG, error.toString())
+                    );
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -265,7 +280,20 @@ public class ProtocolScore extends AppCompatActivity{
         int foulsCntTeam1 = 0;
         int foulsCntTeam2 = 0;
 
+        TreeSet<String> disabledEvents = new TreeSet<>();
+
+        for (Event e: match.getEvents())
+            if (e.getEventType().equals("disable"))
+                disabledEvents.add(e.getEvent());
+            else if (e.getEventType().equals("enable"))
+                disabledEvents.remove(e.getEvent());
+
         for (Event e: match.getEvents()) {
+            if (e.getEventType().equals("disable") ||
+                    e.getEventType().equals("enable") ||
+                    (e.getId() != null && disabledEvents.contains(e.getId())))
+                continue;
+
             if (team1 != null && e.getTeam().equals(team1.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
                         e.getEventType().equals(eventTypes[3]) ||
@@ -344,47 +372,6 @@ public class ProtocolScore extends AppCompatActivity{
     }
 
     @SuppressLint("CheckResult")
-    void syncProtocolOneMoreTime(boolean isNeedMerge) {
-        Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    match.setV(response.body().get(0).getV());
-                    if (isNeedMerge)
-                        match.mergeEvents(response.body().get(0).getEvents());
-
-                    String token = SaveSharedPreference.getObject().getToken();
-                    Match newMatch = new Match(match);
-
-                    //noinspection ResultOfMethodCallIgnored
-                    Controller.getApi().editProtocolMatch(match.getId(), token, newMatch)
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(newMatch2 -> {
-                                        if (newMatch2 != null) {
-                                            match.onProtocolEdited(newMatch2);
-                                            calculateScore();
-                                            adapter2.dataChanged();
-                                            adapter1.dataChanged();
-                                            Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
-                                        }
-                                    },
-                                    error -> {
-                                        Log.d(TAG, "===================================");
-                                        if (error.toString().contains("HTTP 500"))
-                                            syncProtocolOneMoreTime(isNeedMerge);
-                                    });
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
-
-            }
-        });
-    }
-
-    @SuppressLint("CheckResult")
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -392,31 +379,18 @@ public class ProtocolScore extends AppCompatActivity{
         if (requestCode == EVENT_LIST_EDITED && resultCode == RESULT_OK) {
             Log.d(TAG, "event list has been changed");
 
-            String token = SaveSharedPreference.getObject().getToken();
-            MatchPopulate newMatchPop = (MatchPopulate) data.getExtras().getSerializable("MATCH");
-            Match newMatch = new Match(newMatchPop);
-            //noinspection ResultOfMethodCallIgnored
-            Controller.getApi().editProtocolMatch(match.getId(), token, newMatch)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(newMatch2 -> {
-                                if (newMatch2 != null) {
-                                    Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
-                                    match.onProtocolEdited(newMatch2);
-                                    calculateScore();
-                                    adapter2.dataChanged();
-                                    adapter1.dataChanged();
-                                }
-                            },
-                            error -> {
-                                Log.d(TAG, "===================================");
-                                if (error.toString().contains("HTTP 500"))
-                                    syncProtocolOneMoreTime(false);
-                            });
+            EventList newEvents = (EventList) data.getExtras().getSerializable("EVENTS");
+            for (Event e: newEvents.getEvents())
+                eventsToSend.addLast(e);
+
+            sendEvents();
         }
 
         if (requestCode == MATCH_PENALTY) {
             Log.d(TAG, "from penalty series...");
+            try {
+                match = (MatchPopulate) data.getExtras().getSerializable("MATCH");
+            } catch (Exception ignored) {}
         }
     }
 }

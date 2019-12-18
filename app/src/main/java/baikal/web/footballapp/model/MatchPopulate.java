@@ -127,6 +127,22 @@ public class MatchPopulate implements Serializable {
         }
     }
 
+    public void addEventWithId(Event event) {
+        for (Event e: events)
+            if (e.getId() == null &&
+                e.getEventType().equals(event.getEventType()) &&
+                e.getTime().equals(event.getTime()) &&
+               (e.getPerson() == null && e.getPerson() == null ||
+                       e.getPerson().equals(event.getPerson())) &&
+               (e.getTeam() == null && event.getTeam() == null ||
+                        e.getTeam().equals(event.getTeam()))) {
+
+                e.setId(event.getId());
+                return;
+            }
+        events.add(event);
+    }
+
     public String getId() {
         return id;
     }

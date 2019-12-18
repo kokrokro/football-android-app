@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.activity;
+package baikal.web.footballapp.user.activity.Protocol;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,8 +12,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.EventList;
 import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.user.adapter.RVMatchEventsAdapter;
+import baikal.web.footballapp.user.activity.Protocol.Adapters.RVMatchEventsAdapter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,13 +55,19 @@ public class MatchEvents extends AppCompatActivity {
             saveEvents.setVisibility(View.VISIBLE);
             saveEvents.setOnClickListener(v -> {
                 List<Integer> eventsToDeleteList = new ArrayList<>(eventsToDelete);
+                EventList newEvents = new EventList();
+                for (int i=eventsToDeleteList.size()-1; i>=0; i--) {
+                    Event e = match.getEvents().get(eventsToDeleteList.get(i));
+                    Event newE = new Event();
 
-                for (int i=eventsToDeleteList.size()-1; i>=0; i--)
-                    match.getEvents().remove(eventsToDeleteList.get(i).intValue());
+                    newE.setEventType("disable");
+                    newE.setEvent(e.getId());
+                    newEvents.addEvent(newE);
+                }
 
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("MATCH", match);
+                bundle.putSerializable("EVENTS", newEvents);
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
                 finish();

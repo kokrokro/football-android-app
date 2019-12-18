@@ -1,4 +1,4 @@
-package baikal.web.footballapp.user.adapter;
+package baikal.web.footballapp.user.activity.Protocol.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Event;
-import baikal.web.footballapp.user.activity.MatchEvents;
+import baikal.web.footballapp.user.activity.Protocol.MatchEvents;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,8 @@ public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdap
         int ans=0;
 
         for (Event e: events)
-            ans = Math.max(ans, matchTimesMap.get(e.getTime()));
+            if (e.getTime() != null)
+                ans = Math.max(ans, matchTimesMap.get(e.getTime()));
 
         return ans;
     }
