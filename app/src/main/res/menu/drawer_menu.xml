@@ -2,7 +2,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <!--app:actionLayout="@layout/moreover"-->
     <group android:checkableBehavior="single">
         <item android:title="Игрок">
@@ -20,6 +19,8 @@
             </menu>
         </item>
 
+    </group>
+    <group android:checkableBehavior="single">
         <item android:title="Тренер">
             <menu>
                 <item
@@ -28,7 +29,8 @@
                     android:title="Команды" />
             </menu>
         </item>
-
+    </group>
+    <group android:checkableBehavior="single">
         <item android:title="Судья">
             <menu>
                 <item
@@ -47,8 +49,10 @@
                     android:title="Расписание" />
             </menu>
         </item>
-
-        <item android:title="">
+    </group>
+    <group android:checkableBehavior="single"
+        android:menuCategory="secondary">
+        <item>
             <menu>
                 <item
                     android:id="@+id/nav_fourth_fragment"
@@ -56,6 +60,5 @@
                     android:title="Выйти" />
             </menu>
         </item>
-
     </group>
 </menu>
