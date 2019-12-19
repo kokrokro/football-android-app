@@ -1,16 +1,9 @@
 package baikal.web.footballapp.user.activity.Protocol;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +11,20 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.TreeSet;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -34,15 +41,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeSet;
-
 public class ProtocolScore extends AppCompatActivity{
     private static final String TAG = "ProtocolScore: ";
     private static final int EVENT_LIST_EDITED = 7341;
@@ -50,11 +48,11 @@ public class ProtocolScore extends AppCompatActivity{
 
     private final Logger log = LoggerFactory.getLogger(ProtocolScore.class);
 
-    private String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty",
+    private final String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty",
                                     "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
 
-    private String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime", "penaltySeries"};
-    private String[] matchTimesToShow = {"Первый тайм",   "Второй тайм", "Дополнительное время"};
+    private final String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime", "penaltySeries"};
+    private final String[] matchTimesToShow = {"Первый тайм",   "Второй тайм", "Дополнительное время"};
     private int currentMatchTime = 0;
 
     private RecyclerView firstTeamListRecyclerView;
@@ -104,7 +102,14 @@ public class ProtocolScore extends AppCompatActivity{
 
         eventsToSend = new LinkedList<>();
 
-        buttonBack.setOnClickListener(v -> finish());
+        buttonBack.setOnClickListener(v -> {
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("MATCH", match);
+            intent.putExtras(bundle);
+            setResult(RESULT_CANCELED, intent);
+            finish();
+        });
         btnFirstTime.setOnClickListener(v -> {
             currentMatchTime = 0;
             textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
@@ -134,6 +139,7 @@ public class ProtocolScore extends AppCompatActivity{
             yes.setOnClickListener(vv -> {
                 Log.d(TAG,"start penalty activity");
 
+                match.setScore(String.valueOf(textViewMatchScore.getText()));
                 Intent intent = new Intent(this, ProtocolPenalty.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("MATCH", match);
@@ -194,12 +200,15 @@ public class ProtocolScore extends AppCompatActivity{
         });
 
         btnEndMatch.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
+            eventsToSend.clear();
+            for (Event e: match.getEvents())
+                if (e.getId() == null)
+                    eventsToSend.addLast(e);
 
-            bundle.putSerializable("FINISHED_MATCH", match);
-            intent.putExtras(bundle);
-            setResult(RESULT_OK, intent);
+            Event finishEvent = new Event();
+            finishEvent.setId(null);
+            finishEvent.setEventType("matchEnd");
+            sendEvents();
         });
     }
 
@@ -239,10 +248,10 @@ public class ProtocolScore extends AppCompatActivity{
         event.setPerson(personId);
         event.setTeam(teamId);
         match.addEvent(event);
+        eventsToSend.addLast(event);
         calculateScore();
         adapter2.dataChanged();
         adapter1.dataChanged();
-        eventsToSend.addLast(event);
         sendEvents();
     }
 
@@ -263,6 +272,8 @@ public class ProtocolScore extends AppCompatActivity{
                                     calculateScore();
                                     adapter2.dataChanged();
                                     adapter1.dataChanged();
+                                    if (newEvent.getEventType().equals("matchEnd"))
+                                        getFinishedMatch();
                                     sendEvents();
                                 }
                             },
@@ -390,7 +401,42 @@ public class ProtocolScore extends AppCompatActivity{
             Log.d(TAG, "from penalty series...");
             try {
                 match = (MatchPopulate) data.getExtras().getSerializable("MATCH");
+                boolean isFinished = data.getExtras().getBoolean("IS_FINISHED", false);
+
+                if (isFinished) {
+                    eventsToSend.clear();
+                    for (Event e: match.getEvents())
+                        if (e.getId() == null)
+                            eventsToSend.addLast(e);
+
+                    Event finishEvent = new Event();
+                    finishEvent.setId(null);
+                    finishEvent.setEventType("matchEnd");
+                    sendEvents();
+                }
             } catch (Exception ignored) {}
         }
+    }
+
+    private void getFinishedMatch()
+    {
+        Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
+                if (response.isSuccessful() && response.body().size() > 0) {
+                    MatchPopulate newMatch = response.body().get(0);
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("MATCH", newMatch);
+                    intent.putExtras(bundle);
+                    setResult(RESULT_OK, intent);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
+
+            }
+        });
     }
 }

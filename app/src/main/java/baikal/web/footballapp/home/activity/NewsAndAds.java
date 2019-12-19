@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -52,26 +51,11 @@ public class NewsAndAds extends Fragment {
         //checkConnection();
         GetAllAds();
 
-        final Button btnNews = view.findViewById(R.id.showAllNews);
-        final Button btnAds = view.findViewById(R.id.showAllAds);
         //  fragmentManager.beginTransaction().add(R.id.pageContainer, newsFragment).add(R.id.pageContainer, adsPage).hide(newsFragment).hide(adsPage).commit();
-        btnNews.setOnClickListener(v -> {
-            //show all news
-            fragmentManager.beginTransaction()
-                    .replace(R.id.pageContainer, new NewsFragment())
-                    .addToBackStack(null)
-                    .commit();
-        });
-        btnAds.setOnClickListener(v -> {
-            //show all ads
-            fragmentManager.beginTransaction()
-                    .replace(R.id.pageContainer, new AdsPage())
-                    .addToBackStack(null)
-                    .commit();
-        });
+
         try {
             RecyclerView recyclerViewNews = view.findViewById(R.id.recyclerViewMainNews);
-            recyclerViewNews.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recyclerViewNews.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             newsAdapter = new RecyclerViewMainNewsAdapter(getActivity(), NewsAndAds.this, allNews);
             recyclerViewNews.setAdapter(newsAdapter);
         } catch (Exception e) {

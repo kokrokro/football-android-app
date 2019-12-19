@@ -84,10 +84,6 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.activity.RefereesMatches"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".user.activity.EditTimeTable"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />

@@ -2,40 +2,28 @@ package baikal.web.footballapp.user.activity.Protocol;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.Event;
-import baikal.web.footballapp.model.Match;
-import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Referee;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.user.activity.MatchResponsiblePersons;
 import baikal.web.footballapp.user.activity.StructureCommand1;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ConfirmProtocol extends AppCompatActivity {
     private static final String TAG = "ConfirmProtocol";
@@ -180,27 +168,27 @@ public class ConfirmProtocol extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void confirmProtocol(@Nullable String id) {
-        if (id == null)
-            return;
+//        if (id == null)
+//            return;
 
-        String token = SaveSharedPreference.getObject().getToken();
-        Event event = new Event();
-        //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().editProtocolMatch(id, token, event)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(newEvent -> {
-                            if (newEvent != null) {
-                                match.addEvent(newEvent);
-                                Toast.makeText(ConfirmProtocol.this, "Протокол сохранён", Toast.LENGTH_SHORT).show();
-                            }
-                        },
-                        error -> {
-                            log.debug("===================================");
-
-                            if (error.getMessage() != null)
-                                Log.e(TAG, error.getMessage());
-                        });
+//        String token = SaveSharedPreference.getObject().getToken();
+//        Event event = new Event();
+////        noinspection ResultOfMethodCallIgnored
+//        Controller.getApi().editProtocolMatch(id, token, event)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(newEvent -> {
+//                            if (newEvent != null) {
+//                                match.addEvent(newEvent);
+//                                Toast.makeText(ConfirmProtocol.this, "Протокол сохранён", Toast.LENGTH_SHORT).show();
+//                            }
+//                        },
+//                        error -> {
+//                            log.debug("===================================");
+//
+//                            if (error.getMessage() != null)
+//                                Log.e(TAG, error.getMessage());
+//                        });
     }
 
     @Override
@@ -209,7 +197,7 @@ public class ConfirmProtocol extends AppCompatActivity {
 
         if (requestCode == EDIT_PROTOCOL_SUCCESS)
             if (data != null && data.getExtras() != null)
-                match = (MatchPopulate) data.getExtras().getSerializable("FINISHED_MATCH");
+                match = (MatchPopulate) data.getExtras().getSerializable("MATCH");
 
         if ((requestCode == EDIT_TEAM_ONE || requestCode == EDIT_TEAM_TWO) && resultCode == RESULT_OK)
             if (data != null && data.getExtras() != null)

@@ -2,22 +2,28 @@ package baikal.web.footballapp.user.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -31,16 +37,6 @@ import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.user.adapter.RVRefereesMatchesAdapter;
 import baikal.web.footballapp.user.adapter.RVTimeTableAdapter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -50,7 +46,6 @@ public class TimeTableFragment extends Fragment {
     public final int SUCCESSFUL_EDIT_MATCH = 6123;
     private RVTimeTableAdapter adapter;
     private final List<MatchPopulate> matches = new ArrayList<>();
-    private NestedScrollView scroller;
     private final Logger log = LoggerFactory.getLogger(TimeTableFragment.class);
     private LinearLayout layout;
     private List<String> recentReferee = new ArrayList<>();
@@ -68,9 +63,9 @@ public class TimeTableFragment extends Fragment {
 
         RecyclerView recyclerViewSetReferee;
         view = inflater.inflate(R.layout.user_timetable, container, false);
-        scroller = view.findViewById(R.id.scrollerTimeTable);
+        NestedScrollView scroller = view.findViewById(R.id.scrollerTimeTable);
         layout = view.findViewById(R.id.emptyTimetable);
-        getActiveMatches("10", "0");
+        getActiveMatches();
         recyclerViewSetReferee = view.findViewById(R.id.setRefereeRecyclerView);
 
         recyclerViewSetReferee.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -164,12 +159,12 @@ public class TimeTableFragment extends Fragment {
                          Controller.getApi().editMatch(id,SaveSharedPreference.getObject().getToken(), match)
                                  .enqueue(new Callback<Match>() {
                                      @Override
-                                     public void onResponse(Call<Match> call, Response<Match> response) {
+                                     public void onResponse(@NonNull Call<Match> call,@NonNull  Response<Match> response) {
 
                                      }
 
                                      @Override
-                                     public void onFailure(Call<Match> call, Throwable t) {
+                                     public void onFailure(@NonNull Call<Match> call, @NonNull Throwable t) {
 
                                      }
                                  });
@@ -205,17 +200,18 @@ public class TimeTableFragment extends Fragment {
             bottomSheet.show(getFragmentManager(),"BOTTOMSHEET");
         });
 
+        layout.setVisibility(View.VISIBLE);
         return view;
     }
 
     @SuppressLint("CheckResult")
-    private void getActiveMatches(String limit, String offset) {
+    private void getActiveMatches() {
         Controller.getApi().getMainRefsLeagues(SaveSharedPreference.getObject().getUser().getId()).enqueue(new Callback<List<League>>() {
             @Override
             public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
                 if(response.isSuccessful())
                     if(response.body()!=null)
-                        saveData(response.body(), limit, offset);
+                        saveData(response.body());
 
             }
 
@@ -227,7 +223,7 @@ public class TimeTableFragment extends Fragment {
         });
     }
 
-    private void saveData(List<League> leagueList, String limit, String offset) {
+    private void saveData(List<League> leagueList) {
         matches.clear();
         StringBuilder str= new StringBuilder();
         for(League l: leagueList)
@@ -242,8 +238,8 @@ public class TimeTableFragment extends Fragment {
                     if(response.body()!=null){
                         matches.addAll(response.body());
                         adapter.notifyDataSetChanged();
-                        if (matches.size()==0)
-                            layout.setVisibility(View.VISIBLE);
+                        if (matches.size() > 0)
+                            layout.setVisibility(View.GONE);
                     }
             }
 
@@ -281,14 +277,5 @@ public class TimeTableFragment extends Fragment {
                 adapter.notifyDataSetChanged();
             }
         }
-    }
-
-    public void setReferee(Person person) {
-        Intent intent = new Intent(getContext(), RefereesMatches.class);
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("REFEREESMATCHES", person);
-        bundle.putSerializable("MATCHESREFEREE", (Serializable) matches);
-        intent.putExtras(bundle);
-        startActivity(intent);
     }
 }
