@@ -48,6 +48,13 @@ public class MankindKeeper {
                 allClubs.set(i, club);
     }
 
+    public Team getTeamByTrainer (String id) {
+        for (String teamId: allTeams)
+            if (allTeamsTree.get(teamId) != null && allTeamsTree.get(teamId).getTrainer().equals(id))
+                return allTeamsTree.get(teamId);
+        return null;
+    }
+
     public Team getTeamById (String id)
     {
         if (allTeamsTree.containsKey(id) && allTeamsTree.get(id) != null)

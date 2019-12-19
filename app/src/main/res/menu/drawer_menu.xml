@@ -4,7 +4,8 @@
 
     <!--app:actionLayout="@layout/moreover"-->
     <group android:checkableBehavior="single">
-        <item android:title="Игрок">
+        <item android:title="Игрок"
+            app:actionViewClass="android.widget.TextView">
             <menu>
                 <item
                     android:id="@+id/nav_first_fragment"
@@ -15,27 +16,32 @@
                 <item
                     android:id="@+id/nav_third_fragment"
                     android:icon="@drawable/ic_whistle"
+                    app:actionViewClass="android.widget.TextView"
                     android:title="Мои матчи" />
             </menu>
         </item>
 
     </group>
     <group android:checkableBehavior="single">
-        <item android:title="Тренер">
+        <item android:title="Тренер"
+            app:actionViewClass="android.widget.TextView">
             <menu>
                 <item
                     android:id="@+id/nav_command_fragment"
                     android:icon="@drawable/ic_commands"
+                    app:actionViewClass="android.widget.TextView"
                     android:title="Команды" />
             </menu>
         </item>
     </group>
     <group android:checkableBehavior="single">
-        <item android:title="Судья">
+        <item android:title="Судья"
+            app:actionViewClass="android.widget.TextView">
             <menu>
                 <item
                     android:id="@+id/nav_default_fragment"
                     android:icon="@drawable/ic_trophy"
+                    app:actionViewClass="android.widget.TextView"
                     android:title="Создать турнир"
                     />
         <!--        <item-->
@@ -46,19 +52,21 @@
                 <item
                     android:id="@+id/nav_timetable_fragment"
                     android:icon="@drawable/ic_timetable"
+                    app:actionViewClass="android.widget.TextView"
                     android:title="Расписание" />
             </menu>
         </item>
     </group>
-    <group android:checkableBehavior="single"
-        android:menuCategory="secondary">
-        <item>
-            <menu>
-                <item
-                    android:id="@+id/nav_fourth_fragment"
-                    android:icon="@drawable/ic_sign_out2"
-                    android:title="Выйти" />
-            </menu>
-        </item>
-    </group>
+
+    <item android:id="@+id/nav_quit_menu_title"
+        android:title=""
+        app:actionViewClass="android.widget.TextView">
+        <menu>
+            <item
+                android:id="@+id/nav_fourth_fragment"
+                android:icon="@drawable/ic_sign_out2"
+                app:actionViewClass="android.widget.TextView"
+                android:title="Выйти" />
+        </menu>
+    </item>
 </menu>
