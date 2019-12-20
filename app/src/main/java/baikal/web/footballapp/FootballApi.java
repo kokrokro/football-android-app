@@ -1,5 +1,8 @@
 package baikal.web.footballapp;
 
+import java.util.List;
+import java.util.Map;
+
 import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.ActiveMatches;
 import baikal.web.footballapp.model.Advertisings;
@@ -29,10 +32,6 @@ import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
-
-import java.util.List;
-import java.util.Map;
-
 import io.reactivex.Observable;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -179,8 +178,12 @@ public interface FootballApi {
     Call<List<Team>> getTeams(@Query("creator") String creator);
     @GET("/api/participation_request")
     Call<List<ParticipationRequest>> getParticipation(@Query("team") String id);
+
     @GET("api/crud/league?_populate=matches")
     Call<List<League>> getMainRefsLeagues(@Query("mainReferee") String mainRefId);
+
+    @GET("api/crud/league?_populate=matches&_limit=1&_offset=0")
+    Call<List<League>> getMainRefsLeague(@Query("mainReferee") String mainRefId);
 
     @GET("/api/crud/team?_populate=players")
     Call<List<Team>> getTeam(@Query("_id") String id);
@@ -211,6 +214,5 @@ public interface FootballApi {
 
     @GET("api/crud/person_status")
     Call<List<PersonStatus>> getPersonStatus(@Query("team") String team, @Query("league") String league,@Query("activeDisquals") String activeDisquals);
-
 }
 

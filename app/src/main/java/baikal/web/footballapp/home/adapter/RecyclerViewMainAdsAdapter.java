@@ -1,29 +1,24 @@
 package baikal.web.footballapp.home.adapter;
 
-import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.home.activity.NewsAndAds;
-import baikal.web.footballapp.model.Announce;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Announce;
 
 public class RecyclerViewMainAdsAdapter extends RecyclerView.Adapter<RecyclerViewMainAdsAdapter.ViewHolder> {
 
     private final List<Announce> announces;
-    private final NewsAndAds context;
-    private final PersonalActivity activity;
-    public RecyclerViewMainAdsAdapter(Activity activity, NewsAndAds context, List<Announce> announces){
+
+    public RecyclerViewMainAdsAdapter(List<Announce> announces){
         this.announces = announces;
-        this.activity = (PersonalActivity) activity;
-        this.context = context;
     }
     @NonNull
     @Override

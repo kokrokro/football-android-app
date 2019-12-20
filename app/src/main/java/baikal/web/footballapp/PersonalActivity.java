@@ -16,13 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,19 +29,16 @@ import java.util.concurrent.TimeUnit;
 import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.home.activity.MainPage;
-import baikal.web.footballapp.model.Advertisings;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.UserPage;
-import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -194,40 +189,40 @@ public class PersonalActivity extends AppCompatActivity {
 
     }
 
-    @SuppressLint("CheckResult")
-    private void checkConnectionSingle() {
-        Single<Boolean> single = ReactiveNetwork.checkInternetConnectivity();
-        //noinspection ResultOfMethodCallIgnored
-        single
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isConnectedToInternet -> GetAdvertising());
-    }
+//    @SuppressLint("CheckResult")
+//    private void checkConnectionSingle() {
+//        Single<Boolean> single = ReactiveNetwork.checkInternetConnectivity();
+//        //noinspection ResultOfMethodCallIgnored
+//        single
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(isConnectedToInternet -> GetAdvertising());
+//    }
 
-    @SuppressLint("CheckResult")
-    private void GetAdvertising() {
-        //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().getAdvertising("1", "0")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::showAds
-                        ,
-                        error -> {
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(this, error);
-                        }
-                );
-    }
+//    @SuppressLint("CheckResult")
+//    private void GetAdvertising() {
+//        //noinspection ResultOfMethodCallIgnored
+//        Controller.getApi().getAdvertising("1", "0")
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(this::showAds
+//                        ,
+//                        error -> {
+//                            CheckError checkError = new CheckError();
+//                            checkError.checkError(this, error);
+//                        }
+//                );
+//    }
 
-    private void showAds(Advertisings news) {
-        if (news.getAds().size() != 0) {
-            AdvertisingFragment dialogFragment = AdvertisingFragment.newInstance();
-            Bundle args = new Bundle();
-            args.putSerializable("ADVERTISING", (Serializable) news.getAds());
-            dialogFragment.setArguments(args);
-            dialogFragment.show(this.getSupportFragmentManager(), "dialogFragment");
-        }
-    }
+//    private void showAds(Advertisings news) {
+//        if (news.getAds().size() != 0) {
+//            AdvertisingFragment dialogFragment = AdvertisingFragment.newInstance();
+//            Bundle args = new Bundle();
+//            args.putSerializable("ADVERTISING", (Serializable) news.getAds());
+//            dialogFragment.setArguments(args);
+//            dialogFragment.show(this.getSupportFragmentManager(), "dialogFragment");
+//        }
+//    }
 
     private void showSnack() {
         //all allLeagues
@@ -247,7 +242,7 @@ public class PersonalActivity extends AppCompatActivity {
     private void getAllPersonStatus(){
         Controller.getApi().getPersonStatus(null, null,null).enqueue(new Callback<List<PersonStatus>>() {
             @Override
-            public void onResponse(Call<List<PersonStatus>> call, Response<List<PersonStatus>> response) {
+            public void onResponse(@NonNull Call<List<PersonStatus>> call, @NonNull Response<List<PersonStatus>> response) {
                 if(!response.isSuccessful()){
                     if(response.body()!=null){
                         MankindKeeper.getInstance().allPersonStatus.clear();
@@ -257,7 +252,7 @@ public class PersonalActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<PersonStatus>> call, Throwable t) {
+            public void onFailure(@NonNull Call<List<PersonStatus>> call, @NonNull Throwable t) {
 
             }
         });

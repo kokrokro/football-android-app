@@ -3,6 +3,11 @@ package baikal.web.footballapp.tournament.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
@@ -11,12 +16,6 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,8 +107,8 @@ public class TournamentsFragment extends Fragment {
                 mainViewModel.setFavTourneysId(favTourneyId);
                 mainViewModel.getFavLeagues(tourneyIds.toString()).observe(this, leagues -> {
                     adapter = new RVFavTourneyAdapter(favTourney , getActivity(), leagues, listener);
-                    recyclerView.setAdapter(adapter);
                     recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    recyclerView.setAdapter(adapter);
                     adapter.dataChanged(tourneys);
                     if(leagues.size()==0){
                         emptyFavTourneys.setVisibility(View.GONE);

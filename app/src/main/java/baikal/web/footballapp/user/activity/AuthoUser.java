@@ -196,7 +196,6 @@ public class AuthoUser extends Fragment {
         fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         setMenuItemListeners();
         showFragment(invitationFragment,   invitationMT, false, false, 0);
-        openRefereeMenu();
 
         try {
             user = SaveSharedPreference.getObject();
@@ -215,9 +214,7 @@ public class AuthoUser extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) {
-
-                    }
+                    public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) { }
                 });
                 Controller.getApi().getTeams(person.get_id()).enqueue(new Callback<List<Team>>() {
                     @Override
@@ -231,9 +228,18 @@ public class AuthoUser extends Fragment {
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
+                    public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) { }
+                });
 
+                Controller.getApi().getMainRefsLeague(person.getId()).enqueue(new Callback<List<League>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
+                        if (response.isSuccessful() && response.body().size()>0)
+                            openRefereeMenu();
                     }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) { }
                 });
 
             }

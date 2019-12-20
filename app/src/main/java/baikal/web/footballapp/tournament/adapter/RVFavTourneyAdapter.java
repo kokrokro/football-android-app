@@ -1,18 +1,13 @@
 package baikal.web.footballapp.tournament.adapter;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
@@ -21,21 +16,15 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
-//import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
+//import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 
 public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapter.ViewHolder> {
     private List<Tourney> tourneys;
@@ -81,7 +70,7 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             }
         }
 
-            holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, leagueList, tourneys, mListener));
+        holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, leagueList, tourneys, mListener));
 
 
     }

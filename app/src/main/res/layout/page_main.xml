@@ -47,5 +47,9 @@
             android:layout_height="match_parent"/>
     </LinearLayout>
 
+    <include
+        android:id="@+id/ads_bottom_sheet"
+        layout="@layout/ads_bottom_sheet" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

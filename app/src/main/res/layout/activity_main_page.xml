@@ -3,15 +3,9 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorWhite">
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!---->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:background="@color/colorWhite"-->
-    <!--android:orientation="vertical">-->
     <TextView
         android:id="@+id/textNews"
         android:layout_width="wrap_content"
@@ -25,13 +19,7 @@
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-    <!--<View-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="3dp"-->
-    <!--android:layout_gravity="bottom"-->
-    <!--android:layout_marginTop="13dp"-->
-    <!--android:background="@color/colorLightGray2" />-->
-    <!--</LinearLayout>-->
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewMainNews"
         android:layout_width="match_parent"
@@ -41,26 +29,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textNews" />
 
-
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
     <View
         android:id="@+id/divider1"
         android:layout_width="match_parent"
         android:layout_height="3dp"
         android:background="@color/colorLightGray2"
         app:layout_constraintTop_toBottomOf="@id/recyclerViewMainNews" />
-
-    <!--</RelativeLayout>-->
-
-    <!--android:textColor="@color/colorDarkGray"-->
-
-    <!--<ImageView-->
-    <!--android:id="@+id/mainPageAds"-->
-    <!--android:layout_marginTop="20dp"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="160dp" />-->
 
 
     <View
@@ -72,29 +46,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/recyclerViewMainNews" />
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:paddingTop="8sp"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:gravity="center_vertical"-->
-    <!--android:background="@color/colorWhite"-->
-    <!--android:orientation="vertical">-->
-    <!--</LinearLayout>-->
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/mainPageAdsLayout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="220dp"-->
-    <!--android:background="@color/colorWhite"/>-->
-
-
-    <include
-        android:id="@+id/ads_bottom_sheet"
-        layout="@layout/ads_bottom_sheet" />
-    <!--<RelativeLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-    <!--</RelativeLayout>-->
-
-    <!--        <include layout="@layout/ads_bottom_sheet" />-->
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
