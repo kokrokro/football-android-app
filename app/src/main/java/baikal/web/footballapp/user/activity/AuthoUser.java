@@ -125,7 +125,7 @@ public class AuthoUser extends Fragment {
     public PersonalActivity activity;
     private FragmentManager fragmentManager;
 
-    String[] appBarTitles = {"Приглашения", "Команды", "Турниры", "Расписание", "Мои матчи"};
+    private String[] appBarTitles = {"Приглашения", "Команды", "Турниры", "Расписание", "Мои матчи"};
 
     public AuthoUser (PersonalActivity activity) {
         this.activity = activity;
@@ -234,7 +234,7 @@ public class AuthoUser extends Fragment {
                 Controller.getApi().getMainRefsLeague(person.getId()).enqueue(new Callback<List<League>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
-                        if (response.isSuccessful() && response.body().size()>0)
+                        if (response.body() != null && response.isSuccessful() && response.body().size() > 0)
                             openRefereeMenu();
                     }
 

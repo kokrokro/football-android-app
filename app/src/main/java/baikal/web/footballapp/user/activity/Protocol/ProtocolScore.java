@@ -423,13 +423,14 @@ public class ProtocolScore extends AppCompatActivity{
         Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
             @Override
             public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
-                if (response.isSuccessful() && response.body().size() > 0) {
+                if (response.body() != null && response.isSuccessful() && response.body().size() > 0) {
                     MatchPopulate newMatch = response.body().get(0);
                     Intent intent = new Intent();
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("MATCH", newMatch);
                     intent.putExtras(bundle);
                     setResult(RESULT_OK, intent);
+                    finish();
                 }
             }
 
