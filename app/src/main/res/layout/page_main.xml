@@ -14,7 +14,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginBottom="50dp">
 
 
         <com.google.android.material.tabs.TabLayout
@@ -27,6 +28,11 @@
             app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
             app:tabTextAppearance="@style/CustomTabTextSize"
             app:tabTextColor="@color/colorLightGrayForText">
+
+            <com.google.android.material.tabs.TabItem
+                android:id="@+id/mainPageMain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/mainPageHome"
@@ -44,7 +50,7 @@
             android:id="@+id/mainPageViewPager"
             android:background="@color/colorWhite"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </LinearLayout>
 
     <include

@@ -51,12 +51,6 @@ public class RecyclerViewMainNewsAdapter extends RecyclerView.Adapter<RecyclerVi
             intent.putExtras(bundle);
             context.startActivity(intent);
         });
-        if (news.size()>=2 && position==2){
-            holder.line.setVisibility(View.INVISIBLE);
-        }
-        if (news.size()==1 && position==1){
-            holder.line.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override

@@ -53,19 +53,16 @@
                 <ImageView
                     android:id="@+id/newsInfoImg"
                     android:layout_width="match_parent"
-                    android:layout_height="170dp">
+                    android:layout_height="170dp"/>
 
-                    <RelativeLayout>
-                    <ProgressBar
-                        android:id="@+id/progressNews"
-                        android:layout_width="match_parent"
-                        android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true"
-                        android:layout_height="40dp"
-                        android:visibility="visible" />
-                    </RelativeLayout>
+                <ProgressBar
+                    android:id="@+id/progressNews"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
 
-                </ImageView>
+                    android:visibility="visible" />
 
             </RelativeLayout>
 
@@ -80,8 +77,7 @@
                 android:paddingTop="10dp"
                 android:textSize="14sp"
                 android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:text="alkdjfhalkdvbn aksdjhf alkdf lKSDGF lesgf sdhjkf dhg fkajshdgfka hdfk kadhfg akdjhfg kdhgf kajdhsfg ka;dljf;aldjkfj" />
+                android:layout_marginEnd="20dp" />
 
             <LinearLayout
                 android:layout_width="338dp"
@@ -115,11 +111,6 @@
 
 
                 </LinearLayout>
-
-                <!--<View-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="5dp"-->
-                <!--android:background="@color/colorPrimary" />-->
             </LinearLayout>
 
         </LinearLayout>

@@ -39,11 +39,7 @@ public class NewsAndAds extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.activity_main_page, container, false);
 
-
-        MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-        //checkConnection();
-
-        //  fragmentManager.beginTransaction().add(R.id.pageContainer, newsFragment).add(R.id.pageContainer, adsPage).hide(newsFragment).hide(adsPage).commit();
+        MainViewModel mainViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
 
         try {
             RecyclerView recyclerViewNews = view.findViewById(R.id.recyclerViewMainNews);
@@ -54,7 +50,7 @@ public class NewsAndAds extends Fragment {
             log.error("ERROR: ", e);
         }
 
-        mainViewModel.getNews("2","0").observe(this,
+        mainViewModel.getNews("10","0").observe(this,
                 news_ -> newsAdapter.dataChanged(news_) );
 
         return view;
@@ -73,29 +69,4 @@ public class NewsAndAds extends Fragment {
 
                 });
     }
-
-
-
-//    @SuppressLint("CheckResult")
-//    private void GetAllNews() {
-//        allNews = new ArrayList<>();
-//        Controller.getApi().getAllNews("2", "0")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-//                .subscribe(this::saveData
-//                        ,
-//                        error -> {
-//                            CheckError checkError = new CheckError();
-//                            checkError.checkError(getActivity(), error);
-//                        }
-//                );
-//
-//    }
-//
-//    private void saveData(News matches) {
-//        allNews.addAll(allNews.size(), matches.getNews());
-//        List<News_> list = new ArrayList<>(allNews);
-//        newsAdapter.dataChanged(list);
-//    }
 }

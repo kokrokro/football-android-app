@@ -154,7 +154,6 @@ public class MainViewModel extends ViewModel {
     public LiveData<List<News_>> getNews(String limit, String offset) {
         if (newsData == null) {
             newsData = new MutableLiveData<>();
-
         }
         loadData(limit, offset);
         return newsData;

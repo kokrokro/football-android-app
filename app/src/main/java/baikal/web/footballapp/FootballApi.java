@@ -65,6 +65,9 @@ public interface FootballApi {
     @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
     Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
 
+    @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
+    Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit, @Query("_offset") String offset);
+
     //get all clubs
     @GET("/api/clubs")
     Call<List<Club>> getAllClubs();

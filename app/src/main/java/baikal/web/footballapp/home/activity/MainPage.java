@@ -121,9 +121,11 @@ public class MainPage extends Fragment {
     private void setupViewPager(ViewPager viewPager) {
         NewsAndAds newsAndAds = new NewsAndAds();
         ComingMatches comingMatches = new ComingMatches(favLeaguesId);
+        NewsAdsAndUpcomingMatches newsAdsAndUpcomingMatches = new NewsAdsAndUpcomingMatches(favLeaguesId);
 
         try {
             ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(this.getChildFragmentManager());
+            adapter.addFragment(newsAdsAndUpcomingMatches, "Главная");
             adapter.addFragment(newsAndAds, "Новости");
             adapter.addFragment(comingMatches, "Ближайшие матчи");
             viewPager.setAdapter(adapter);

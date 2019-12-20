@@ -2,6 +2,8 @@ package baikal.web.footballapp.home.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,14 +24,12 @@ import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.security.PublicKey;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Match;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -42,9 +42,11 @@ public class ComingMatches extends Fragment {
     private RVComingMatchesAdapter adapter;
     private List<ActiveMatch> matches = new ArrayList<>();
     private List<String> leagues;
-    public ComingMatches( List<String> favLeagues){
+
+    ComingMatches(List<String> favLeagues){
         this.leagues = favLeagues;
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
@@ -52,20 +54,19 @@ public class ComingMatches extends Fragment {
         view = inflater.inflate(R.layout.coming_matches, container, false);
         layout = view.findViewById(R.id.emptyComingMatches);
         recyclerView = view.findViewById(R.id.recyclerViewComingMatches);
-        recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matches = new ArrayList<>();
         //checkConnection();
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
         String strDate =">="+sdf.format(now);
-        String query = "";
+        StringBuilder query = new StringBuilder();
         for(String l : leagues){
-            query+=","+l;
+            query.append(",").append(l);
         }
-        Controller.getApi().getUpcomingMatches(strDate, query, "20").enqueue(new Callback<List<ActiveMatch>>() {
+        Controller.getApi().getUpcomingMatches(strDate, query.toString(), "20").enqueue(new Callback<List<ActiveMatch>>() {
             @Override
-            public void onResponse(Call<List<ActiveMatch>> call, Response<List<ActiveMatch>> response) {
+            public void onResponse(@NonNull Call<List<ActiveMatch>> call, @NonNull Response<List<ActiveMatch>> response) {
                 if(response.isSuccessful()){
                     if(response.body()!=null){
                         matches.clear();
@@ -76,9 +77,7 @@ public class ComingMatches extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<ActiveMatch>> call, Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<ActiveMatch>> call, @NonNull Throwable t) { }
         });
 
         try {
@@ -92,8 +91,9 @@ public class ComingMatches extends Fragment {
 
     @SuppressLint("CheckResult")
     private void checkConnection() {
+        //noinspection ResultOfMethodCallIgnored
         ReactiveNetwork
-                .observeNetworkConnectivity(getActivity().getApplicationContext())
+                .observeNetworkConnectivity(Objects.requireNonNull(getActivity()).getApplicationContext())
                 .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -106,6 +106,7 @@ public class ComingMatches extends Fragment {
     }
     @SuppressLint("CheckResult")
     private void getActiveMatches() {
+        //noinspection ResultOfMethodCallIgnored
         Controller.getApi().getComingMatches()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
