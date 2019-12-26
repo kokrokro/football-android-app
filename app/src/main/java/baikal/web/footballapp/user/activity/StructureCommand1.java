@@ -1,19 +1,23 @@
 package baikal.web.footballapp.user.activity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -26,11 +30,6 @@ import baikal.web.footballapp.user.adapter.RVWorkProtocolEditTeamAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class StructureCommand1 extends AppCompatActivity {
     private static final String TAG = "StructureCommand1";
@@ -103,7 +102,7 @@ public class StructureCommand1 extends AppCompatActivity {
                 (MankindKeeper.getInstance().getTeamById(id) != null &&
                  MankindKeeper.getInstance().getTeamById(id).getPlayers().size() == 0)) {
             Log.d(TAG, "getTeamById from server");
-            Controller.getApi().getTeam(id).enqueue(new Callback<List<Team>>() {
+            Controller.getApi().getTeamById(id).enqueue(new Callback<List<Team>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                     if (response.isSuccessful() && response.body() != null) {

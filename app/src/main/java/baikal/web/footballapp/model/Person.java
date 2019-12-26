@@ -1,10 +1,11 @@
 package baikal.web.footballapp.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 public class Person implements Serializable {
 
@@ -109,6 +110,19 @@ public class Person implements Serializable {
         if (surname != null) {
            result = result + " " + surname;
         }
+
+        return result;
+    }
+
+    public String getSurnameNameLastName() {
+        String result = "";
+
+        if (surname != null)
+            result = surname;
+        if (name != null)
+            result += " " + name;
+        if (lastname != null)
+            result += " " + lastname;
 
         return result;
     }

@@ -37,7 +37,7 @@ public class RVHorizontalNews extends RecyclerView.Adapter<RVHorizontalNews.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         News_ news = feeds.get(position);
         holder.newsTitle.setText(news.getCaption());
-        new SetImage().setImage(context, holder.newsImg, news.getImg());
+        SetImage.setImage(context, holder.newsImg, news.getImg());
     }
 
     @Override

@@ -2,44 +2,36 @@ package baikal.web.footballapp.tournament.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import baikal.web.footballapp.CheckError;
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.LeagueInfo;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.TeamStats;
-import baikal.web.footballapp.tournament.GroupTeamPlaceComparator;
-import baikal.web.footballapp.tournament.PlayoffTeamMadeToPlayoffComparator;
-import baikal.web.footballapp.tournament.PlayoffTeamPlaceComparator;
-import baikal.web.footballapp.tournament.adapter.RVLeaguePlayoffCommandAdapter;
-import baikal.web.footballapp.tournament.adapter.RVTournamentCommandAdapter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.TeamStats;
+import baikal.web.footballapp.tournament.adapter.RVLeaguePlayoffCommandAdapter;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class TournamentCommandFragment extends Fragment{
     Logger log = LoggerFactory.getLogger(TournamentCommandFragment.class);
@@ -87,6 +79,7 @@ public class TournamentCommandFragment extends Fragment{
             layoutPlayoff.setVisibility(View.VISIBLE);
         }
 
+        //noinspection ResultOfMethodCallIgnored
         Controller.getApi().getTeamStats(null, "league", leagueInfo.getId(), null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -98,7 +91,7 @@ public class TournamentCommandFragment extends Fragment{
                         },
                         error -> {}
                 );;
-         adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo, teamStatsList);
+         adapter = new RVLeaguePlayoffCommandAdapter(getActivity(), teams, leagueInfo, teamStatsList);
         recyclerViewPlayoff.setAdapter(adapter);
 
 

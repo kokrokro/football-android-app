@@ -2,15 +2,18 @@ package baikal.web.footballapp.user.adapter;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -23,8 +26,6 @@ import baikal.web.footballapp.user.activity.StructureCommand1;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import java.util.List;
 
 public class RVWorkProtocolEditTeamAdapter extends RecyclerView.Adapter<RVWorkProtocolEditTeamAdapter.ViewHolder>{
     private final StructureCommand1 context;
@@ -57,7 +58,7 @@ public class RVWorkProtocolEditTeamAdapter extends RecyclerView.Adapter<RVWorkPr
         }
 
         Person person = MankindKeeper.getInstance().getPersonById(player.getPerson());
-        (new SetImage()).setImage(context, holder.image, person.getPhoto());
+        SetImage.setImage(context, holder.image, person.getPhoto());
         holder.textName.setText(person.getSurnameAndName());
         holder.textNum.setText(player.getNumber().toString());
 

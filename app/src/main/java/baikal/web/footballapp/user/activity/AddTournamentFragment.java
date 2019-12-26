@@ -5,18 +5,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import androidx.fragment.app.Fragment;
 
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -24,7 +20,12 @@ import baikal.web.footballapp.SaveSharedPreference;
 public class AddTournamentFragment extends Fragment {
 
     private static final String admin = "https://football.bwadm.ru";
-    public AddTournamentFragment() { }
+
+    private String tourneyId;
+
+    public AddTournamentFragment() { tourneyId = ""; }
+    public AddTournamentFragment(String tourneyId) { this.tourneyId = tourneyId; }
+
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -34,47 +35,47 @@ public class AddTournamentFragment extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.fragment_add_tournament, container, false);
         WebView webView = view.findViewById(R.id.webViewTournament1);
-        WebSettings webSettings = webView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setSaveFormData(false);
         webView.setVerticalScrollBarEnabled(true);
 
         String token = null;
 
         try {
             token = SaveSharedPreference.getObject().getToken();
-        } catch (Exception ignored) { }
+        } catch (Exception ignored) {
+            Log.e("AddTournamentFragment", " can't get token");
+        }
 
-        webView.evaluateJavascript("localStorage.setItem('"+ "auth" +"','"+ token +"');", null);
-        webView.loadUrl(admin);
+        final String adminPath;
 
-        webView.setWebViewClient(new AddTournamentFragment.MyWebViewClient());
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setDatabaseEnabled(true);
-        webSettings.setMinimumFontSize(1);
-        webSettings.setMinimumLogicalFontSize(1);
-        webSettings.setSupportZoom(false);
-        webSettings.setAllowFileAccess(true);
-        webSettings.setAllowContentAccess(true);
+        if (!tourneyId.equals("")) adminPath = admin + "/tourney/" + tourneyId;
+        else                       adminPath = admin;
 
-       // getContext().deleteDatabase(webSettings.getDatabasePath());
-        return view;
-    }
-    private class MyWebViewClient extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (admin.equals(Uri.parse(url).getHost())) {
+        webView.evaluateJavascript("localStorage.setItem(\'"+ "auth" +"\',\'"+ token +"\');", null);
 
-                return false;
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setDatabaseEnabled(true);
+        webView.getSettings().setMinimumFontSize(1);
+        webView.getSettings().setMinimumLogicalFontSize(1);
+        webView.getSettings().setSupportZoom(false);
+        webView.getSettings().setAllowFileAccess(true);
+        webView.getSettings().setAllowContentAccess(true);
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                if (adminPath.equals(Uri.parse(url).getHost())) {
+                    return false;
+                }
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                startActivity(intent);
+                return true;
             }
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
-            return true;
-        }
+        });
+        webView.loadUrl(adminPath);
 
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-            //noinspection deprecation
-            return shouldInterceptRequest(view, request.getUrl().toString());
-        }
+        return view;
     }
 }

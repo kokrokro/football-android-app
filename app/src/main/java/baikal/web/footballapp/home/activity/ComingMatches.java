@@ -2,23 +2,17 @@ package baikal.web.footballapp.home.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
-import baikal.web.footballapp.CheckError;
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.home.adapter.RVComingMatchesAdapter;
-import baikal.web.footballapp.model.ActiveMatch;
-import baikal.web.footballapp.model.ActiveMatches;
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
 
 import org.slf4j.Logger;
@@ -30,6 +24,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import baikal.web.footballapp.CheckError;
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.home.adapter.RVComingMatchesAdapter;
+import baikal.web.footballapp.model.ActiveMatch;
+import baikal.web.footballapp.model.ActiveMatches;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
@@ -61,10 +61,10 @@ public class ComingMatches extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
         String strDate =">="+sdf.format(now);
         StringBuilder query = new StringBuilder();
-        for(String l : leagues){
+        for(String l : leagues)
             query.append(",").append(l);
-        }
-        Controller.getApi().getUpcomingMatches(strDate, query.toString(), "20").enqueue(new Callback<List<ActiveMatch>>() {
+
+        Controller.getApi().getUpcomingMatches(strDate, query.toString(), "35").enqueue(new Callback<List<ActiveMatch>>() {
             @Override
             public void onResponse(@NonNull Call<List<ActiveMatch>> call, @NonNull Response<List<ActiveMatch>> response) {
                 if(response.isSuccessful()){

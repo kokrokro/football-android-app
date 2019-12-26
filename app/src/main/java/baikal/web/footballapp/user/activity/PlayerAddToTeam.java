@@ -21,6 +21,7 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.user.activity.UserTeams.UserCommandInfoEdit;
 import baikal.web.footballapp.user.adapter.RVPlayerAddToTeamAdapter;
 
 import org.slf4j.Logger;
@@ -135,7 +136,7 @@ public class PlayerAddToTeam extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        UserCommandInfo.hideDialog();
+        UserCommandInfoEdit.hideDialog();
         finish();
     }
 

@@ -1,21 +1,14 @@
 package baikal.web.footballapp.user.activity.Protocol;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Event;
-import baikal.web.footballapp.model.EventList;
-import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.user.activity.Protocol.Adapters.RVMatchEventsAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +17,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.EventList;
+import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.user.activity.Protocol.Adapters.RVMatchEventsAdapter;
 
 
 public class MatchEvents extends AppCompatActivity {
@@ -79,7 +78,7 @@ public class MatchEvents extends AppCompatActivity {
 
         try {
             if (match != null) {
-                RVMatchEventsAdapter adapter = new RVMatchEventsAdapter(this, match.getEvents(), match.getTeamOne().getId(), match.getTeamTwo().getId(), isEditable, eventsToDelete);
+                RVMatchEventsAdapter adapter = new RVMatchEventsAdapter(this, match.getEvents(), match.getTeamOne(), match.getTeamTwo(), isEditable, eventsToDelete);
                 recyclerView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
 

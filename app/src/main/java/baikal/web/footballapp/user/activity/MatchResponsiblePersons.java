@@ -1,26 +1,23 @@
 package baikal.web.footballapp.user.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import baikal.web.footballapp.CheckName;
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Person;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MatchResponsiblePersons extends AppCompatActivity {
+import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SetImage;
+import baikal.web.footballapp.model.Person;
 
-    private final CheckName checkName = new CheckName();
-    private final SetImage setImage = new SetImage();
+public class MatchResponsiblePersons extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +66,7 @@ public class MatchResponsiblePersons extends AppCompatActivity {
 
     void setRefereesView (Person person, TextView textView, ImageView imageView)
     {
-        textView.setText(checkName.check(person.getSurname(), person.getName(), person.getLastname()));
-        setImage.setImage(this, imageView, person.getPhoto());
+        textView.setText(person.getSurnameNameLastName());
+        SetImage.setImage(this, imageView, person.getPhoto());
     }
 }

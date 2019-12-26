@@ -39,19 +39,17 @@ public class NewsAndAds extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.activity_main_page, container, false);
 
-        MainViewModel mainViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
-
         try {
             RecyclerView recyclerViewNews = view.findViewById(R.id.recyclerViewMainNews);
-            recyclerViewNews.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerViewNews.setLayoutManager(new LinearLayoutManager(getActivity()));
             newsAdapter = new RecyclerViewMainNewsAdapter(getActivity(), NewsAndAds.this, allNews);
             recyclerViewNews.setAdapter(newsAdapter);
         } catch (Exception e) {
             log.error("ERROR: ", e);
         }
 
-        mainViewModel.getNews("10","0").observe(this,
-                news_ -> newsAdapter.dataChanged(news_) );
+        MainViewModel mainViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
+        mainViewModel.getNews("30","0").observe(getViewLifecycleOwner(), newsAdapter::dataChanged);
 
         return view;
     }

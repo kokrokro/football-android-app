@@ -12,9 +12,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".PersonalActivity">
@@ -31,7 +29,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:layout_scrollFlags="scroll|enterAlways">
-
             </include>
 
         </com.google.android.material.appbar.AppBarLayout>
@@ -223,24 +220,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
-            >
-            <TextView
+            android:visibility="gone">
+
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_bold"
-                android:text="Тренер"
-                android:textSize="17sp"
-                android:textColor="@color/Black"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:background="@color/colorLightGray2"/>
+                android:layout_height="1dp"
+                android:background="@color/colorGray"/>
 
             <RelativeLayout
                 android:id="@+id/UA_trainer_team_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
+
                 <ImageView
                     android:id="@+id/UA_ic_trainer_team"
                     android:layout_width="wrap_content"
@@ -250,8 +241,7 @@
                     android:layout_centerVertical="true"
                     android:padding="10dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"
-                    />
+                    android:layout_marginEnd="10dp"/>
 
                 <TextView
                     android:id="@+id/UA_trainer_team_TV"
@@ -267,6 +257,13 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/UA_teamList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <LinearLayout
@@ -275,24 +272,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:orientation="vertical"
-            android:visibility="gone"
-            >
-            <TextView
+            android:visibility="gone">
+            <View
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_bold"
-                android:text="Судья"
-                android:textSize="17sp"
-                android:textColor="@color/Black"
-                android:paddingStart="15dp"
-                android:paddingEnd="15dp"
-                android:background="@color/colorLightGray2"/>
+                android:layout_height="1dp"
+                android:background="@color/colorGray"/>
 
             <RelativeLayout
                 android:id="@+id/UA_ref_timeTable_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/UA_ic_ref_timeTable"
                     android:layout_width="wrap_content"
@@ -302,8 +291,7 @@
                     android:layout_centerVertical="true"
                     android:padding="10dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"
-                    />
+                    android:layout_marginEnd="10dp"/>
 
                 <TextView
                     android:id="@+id/UA_ref_timeTable_TV"
@@ -322,8 +310,7 @@
             <RelativeLayout
                 android:id="@+id/UA_ref_matches_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/UA_ic_ref_matches"
                     android:layout_width="wrap_content"
@@ -333,8 +320,7 @@
                     android:layout_centerVertical="true"
                     android:padding="10dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"
-                    />
+                    android:layout_marginEnd="10dp"/>
 
                 <TextView
                     android:id="@+id/UA_ref_matches_TV"
@@ -353,8 +339,7 @@
             <RelativeLayout
                 android:id="@+id/UA_ref_tournament_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
+                android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/UA_ic_ref_tournament"
                     android:layout_width="wrap_content"
@@ -364,8 +349,7 @@
                     android:layout_centerVertical="true"
                     android:padding="10dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"
-                    />
+                    android:layout_marginEnd="10dp"/>
 
                 <TextView
                     android:id="@+id/UA_ref_tournament_TV"
@@ -381,6 +365,13 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/UA_tournamentList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="60dp"
+                android:visibility="gone"/>
+
         </LinearLayout>
 
         <View
@@ -392,8 +383,7 @@
         <RelativeLayout
             android:id="@+id/UA_quit_button"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/UA_ic_quit"
                 android:layout_width="wrap_content"
@@ -403,8 +393,7 @@
                 android:layout_centerVertical="true"
                 android:padding="10dp"
                 android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                />
+                android:layout_marginEnd="10dp"/>
 
             <TextView
                 android:id="@+id/UA_quit_TV"

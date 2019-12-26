@@ -1,15 +1,21 @@
 package baikal.web.footballapp.players.activity;
 
 import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageButton;
+
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.widget.ImageButton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.League;
@@ -18,13 +24,6 @@ import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.players.adapter.RVPlayerInvAdapter;
 import baikal.web.footballapp.user.activity.AuthoUser;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class PlayerInv extends AppCompatActivity {
     final Logger log = LoggerFactory.getLogger(PlayerInv.class);
@@ -44,9 +43,9 @@ public class PlayerInv extends AppCompatActivity {
         try {
             Intent intent = getIntent();
             person = (Person) Objects.requireNonNull(intent.getExtras()).getSerializable("PLAYERINV");
-            if (person != null) {
+            if (person != null)
                 personId = person.getId();
-            }
+
             for (PersonTeams personTeams : AuthoUser.personOwnCommand){
                 League league = null;
                 for (League league1 : MankindKeeper.getInstance().allLeagues){

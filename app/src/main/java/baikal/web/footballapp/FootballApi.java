@@ -53,6 +53,9 @@ public interface FootballApi {
     @GET("/api/crud/news")
     Call<List<News_>> getAllNewsCrud(@Query("_limit") String limit, @Query("_offset") String offset);
 
+    @GET("/api/crud/news")
+    Call<List<News_>> getSingleNewsCrud(@Query("_id") String id);
+
     //get all news
     @GET("/api/crud/announce")
     Observable<List<Announce>> getAllAnnounce(@Query("_limit") String limit, @Query("_offset") String offset);
@@ -72,9 +75,6 @@ public interface FootballApi {
     @GET("/api/clubs")
     Call<List<Club>> getAllClubs();
 
-
-
-
     //get coming matches
     @GET("/api/matches/upcoming")
     Observable<ActiveMatches> getComingMatches();
@@ -93,6 +93,9 @@ public interface FootballApi {
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneysById(@Query("_id") String id);
+    @GET("/api/crud/tourney")
+    Call<List<Tourney>> getTourneysByCreator(@Query("creator") String id);
+
     @GET("/api/crud/league?_populate=matches+stages")
     Call<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/league?_populate=matches+stages")
@@ -179,6 +182,12 @@ public interface FootballApi {
     Call<Invite> cancelInv(@Path("id") String id, @Header("auth") String authorization);
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getTeams(@Query("creator") String creator);
+    @GET("api/crud/team?_populate=players")
+    Call<List<Team>> getTeamsByTrainer(@Query("trainer") String trainer);
+
+    @GET("api/crud/team?_populate=players")
+    Call<List<Team>> getAllTeams();
+
     @GET("/api/participation_request")
     Call<List<ParticipationRequest>> getParticipation(@Query("team") String id);
 
@@ -189,7 +198,7 @@ public interface FootballApi {
     Call<List<League>> getMainRefsLeague(@Query("mainReferee") String mainRefId);
 
     @GET("/api/crud/team?_populate=players")
-    Call<List<Team>> getTeam(@Query("_id") String id);
+    Call<List<Team>> getTeamById(@Query("_id") String id);
 
     @GET("/api/stats/team")
     Observable<List<TeamStats>> getTeamStats(@Query("_id") String id, @Query("onModel") String onModel, @Query("on_") String on_, @Query("team") String team);

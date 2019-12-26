@@ -1,16 +1,11 @@
 package baikal.web.footballapp.tournament.adapter;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,27 +13,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.EditProfile;
-import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.activity.Tournament;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
-import baikal.web.footballapp.user.activity.UserInfo;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.ViewHolder> {
     private List<Tourney> tourneys ;
@@ -54,9 +35,10 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         this.mListener = mListener;
 
     }
-//    public interface ListAdapterListener {
-//        void onClickSwitch(String leagueId);
-//    }
+
+    public interface MyListener {
+        void onClick(String id,Boolean isChecked);
+    }
 
     @NonNull
     @Override
@@ -68,7 +50,6 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         final Tourney tourney = tourneys.get(position);
-        final String id = tourney.getId();
         DateToString dateToString = new DateToString();
         String str = dateToString.ChangeDate(tourney.getBeginDate()) + "-" + dateToString.ChangeDate(tourney.getEndDate());
         holder.textDate.setText(str);
@@ -79,7 +60,6 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         holder.textCommandNum.setText(str);
 
         holder.bind(position);
-
     }
 
     @Override
@@ -88,13 +68,14 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         return tourneys.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
         final TextView textTitle;
         final TextView textDate;
         final TextView textCommandNum;
         final TextView textStatusFinish;
         final View view;
         final CheckBox favBtn;
+
         ViewHolder(View itemView) {
             super(itemView);
             view = itemView.findViewById(R.id.tourneyLine);
@@ -112,25 +93,17 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
 
 //            mProgressDialog.setIndeterminate(true);
         }
-        void bind(int position){
-            if(favTourneys.contains(tourneys.get(position).getId())){
-                favBtn.setChecked(true);
-            }
-            else {
-                favBtn.setChecked(false);
-            }
-            favBtn.setOnClickListener((v)-> {
-                mListener.onClick(tourneys.get(position).getId(),favBtn.isChecked());
-            });
-        }
-    }
-    public void dataChanged(List<Tourney> tourneys){
-//        this.tourneys.clear();
-//        this.tourneys.addAll(tourneys);
-        notifyDataSetChanged();
-    }
-    public interface MyListener {
 
-        void onClick(String id,Boolean isChecked);
+        void bind(int position) {
+            if (favTourneys.contains(tourneys.get(position).getId()))
+                favBtn.setChecked(true);
+
+            else
+                favBtn.setChecked(false);
+
+            favBtn.setOnClickListener((v) ->
+                    mListener.onClick(tourneys.get(position).getId(), favBtn.isChecked())
+            );
+        }
     }
 }

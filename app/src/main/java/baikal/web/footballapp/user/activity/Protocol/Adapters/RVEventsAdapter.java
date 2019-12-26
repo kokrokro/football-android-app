@@ -1,8 +1,8 @@
 package baikal.web.footballapp.user.activity.Protocol.Adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,15 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Event;
-import baikal.web.footballapp.model.Person;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
+import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,27 +20,43 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Team;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHolder> {
     private static final String TAG = "RVEventsAdapter";
 //    private Logger log = LoggerFactory.getLogger(MatchEvents.class);
+    private Context context;
     private final List<Event> events;
     private final List<Event> eventsForTime;
     private String eventTime;
     private String teamId1;
     private String teamId2;
+    private Team team1;
+    private Team team2;
     private HashMap<String, Integer> eventIconIds;
     private HashMap<String, String> eventTypeToShow;
     final private Set<Integer> eventsToDelete;
     final private TreeSet<String> disabledEvents;
     private boolean isEditable;
 
-    RVEventsAdapter(List<Event> events, String teamId1, String teamId2,
-                    boolean isEditable, Set<Integer> eventsToDelete) {
+    RVEventsAdapter(List<Event> events, Team team1, Team team2,
+                    boolean isEditable, Set<Integer> eventsToDelete, Context context) {
         this.events = events;
-        this.teamId1 = teamId1;
-        this.teamId2 = teamId2;
+        this.teamId1 = team1.getId();
+        this.teamId2 = team2.getId();
+        this.team1 = team1;
+        this.team2 = team2;
         this.isEditable = isEditable;
         this.eventsToDelete = eventsToDelete;
+        this.context = context;
 
         disabledEvents = new TreeSet<>();
         eventsForTime = new ArrayList<>();
@@ -79,10 +89,12 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
         return new ViewHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RVEventsAdapter.ViewHolder holder, int position) {
         Event event = eventsForTime.get(position);
 
+        holder.setRegularFont();
         holder.playerNameLeft.setText("");
         holder.playerNameRight.setText("");
         holder.eventTypeImageBtn.setClickable(isEditable);
@@ -101,10 +113,19 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
                 getPerson(event.getPerson());
         }
         else {
-            if (event.getTeam().equals(teamId1))
-                holder.playerNameLeft.setText(eventTypeToShow.get(event.getEventType()));
-            if (event.getTeam().equals(teamId2))
-                holder.playerNameRight.setText(eventTypeToShow.get(event.getEventType()));
+            holder.setBoldFont();
+            if (event.getEventType().equals("autoGoal")) {
+                if (event.getTeam().equals(teamId1))
+                    holder.playerNameRight.setText("[ " + team1.getName() + " ]");
+                if (event.getTeam().equals(teamId2))
+                    holder.playerNameLeft.setText("[ " + team2.getName() + " ]");
+            }
+            else {
+                if (event.getTeam().equals(teamId1))
+                    holder.playerNameLeft.setText(team1.getName());
+                if (event.getTeam().equals(teamId2))
+                    holder.playerNameRight.setText(team2.getName());
+            }
         }
         holder.eventTypeImageBtn.setImageResource(eventIconIds.get(event.getEventType()));
     }
@@ -189,6 +210,18 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
             playerNameLeft = item.findViewById(R.id.PPEC_player_name1);
             playerNameRight = item.findViewById(R.id.PPEC_player_name2);
             eventTypeImageBtn = item.findViewById(R.id.PPEC_event_type);
+        }
+
+        void setBoldFont() {
+            Typeface font = ResourcesCompat.getFont(context, R.font.manrope_semibold);
+            playerNameLeft.setTypeface(font);
+            playerNameRight.setTypeface(font);
+        }
+
+        void setRegularFont() {
+            Typeface font = ResourcesCompat.getFont(context, R.font.manrope_regular);
+            playerNameLeft.setTypeface(font);
+            playerNameRight.setTypeface(font);
         }
     }
 }

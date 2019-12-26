@@ -3,10 +3,6 @@ package baikal.web.footballapp.user.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +11,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import baikal.web.footballapp.Controller;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.user.activity.UserCommandInfo;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-import java.util.List;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
@@ -74,7 +66,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
 
             String uriPic = BASE_URL;
             uriPic += "/" + player.getPhoto();
-            (new SetImage()).setImage(context, holder.image, player.getPhoto());
+            SetImage.setImage(context, holder.image, player.getPhoto());
             final String finalUriPic = uriPic;
             holder.image.setOnClickListener(v -> {
                 if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {

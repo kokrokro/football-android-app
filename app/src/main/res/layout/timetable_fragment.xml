@@ -147,7 +147,9 @@
                 android:gravity="end"
                 android:text="@string/commands"
                 android:textColor="@color/colorBottomNavigationUnChecked"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:paddingStart="2dp"
+                android:paddingEnd="4dp"/>
 
             <TextView
                 android:id="@+id/timetableGameScore"
@@ -173,7 +175,9 @@
                 android:fontFamily="@font/manrope_regular"
                 android:text="@string/commands"
                 android:textColor="@color/colorBottomNavigationUnChecked"
-                android:textSize="15sp" />
+                android:textSize="15sp"
+                android:paddingStart="4dp"
+                android:paddingEnd="2dp"/>
 
             <ImageView
                 android:id="@+id/timetableCommandLogo2"
@@ -193,6 +197,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5sp"
                 android:gravity="center_horizontal"
+                android:textAlignment="center"
                 android:fontFamily="@font/manrope_regular"
                 android:visibility="gone"
                 android:textColor="@color/colorLightGrayForText"

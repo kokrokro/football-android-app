@@ -30,11 +30,11 @@ public class MainViewModel extends ViewModel {
     private MutableLiveData<List<Team>> allTeams = null;
     private MutableLiveData<List<PersonStatus>> allPersonStatus =null;
 
-    public LiveData<List<Team>> getTeams(){
+    public LiveData<List<Team>> getTeams(String id){
         if(allTeams==null){
             allTeams = new MutableLiveData<>();
         }
-        loadTeams();
+        loadTeams(id);
         return allTeams;
     }
     public LiveData<List<PersonStatus>> getPersonStatus(){
@@ -48,18 +48,14 @@ public class MainViewModel extends ViewModel {
     private void loadPersonStatus(){
         new MainRepository().getPersonStatus(null, null, null, new Callback<List<PersonStatus>>() {
             @Override
-            public void onResponse(Call<List<PersonStatus>> call, Response<List<PersonStatus>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!=null){
+            public void onResponse(@NonNull Call<List<PersonStatus>> call, @NonNull Response<List<PersonStatus>> response) {
+                if(response.isSuccessful())
+                    if(response.body()!=null)
                         allPersonStatus.setValue(response.body());
-                    }
-                }
             }
 
             @Override
-            public void onFailure(Call<List<PersonStatus>> call, Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<PersonStatus>> call, @NonNull Throwable t) { }
         });
     }
 
@@ -70,21 +66,17 @@ public class MainViewModel extends ViewModel {
         loadStadiums();
         return allStadiums;
     }
-    private void loadTeams() {
-        new MainRepository().getTeams(null, new Callback<List<Team>>() {
+    private void loadTeams(String id) {
+        new MainRepository().getTeams(id, new Callback<List<Team>>() {
             @Override
             public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
-                if (response.isSuccessful()){
-                    if (response.body() != null ){
+                if (response.isSuccessful())
+                    if (response.body() != null )
                         allTeams.setValue(response.body());
-                    }
-                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) { }
         });
     }
 
@@ -92,17 +84,13 @@ public class MainViewModel extends ViewModel {
         new MainRepository().getStadiums(null, null, new Callback<List<Stadium>>() {
             @Override
             public void onResponse(@NonNull Call<List<Stadium>> call, @NonNull Response<List<Stadium>> response) {
-                if (response.isSuccessful()){
-                    if (response.body() != null ){
+                if (response.isSuccessful())
+                    if (response.body() != null )
                         allStadiums.setValue(response.body());
-                    }
-                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Stadium>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<Stadium>> call, @NonNull Throwable t) { }
         });
     }
     public LiveData<List<Invite>> getAllInvites(){
@@ -117,17 +105,13 @@ public class MainViewModel extends ViewModel {
         new MainRepository().getInvites(null, null, new Callback<List<Invite>>() {
             @Override
             public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null ){
+                if (response.isSuccessful())
+                    if (response.body() != null )
                         allInvites.setValue(response.body());
-                    }
-                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) { }
         });
     }
 
@@ -145,18 +129,11 @@ public class MainViewModel extends ViewModel {
         }
         this.favTourneysId.setValue(favTourney);
     }
-//    private LiveData<List<String>> getFavTourneysId(){
-//        if(favTourneysId==null){
-//            favTourneysId = new MutableLiveData<>();
-//        }
-//        return favTourneysId;
-//    }
-    public LiveData<List<News_>> getNews(String limit, String offset) {
-        if (newsData == null) {
-            newsData = new MutableLiveData<>();
+    public void setFavTourney(List<Tourney> favTourney) {
+        if (this.favTourney==null) {
+            this.favTourney = new MutableLiveData<>();
         }
-        loadData(limit, offset);
-        return newsData;
+        this.favTourney.setValue(favTourney);
     }
     public LiveData<List<Tourney>> getFavTourney(String id){
         if(favTourney == null){
@@ -167,65 +144,52 @@ public class MainViewModel extends ViewModel {
         return favTourney;
     }
 
-    public void setFavTourney(List<Tourney> favTourney) {
-        if (this.favTourney==null) {
-            this.favTourney = new MutableLiveData<>();
+    public LiveData<List<News_>> getNews(String limit, String offset) {
+        if (newsData == null) {
+            newsData = new MutableLiveData<>();
         }
-        this.favTourney.setValue(favTourney);
+        loadFeeds(limit, offset);
+        return newsData;
     }
 
     private void loadTourneys(String id){
         new MainRepository().getFavTourneys(id, new Callback<List<PersonPopulate>>() {
             @Override
             public void onResponse(@NonNull Call<List<PersonPopulate>> call, @NonNull Response<List<PersonPopulate>> response) {
-                if (response.isSuccessful()) {
-                    if (response.body() != null && response.body().size()>0) {
-                        List<Tourney> tourneys = response.body().get(0).getFavouriteTourney();
-                        favTourney.setValue( tourneys);
-                    }
-                }
+                if (response.isSuccessful())
+                    if (response.body() != null && response.body().size()>0)
+                        favTourney.setValue(response.body().get(0).getFavouriteTourney());
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<PersonPopulate>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<PersonPopulate>> call, @NonNull Throwable t) { }
         });
     }
 
-    private void loadData(String limit, String offset) {
+    private void loadFeeds(String limit, String offset) {
         new MainRepository().getNews(limit, offset, new Callback<List<News_>>() {
             @Override
             public void onResponse(@NonNull Call<List<News_>> call, @NonNull Response<List<News_>> response) {
                 if (response.isSuccessful())
-                    if (response.body() != null) {
-                        List<News_> news = response.body();
-                        newsData.setValue(news);
-                    }
+                    if (response.body() != null)
+                        newsData.setValue(response.body());
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<News_>> call, @NonNull Throwable t) {
-
-            }
-        })
-        ;
+            public void onFailure(@NonNull Call<List<News_>> call, @NonNull Throwable t) { }
+        });
     }
     private void loadFavLeagues(String tourney){
-        new MainRepository().getLegues(tourney, new Callback<List<League>>() {
+        new MainRepository().getLeagues(tourney, new Callback<List<League>>() {
             @Override
             public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!=null){
+                if(response.isSuccessful())
+                    if(response.body()!=null)
                         favLeagues.setValue(response.body());
-                    }
-                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) { }
         });
     }
 }

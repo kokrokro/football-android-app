@@ -3,12 +3,6 @@ package baikal.web.footballapp.user.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,17 +10,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
+
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Person;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Objects;
 
 public class UserClubs extends Fragment {
     private static final String TAG = "UserClubs";
@@ -65,7 +65,7 @@ public class UserClubs extends Fragment {
 
             if (club != null) {
                 linearLayout.setVisibility(View.GONE);
-                (new SetImage()).setImage(getContext(), imageLogo, club.getLogo());
+                SetImage.setImage(getContext(), imageLogo, club.getLogo());
 
                 textTitle.setText(club.getName());
                 textDesc.setText(club.getInfo());

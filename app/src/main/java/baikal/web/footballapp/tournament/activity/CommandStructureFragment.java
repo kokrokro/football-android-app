@@ -1,12 +1,6 @@
 package baikal.web.footballapp.tournament.activity;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +9,20 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.Controller;
@@ -26,20 +34,11 @@ import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.players.adapter.RVPlayersTournamentAdapter;
 import baikal.web.footballapp.tournament.PlayerComparator;
-import baikal.web.footballapp.tournament.adapter.RVCommandStructureAdapter;
 import baikal.web.footballapp.tournament.adapter.RVTournamentPlayersAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class CommandStructureFragment extends Fragment {
     private static final String TAG = "CommandStructureFragment";
@@ -63,7 +62,6 @@ public class CommandStructureFragment extends Fragment {
         imageCoach = view.findViewById(R.id.commandTrainerPhoto);
         Person coach = MankindKeeper.getInstance().getPersonById(team.getCreator());
 
-        SetImage setImage = new SetImage();
         String str;
         CheckName checkName = new CheckName();
         if (coach==null){
@@ -74,7 +72,7 @@ public class CommandStructureFragment extends Fragment {
         }
         str = checkName.check(coach.getSurname(), coach.getName(), coach.getLastname());
         textCouch.setText(str);
-        setImage.setImage(getActivity(), imageCoach, coach.getPhoto());
+        SetImage.setImage(getActivity(), imageCoach, coach.getPhoto());
 
 
 
@@ -88,30 +86,23 @@ public class CommandStructureFragment extends Fragment {
         }
         RVTournamentPlayersAdapter adapter = new RVTournamentPlayersAdapter( players, personStats);
 
-        String idQuery = "";
-        for(Player player : team.getPlayers()){
-            idQuery+=","+player.getPerson();
-        }
-        try {
-            Log.d("dfsdf", team.getPlayers().size()+"");
-        }catch (NullPointerException e){}
-        Controller.getApi().getPersonStats("",idQuery, null).enqueue(new Callback<List<PersonStats>>() {
+        StringBuilder idQuery = new StringBuilder();
+        for (Player player : team.getPlayers())
+            idQuery.append(",").append(player.getPerson());
+
+        Controller.getApi().getPersonStats("", idQuery.toString(), null).enqueue(new Callback<List<PersonStats>>() {
             @Override
-            public void onResponse(Call<List<PersonStats>> call, Response<List<PersonStats>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!=null){
-                        personStats.clear();
-                        personStats.addAll(response.body());
-                        Log.d("CommandStructure", personStats.size()+"");
-                        adapter.notifyDataSetChanged();
-                    }
+            public void onResponse(@NonNull Call<List<PersonStats>> call, @NonNull Response<List<PersonStats>> response) {
+                if(response.isSuccessful() && response.body()!=null) {
+                    personStats.clear();
+                    personStats.addAll(response.body());
+                    Log.d("CommandStructure", personStats.size()+"");
+                    adapter.notifyDataSetChanged();
                 }
             }
 
             @Override
-            public void onFailure(Call<List<PersonStats>> call, Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<PersonStats>> call, @NonNull Throwable t) { }
         });
 
 
@@ -125,7 +116,7 @@ public class CommandStructureFragment extends Fragment {
 //                log.info("INFO: SCROLL=================");
 //            }
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     fab.show();
                 } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {

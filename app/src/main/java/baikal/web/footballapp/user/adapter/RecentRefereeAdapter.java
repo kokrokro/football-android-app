@@ -57,16 +57,14 @@ public class RecentRefereeAdapter extends RecyclerView.Adapter<RecentRefereeAdap
         }
         try {
             holder.textName.setText(player.getSurnameWithInitials());
-            holder.setRefereeButton.setOnClickListener(v -> {
-                listener.onClick(player);
-            });
-        }catch (NullPointerException e){}
+            holder.setRefereeButton.setOnClickListener(v -> listener.onClick(player));
+        }catch (NullPointerException ignored){}
 
         try {
 
             String uriPic = BASE_URL;
             uriPic += "/" + player.getPhoto();
-            (new SetImage()).setImage(context, holder.image, player.getPhoto());
+            SetImage.setImage(context, holder.image, player.getPhoto());
             final String finalUriPic = uriPic;
             holder.image.setOnClickListener(v -> {
                 if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {

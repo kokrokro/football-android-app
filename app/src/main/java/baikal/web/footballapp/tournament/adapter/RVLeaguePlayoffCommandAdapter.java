@@ -3,43 +3,37 @@ package baikal.web.footballapp.tournament.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.LeagueInfo;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.TeamStats;
-import baikal.web.footballapp.tournament.activity.CommandInfoActivity;
-import baikal.web.footballapp.tournament.activity.TournamentCommandFragment;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
 import java.util.List;
 
+import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.TeamStats;
+import baikal.web.footballapp.tournament.activity.CommandInfoActivity;
+
 public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeaguePlayoffCommandAdapter.ViewHolder> {
-    private final TournamentCommandFragment context;
     private final PersonalActivity activity;
     //    CommandInfoFragment commandInfoFragment = new CommandInfoFragment();
-    private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
+//    private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
     private final List<Team> teams;
     private final League leagueInfo;
     private final List<TeamStats> teamStats;
 
-    public RVLeaguePlayoffCommandAdapter(Activity activity, TournamentCommandFragment context, List<Team> teams,
+    public RVLeaguePlayoffCommandAdapter(Activity activity, List<Team> teams,
                                          League leagueInfo, List<TeamStats> teamStats) {
         this.activity = (PersonalActivity) activity;
-        this.context = context;
         this.teams = teams;
         this.leagueInfo = leagueInfo;
         this.teamStats = teamStats;
@@ -69,7 +63,7 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
                     if (!check ){
                         holder.layout.setBackgroundResource(R.color.colorBadgeScale);
                     }
-                }catch (NullPointerException e){}
+                } catch (NullPointerException ignored){}
 
 
 
@@ -82,7 +76,7 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
                 if (!check){
                     holder.layout.setBackgroundResource(R.color.colorBadgeScale);
                 }
-            }catch (NullPointerException r){}
+            } catch (NullPointerException ignored){}
         }
         holder.textNum.setText(str);
 //        holder.textTitle.setText("SomeTitle");
@@ -100,15 +94,14 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
         TeamStats teamStat = null;
         try {
             teamStat = teamStats.get(position);
-        }catch (IndexOutOfBoundsException e){
+        } catch (IndexOutOfBoundsException ignored){
 
         }
-        int count;
         try{
             holder.textGame.setText(String.valueOf(teamStat.getDraws()+teamStat.getDraws()+ teamStat.getLosses()));
             holder.textDifference.setText(String.valueOf(teamStat.getGoals()- teamStat.getGoalsReceived()));
 
-        }catch (NullPointerException e){
+        } catch (NullPointerException ignored){
 
         }
 

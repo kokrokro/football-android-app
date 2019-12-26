@@ -4,8 +4,7 @@
     android:orientation="vertical"
     android:background="@color/colorWhite"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_marginBottom="50sp"
     android:background="@color/colorWhite"
@@ -21,9 +20,10 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorLightGray2"
-            app:elevation="0dp">
-
+            android:background="@color/colorWhite"
+            android:fitsSystemWindows="true"
+            android:orientation="vertical"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -51,37 +51,35 @@
             </RelativeLayout>
             <!--</android.support.v7.widget.Toolbar>-->
 
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tournamentInfoTab"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                app:layout_collapseMode="pin"
+                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
+                app:tabTextAppearance="@style/CustomTabTextSize"
+                app:tabTextColor="@color/colorLightGrayForText">
 
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tournamentInfoTimetable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tournamentInfoTimetable" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tournamentInfoCommand"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tournamentInfoCommand" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tournamentInfoPlayers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tournamentInfoPlayers" />
+            </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.AppBarLayout>
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tournamentInfoTab"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:layout_collapseMode="pin"
-            app:tabIndicatorColor="@color/colorPrimary"
-            app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
-            app:tabTextAppearance="@style/CustomTabTextSize"
-            app:tabTextColor="@color/colorLightGrayForText">
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tournamentInfoTimetable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tournamentInfoTimetable" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tournamentInfoCommand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tournamentInfoCommand" />
-
-            <com.google.android.material.tabs.TabItem
-                android:id="@+id/tournamentInfoPlayers"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tournamentInfoPlayers" />
-        </com.google.android.material.tabs.TabLayout>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/tournamentInfoViewPager"

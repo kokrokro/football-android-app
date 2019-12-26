@@ -3,8 +3,6 @@ package baikal.web.footballapp.user.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +10,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.activity.Protocol.ConfirmProtocol;
-import baikal.web.footballapp.user.activity.PlayerAddToTeam;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +22,16 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.Referee;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.user.activity.PlayerAddToTeam;
+import baikal.web.footballapp.user.activity.Protocol.ConfirmProtocol;
 
 public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.ViewHolder>{
     private final List<MatchPopulate> matches;
@@ -91,7 +92,6 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
 
         }
         str = "Ваш статус: ";
-        boolean isProtocolAvailable = false;
         for(Referee referee : match.getReferees()){
             if(referee.getPerson().equals(SaveSharedPreference.getObject().getUser().get_id())){
                 switch (referee.getType()){
@@ -103,7 +103,6 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
                         break;
                     case "thirdReferee":
                         str += "3 судья";
-                        isProtocolAvailable = true;
                         break;
                     case "timekeeper":
                         str += "хронометрист";
@@ -114,88 +113,22 @@ public class RVMyMatchesAdapter extends RecyclerView.Adapter<RVMyMatchesAdapter.
         }
 
         holder.matchStatus.setText(str);
-//        for (Team team: league.getTeams()){
-//            if (team.getId().equals(match.getTeamOne())){
-//                team1 = team;
-//                str = team.getName();
-//                holder.textCommand1.setText(str);
-//                for (Club club : PersonalActivity.allClubs){
-//                    if (club.getId().equals(team.getClub())){
-//                        setImage.setImage(activity, holder.image1, club.getLogo());
-//                    }
-//                }
-//                for (Player player: team.getPlayers()){
-//                    teamPlayers1.add(player.getId());
-//                    if (player.getActiveDisquals()!=0 ){
-//                        new QBadgeView(activity)
-//                                .bindTarget(holder.image1)
-//                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-//                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-//                                .setBadgeTextSize(5, true)
-//                                .setBadgePadding(5,true)
-//                                .setBadgeGravity(Gravity.END|Gravity.BOTTOM)
-//                                .setGravityOffset(-3, 1, true)
-//                                .setBadgeNumber(3);
-//                    }
-////                    score1+=player.getGoals();
-//                }
-//            }
-//            if (team.getId().equals(match.getTeamTwo())){
-//                team2 = team;
-//                str = team.getName();
-//                holder.textCommand2.setText(str);
-//                for (Club club : PersonalActivity.allClubs){
-//                    if (club.getId().equals(team.getClub())){
-//                        setImage.setImage(activity, holder.image2, club.getLogo());
-//                    }
-//                }
-//                for (Player player: team.getPlayers()){
-//                    teamPlayers2.add(player.getId());
-//                    if (player.getActiveDisquals()!=0 ){
-//                        new QBadgeView(activity)
-//                                .bindTarget(holder.image2)
-//                                .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-//                                .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-//                                .setBadgeTextSize(5, true)
-//                                .setBadgePadding(5,true)
-//                                .setBadgeGravity(Gravity.END|Gravity.BOTTOM)
-//                                .setGravityOffset(-3, 1, true)
-//                                .setBadgeNumber(3);
-//                    }
-//                }
-//            }
-//        }
 
-
-//        try{
-//            if (!match.getScore().equals("")){
-//                str = match.getScore();
-//            }
-//            else {
-//                str = "-";
-//            }
-//        }catch (NullPointerException e){
-//            str = "-";
-//        }
-
-//        holder.textScore.setText(str);
         try{
             str = match.getPenalty();
             if (!str.equals("")){
                 holder.textPenalty.setText(str);
                 holder.textPenalty.setVisibility(View.VISIBLE);
             }
-        }catch (NullPointerException ignored){}
+        } catch (NullPointerException ignored){}
 
 //        if (check){
 //            holder.showProtocol.setVisibility(View.VISIBLE);
-            final boolean status = isProtocolAvailable;
 
             holder.layout.setOnClickListener(v -> {
                 Intent intent = new Intent(activity, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("CONFIRMPROTOCOL", match);
-                bundle.putBoolean("STATUS", status);
                 intent.putExtras(bundle);
                 activity.startActivity(intent);
             });

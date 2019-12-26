@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.user.activity.MatchResponsiblePersons;
@@ -32,6 +33,8 @@ public class ConfirmProtocol extends AppCompatActivity {
     private static final int EDIT_TEAM_TWO = 742;
     private final Logger log = LoggerFactory.getLogger(ConfirmProtocol.class);
     private MatchPopulate match;
+    private boolean status;
+    private boolean editTeamStatus = false;
 
     @SuppressLint("RestrictedApi")
     @Override
@@ -58,15 +61,26 @@ public class ConfirmProtocol extends AppCompatActivity {
         textTitle2 = findViewById(R.id.confirmProtocolCommand2Title);
         imageClose.setOnClickListener(v -> finish());
         Intent initialIntent = getIntent();
+
+        fab.setVisibility(View.GONE);
+
         try{
-            boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
-            if(!status){
-                fab.setVisibility(View.GONE);
-            }
-        }catch (Exception ignored){}
+            status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE", false);
+            if (status)
+                fab.setVisibility(View.VISIBLE);
+        } catch (Exception ignored){}
         try {
             match = (MatchPopulate) Objects.requireNonNull(initialIntent.getExtras()).getSerializable("CONFIRMPROTOCOL");
             if (match != null) {
+                String id = SaveSharedPreference.getObject().getUser().getId();
+
+                if (match.getReferees()!=null)
+                    for (Referee r: match.getReferees())
+                        if (r.getType().equals("thirdReferee") && r.getPerson().equals(id)) {
+                            fab.setVisibility(View.VISIBLE);
+                            editTeamStatus = true;
+                        }
+
                 fab.setOnClickListener(v -> {
                     try {
                         Intent intent = new Intent(ConfirmProtocol.this, ProtocolScore.class);
@@ -92,12 +106,11 @@ public class ConfirmProtocol extends AppCompatActivity {
             buttonCommand1.setOnClickListener(v -> {
                 if (match != null && match.getTeamOne() == null)
                     return;
-                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("MATCH_EDIT_TEAM", match);
                 bundle.putSerializable("TEAM", match.getTeamOne());
-                bundle.putBoolean("IS_EDITABLE", status);
+                bundle.putBoolean("IS_EDITABLE", editTeamStatus || status);
                 intent.putExtras(bundle);
 
                 Log.d(TAG, "team1 ...");
@@ -107,12 +120,11 @@ public class ConfirmProtocol extends AppCompatActivity {
             buttonCommand2.setOnClickListener(v -> {
                 if (match != null && match.getTeamTwo() == null)
                     return;
-                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
                 Intent intent = new Intent(ConfirmProtocol.this, StructureCommand1.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("MATCH_EDIT_TEAM", match);
                 bundle.putSerializable("TEAM", match.getTeamTwo());
-                bundle.putBoolean("IS_EDITABLE", status);
+                bundle.putBoolean("IS_EDITABLE", editTeamStatus || status);
                 intent.putExtras(bundle);
 
                 Log.d(TAG, "team2 ...");
@@ -151,11 +163,10 @@ public class ConfirmProtocol extends AppCompatActivity {
             });
 
             buttonEvents.setOnClickListener(v -> {
-                boolean status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE");
                 Intent intent = new Intent(ConfirmProtocol.this, MatchEvents.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("MATCH", match);
-                bundle.putBoolean("IS_EDITABLE", status);
+                bundle.putBoolean("IS_EDITABLE", status || editTeamStatus);
                 intent.putExtras(bundle);
 
                 startActivity(intent);

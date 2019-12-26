@@ -9,7 +9,6 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.News_;
-import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Stadium;
@@ -61,7 +60,7 @@ public class MainRepository {
                 .enqueue(callback);
 
     }
-    public void getLegues(String tourney, Callback<List<League>> callback){
+    public void getLeagues(String tourney, Callback<List<League>> callback){
         Controller
                 .getApi()
                 .getLeaguesByTourney(tourney)

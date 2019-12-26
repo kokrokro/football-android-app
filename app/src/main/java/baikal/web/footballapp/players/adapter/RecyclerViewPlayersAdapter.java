@@ -2,10 +2,6 @@ package baikal.web.footballapp.players.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Objects;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.DateToString;
@@ -23,12 +29,6 @@ import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.activity.Player;
 import baikal.web.footballapp.players.activity.PlayersPage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
-import java.util.Objects;
 
 public class RecyclerViewPlayersAdapter extends RecyclerView.Adapter<RecyclerViewPlayersAdapter.ViewHolder> {
     private static final String TAG = "RVPlayerAdapter";
@@ -62,8 +62,7 @@ public class RecyclerViewPlayersAdapter extends RecyclerView.Adapter<RecyclerVie
             CheckName checkName = new CheckName();
             str = checkName.check(Objects.requireNonNull(p).getSurname(), p.getName(), p.getLastname());
             holder.textName.setText(str);
-            SetImage setImage = new SetImage();
-            setImage.setImage(context, holder.imageLogo, p.getPhoto());
+            SetImage.setImage(context, holder.imageLogo, p.getPhoto());
 
             holder.buttonShow2.setOnClickListener(v -> {
                 Player player = new Player();

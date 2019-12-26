@@ -12,7 +12,6 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -53,6 +52,12 @@ public class TimeTableFragment extends Fragment {
     private List<Match> editedMatches ;
     private RecyclerView recyclerView;
 
+    private AuthoUser authoUser;
+
+    TimeTableFragment(AuthoUser authoUser) {
+        this.authoUser = authoUser;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +68,7 @@ public class TimeTableFragment extends Fragment {
 
         RecyclerView recyclerViewSetReferee;
         view = inflater.inflate(R.layout.user_timetable, container, false);
-        NestedScrollView scroller = view.findViewById(R.id.scrollerTimeTable);
+//        NestedScrollView scroller = view.findViewById(R.id.scrollerTimeTable);
         layout = view.findViewById(R.id.emptyTimetable);
         getActiveMatches();
         recyclerViewSetReferee = view.findViewById(R.id.setRefereeRecyclerView);
@@ -94,15 +99,15 @@ public class TimeTableFragment extends Fragment {
                 recentReferee.add(value.get_id());
             }
         }
-        AuthoUser.setSingleReferee.setOnClickListener(v -> {
+        authoUser.setSingleReferee.setOnClickListener(v -> {
                 log.error("referees" + recentReferee.size());
             editedMatches = new ArrayList<>();
              bottomSheet = new SetRefereesBottomSheet(recentReferee, person -> {
 //                 setReferee(person);
                  recyclerView.setVisibility(View.GONE);
-                 AuthoUser.setSingleReferee.setVisibility(View.GONE);
-                 AuthoUser.saveSingleReferee.setVisibility(View.VISIBLE);
-                 AuthoUser.cancelSetSingleReferee.setVisibility(View.VISIBLE);
+                 authoUser.setSingleReferee.setVisibility(View.GONE);
+                 authoUser.saveSingleReferee.setVisibility(View.VISIBLE);
+                 authoUser.cancelSetSingleReferee.setVisibility(View.VISIBLE);
 
                  recyclerViewSetReferee.setAdapter( new RVRefereesMatchesAdapter(getActivity(), matches, person,
                          getActivity(),
@@ -149,7 +154,7 @@ public class TimeTableFragment extends Fragment {
 
              });
 
-             AuthoUser.saveSingleReferee.setOnClickListener(v1 -> {
+             authoUser.saveSingleReferee.setOnClickListener(v1 -> {
 //                 Toast.makeText(getContext(), ""+ editedMatches.size(), Toast.LENGTH_SHORT).show();
                  if( editedMatches.size()> 0) {
                      for (int i = 0; i < editedMatches.size(); i++) {
@@ -178,21 +183,21 @@ public class TimeTableFragment extends Fragment {
                  }
                  adapter.notifyDataSetChanged();
 
-                 AuthoUser.setSingleReferee.setVisibility(View.VISIBLE);
-                 AuthoUser.saveSingleReferee.setVisibility(View.GONE);
-                 AuthoUser.cancelSetSingleReferee.setVisibility(View.GONE);
+                 authoUser.setSingleReferee.setVisibility(View.VISIBLE);
+                 authoUser.saveSingleReferee.setVisibility(View.GONE);
+                 authoUser.cancelSetSingleReferee.setVisibility(View.GONE);
                  recyclerView.setVisibility(View.VISIBLE);
                  recyclerViewSetReferee.setVisibility(View.GONE);
                  adapter.notifyDataSetChanged();
 
 
              });
-             AuthoUser.cancelSetSingleReferee.setOnClickListener(v1 -> {
+            authoUser.cancelSetSingleReferee.setOnClickListener(v1 -> {
                  recyclerView.setVisibility(View.VISIBLE);
                  recyclerViewSetReferee.setVisibility(View.GONE);
-                 AuthoUser.setSingleReferee.setVisibility(View.VISIBLE);
-                 AuthoUser.saveSingleReferee.setVisibility(View.GONE);
-                 AuthoUser.cancelSetSingleReferee.setVisibility(View.GONE);
+                 authoUser.setSingleReferee.setVisibility(View.VISIBLE);
+                 authoUser.saveSingleReferee.setVisibility(View.GONE);
+                 authoUser.cancelSetSingleReferee.setVisibility(View.GONE);
 
              });
 
@@ -212,7 +217,6 @@ public class TimeTableFragment extends Fragment {
                 if(response.isSuccessful())
                     if(response.body()!=null)
                         saveData(response.body());
-
             }
 
             @Override

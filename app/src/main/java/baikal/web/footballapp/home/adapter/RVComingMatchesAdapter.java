@@ -1,9 +1,6 @@
 package baikal.web.footballapp.home.adapter;
 
 import android.app.Activity;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +9,14 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.MankindKeeper;
@@ -22,13 +27,6 @@ import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import q.rorbin.badgeview.QBadgeView;
 
 public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatchesAdapter.ViewHolder> {
@@ -75,13 +73,12 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         Team team1 = match.getTeamOne();
         Team team2 = match.getTeamTwo();
 
-        SetImage setImage = new SetImage();
         try {
             str = team1.getName();
             holder.textCommandTitle1.setText(str);
             for (Club club : MankindKeeper.getInstance().allClubs) {
                 if (club.getId().equals(team1.getClub())) {
-                    setImage.setImage(activity, holder.imgCommandLogo1, club.getLogo());
+                    SetImage.setImage(activity, holder.imgCommandLogo1, club.getLogo());
                 }
             }
             for (Player player : team1.getPlayers()) {
@@ -102,7 +99,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
             holder.textCommandTitle2.setText(str);
             for (Club club : MankindKeeper.getInstance().allClubs) {
                 if (club.getId().equals(team2.getClub())) {
-                    setImage.setImage(activity, holder.imgCommandLogo2, club.getLogo());
+                    SetImage.setImage(activity, holder.imgCommandLogo2, club.getLogo());
                 }
             }
             for (Player player : team2.getPlayers()) {
@@ -153,9 +150,7 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
                         holder.textLastScore.setVisibility(View.VISIBLE);
                         holder.textLastScore.setText(str);
                     }
-                } catch (Exception e) {
-                }
-
+                } catch (Exception ignored) { }
             }
         }
 
@@ -165,11 +160,9 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
                 holder.textPenalty.setText(str);
                 holder.textPenalty.setVisibility(View.VISIBLE);
             }
-        } catch (NullPointerException e) {
-        }
-        if (position == (matches.size() - 1)) {
+        } catch (NullPointerException ignored) { }
+        if (position == (matches.size() - 1))
             holder.line.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
@@ -188,7 +181,6 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         final TextView textTour;
         final TextView textLastScore;
         final TextView textPenalty;
-        //        TextView textTournamentTitle;
         final TextView textScore;
         final RelativeLayout layout;
         final View line;
@@ -211,10 +203,10 @@ public class RVComingMatchesAdapter extends RecyclerView.Adapter<RVComingMatches
         }
     }
 
-    public void dataChanged(List<ActiveMatch> allPlayers1){
+    public void dataChanged(List<ActiveMatch> newMatches){
         log.error("*******************************************");
         matches.clear();
-        matches.addAll(allPlayers1);
+        matches.addAll(newMatches);
         notifyDataSetChanged();
     }
 }

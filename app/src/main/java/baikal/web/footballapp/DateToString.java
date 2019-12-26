@@ -36,6 +36,17 @@ public class DateToString {
         }
     }
 
+    public Date getDate (String str) {
+        Date date;
+
+        if (null == (date = tryParseStr(str, format1)))
+            if (null == (date = tryParseStr(str, format2)))
+                if (null == (date = tryParseStr(str, format3)))
+                    date = tryParseStr(str, format4);
+
+        return date;
+    }
+
     public String ChangeDate(String str)  {
         Date date;
 

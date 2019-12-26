@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
@@ -21,10 +22,7 @@ import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
-
-//import baikal.web.footballapp.tournament.CustomLinearLayoutManager;
 
 public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapter.ViewHolder> {
     private List<Tourney> tourneys;
@@ -38,7 +36,6 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         this.activity = (PersonalActivity) activity;
         this.favLeagues = favLeagues;
         this.mListener = mListener;
-
     }
 
     @NonNull
@@ -59,25 +56,18 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         holder.textTitle.setText(str);
         str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
         holder.textCommandNum.setText(str);
-        holder.rvLeagues.setLayoutManager(new CustomLinearLayoutManager(activity));
-        List<League> leagueList = new ArrayList<>();
-
-        for (League l : favLeagues){
-
-            if(l.getTourney().equals(tourney.getId())){
-                leagueList.add(l);
-
-            }
-        }
-
-        holder.rvLeagues.setAdapter(new RecyclerViewTournamentAdapter(activity, leagueList, tourneys, mListener));
 
 
+        holder.leagueList.clear();
+        for (League l : favLeagues)
+            if(l.getTourney().equals(tourney.getId()))
+                holder.leagueList.add(l);
+
+        holder.adapter.notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-
         return tourneys.size();
     }
 
@@ -89,6 +79,8 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
         final View view;
         final RecyclerView rvLeagues;
         final RelativeLayout linearLayout;
+        final RecyclerViewTournamentAdapter adapter;
+        final List<League> leagueList;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -99,9 +91,12 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             textStatusFinish = itemView.findViewById(R.id.tourneyFinish);
             rvLeagues = itemView.findViewById(R.id.recyclerViewFavLeagues);
             linearLayout = itemView.findViewById(R.id.tourneyShow);
+
+            leagueList = new ArrayList<>();
+            rvLeagues.setLayoutManager(new LinearLayoutManager(activity));
+            adapter = new RecyclerViewTournamentAdapter(activity, leagueList, mListener);
+            rvLeagues.setAdapter(adapter);
         }
-
-
     }
     public void dataChanged(List<Tourney> tourneys){
         this.tourneys.clear();

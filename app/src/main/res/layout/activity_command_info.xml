@@ -12,19 +12,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/colorWhite"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fitsSystemWindows="true"
+            android:background="@color/colorWhite"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <androidx.appcompat.widget.Toolbar
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_gravity="top"
-                android:background="@color/colorLightGray2"
+                android:background="@color/colorWhite"
                 android:elevation="2sp"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
@@ -36,6 +38,7 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="18sp"
                     android:gravity="center_horizontal"
+                    android:background="@color/colorWhite"
                     android:visibility="visible">
 
 <!--                    <ImageButton-->
@@ -84,39 +87,34 @@
                         app:srcCompat="@drawable/ic_arrow_back" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.appcompat.widget.Toolbar>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/commandInfoTab"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@color/colorWhite"
+                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
+                app:tabTextAppearance="@style/CustomTabTextSize"
+                app:tabTextColor="@color/colorLightGrayForText">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Left" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Center" />
+            </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.AppBarLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/colorLightGray" />
-
-        <com.google.android.material.tabs.TabLayout
-            android:id="@+id/commandInfoTab"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            app:tabIndicatorColor="@color/colorPrimary"
-            app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
-            app:tabTextAppearance="@style/CustomTabTextSize"
-            app:tabTextColor="@color/colorLightGrayForText">
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Left" />
-
-            <com.google.android.material.tabs.TabItem
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="Center" />
-        </com.google.android.material.tabs.TabLayout>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/commandInfoViewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
 
     </LinearLayout>
 

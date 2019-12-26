@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,9 +72,8 @@ public class MainPage extends Fragment {
                         favTourneysId.clear();
                         favTourneysId.addAll(response.body().get(0).getFavouriteTourney());
                         StringBuilder s= new StringBuilder();
-                        for(String str : favTourneysId){
+                        for(String str : favTourneysId)
                             s.append(',').append(str);
-                        }
                         Controller.getApi().getLeaguesByTourney(s.toString()).enqueue(new Callback<List<League>>() {
                             @Override
                             public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
@@ -129,9 +129,7 @@ public class MainPage extends Fragment {
             adapter.addFragment(newsAndAds, "Новости");
             adapter.addFragment(comingMatches, "Ближайшие матчи");
             viewPager.setAdapter(adapter);
-        } catch (IllegalStateException ignored) {
-        }
-
+        } catch (IllegalStateException ignored) { }
     }
 
 
@@ -149,6 +147,7 @@ public class MainPage extends Fragment {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
                     ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(Objects.requireNonNull(getActivity()).getAssets(), "fonts/manrope_regular.otf"));
+                    ((TextView) tabViewChild).setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
                 }
             }
         }

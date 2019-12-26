@@ -3,13 +3,22 @@ package baikal.web.footballapp.tournament.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
@@ -23,19 +32,11 @@ import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
-import baikal.web.footballapp.user.activity.Protocol.MatchEvents;
 import baikal.web.footballapp.user.activity.MatchResponsiblePersons;
 import baikal.web.footballapp.user.activity.Protocol.ConfirmProtocol;
+import baikal.web.footballapp.user.activity.Protocol.MatchEvents;
 import baikal.web.footballapp.user.activity.Protocol.ProtocolScore;
 import baikal.web.footballapp.user.activity.StructureCommand1;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 public class ShowProtocol extends AppCompatActivity {
     private final Logger log = LoggerFactory.getLogger(ConfirmProtocol.class);
@@ -140,8 +141,7 @@ public class ShowProtocol extends AppCompatActivity {
                 intent.putExtras(bundle);
                 startActivity(intent);
             });
-        } catch (NullPointerException e) {
-        }
+        } catch (NullPointerException ignored) { }
     }
 
 
@@ -150,7 +150,6 @@ public class ShowProtocol extends AppCompatActivity {
         HashMap<String, Team> teams = new HashMap<>();
         ImageView image1 = findViewById(R.id.confirmProtocolCommand1Logo);
         ImageView image2 = findViewById(R.id.confirmProtocolCommand2Logo);
-        SetImage setImage = new SetImage();
         for (League league : MankindKeeper.getInstance().allLeagues) {
             if (teams.size() != 2 && match.getLeague().equals(league.getId())) {
                 for (Team team : league.getTeams()) {
@@ -170,7 +169,7 @@ public class ShowProtocol extends AppCompatActivity {
                                 } catch (NullPointerException e) {
                                     clubOne = "";
                                 }
-                                setImage.setImage(image1.getContext(), image1, club.getLogo());
+                                SetImage.setImage(image1.getContext(), image1, club.getLogo());
                             }
                             if (team.getId().equals(match.getTeamTwo())
                                     && team.getClub().equals(club.getId())) {
@@ -179,7 +178,7 @@ public class ShowProtocol extends AppCompatActivity {
                                 } catch (NullPointerException e) {
                                     clubTwo = "";
                                 }
-                                setImage.setImage(image2.getContext(), image2, club.getLogo());
+                                SetImage.setImage(image2.getContext(), image2, club.getLogo());
                             }
                         }
                     }

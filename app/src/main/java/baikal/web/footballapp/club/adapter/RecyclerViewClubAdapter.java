@@ -3,9 +3,6 @@ package baikal.web.footballapp.club.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +10,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.club.activity.Club;
 import baikal.web.footballapp.club.activity.ClubPage;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
@@ -51,7 +52,7 @@ public class RecyclerViewClubAdapter extends RecyclerView.Adapter<RecyclerViewCl
             String str = allClubs.get(position).getName();
             holder.textTitle.setText(str);
 
-            (new SetImage()).setImage(activity, holder.imageLogo, allClubs.get(position).getLogo());
+            SetImage.setImage(activity, holder.imageLogo, allClubs.get(position).getLogo());
 
             uriPic += "/" + allClubs.get(position).getLogo();
             log.info("INFO: url " + uriPic);

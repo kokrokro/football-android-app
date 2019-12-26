@@ -1,25 +1,29 @@
-package baikal.web.footballapp.user.activity;
+package baikal.web.footballapp.user.activity.UserTeams;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
@@ -30,16 +34,10 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.user.activity.ChooseTrainer;
+import baikal.web.footballapp.user.activity.PlayerAddToTeam;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerAdapter;
 import baikal.web.footballapp.user.adapter.RVUserCommandPlayerInvAdapter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -48,8 +46,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UserCommandInfo extends AppCompatActivity {
-    private final Logger log = LoggerFactory.getLogger(UserCommandInfo.class);
+public class UserCommandInfoEdit extends AppCompatActivity {
+    private final Logger log = LoggerFactory.getLogger(UserCommandInfoEdit.class);
     private static ProgressDialog mProgressDialog;
     public static List<Player> players;
     public static List<String> playersInv;
@@ -84,8 +82,6 @@ public class UserCommandInfo extends AppCompatActivity {
         teamNumber = findViewById(R.id.newCommandNumber);
 
         try {
-
-
             mProgressDialog = new ProgressDialog(this, R.style.MyProgressDialogTheme);
 
             mProgressDialog.setIndeterminate(true);
@@ -138,11 +134,11 @@ public class UserCommandInfo extends AppCompatActivity {
             buttonClose = findViewById(R.id.userCommandClose);
             recyclerViewPlayer = findViewById(R.id.recyclerViewUserCommandPlayers);
             adapter = new RVUserCommandPlayerAdapter(this, players, position -> {
-                UserCommandInfo.players.remove(players.get(position));
-                UserCommandInfo.adapter.notifyDataSetChanged();
-                Log.d("cancel invite id ", ""+UserCommandInfo.accepted.get(position).get_id());
+                UserCommandInfoEdit.players.remove(players.get(position));
+                UserCommandInfoEdit.adapter.notifyDataSetChanged();
+                Log.d("cancel invite id ", ""+ UserCommandInfoEdit.accepted.get(position).get_id());
                 Controller.getApi()
-                        .cancelInv(UserCommandInfo.accepted.get(position).get_id(), SaveSharedPreference.getObject().getToken())
+                        .cancelInv(UserCommandInfoEdit.accepted.get(position).get_id(), SaveSharedPreference.getObject().getToken())
                         .enqueue(new Callback<Invite>() {
                             @Override
                             public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
@@ -164,7 +160,7 @@ public class UserCommandInfo extends AppCompatActivity {
             recyclerViewPlayer.setVisibility(View.GONE);
             recyclerViewPlayerInv = findViewById(R.id.recyclerViewUserCommandPlayersInv);
             adapterInv = new RVUserCommandPlayerInvAdapter(this, playersInv, position -> {
-                Controller.getApi().cancelInv(UserCommandInfo.allInvites.get(position).get_id(), SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
+                Controller.getApi().cancelInv(UserCommandInfoEdit.allInvites.get(position).get_id(), SaveSharedPreference.getObject().getToken()).enqueue(new Callback<Invite>() {
                     @Override
                     public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
                         if(response.isSuccessful()){
@@ -177,10 +173,10 @@ public class UserCommandInfo extends AppCompatActivity {
                     }
                 });
 
-                UserCommandInfo.playersInv.remove(players.get(position));
-//            List<String> players = new ArrayList<>(UserCommandInfo.playersInv);
-                UserCommandInfo.adapterInv.notifyDataSetChanged();
-            }, "UserCommandInfo");
+                UserCommandInfoEdit.playersInv.remove(players.get(position));
+//            List<String> players = new ArrayList<>(UserCommandInfoEdit.playersInv);
+                UserCommandInfoEdit.adapterInv.notifyDataSetChanged();
+            }, "UserCommandInfoEdit");
             recyclerViewPlayerInv.setAdapter(adapterInv);
             recyclerViewPlayerInv.setLayoutManager(new LinearLayoutManager(this));
             MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
@@ -226,7 +222,7 @@ public class UserCommandInfo extends AppCompatActivity {
                         .subscribeOn(Schedulers.io())//creation of secondary thread
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(s -> showDialog());//now this runs in main thread
-                Intent intent1 = new Intent(UserCommandInfo.this, PlayerAddToTeam.class);
+                Intent intent1 = new Intent(UserCommandInfoEdit.this, PlayerAddToTeam.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("ADDPLAYERTOUSERTEAM", team);
                 intent1.putExtras(bundle);

@@ -7,15 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +33,6 @@ import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.tournament.adapter.RVFavTourneyAdapter;
-import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 
 /**
@@ -42,24 +40,27 @@ import baikal.web.footballapp.viewmodel.MainViewModel;
  */
 public class TournamentsFragment extends Fragment {
 
-    private static RVFavTourneyAdapter adapter;
+    private RVFavTourneyAdapter adapter;
     public static final List<Person> referees = new ArrayList<>();
     private final Logger log = LoggerFactory.getLogger(FullscreenNewsActivity.class);
-    private RecyclerView recyclerView;
-    private ProgressBar progressBar;
-    private NestedScrollView scroller;
-    private final List<League> tournaments= new ArrayList<>();
-    private int count = 0;
-    private int offset = 0;
-    private final int limit = 5;
+//    private ProgressBar progressBar;
+//    private int count = 0;
+//    private int offset = 0;
+//    private final int limit = 5;
+
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     private List<League> favLeague = new ArrayList<>( );
     private List<Tourney> favTourney = new ArrayList<>();
     private List<String> favTourneyId = new ArrayList<>();
-    public List<Team> allTeams = new ArrayList<>();
+    public final List<Team> allTeams = new ArrayList<>();
     public List<Stadium> allStadiums = new ArrayList<>();
     private MainViewModel mainViewModel;
     private PersonalActivity activity;
+
     private LinearLayout emptyFavTourneys;
+
+
     @SuppressLint("ValidFragment")
     TournamentsFragment(PersonalActivity activity) {
         this.activity = activity;
@@ -67,59 +68,20 @@ public class TournamentsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view;
-        view = inflater.inflate(R.layout.fragment_tournaments, container, false);
-        scroller = view.findViewById(R.id.scrollerLeague);
+        View view = inflater.inflate(R.layout.fragment_tournaments, container, false);
+//        scroller = view.findViewById(R.id.scrollerLeague);
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         emptyFavTourneys = view.findViewById(R.id.emptyFavTourneys);
+        swipeRefreshLayout = view.findViewById(R.id.FT_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this::loadData);
 
-        try {
-            mainViewModel.getTeams().observe(this,teams -> {
-                allTeams.clear();
-                allTeams.addAll(teams);
-            });
-            mainViewModel.getAllStadiums().observe(this,stadiums -> {
-                allStadiums.clear();
-                allStadiums.addAll(stadiums);
-            });
-            recyclerView = view.findViewById(R.id.recyclerViewTournament);
-            recyclerView.setNestedScrollingEnabled(false);
-            RecyclerViewTournamentAdapter.Listener listener = this::showTournamentInfo;
 
-            String personId = null;
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewTournament);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, this::showTournamentInfo);
+        recyclerView.setAdapter(adapter);
 
-            try {
-                personId = SaveSharedPreference.getObject().getUser().getId();
-            } catch (Exception ignored) {}
-
-            mainViewModel.getFavTourney(personId).observe(this, tourneys -> {
-                favTourney.clear();
-                favTourney.addAll(tourneys);
-                favTourneyId.clear();
-                favLeague.clear();
-
-                StringBuilder tourneyIds = new StringBuilder();
-
-                for (Tourney tr : tourneys){
-                    favTourneyId.add(tr.getId());
-                    tourneyIds.append(",").append(tr.getId());
-                }
-                mainViewModel.setFavTourneysId(favTourneyId);
-                mainViewModel.getFavLeagues(tourneyIds.toString()).observe(this, leagues -> {
-                    adapter = new RVFavTourneyAdapter(favTourney , getActivity(), leagues, listener);
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-                    recyclerView.setAdapter(adapter);
-                    adapter.dataChanged(tourneys);
-                    if(leagues.size()==0){
-                        emptyFavTourneys.setVisibility(View.GONE);
-                    }
-                });
-
-            });
-
-        } catch (Exception e) {
-            log.error("ERROR: ", e);
-        }
+        loadData();
 //        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 //            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
 //                offset++;
@@ -133,21 +95,50 @@ public class TournamentsFragment extends Fragment {
         return view;
     }
 
+    void loadData()
+    {
+        try {
+            String personId = SaveSharedPreference.getObject().getUser().getId();
+            mainViewModel.getTeams(personId).observe(getViewLifecycleOwner(),teams -> {
+                allTeams.clear();
+                allTeams.addAll(teams);
+            });
+            mainViewModel.getAllStadiums().observe(getViewLifecycleOwner(),stadiums -> {
+                allStadiums.clear();
+                allStadiums.addAll(stadiums);
+            });
+
+
+            mainViewModel.getFavTourney(personId).observe(getViewLifecycleOwner(), tourneys -> {
+                favTourney.clear();
+                favTourney.addAll(tourneys);
+                favTourneyId.clear();
+
+                StringBuilder tourneyIds = new StringBuilder();
+
+                for (Tourney tr : tourneys){
+                    favTourneyId.add(tr.getId());
+                    tourneyIds.append(",").append(tr.getId());
+                }
+                mainViewModel.setFavTourneysId(favTourneyId);
+                mainViewModel.getFavLeagues(tourneyIds.toString()).observe(getViewLifecycleOwner(), leagues -> {
+                    favLeague.clear();
+                    favLeague.addAll(leagues);
+                    adapter.dataChanged(tourneys);
+                    if(leagues.size()==0)
+                        emptyFavTourneys.setVisibility(View.GONE);
+                    swipeRefreshLayout.setRefreshing(false);
+                });
+            });
+        } catch (Exception e) {
+            swipeRefreshLayout.setRefreshing(false);
+            log.error("ERROR: ", e);
+        }
+    }
+
     @SuppressLint("CheckResult")
     private void showTournamentInfo(League leagueId){
         saveData(leagueId);
-
-//        Controller.getApi().getLeagueInfo(leagueId)
-//                .subscribeOn(Schedulers.io())
-////                .doOnTerminate(()->progressBarHide())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(this::saveData
-//                        ,
-//                        error -> {
-//                            CheckError checkError = new CheckError();
-//                            checkError.checkError(getActivity(), error);
-//                        }
-//                );
     }
 
     private void saveData(League league) {

@@ -55,9 +55,13 @@ public class PersonalActivity extends AppCompatActivity {
     private static final String PLAYERS = "PLAYERS_PAGE";
     private static final String USER    = "USER_PAGE";
 
-    private Fragment fragmentUser       = new UserPage(this);
-    private Fragment fragmentMain       = new MainPage();
-    private Fragment active = fragmentMain;
+    private Fragment mainPage      ;
+    private Fragment tournamentPage;
+    private Fragment clubPage      ;
+    private Fragment playersPage   ;
+    private Fragment fragmentUser  ;
+    private Fragment autoUser      ;
+    private Fragment active        ;
 
     private BottomNavigationView bottomNavigationView;
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
@@ -67,19 +71,19 @@ public class PersonalActivity extends AppCompatActivity {
             item -> {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        active = fragmentMain = new MainPage();
+                        active = mainPage;
                         beginTransaction(fragmentManager, active, MAIN);
                         return true;
                     case R.id.navigation_tournament:
-                        active = new TournamentPage(PersonalActivity.this);
+                        active = tournamentPage;
                         beginTransaction(fragmentManager, active, TOURNAMENT);
                         return true;
                     case R.id.navigation_club:
-                        active = new ClubPage();
+                        active = clubPage;
                         beginTransaction(fragmentManager, active, CLUB);
                         return true;
                     case R.id.navigation_players:
-                        active = new PlayersPage();
+                        active = playersPage;
                         beginTransaction(fragmentManager, active, PLAYERS);
                         return true;
                     case R.id.navigation_user:
@@ -90,7 +94,7 @@ public class PersonalActivity extends AppCompatActivity {
                             log.debug(SaveSharedPreference.getObject().getToken());
                             Log.d(TAG, "User ID: " + SaveSharedPreference.getObject().getUser().getId());
 
-                            active = new AuthoUser(PersonalActivity.this);
+                            active = autoUser;
                             beginTransaction(fragmentManager, active, USER);
                         } else {
                             log.error("НЕ ЗАРЕГАН");
@@ -106,7 +110,15 @@ public class PersonalActivity extends AppCompatActivity {
         fragmentManager.beginTransaction().replace(R.id.pageContainer, fragment).addToBackStack(backStack).commit();
     }
 
-    public PersonalActivity() { }
+    public PersonalActivity() {
+        mainPage       = new MainPage();
+        tournamentPage = new TournamentPage(PersonalActivity.this);
+        clubPage       = new ClubPage();
+        playersPage    = new PlayersPage();
+        autoUser       = new AuthoUser(PersonalActivity.this);
+        fragmentUser   = new UserPage(this);
+        active         = mainPage;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,7 +147,7 @@ public class PersonalActivity extends AppCompatActivity {
 
 
         fragmentManager.beginTransaction().setReorderingAllowed(true)
-                .add(R.id.pageContainer, fragmentMain, "1")
+                .add(R.id.pageContainer, mainPage, "1")
                 .commit();
 
         // bottomNavigationView.getChildAt(0);

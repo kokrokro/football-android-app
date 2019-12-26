@@ -2,36 +2,29 @@ package baikal.web.footballapp.tournament.activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.viewpager.widget.ViewPager;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.User;
-
 import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class TournamentPage extends Fragment {
@@ -51,18 +44,15 @@ public class TournamentPage extends Fragment {
         view = inflater.inflate(R.layout.page_tournament, container, false);
 //        GetAllReferees();
         tabLayout = view.findViewById(R.id.tournamentsTabLayout);
-        ViewPager viewPager;
-        viewPager = view.findViewById(R.id.tournamentsPager);
+        ViewPager viewPager = view.findViewById(R.id.tournamentsPager);
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
 
-        if(SaveSharedPreference.getLoggedStatus(getContext()))
-        {
+        if(SaveSharedPreference.getLoggedStatus(getContext())) {
             User user = SaveSharedPreference.getObject();
             token = user.getToken();
         }
         MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-
         mainViewModel.getPersonStatus().observe(this, personStatuses -> {
             personStatus.clear();
             personStatus.addAll(personStatuses);
@@ -80,8 +70,11 @@ public class TournamentPage extends Fragment {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 0)
+                Log.d("TournamentPage", "onPageSelected: " + position);
+                if (position == 0) {
                     searchTournaments.setFavTourneys();
+                    tournamentsFragment.loadData();
+                }
             }
 
             @Override
@@ -94,16 +87,13 @@ public class TournamentPage extends Fragment {
             adapter.addFragment(tournamentsFragment, "Турниры");
             adapter.addFragment(searchTournaments, "Поиск");
             viewPager.setAdapter(adapter);
-        } catch (IllegalStateException ignore) {
-        }
-
+        } catch (Exception ignore) { }
     }
 
     private void setCustomFont() {
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
-        int tabsCount = vg.getChildCount();
 
-        for (int j = 0; j < tabsCount; j++) {
+        for (int j = 0; j < vg.getChildCount(); j++) {
             ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
 
             int tabChildsCount = vgTab.getChildCount();

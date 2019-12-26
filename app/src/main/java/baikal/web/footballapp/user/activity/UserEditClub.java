@@ -119,9 +119,7 @@ public class UserEditClub extends AppCompatActivity {
             });
 
 
-
-            SetImage setImage = new SetImage();
-            setImage.setImage(this, buttonLogo, club1.getLogo());
+            SetImage.setImage(this, buttonLogo, club1.getLogo());
             buttonClose.setOnClickListener(v -> finish());
             buttonSave.setOnClickListener(v -> {
                 String title = editTitle.getText().toString();

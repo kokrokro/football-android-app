@@ -1,16 +1,21 @@
 package baikal.web.footballapp.user.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Club;
@@ -18,11 +23,6 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.OngoingTournamentFragment;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
@@ -67,11 +67,10 @@ public class RVOngoingTournamentAdapter extends RecyclerView.Adapter<RVOngoingTo
                 clubLeague = club;
             }
         }
-        SetImage setImage = new SetImage();
         if (clubLeague != null)
-            setImage.setImage(context.getActivity(), holder.image, clubLeague.getLogo());
+            SetImage.setImage(context.getActivity(), holder.image, clubLeague.getLogo());
         else
-            setImage.setImage(context.getActivity(), holder.image, "R.drawable.ic_logo2");
+            SetImage.setImage(context.getActivity(), holder.image, "R.drawable.ic_logo2");
         String str = league.getTourney() +". "+ league.getName();
         holder.textTitle.setText(str);
         DateToString dateToString = new DateToString();

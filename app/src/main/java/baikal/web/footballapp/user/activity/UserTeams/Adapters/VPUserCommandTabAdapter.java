@@ -1,4 +1,4 @@
-package baikal.web.footballapp.tournament.adapter;
+package baikal.web.footballapp.user.activity.UserTeams.Adapters;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerTournamentInfoAdapter extends FragmentPagerAdapter {
+public class VPUserCommandTabAdapter extends FragmentPagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    public ViewPagerTournamentInfoAdapter(@NonNull FragmentManager fm) {
+    public VPUserCommandTabAdapter(@NonNull FragmentManager fm) {
         //noinspection deprecation
         super(fm);
     }
@@ -38,5 +38,4 @@ public class ViewPagerTournamentInfoAdapter extends FragmentPagerAdapter {
         mFragmentList.add(fragment);
         mFragmentTitleList.add(title);
     }
-
 }

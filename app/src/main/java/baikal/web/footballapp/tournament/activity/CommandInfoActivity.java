@@ -3,24 +3,25 @@ package baikal.web.footballapp.tournament.activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Match;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.tournament.adapter.ViewPagerCommandInfoAdapter;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.tournament.adapter.ViewPagerCommandInfoAdapter;
 
 
 public class CommandInfoActivity extends AppCompatActivity {
@@ -45,12 +46,10 @@ public class CommandInfoActivity extends AppCompatActivity {
         matchList = new ArrayList<>();
 
         try {
-            for (Match match : matches) {
-                if (match.getTeamOne().equals(team.getId())
-                        || match.getTeamTwo().equals(team.getId())) {
+            for (Match match : matches)
+                if (match.getTeamOne().equals(team.getId()) || match.getTeamTwo().equals(team.getId()))
                     matchList.add(match);
-                }
-            }
+
         } catch (Exception e) {
             Log.d(TAG, e.toString());
         }

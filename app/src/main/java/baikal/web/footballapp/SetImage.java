@@ -23,14 +23,14 @@ import com.bumptech.glide.request.target.Target;
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class SetImage {
-    @SuppressLint("CheckResult")
-    public void setImage(Context context, ImageView imageView, String logo){
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.optionalCircleCrop();
-        requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-        RequestOptions.errorOf(R.drawable.ic_logo2);
-        requestOptions.override(500, 500);
-        requestOptions.priority(Priority.HIGH);
+
+    public static void setImage(Context context, ImageView imageView, String logo){
+        RequestOptions requestOptions = RequestOptions
+                    .errorOf(R.drawable.ic_logo2)
+                    .override(500, 500)
+                    .priority(Priority.HIGH)
+                    .optionalCircleCrop()
+                    .format(DecodeFormat.PREFER_ARGB_8888);
 
         try {
             if (logo == null || logo.equals("R.drawable.ic_logo2"))
@@ -67,13 +67,11 @@ public class SetImage {
     }
 
     @SuppressLint("CheckResult")
-    public void setImage(Context context, ImageView imageView, RelativeLayout holder, ProgressBar progressBar, String logo){
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.optionalCircleCrop();
-        requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-        RequestOptions.errorOf(R.drawable.ic_logo2);
-        requestOptions.override(500, 500);
-        requestOptions.priority(Priority.HIGH);
+    public static void setImage(Context context, ImageView imageView, RelativeLayout holder, ProgressBar progressBar, String logo){
+        RequestOptions requestOptions = RequestOptions
+                .errorOf(R.drawable.ic_logo2)
+                .priority(Priority.HIGH)
+                .format(DecodeFormat.PREFER_ARGB_8888);
 
         try {
             if (logo == null || logo.equals("R.drawable.ic_logo2"))

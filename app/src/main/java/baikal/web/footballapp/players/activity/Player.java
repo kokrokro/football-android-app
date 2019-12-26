@@ -23,7 +23,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.R;
@@ -64,16 +63,13 @@ public class Player extends Fragment {
             if (bundle != null) {
                 person = (Person) bundle.getSerializable("PLAYERINFO");
             }
-            CheckName checkName = new CheckName();
             String str = person.getName() + " " + person.getLastname() + " " + person.getSurname();
             textName.setText(str);
-            SetImage setImage = new SetImage();
-            setImage.setImage(getActivity(), imageLogo, person.getPhoto());
+            SetImage.setImage(getActivity(), imageLogo, person.getPhoto());
             String uriPic = BASE_URL;
             try {
                 uriPic += "/" + person.getPhoto();
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) { }
 
             fab.setOnClickListener(v -> {
                 try {
@@ -129,7 +125,7 @@ public class Player extends Fragment {
                 layout.setVisibility(View.GONE);
             }
 
-            RVPlayersTournamentAdapter adapter = new RVPlayersTournamentAdapter(this, person.getPastLeagues());
+            RVPlayersTournamentAdapter adapter = new RVPlayersTournamentAdapter(person.getPastLeagues());
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {

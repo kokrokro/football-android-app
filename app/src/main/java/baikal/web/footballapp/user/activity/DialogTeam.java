@@ -22,7 +22,7 @@ public class DialogTeam extends DialogFragment {
         void onFinishEditDialog(int pos);
     }
 
-    DialogTeam(Listener mListener) {
+    public DialogTeam(Listener mListener) {
         this.mListener = mListener;
     }
 

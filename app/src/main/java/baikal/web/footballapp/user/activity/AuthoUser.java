@@ -23,6 +23,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -48,9 +50,11 @@ import baikal.web.footballapp.model.PendingTeamInvite;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
+import baikal.web.footballapp.user.activity.UserTeams.Adapters.RVUserCommandAdapter;
+import baikal.web.footballapp.user.activity.UserTeams.UserCommands;
 import baikal.web.footballapp.user.adapter.RVOwnCommandAdapter;
-import baikal.web.footballapp.user.adapter.RVUserCommandAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -63,7 +67,6 @@ public class AuthoUser extends Fragment {
 
     private Person person;
     public static FloatingActionButton fab;
-    private FloatingActionButton fab1;
     //adapters
     public static RVUserCommandAdapter adapterCommand;
     public static RVOwnCommandAdapter adapterOwnCommand;
@@ -74,12 +77,13 @@ public class AuthoUser extends Fragment {
     static List<Team> createdTeams = new ArrayList<>();
     public static List<Team> personCommand;
     public static List<PendingTeamInvite> pendingTeamInvitesList;
+    private final List<Tourney> createdTourneyList = new ArrayList<>();
+    private final List<Team> createdTeamList = new ArrayList<>();
 
     private TextView categoryTitle;
 
     //Menu header
     private ImageButton buttonOpenProfile;
-    private TextView textName;
 
     //Menu items
     private RelativeLayout  invitationBtn;
@@ -107,19 +111,22 @@ public class AuthoUser extends Fragment {
     private TextView refTournamentsMT;
 
     //Menu fragments
-    private InvitationFragment    invitationFragment = new InvitationFragment();
-    private AddTournamentFragment addTournamentFragment = new AddTournamentFragment();
-    private UserClubs             userClubFragment = new UserClubs();
-    private TimeTableFragment     timeTableFragment = new TimeTableFragment();
-    private MyMatches             myMatchesFragment = new MyMatches();
-    private UserCommands          commandsFragment = new UserCommands();
+    private InvitationFragment    invitationFragment    ;
+    private AddTournamentFragment addTournamentFragment ;
+    private UserClubs             userClubFragment      ;
+    private TimeTableFragment     timeTableFragment     ;
+    private MyMatches             myMatchesFragment     ;
+    private UserCommands          commandsFragment      ;
+
+    private Fragment activeAU;
 
     private User user;
     private DrawerLayout mDrawerLayout;
 
-    public static ImageButton setSingleReferee;
-    public static ImageButton cancelSetSingleReferee;
-    public static ImageButton saveSingleReferee;
+    ImageButton setSingleReferee;
+    ImageButton cancelSetSingleReferee;
+    ImageButton saveSingleReferee;
+
     private final int REQUEST_CODE_PROFILE_DATA_EDIT = 4214;
 
     public PersonalActivity activity;
@@ -129,6 +136,14 @@ public class AuthoUser extends Fragment {
 
     public AuthoUser (PersonalActivity activity) {
         this.activity = activity;
+        invitationFragment    = new InvitationFragment(this);
+        addTournamentFragment = new AddTournamentFragment();
+        userClubFragment      = new UserClubs();
+        timeTableFragment     = new TimeTableFragment(this);
+        myMatchesFragment     = new MyMatches();
+        commandsFragment      = new UserCommands();
+
+        activeAU = invitationFragment;
     }
 
     @Override
@@ -152,7 +167,7 @@ public class AuthoUser extends Fragment {
 
 //**************************************************************************************************
         buttonOpenProfile = view.findViewById(R.id.UA_userProfileOpen);
-        textName          = view.findViewById(R.id.UA_userName);
+        TextView textName = view.findViewById(R.id.UA_userName);
         invitationBtn        = view.findViewById(R.id.UA_inv_button);
         teamBtn              = view.findViewById(R.id.UA_team_button);
         tournamentBtn        = view.findViewById(R.id.UA_tournament_button);
@@ -180,10 +195,16 @@ public class AuthoUser extends Fragment {
         menuTitles.add(refMatchesMT    );
         menuTitles.add(refTournamentsMT);
 //**************************************************************************************************
+        RecyclerView rvCreatedTeamList = view.findViewById(R.id.UA_teamList);
+        RecyclerView rvCreatedTourneyList = view.findViewById(R.id.UA_tournamentList);
+
+        rvCreatedTeamList.setLayoutManager(new LinearLayoutManager(getContext()));
+        rvCreatedTourneyList.setLayoutManager(new LinearLayoutManager(getContext()));
+//**************************************************************************************************
 
         categoryTitle = view.findViewById(R.id.categoryType);
         fab = view.findViewById(R.id.addCommandButton);
-        fab1 = view.findViewById(R.id.buttonEditClub);
+        FloatingActionButton fab1 = view.findViewById(R.id.buttonEditClub);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
         personOngoingLeagues = new ArrayList<>();
@@ -195,14 +216,14 @@ public class AuthoUser extends Fragment {
         fab1.setVisibility(View.INVISIBLE);
         fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         setMenuItemListeners();
-        showFragment(invitationFragment,   invitationMT, false, false, 0);
+        showFragment(activeAU,   invitationMT, false, false, 0);
 
         try {
             user = SaveSharedPreference.getObject();
             person = user.getUser();
             if (person != null && person.getId() != null) {
                 textName.setText(person.getName());
-                (new SetImage()).setImage(getActivity(), buttonOpenProfile, person.getPhoto());
+                SetImage.setImage(getActivity(), buttonOpenProfile, person.getPhoto());
 
                 Controller.getApi().getUsersTeams(person.get_id()).enqueue(new Callback<List<Invite>>() {
                     @Override
@@ -242,6 +263,23 @@ public class AuthoUser extends Fragment {
                     public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) { }
                 });
 
+                Controller.getApi().getTourneysByCreator(person.getId()).enqueue(new Callback<List<Tourney>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<Tourney>> call, @NonNull Response<List<Tourney>> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            if (response.body().size() == 0)
+                                return;
+                            createdTourneyList.clear();
+                            createdTourneyList.addAll(response.body());
+                            rvCreatedTourneyList.setVisibility(View.VISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<Tourney>> call, @NonNull Throwable t) {
+
+                    }
+                });
             }
         } catch (Exception e) {
             log.error("ERROR: ", e);
@@ -300,6 +338,7 @@ public class AuthoUser extends Fragment {
     @SuppressLint("RestrictedApi")
     private void showFragment (Fragment fragmentToShow, TextView textView,
                                boolean isSingleRefVisible, boolean isFabV, int pos) {
+        activeAU = fragmentToShow;
         categoryTitle.setText(appBarTitles[pos]);
         try {
             setItemColor(textView);

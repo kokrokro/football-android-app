@@ -1,49 +1,46 @@
 package baikal.web.footballapp.user.activity.Protocol.Adapters;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Event;
-import baikal.web.footballapp.user.activity.Protocol.MatchEvents;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.Team;
+
 public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdapter.ViewHolder>{
-    Logger log = LoggerFactory.getLogger(MatchEvents.class);
+//    Logger log = LoggerFactory.getLogger(MatchEvents.class);
     private Context context;
     private final List<Event> events;
 
     private String[] matchTimesToShow = {"Первый тайм", "Второй тайм", "Дополнительное время", "Серия пенальти"};
     private String[] matchTimes = {"firstHalf", "secondHalf", "extraTime", "penaltySeries"};
     private LinkedHashMap<String, Integer> matchTimesMap;
-    private String teamId1;
-    private String teamId2;
     private boolean isEditable;
     final private Set<Integer> eventsToDelete;
+    private Team team1;
+    private Team team2;
 
     public RVMatchEventsAdapter(Context context, List<Event> events,
-                                String teamId1, String teamId2,
+                                Team team1, Team team2,
                                 boolean isEditable, Set<Integer> eventsToDelete){
         this.context = context;
         this.events = events;
-        this.teamId1 = teamId1;
-        this.teamId2 = teamId2;
         this.isEditable = isEditable;
         this.eventsToDelete = eventsToDelete;
+        this.team1 = team1;
+        this.team2 = team2;
 
         matchTimesMap = new LinkedHashMap<>();
         matchTimesMap.put("firstHalf",     1);
@@ -97,7 +94,7 @@ public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdap
             recyclerView = item.findViewById(R.id.recyclerViewHalfEvents);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             events = new ArrayList<>();
-            adapter = new RVEventsAdapter(events, teamId1, teamId2, isEditable, eventsToDelete);
+            adapter = new RVEventsAdapter(events, team1, team2, isEditable, eventsToDelete, context);
             recyclerView.setAdapter(adapter);
         }
     }

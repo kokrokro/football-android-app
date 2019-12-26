@@ -2,9 +2,6 @@ package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
 import android.content.Context;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +9,17 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.List;
 
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.Controller;
@@ -29,34 +37,23 @@ import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.InvitationFragment;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapter.ViewHolder> {
     private final Logger log = LoggerFactory.getLogger(InvitationFragment.class);
     private final Context context;
     private final PersonalActivity activity;
     private final List<Invite> list;
-    AuthoUser authoUser;
+    private AuthoUser authoUser;
 
-    public RVInvitationAdapter(Activity activity, Context context, List<Invite> list ) {
+    public RVInvitationAdapter(Activity activity, Context context, AuthoUser authoUser, List<Invite> list ) {
 //    public RVInvitationAdapter(Activity activity,  List<PendingTeamInvite> list) {
         this.activity = (PersonalActivity) activity;
         this.list = list;
         this.context = context;
+        this.authoUser = authoUser;
     }
 
     @NonNull
@@ -164,7 +161,6 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
         }
     }
 
-
     private void AcceptRequest(String invite, String league, final String team, final String status, final League league1, final int position) {
 //        Call<ServerResponse> call = Controller.getApi().playerInv(token, map);
         Call<User> call = Controller.getApi().playerInv(invite, SaveSharedPreference.getObject().getToken());
@@ -187,48 +183,18 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                             int size1 = AuthoUser.personOwnCommand.size();
                             int size2 = AuthoUser.personCommand.size();
 //                            AuthoUser.personCommand.add(personTeams);
-                            if (AuthoUser.personOwnCommand.size() != 0
-                                    && AuthoUser.personCommand.size() != 0) {
-                                LayoutInflater factory = activity.getLayoutInflater();
-                                final View textEntryView = factory.inflate(R.layout.user_commands, null);
-                                View line = textEntryView.findViewById(R.id.userCommandsLine);
-                                line.setVisibility(View.VISIBLE);
-                                textEntryView.setVisibility(View.VISIBLE);
-                            }
-                            if (size1 == 0
-                                    && size2 == 0) {
-                                LayoutInflater factory = activity.getLayoutInflater();
-                                final View textEntryView = factory.inflate(R.layout.user_commands, null);
-                                LinearLayout linearLayout = textEntryView.findViewById(R.id.emptyCommand);
-                                TextView textView = textEntryView.findViewById(R.id.userCommandsText);
-                                linearLayout.setVisibility(View.GONE);
-                                textView.setVisibility(View.VISIBLE);
-                                AuthoUser.adapterCommand.notifyDataSetChanged();
-                            } else {
-                                AuthoUser.adapterCommand.notifyDataSetChanged();
-                            }
                         }
                         if (status.equals("Rejected")) {
                             AuthoUser.pendingTeamInvitesList.remove(position);
                             authoUser.SetInvNum(activity, (list.size()));
                         }
 
-//                        Team teamLeague = null;
-//                        for (Team team1: league1.getTeams()){
-//                            if (team1.getId().equals(team)){
-//                                teamLeague = team1;
-//                                break;
-//                            }
-//                        }
-//                        league1.getTeams().remove(teamLeague);
-//                        league1.getTeams().add(teamLeague);
 
                         for (int i = 0; i< MankindKeeper.getInstance().allLeagues.size(); i++){
                             if (league1.getId().equals(MankindKeeper.getInstance().allLeagues.get(i).getId())){
                                 MankindKeeper.getInstance().allLeagues.set(i, league1);
                             }
                         }
-
 
                         notifyDataSetChanged();
                         if (AuthoUser.pendingTeamInvitesList.size() == 0) {
@@ -238,10 +204,6 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                             LinearLayout layout = newRow.findViewById(R.id.emptyInv);
                             layout.setVisibility(View.VISIBLE);
                         }
-
-
-
-
                     }
                 } else {
                     try {

@@ -113,18 +113,35 @@ public class ProtocolScore extends AppCompatActivity{
         btnFirstTime.setOnClickListener(v -> {
             currentMatchTime = 0;
             textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
+            calculateScore();
         });
         btnSecondTime.setOnClickListener(v -> {
             currentMatchTime = 1;
             textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
+            calculateScore();
         });
         btnExtraTime.setOnClickListener(v -> {
             currentMatchTime = 2;
             textViewMatchTime.setText(matchTimesToShow[currentMatchTime]);
+            calculateScore();
         });
         btnPenalty.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            for (Event e: match.getEvents())
+                if (e.getEventType().equals("penaltySeriesSuccess") ||
+                        e.getEventType().equals("penaltySeriesFailure")) {
+                    Log.d(TAG,"start penalty activity");
 
+                    match.setScore(String.valueOf(textViewMatchScore.getText()));
+                    Intent intent = new Intent(this, ProtocolPenalty.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("MATCH", match);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, MATCH_PENALTY);
+
+                    return;
+                }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             @SuppressLint("InflateParams")
             View view = LayoutInflater.from(this).inflate(R.layout.yes_no_dialog_view, null);
             builder.setView(view);
@@ -174,21 +191,6 @@ public class ProtocolScore extends AppCompatActivity{
         firstTeamListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         secondTeamListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        try {
-            match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("MATCH");
-        } catch (Exception e) {
-            log.error(TAG, e);
-        }
-
-        if (match != null) {
-            if (match.getTeamOne() != null)
-                assignTeam(match.getTeamOne().getId(), "teamOne");
-            if (match.getTeamTwo() != null)
-                assignTeam(match.getTeamTwo().getId(), "teamTwo");
-
-            calculateScore();
-        }
-
         btnShowEvents.setOnClickListener(v-> {
             Intent intent = new Intent(this, MatchEvents.class);
             Bundle bundle = new Bundle();
@@ -199,17 +201,25 @@ public class ProtocolScore extends AppCompatActivity{
             startActivityForResult(intent, EVENT_LIST_EDITED);
         });
 
-        btnEndMatch.setOnClickListener(v -> {
-            eventsToSend.clear();
-            for (Event e: match.getEvents())
-                if (e.getId() == null)
-                    eventsToSend.addLast(e);
+        btnEndMatch.setOnClickListener(v -> sendMatchEndEvent());
 
-            Event finishEvent = new Event();
-            finishEvent.setId(null);
-            finishEvent.setEventType("matchEnd");
-            sendEvents();
-        });
+        try {
+            match = (MatchPopulate) Objects.requireNonNull(getIntent().getExtras()).getSerializable("MATCH");
+        } catch (Exception e) {
+            log.error(TAG, e);
+        }
+        assignMatchData();
+    }
+
+    private void assignMatchData() {
+        if (match != null) {
+            if (match.getTeamOne() != null)
+                assignTeam(match.getTeamOne().getId(), "teamOne");
+            if (match.getTeamTwo() != null)
+                assignTeam(match.getTeamTwo().getId(), "teamTwo");
+
+            calculateScore();
+        }
     }
 
     void setupAdapters() {
@@ -268,7 +278,7 @@ public class ProtocolScore extends AppCompatActivity{
                     .subscribe(newEvent -> {
                                 if (newEvent != null) {
                                     Toast.makeText(ProtocolScore.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
-                                    match.addEventWithId(newEvent);
+                                    event.setId(newEvent.getId());
                                     calculateScore();
                                     adapter2.dataChanged();
                                     adapter1.dataChanged();
@@ -278,7 +288,7 @@ public class ProtocolScore extends AppCompatActivity{
                                 }
                             },
                             error ->
-                                    Log.d(TAG, error.toString())
+                                Log.d(TAG, error.toString())
                     );
         }
     }
@@ -305,7 +315,7 @@ public class ProtocolScore extends AppCompatActivity{
                     (e.getId() != null && disabledEvents.contains(e.getId())))
                 continue;
 
-            if (team1 != null && e.getTeam().equals(team1.getId())) {
+            if (team1 != null && e.getTeam()!=null && e.getTeam().equals(team1.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
                         e.getEventType().equals(eventTypes[3]) ||
                         e.getEventType().equals(eventTypes[6]))
@@ -315,10 +325,13 @@ public class ProtocolScore extends AppCompatActivity{
                     goalCntTeam2++;
 
                 if (e.getEventType().equals(eventTypes[5]))
-                    foulsCntTeam1++;
+                    if (currentMatchTime==0 && e.getTime().equals("firstHalf"))
+                        foulsCntTeam1++;
+                    else if (currentMatchTime > 0 && !e.getTime().equals("firstHalf"))
+                        foulsCntTeam1++;
             }
 
-            if (team2 != null && e.getTeam().equals(team2.getId())) {
+            if (team2 != null && e.getTeam()!=null && e.getTeam().equals(team2.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
                         e.getEventType().equals(eventTypes[3]) ||
                         e.getEventType().equals(eventTypes[6]))
@@ -328,7 +341,10 @@ public class ProtocolScore extends AppCompatActivity{
                     goalCntTeam1++;
 
                 if (e.getEventType().equals(eventTypes[5]))
-                    foulsCntTeam2++;
+                    if (currentMatchTime==0 && e.getTime().equals("firstHalf"))
+                        foulsCntTeam2++;
+                    else if (currentMatchTime > 0 && !e.getTime().equals("firstHalf"))
+                        foulsCntTeam2++;
             }
         }
 
@@ -344,7 +360,7 @@ public class ProtocolScore extends AppCompatActivity{
         if (MankindKeeper.getInstance().getTeamById(teamId) == null ||
                 (MankindKeeper.getInstance().getTeamById(teamId) != null &&
                         MankindKeeper.getInstance().getTeamById(teamId).getPlayers().size() == 0))
-            Controller.getApi().getTeam(teamId).enqueue(new Callback<List<Team>>() {
+            Controller.getApi().getTeamById(teamId).enqueue(new Callback<List<Team>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                     if (response.body() != null && response.body().size() > 0) {
@@ -404,18 +420,43 @@ public class ProtocolScore extends AppCompatActivity{
                 boolean isFinished = data.getExtras().getBoolean("IS_FINISHED", false);
 
                 if (isFinished) {
-                    eventsToSend.clear();
-                    for (Event e: match.getEvents())
-                        if (e.getId() == null)
-                            eventsToSend.addLast(e);
-
-                    Event finishEvent = new Event();
-                    finishEvent.setId(null);
-                    finishEvent.setEventType("matchEnd");
-                    sendEvents();
+                    sendMatchEndEvent();
                 }
             } catch (Exception ignored) {}
         }
+    }
+
+    private void sendMatchEndEvent() {
+        TreeSet<String> disabledEvents = new TreeSet<>();
+
+        for (Event e: match.getEvents())
+            if (e.getEventType().equals("disable"))
+                disabledEvents.add(e.getEvent());
+            else if (e.getEventType().equals("enable"))
+                disabledEvents.remove(e.getEvent());
+
+        for (Event e: match.getEvents())
+            if (e.getEventType().equals("matchEnd") && !disabledEvents.contains(e.getId())) {
+                getFinishedMatch();
+                return;
+            }
+
+
+        eventsToSend.clear();
+        for (Event e: match.getEvents())
+            if (e.getId() == null)
+                eventsToSend.addLast(e);
+
+        Event finishEvent = new Event();
+        finishEvent.setId(null);
+        finishEvent.setEvent(null);
+        finishEvent.setId(null);
+        finishEvent.setTime(null);
+        finishEvent.setPerson(null);
+        finishEvent.setTeam(null);
+        finishEvent.setEventType("matchEnd");
+        eventsToSend.addLast(finishEvent);
+        sendEvents();
     }
 
     private void getFinishedMatch()
@@ -435,9 +476,7 @@ public class ProtocolScore extends AppCompatActivity{
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) { }
         });
     }
 }

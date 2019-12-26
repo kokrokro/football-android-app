@@ -10,13 +10,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,25 +21,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.SelectImageDialog;
-import baikal.web.footballapp.SetImage;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.user.adapter.SpinnerRegionAdapter;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
-
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Region;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -57,6 +41,20 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.SelectImageDialog;
+import baikal.web.footballapp.SetImage;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Region;
+import baikal.web.footballapp.model.User;
+import baikal.web.footballapp.user.adapter.SpinnerRegionAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageSelectedListener {
     private static final String TAG = "Personal Info: ";
@@ -217,8 +215,7 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
             textLogin.setText(person.getLogin());
             textDOB.setText((new DateToString()).ChangeDate(person.getBirthdate()));
 
-            SetImage setImage = new SetImage();
-            setImage.setImage(getContext(), buttonPhoto, person.getPhoto());
+            SetImage.setImage(getContext(), buttonPhoto, person.getPhoto());
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -22,8 +22,8 @@ import baikal.web.footballapp.model.ParticipationRequest;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.user.activity.UserCommandInfo;
-import baikal.web.footballapp.user.activity.UserCommands;
+import baikal.web.footballapp.user.activity.UserTeams.UserCommandInfoEdit;
+import baikal.web.footballapp.user.activity.UserTeams.UserCommands;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -157,7 +157,7 @@ public class RVOwnCommandAdapter extends RecyclerView.Adapter<RVOwnCommandAdapte
 
     private void setListener(RVOwnCommandAdapter.ViewHolder holder, Team finalTeamLeague, League finalLeague) {
         holder.buttonShow.setOnClickListener(v -> {
-            Intent intent = new Intent(activity, UserCommandInfo.class);
+            Intent intent = new Intent(activity, UserCommandInfoEdit.class);
             Bundle bundle = new Bundle();
             Bundle bundle1 = new Bundle();
             bundle.putSerializable("COMMANDEDIT", finalTeamLeague);

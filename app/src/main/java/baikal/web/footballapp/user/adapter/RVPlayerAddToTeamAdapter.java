@@ -30,7 +30,6 @@ import baikal.web.footballapp.model.ServerResponse;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.PlayerAddToTeam;
-import baikal.web.footballapp.user.activity.UserCommandInfo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +39,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -216,10 +214,10 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
                             }
                         }
 
-//                        UserCommandInfo.playersInv.add(player);
-////                        UserCommandInfo.adapterInv.notifyDataSetChanged();
-//                        List<baikal.web.footballapp.model.Player> players = new ArrayList<>(UserCommandInfo.playersInv);
-//                        UserCommandInfo.adapterInv.dataChanged(players);
+//                        UserCommandInfoEdit.playersInv.add(player);
+////                        UserCommandInfoEdit.adapterInv.notifyDataSetChanged();
+//                        List<baikal.web.footballapp.model.Player> players = new ArrayList<>(UserCommandInfoEdit.playersInv);
+//                        UserCommandInfoEdit.adapterInv.dataChanged(players);
 //                        List<PersonTeams> result = new ArrayList<>(AuthoUser.personOwnCommand);
 //                        AuthoUser.adapterOwnCommand.dataChanged(result);
 //                        Toast.makeText(context, "Вы отправили игроку приглашение", Toast.LENGTH_LONG).show();

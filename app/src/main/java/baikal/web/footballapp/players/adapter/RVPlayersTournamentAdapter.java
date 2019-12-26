@@ -1,24 +1,22 @@
 package baikal.web.footballapp.players.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.PastLeague;
-import baikal.web.footballapp.players.activity.Player;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.PastLeague;
+
 
 public class RVPlayersTournamentAdapter extends RecyclerView.Adapter<RVPlayersTournamentAdapter.ViewHolder>{
-    private final Player context;
     private final List<PastLeague> pastLeagues;
-    public RVPlayersTournamentAdapter(Player context, List<PastLeague> pastLeagues){
-        this.context = context;
+    public RVPlayersTournamentAdapter(List<PastLeague> pastLeagues){
         this.pastLeagues = pastLeagues;
     }
     @NonNull

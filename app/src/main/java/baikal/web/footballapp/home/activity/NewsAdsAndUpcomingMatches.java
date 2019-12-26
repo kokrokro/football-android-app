@@ -4,23 +4,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.home.adapter.RVComingMatchesAdapter;
 import baikal.web.footballapp.home.adapter.RVHorizontalNews;
@@ -36,11 +37,10 @@ public class NewsAdsAndUpcomingMatches extends Fragment {
     private List<ActiveMatch> matches = new ArrayList<>();
     private List<News_> allNews = new ArrayList<>();
     private List<String> leagues;
-
+    private LinearLayout layout;
     private RVComingMatchesAdapter adapter;
 
-    private int offset=0;
-    private final int limit = 15;
+    private DateToString dts = new DateToString();
 
     NewsAdsAndUpcomingMatches (List<String> favLeagues){
         this.leagues = favLeagues;
@@ -51,8 +51,7 @@ public class NewsAdsAndUpcomingMatches extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_page_fragment, container, false);
 
-        NestedScrollView scrollView = view.findViewById(R.id.MPF_nested_scroll_view);
-
+        layout = view.findViewById(R.id.MPF_emptyComingMatches);
         RecyclerView newsRV = view.findViewById(R.id.MPF_news_RV);
         RecyclerView matchesRV = view.findViewById(R.id.MPF_matches_RV);
         newsRV.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
@@ -63,47 +62,65 @@ public class NewsAdsAndUpcomingMatches extends Fragment {
 
         adapter = new RVComingMatchesAdapter(getActivity(), matches);
         matchesRV.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
 
         MainViewModel mainViewModel = ViewModelProviders.of(Objects.requireNonNull(getActivity())).get(MainViewModel.class);
-        mainViewModel.getNews("10","0").observe(this,
-                adapter1::dataChanged);
+        mainViewModel.getNews("20","0").observe(getViewLifecycleOwner(), adapter1::dataChanged);
 
-        scrollView.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                offset++;
-                int temp = limit*offset;
-                if (temp<=matches.size()) {
-                    String str = "" + offset;
-                    getUpcomingMatches(String.valueOf(limit), str);
-                }
-            }
-        });
-
+        getUpcomingMatches (0);
         return view;
     }
 
-    private void getUpcomingMatches (String limit, String offset)
+    private void getUpcomingMatches (int dp)
     {
+        if (dp==3)
+            return;
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
-        String strDate =">="+sdf.format(now);
+        String strDate = ">=" + sdf.format(now);
         StringBuilder query = new StringBuilder();
-        for(String l : leagues){
+        for(String l : leagues)
             query.append(",").append(l);
-        }
-        Controller.getApi().getUpcomingMatches(strDate, query.toString(), limit, offset).enqueue(new Callback<List<ActiveMatch>>() {
+
+        Controller.getApi().getUpcomingMatches(strDate, query.toString(), "50", "0").enqueue(new Callback<List<ActiveMatch>>() {
             @Override
             public void onResponse(@NonNull Call<List<ActiveMatch>> call, @NonNull Response<List<ActiveMatch>> response) {
+                if (!response.isSuccessful()) {
+                    getUpcomingMatches(dp+1);
+                    return;
+                }
+
                 if(response.isSuccessful())
-                    if(response.body()!=null){
-                        matches.addAll(response.body());
-                        adapter.notifyDataSetChanged();
-                    }
+                    if (response.body() != null)
+                        adapter.dataChanged(getNowDayMatches(response.body()));
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<ActiveMatch>> call, @NonNull Throwable t) { }
+            public void onFailure(@NonNull Call<List<ActiveMatch>> call, @NonNull Throwable t) {
+                layout.setVisibility(View.GONE);
+            }
         });
+    }
+
+    private List<ActiveMatch> getNowDayMatches (List<ActiveMatch> oldList) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_YEAR, 1);
+
+        Date date = calendar.getTime();
+
+        List<ActiveMatch> ans = new ArrayList<>();
+
+        for (ActiveMatch match: oldList) {
+            Date d = dts.getDate(match.getDate());
+
+            if (date.before(d))
+                break;
+
+            ans.add(match);
+        }
+
+        if (ans.size() > 0)
+            layout.setVisibility(View.GONE);
+
+        return ans;
     }
 }

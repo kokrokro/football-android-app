@@ -17,6 +17,12 @@
         tools:showIn="@layout/activity_personal">
     </FrameLayout>
 
+    <View
+        android:id="@+id/AP_bottom_nav_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation_view"
+        android:background="@drawable/shadow_imitation"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         style="@style/Widget.MaterialComponents.BottomNavigationView"

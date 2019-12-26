@@ -76,7 +76,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".user.activity.UserCommandInfo"
+            android:name=".user.activity.UserTeams.UserCommandInfoEdit"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
         <activity
@@ -137,6 +137,11 @@
             android:name=".tournament.activity.ShowProtocol"
             android:configChanges="orientation"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".user.activity.UserTeams.UserCommandInfo"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>
