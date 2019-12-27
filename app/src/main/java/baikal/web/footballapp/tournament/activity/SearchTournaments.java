@@ -6,16 +6,6 @@ import android.app.ProgressDialog;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SearchView;
-//import androidx.core.widget.NestedScrollView;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
@@ -24,7 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-//import android.widget.ProgressBar;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +36,7 @@ import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.EditProfile;
+import baikal.web.footballapp.model.FavoriteTourneys;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.players.activity.PlayersPage;
@@ -46,11 +44,12 @@ import baikal.web.footballapp.tournament.adapter.RVTourneyAdapter;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+//import androidx.core.widget.NestedScrollView;
+//import android.widget.ProgressBar;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -165,11 +164,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
 
     void setFavTourneys()
     {
-        List<RequestBody> favTourneyNew = new ArrayList<>();
-
-        for(int i = 0; i < favTourneysId.size(); i++){
-            favTourneyNew.add(RequestBody.create(MediaType.parse("text/plain"),favTourneysId.get(i)));
-        }
+        FavoriteTourneys favTourneyNew = new FavoriteTourneys(favTourneysId);
 
         String id = "";
         String token = "";
@@ -181,10 +176,13 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         Controller.getApi().editPlayerInfo(id, token, favTourneyNew).enqueue(new Callback<EditProfile>() {
             @Override
             public void onResponse(@NonNull Call<EditProfile> call, @NonNull Response<EditProfile> response) {
-                StringBuilder tourneyIds = new StringBuilder();
-                for (String ft : favTourneysId)
-                    tourneyIds.append(",").append(ft);
-                changeDataForTournamentFragment(tourneyIds.toString());
+                if (response.isSuccessful()) {
+                    StringBuilder tourneyIds = new StringBuilder();
+                    for (String ft : favTourneysId)
+                        tourneyIds.append(",").append(ft);
+                    changeDataForTournamentFragment(tourneyIds.toString());
+                } else
+                    Log.d("SearchTournaments", "response is failure in \"Controller.getApi().editPlayerInfo\"");
             }
 
             @Override
@@ -198,21 +196,21 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     @SuppressLint("CheckResult")
     private void changeDataForTournamentFragment (String tourneyIds)
     {
+        if (tourneyIds.equals("")) {
+            mainViewModel.setFavTourney(new ArrayList<>());
+            return;
+        }
         //noinspection ResultOfMethodCallIgnored
         Controller.getApi().getTourneysById(tourneyIds)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe( this::saveDataForTournamentFragment
+                .subscribe(tourneys -> mainViewModel.setFavTourney(tourneys)
                         , error -> {
                             Log.d("SearchTournaments: ", "error while getting tourneys by id (207):\n\t" + error.toString());
                             CheckError checkError = new CheckError();
                             checkError.checkError(getActivity(), error);
                         }
                 );
-    }
-
-    private void saveDataForTournamentFragment (List<Tourney> tourneys) {
-        mainViewModel.setFavTourney(tourneys);
     }
 
     private void saveAllData(List<Tourney> tourneys) {

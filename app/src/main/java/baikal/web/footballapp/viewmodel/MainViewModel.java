@@ -117,7 +117,7 @@ public class MainViewModel extends ViewModel {
 
 
     public LiveData<List<League>> getFavLeagues(String tourney){
-        if(favLeagues==null){
+        if(favLeagues==null) {
             favLeagues = new MutableLiveData<>();
         }
         loadFavLeagues(tourney);

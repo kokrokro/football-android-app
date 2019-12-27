@@ -63,11 +63,14 @@ public class ConfirmProtocol extends AppCompatActivity {
         Intent initialIntent = getIntent();
 
         fab.setVisibility(View.GONE);
+        imageSave.setVisibility(View.INVISIBLE);
 
         try{
             status = Objects.requireNonNull(initialIntent.getExtras()).getBoolean("IS_EDITABLE", false);
-            if (status)
+            if (status) {
                 fab.setVisibility(View.VISIBLE);
+                imageSave.setVisibility(View.VISIBLE);
+            }
         } catch (Exception ignored){}
         try {
             match = (MatchPopulate) Objects.requireNonNull(initialIntent.getExtras()).getSerializable("CONFIRMPROTOCOL");
@@ -78,6 +81,7 @@ public class ConfirmProtocol extends AppCompatActivity {
                     for (Referee r: match.getReferees())
                         if (r.getType().equals("thirdReferee") && r.getPerson().equals(id)) {
                             fab.setVisibility(View.VISIBLE);
+                            imageSave.setVisibility(View.VISIBLE);
                             editTeamStatus = true;
                         }
 

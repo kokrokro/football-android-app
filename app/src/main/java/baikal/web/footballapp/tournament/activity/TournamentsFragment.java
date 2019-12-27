@@ -60,7 +60,6 @@ public class TournamentsFragment extends Fragment {
 
     private LinearLayout emptyFavTourneys;
 
-
     @SuppressLint("ValidFragment")
     TournamentsFragment(PersonalActivity activity) {
         this.activity = activity;
@@ -75,11 +74,14 @@ public class TournamentsFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.FT_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::loadData);
 
-
         RecyclerView recyclerView = view.findViewById(R.id.recyclerViewTournament);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new RVFavTourneyAdapter(favTourney , getActivity(), favLeague, this::showTournamentInfo);
         recyclerView.setAdapter(adapter);
+
+        emptyFavTourneys.setVisibility(View.VISIBLE);
+        if (favTourneyId.size() > 0)
+            emptyFavTourneys.setVisibility(View.GONE);
 
         loadData();
 //        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -98,6 +100,8 @@ public class TournamentsFragment extends Fragment {
     void loadData()
     {
         try {
+            if (SaveSharedPreference.getObject() == null)
+                return;
             String personId = SaveSharedPreference.getObject().getUser().getId();
             mainViewModel.getTeams(personId).observe(getViewLifecycleOwner(),teams -> {
                 allTeams.clear();
@@ -108,14 +112,18 @@ public class TournamentsFragment extends Fragment {
                 allStadiums.addAll(stadiums);
             });
 
-
             mainViewModel.getFavTourney(personId).observe(getViewLifecycleOwner(), tourneys -> {
+                swipeRefreshLayout.setRefreshing(false);
                 favTourney.clear();
                 favTourney.addAll(tourneys);
                 favTourneyId.clear();
 
-                StringBuilder tourneyIds = new StringBuilder();
+                if(favTourney.size()>0)
+                    emptyFavTourneys.setVisibility(View.GONE);
+                else
+                    emptyFavTourneys.setVisibility(View.VISIBLE);
 
+                StringBuilder tourneyIds = new StringBuilder();
                 for (Tourney tr : tourneys){
                     favTourneyId.add(tr.getId());
                     tourneyIds.append(",").append(tr.getId());
@@ -125,13 +133,12 @@ public class TournamentsFragment extends Fragment {
                     favLeague.clear();
                     favLeague.addAll(leagues);
                     adapter.dataChanged(tourneys);
-                    if(leagues.size()==0)
-                        emptyFavTourneys.setVisibility(View.GONE);
-                    swipeRefreshLayout.setRefreshing(false);
                 });
+
             });
         } catch (Exception e) {
-            swipeRefreshLayout.setRefreshing(false);
+            if (swipeRefreshLayout != null)
+                swipeRefreshLayout.setRefreshing(false);
             log.error("ERROR: ", e);
         }
     }

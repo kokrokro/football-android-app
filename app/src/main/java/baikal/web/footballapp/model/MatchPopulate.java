@@ -1,13 +1,10 @@
 package baikal.web.footballapp.model;
 
-import android.util.Log;
-
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 public class MatchPopulate implements Serializable {
@@ -79,7 +76,7 @@ public class MatchPopulate implements Serializable {
     @Expose
     private String fouls;
 
-    public void onProtocolEdited(Match match)
+    public void assignNewMatchData (Match match)
     {
         setId(match.getId());
         setDate(match.getDate());
@@ -102,45 +99,27 @@ public class MatchPopulate implements Serializable {
         setV(match.getV());
     }
 
-    public void mergeEvents(List<Event> events) {
-        try {
-            LinkedHashSet<Event> myEvents = new LinkedHashSet<>(events);
-
-            List<Event> eventsToAdd = new ArrayList<>();
-
-            for (Event e: this.events)
-                if (e.getId() == null) {
-                    eventsToAdd.add(e);
-                    this.events.remove(e);
-                }
-
-            for (Event e:  this.events)
-                if (!myEvents.contains(e))
-                    this.events.remove(e);
-
-            myEvents.addAll(this.events);
-            this.events.clear();
-            this.events.addAll(myEvents);
-            this.events.addAll(eventsToAdd);
-        } catch (Exception e) {
-            Log.e("MATCH_POPULATE", e.toString());
-        }
-    }
-
-    public void addEventWithId(Event event) {
-        for (Event e: events)
-            if (e.getId() == null &&
-                e.getEventType().equals(event.getEventType()) &&
-                e.getTime().equals(event.getTime()) &&
-               (e.getPerson() == null && e.getPerson() == null ||
-                       e.getPerson().equals(event.getPerson())) &&
-               (e.getTeam() == null && event.getTeam() == null ||
-                        e.getTeam().equals(event.getTeam()))) {
-
-                e.setId(event.getId());
-                return;
-            }
-        events.add(event);
+    public void assignNewMatchPopulateData (MatchPopulate match)
+    {
+        setId(match.getId());
+        setDate(match.getDate());
+        setStage(match.getStage());
+        setPlayed(match.getPlayed());
+        setTour(match.getTour());
+        setPlayersList(match.getPlayersList());
+        setLeague(match.getLeague());
+        setEvents(match.getEvents());
+        setCreatedAt(match.getCreatedAt());
+        setUpdatedAt(match.getUpdatedAt());
+        setReferees(match.getReferees());
+        setScore(match.getScore());
+        setAutoGoal(match.getAutoGoal());
+        setPenalty(match.getPenalty());
+        setWinner(match.getWinner());
+        setRound(match.getRound());
+        setGroup(match.getGroup());
+        setFouls(match.getFouls());
+        setV(match.getV());
     }
 
     public String getId() {
@@ -188,7 +167,8 @@ public class MatchPopulate implements Serializable {
     }
 
     public void setPlayersList(List<String> playersList) {
-        this.playersList = playersList;
+        this.playersList.clear();
+        this.playersList.addAll(playersList);
     }
 
     public Stadium getPlace() {
@@ -221,6 +201,12 @@ public class MatchPopulate implements Serializable {
 
     public void setTeamTwo(Team teamTwo) {
         this.teamTwo = teamTwo;
+    }
+
+    public void removeEventAt(int i) {
+        try {
+            events.remove(i);
+        } catch (Exception ignored) {}
     }
 
     public List<Event> getEvents() {

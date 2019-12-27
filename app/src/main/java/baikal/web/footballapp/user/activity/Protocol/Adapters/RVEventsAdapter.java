@@ -138,6 +138,8 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
                     !events.get(i).getEventType().equals("disable") &&
                     !events.get(i).getEventType().equals("enable") &&
                     !disabledEvents.contains(events.get(i).getId()) &&
+                    !events.get(i).getEventType().equals("matchEnd") &&
+                    !events.get(i).getEventType().equals("matchStart") &&
                     events.get(i).getTime().equals(eventTime))
                 k++;
             if (k-1 == position)
@@ -171,6 +173,8 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
                     !eventsToDelete.contains(i) &&
                     !events.get(i).getEventType().equals("disable") &&
                     !events.get(i).getEventType().equals("enable") &&
+                    !events.get(i).getEventType().equals("matchEnd") &&
+                    !events.get(i).getEventType().equals("matchStart") &&
                     (events.get(i).getId()==null || !disabledEvents.contains(events.get(i).getId())))
                 eventsForTime.add(events.get(i));
 

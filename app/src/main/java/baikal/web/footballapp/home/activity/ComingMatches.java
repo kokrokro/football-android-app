@@ -1,6 +1,5 @@
 package baikal.web.footballapp.home.activity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,16 +20,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
-import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.home.adapter.RVComingMatchesAdapter;
 import baikal.web.footballapp.model.ActiveMatch;
-import baikal.web.footballapp.model.ActiveMatches;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -52,11 +45,32 @@ public class ComingMatches extends Fragment {
         final View view;
         RecyclerView recyclerView;
         view = inflater.inflate(R.layout.coming_matches, container, false);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.CM_swipe_to_refresh_layout);
         layout = view.findViewById(R.id.emptyComingMatches);
         recyclerView = view.findViewById(R.id.recyclerViewComingMatches);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         matches = new ArrayList<>();
+
+        layout.setVisibility(View.VISIBLE);
+
+        swipeRefreshLayout.setOnRefreshListener(()->{
+            swipeRefreshLayout.setRefreshing(false);
+            loadData();
+        });
+
         //checkConnection();
+        loadData();
+
+        try {
+            adapter = new RVComingMatchesAdapter(getActivity(), matches);
+            recyclerView.setAdapter(adapter);
+        }catch (NullPointerException e){
+            layout.setVisibility(View.VISIBLE);
+        }
+        return view;
+    }
+
+    private void loadData () {
         Date now = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", getResources().getConfiguration().locale);
         String strDate =">="+sdf.format(now);
@@ -72,6 +86,9 @@ public class ComingMatches extends Fragment {
                         matches.clear();
                         matches.addAll(response.body());
                         adapter.notifyDataSetChanged();
+                        layout.setVisibility(View.GONE);
+                        if (matches.size() == 0)
+                            layout.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -79,60 +96,5 @@ public class ComingMatches extends Fragment {
             @Override
             public void onFailure(@NonNull Call<List<ActiveMatch>> call, @NonNull Throwable t) { }
         });
-
-        try {
-            adapter = new RVComingMatchesAdapter(getActivity(), matches);
-            recyclerView.setAdapter(adapter);
-        }catch (NullPointerException e){
-            layout.setVisibility(View.VISIBLE);
-        }
-        return view;
-    }
-
-    @SuppressLint("CheckResult")
-    private void checkConnection() {
-        //noinspection ResultOfMethodCallIgnored
-        ReactiveNetwork
-                .observeNetworkConnectivity(Objects.requireNonNull(getActivity()).getApplicationContext())
-                .flatMapSingle(connectivity -> ReactiveNetwork.checkInternetConnectivity())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isConnected -> {
-                    // isConnected can be true or false
-                    if (isConnected){
-                        getActiveMatches();
-                    }
-                });
-    }
-    @SuppressLint("CheckResult")
-    private void getActiveMatches() {
-        //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().getComingMatches()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::saveData
-                        ,
-                        error -> {
-                            layout.setVisibility(View.VISIBLE);
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
-    }
-    private void saveData(ActiveMatches matches1) {
-        try {
-            List<ActiveMatch> result;
-            result = matches1.getMatches();
-            if (result.size() != 0) {
-                layout.setVisibility(View.GONE);
-                adapter.dataChanged(result);
-                matches.clear();
-                matches.addAll(result);
-            } else {
-                layout.setVisibility(View.VISIBLE);
-            }
-        }catch (Exception e){
-            log.error("ERROR: ", e);
-        }
     }
 }

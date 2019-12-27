@@ -76,7 +76,7 @@ public class StructureCommand1 extends AppCompatActivity {
                 @Override
                 public void onResponse(@NonNull Call<Match> call, @NonNull Response<Match> response) {
                     if (response.isSuccessful() && response.body() != null) {
-                        match.onProtocolEdited(response.body());
+                        match.assignNewMatchData(response.body());
 
                         Intent intent = new Intent();
                         Bundle bundle = new Bundle();

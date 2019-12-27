@@ -12,9 +12,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -29,10 +31,17 @@ import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.user.activity.Protocol.Adapters.RVPenaltySeriesAdapter;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ProtocolPenalty extends AppCompatActivity {
     private static final String TAG = "ProtocolPenalty";
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private TextView teamName1;
+    private TextView teamName2;
     private TextView scoreTeam1;
     private TextView scoreTeam2;
     private Button undo;
@@ -53,6 +62,7 @@ public class ProtocolPenalty extends AppCompatActivity {
             "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
 
     private LinkedList<Event> eventsToSend;
+    private TreeSet<String> deletedEvents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,8 +79,37 @@ public class ProtocolPenalty extends AppCompatActivity {
             finish();
         });
 
-        TextView teamName1 = findViewById(R.id.PPS_team_name1);
-        TextView teamName2 = findViewById(R.id.PPS_team_name2);
+        swipeRefreshLayout = findViewById(R.id.PPS_swipe_to_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(()->{
+            if (match==null)
+                return;
+
+            Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    if (response.isSuccessful() && response.body() != null) {
+                        match.assignNewMatchPopulateData(response.body().get(0));
+                        assignMatchData();
+                        calculateScore();
+                        setUpOrder();
+                        return;
+                    }
+
+                    Toast.makeText(ProtocolPenalty.this, "Не удалось обновить протокол.\nЧто-то пошло не так...", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(ProtocolPenalty.this, "Не удалось обновить протокол", Toast.LENGTH_SHORT).show();
+                }
+            });
+            assignMatchData();
+        });
+
+        teamName1 = findViewById(R.id.PPS_team_name1);
+        teamName2 = findViewById(R.id.PPS_team_name2);
         RecyclerView recyclerViewTeam1 = findViewById(R.id.PPS_RV_team1);
         RecyclerView recyclerViewTeam2 = findViewById(R.id.PPS_RV_team2);
         scoreTeam1      = findViewById(R.id.PPS_team_score1);
@@ -84,12 +123,6 @@ public class ProtocolPenalty extends AppCompatActivity {
         bgBtnColor = new int[]{getResources().getColor(R.color.blue), getResources().getColor(R.color.red)};
 
         match = (MatchPopulate) getIntent().getExtras().getSerializable("MATCH");
-        teamIds[0] = match.getTeamOne().getId();
-        teamIds[1] = match.getTeamTwo().getId();
-
-        teamName1.setText(match.getTeamOne().getName());
-        teamName2.setText(match.getTeamTwo().getName());
-
         recyclerViewTeam1.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTeam2.setLayoutManager(new LinearLayoutManager(this));
         adapter1 = new RVPenaltySeriesAdapter(this, match.getEvents(), match.getTeamOne().getId());
@@ -98,10 +131,23 @@ public class ProtocolPenalty extends AppCompatActivity {
         recyclerViewTeam2.setAdapter(adapter2);
 
         setButtonsListeners();
+        assignMatchData ();
+    }
+
+    private void assignMatchData () {
+        teamIds[0] = match.getTeamOne().getId();
+        teamIds[1] = match.getTeamTwo().getId();
+
+        teamName1.setText(match.getTeamOne().getName());
+        teamName2.setText(match.getTeamTwo().getName());
+
+        deletedEvents = new TreeSet<>();
+
         calculateScore();
         if (checkEventsForEnd() != 0)
             matchFinished();
         setUpOrder();
+
 
         eventsToSend = new LinkedList<>();
         for (Event e: match.getEvents())
@@ -122,36 +168,42 @@ public class ProtocolPenalty extends AppCompatActivity {
         penaltySuccessBtn.setOnClickListener(v->{
             if (order != 0) {
                 addEvent(6);
-                changeOrder(++order);
+                setUpOrder();
             }
         });
 
         penaltyFailureBtn.setOnClickListener(v->{
             if (order != 0) {
                 addEvent(7);
-                changeOrder(++order);
+                setUpOrder();
             }
         });
 
         undo.setOnClickListener(v->{
             if (eventsToSend.size() != 0) {
-                eventsToSend.removeFirst();
+                eventsToSend.clear();
 
                 for (int i=match.getEvents().size()-1; i>=0; i--) {
-                    Event event = match.getEvents().get(i);
-                    if (event.getEventType().equals("penaltySeriesSuccess") ||
-                            event.getEventType().equals("penaltySeriesFailure") ||
-                            event.getEventType().equals("matchEnd"))
-                        if (event.getId() == null) {
-                            match.getEvents().remove(i);
+                    Event e = match.getEvents().get(i);
+                    if (e.getId()==null)
+                        if (e.getEventType().equals("penaltySeriesSuccess") ||
+                                e.getEventType().equals("penaltySeriesFailure")) {
+                            match.removeEventAt(i);
                             break;
                         }
                 }
+
+                for (int i=match.getEvents().size()-1; i>=0; i--)
+                    if (match.getEvents().get(i).getId()==null)
+                        eventsToSend.addLast(match.getEvents().get(i));
 
                 adapter1.notifyDataSetChanged();
                 adapter2.notifyDataSetChanged();
                 calculateScore();
 
+                setUpOrder();
+                sendEvents();
+                Log.d(TAG, "removed not sent event");
                 return;
             }
 
@@ -161,22 +213,26 @@ public class ProtocolPenalty extends AppCompatActivity {
                     disabledEvents.add(e.getEvent());
                 else if (e.getEventType().equals("enable"))
                     disabledEvents.remove(e.getEvent());
-
+            deletedEvents.addAll(disabledEvents);
 
             for (int i=match.getEvents().size()-1; i>=0; i--) {
                 Event event = match.getEvents().get(i);
-                if (disabledEvents.contains(event.getId()))
+                if (event.getId()==null)
+                    return;
+                if (deletedEvents.contains(event.getId()))
                     continue;
                 if (event.getEventType().equals("penaltySeriesSuccess") ||
-                        event.getEventType().equals("penaltySeriesFailure")||
-                        event.getEventType().equals("matchEnd")) {
+                        event.getEventType().equals("penaltySeriesFailure")) {
 
+                    eventsToSend.clear();
                     Event newEvent = new Event();
-                    newEvent.setId(null);
                     newEvent.setEvent(event.getId());
+                    deletedEvents.add(event.getId());
                     newEvent.setEventType("disable");
                     match.addEvent(newEvent);
-                    eventsToSend.addLast(event);
+                    eventsToSend.addLast(newEvent);
+                    setUpOrder();
+                    Log.d(TAG, "EVENT IN BTN LAMBDA: " + event.toString());
                     adapter1.notifyDataSetChanged();
                     adapter2.notifyDataSetChanged();
                     calculateScore();
@@ -185,6 +241,7 @@ public class ProtocolPenalty extends AppCompatActivity {
                 }
             }
 
+            setUpOrder();
             adapter1.notifyDataSetChanged();
             adapter2.notifyDataSetChanged();
             calculateScore();
@@ -194,8 +251,12 @@ public class ProtocolPenalty extends AppCompatActivity {
     private void changeOrder (int order) {
         this.order = order;
 
-        Log.d(TAG, String.valueOf(order));
-
+        if (this.order == 0) {
+            Log.d(TAG, "CHANGING BTNS BG");
+            penaltySuccessBtn.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+            penaltyFailureBtn.setBackgroundColor(getResources().getColor(R.color.colorWhite));
+            return;
+        }
         penaltySuccessBtn.setBackgroundColor(bgBtnColor[(this.order&1)]);
         penaltyFailureBtn.setBackgroundColor(bgBtnColor[(this.order&1)]);
     }
@@ -203,7 +264,6 @@ public class ProtocolPenalty extends AppCompatActivity {
     private void addEvent(int i) {
         isChangingOrderLocked = true;
         Event event = new Event();
-        event.setId(null);
         event.setEventType(eventTypes[i]);
         event.setTime("penaltySeries");
         event.setTeam(teamIds[(order&1)]);
@@ -231,10 +291,13 @@ public class ProtocolPenalty extends AppCompatActivity {
                 disabledEvents.add(e.getEvent());
             else if (e.getEventType().equals("enable"))
                 disabledEvents.remove(e.getEvent());
+        deletedEvents.addAll(disabledEvents);
 
         for (Event e: match.getEvents()) {
             if (e.getEventType().equals("disable") ||
                     e.getEventType().equals("enable") ||
+                    e.getEventType().equals("matchEnd") ||
+                    e.getEventType().equals("matchStart") ||
                     (e.getId() != null && disabledEvents.contains(e.getId())))
                 continue;
 
@@ -274,16 +337,11 @@ public class ProtocolPenalty extends AppCompatActivity {
             seriesCellT2.clear();
         }
 
-        Log.d(TAG,"" + eventsTeam1.size() + " ? " + eventsTeam2.size());
-
-        if (eventsTeam1.size() == eventsTeam2.size()) {
+        if (eventsTeam1.size() == eventsTeam2.size() && eventsTeam2.size()>0) {
             int freeSlots1 = 3 - eventsTeam1.get(eventsTeam1.size()-1).size();
             int freeSlots2 = 3 - eventsTeam2.get(eventsTeam2.size()-1).size();
             int goals1 = getGoals(eventsTeam1.get(eventsTeam1.size()-1));
             int goals2 = getGoals(eventsTeam2.get(eventsTeam2.size()-1));
-
-            Log.d(TAG + 1, "freeSlots2 + goals2 < goals1: " + freeSlots2 + " + " + goals2 + " ? " + goals1);
-            Log.d(TAG + 2, "freeSlots1 + goals1 < goals2: " + freeSlots1 + " + " + goals1 + " ? " + goals2);
 
             if (freeSlots2 + goals2 < goals1)
                 return 1;
@@ -317,10 +375,13 @@ public class ProtocolPenalty extends AppCompatActivity {
                 disabledEvents.add(e.getEvent());
             else if (e.getEventType().equals("enable"))
                 disabledEvents.remove(e.getEvent());
+        deletedEvents.addAll(disabledEvents);
 
         for (Event e: match.getEvents()) {
             if (e.getEventType().equals("disable") ||
                     e.getEventType().equals("enable") ||
+                    e.getEventType().equals("matchEnd") ||
+                    e.getEventType().equals("matchStart") ||
                     (e.getId() != null && disabledEvents.contains(e.getId())))
                 continue;
 
@@ -357,6 +418,7 @@ public class ProtocolPenalty extends AppCompatActivity {
                 disabledEvents.add(e.getEvent());
             else if (e.getEventType().equals("enable"))
                 disabledEvents.remove(e.getEvent());
+        deletedEvents.addAll(disabledEvents);
 
         String firstTurnTeamID = null;
 
@@ -364,19 +426,27 @@ public class ProtocolPenalty extends AppCompatActivity {
         for (Event e: match.getEvents()) {
             if (e.getEventType().equals("disable") ||
                     e.getEventType().equals("enable") ||
+                    e.getEventType().equals("matchEnd") ||
+                    e.getEventType().equals("matchStart") ||
                     (e.getId() != null && disabledEvents.contains(e.getId())))
                 continue;
 
             if (e.getEventType().equals("penaltySeriesSuccess") ||
                 e.getEventType().equals("penaltySeriesFailure")) {
                 if (firstTurnTeamID == null)
-                    firstTurnTeamID = e.getId();
+                    firstTurnTeamID = e.getTeam();
                 k++;
             }
         }
 
-        if (firstTurnTeamID == null)
+        if (firstTurnTeamID == null) {
+            isChangingOrderLocked = false;
+            changeOrder(0);
             return;
+        }
+
+        Log.d(TAG, "K = " + k);
+        Log.d(TAG, "teams comparing: \n" + firstTurnTeamID + "\n" + teamIds[0] + "\n" + teamIds[1]);
 
         isChangingOrderLocked = true;
         if (firstTurnTeamID.equals(teamIds[0]))
@@ -419,6 +489,7 @@ public class ProtocolPenalty extends AppCompatActivity {
             Event event = eventsToSend.getFirst();
             eventsToSend.removeFirst();
             String token = SaveSharedPreference.getObject().getToken();
+            Log.d(TAG, event.toString());
             //noinspection ResultOfMethodCallIgnored
             Controller.getApi().editProtocolMatch(match.getId(), token, event)
                     .subscribeOn(Schedulers.io())
@@ -426,10 +497,11 @@ public class ProtocolPenalty extends AppCompatActivity {
                     .subscribe(newEvent -> {
                                 if (newEvent != null) {
                                     Toast.makeText(ProtocolPenalty.this, "Синхронизированно с сервером", Toast.LENGTH_SHORT).show();
-                                    match.addEventWithId(newEvent);
+                                    event.setId(newEvent.getId());
                                     adapter1.notifyDataSetChanged();
                                     adapter2.notifyDataSetChanged();
                                     calculateScore();
+                                    setUpOrder();
                                     sendEvents();
                                 }
                             },
@@ -437,5 +509,14 @@ public class ProtocolPenalty extends AppCompatActivity {
                                     Log.d(TAG, error.toString())
                     );
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("MATCH", match);
+        intent.putExtras(bundle);
+        setResult(RESULT_CANCELED, intent);
     }
 }

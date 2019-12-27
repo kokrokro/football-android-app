@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -52,6 +53,8 @@ public class TournamentPage extends Fragment {
             User user = SaveSharedPreference.getObject();
             token = user.getToken();
         }
+        else
+            Toast.makeText(getContext(), "Войдите или зарегистрируйтесь", Toast.LENGTH_LONG).show();
         MainViewModel mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         mainViewModel.getPersonStatus().observe(this, personStatuses -> {
             personStatus.clear();

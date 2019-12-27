@@ -68,6 +68,10 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/PMS_swipe_to_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -368,4 +372,5 @@
                 android:background="@color/colorWhite"/>
         </LinearLayout>
     </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>

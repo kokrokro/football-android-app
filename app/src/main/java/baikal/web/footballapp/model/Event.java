@@ -27,6 +27,10 @@ public class Event implements Serializable {
     @Expose
     private String team;
 
+    public Event() {
+        id = event = eventType = person = time = team = null;
+    }
+
     public String getId() {
         return id;
     }
@@ -72,11 +76,11 @@ public class Event implements Serializable {
     {
         String ans = "";
 
-        ans += "_id: " + getId() + "\n";
-        ans += "eventType: " + getEventType() + "\n";
-        ans += "team: " + getTeam() + "\n";
-        ans += "time: " + getTime() + "\n";
-
+        ans += "_id: " + getId()==null?"null ":getId() + " \n";
+        ans += "eventType: " + getEventType() + " \n";
+        ans += "event: " + getEvent()==null?"null ":getEvent() + " \n";
+        ans += "team: " + getTeam()==null?"null ":getTeam() + " \n";
+        ans += "time: " + getTime()==null?"null ":getTime() + " \n \n ";
         return ans;
     }
 

@@ -11,6 +11,7 @@ import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.DataClub;
 import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.Event;
+import baikal.web.footballapp.model.FavoriteTourneys;
 import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
@@ -115,9 +116,9 @@ public interface FootballApi {
     @Multipart
     @PATCH("/api/crud/person/{id}")
     Call<Person> editProfile(@Path("id") String id, @Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
-    @Multipart
+
     @PATCH("/api/crud/person/{id}")
-    Call<EditProfile> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Part("favoriteTourney") List<RequestBody> favoriteTourney);
+    Call<EditProfile> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Body FavoriteTourneys favoriteTourneys);
 
     @GET("/api/crud/person?_populate=favoriteTourney&_select=favoriteTourney")
     Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);

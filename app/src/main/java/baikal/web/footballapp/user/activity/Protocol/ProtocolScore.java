@@ -17,6 +17,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class ProtocolScore extends AppCompatActivity{
     private final Logger log = LoggerFactory.getLogger(ProtocolScore.class);
 
     private final String[] eventTypes =  {"goal", "yellowCard", "redCard", "penalty",
-                                    "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
+                               "autoGoal", "foul", "penaltySeriesSuccess", "penaltySeriesFailure"};
 
     private final String[] matchTimes       = {"firstHalf",     "secondHalf",  "extraTime", "penaltySeries"};
     private final String[] matchTimesToShow = {"Первый тайм",   "Второй тайм", "Дополнительное время"};
@@ -101,6 +102,32 @@ public class ProtocolScore extends AppCompatActivity{
         ImageButton buttonBack = findViewById(R.id.protocolScoreBack);
 
         eventsToSend = new LinkedList<>();
+
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.PMS_swipe_to_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(()->{
+            if (match == null)
+                return;
+            Controller.getApi().getMatchById(match.getId()).enqueue(new Callback<List<MatchPopulate>>() {
+                @Override
+                public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    if (response.isSuccessful() && response.body() != null) {
+                        match.assignNewMatchPopulateData(response.body().get(0));
+                        assignMatchData();
+                        return;
+                    }
+
+                    Toast.makeText(ProtocolScore.this, "Не удалось обновить протокол.\nЧто-то пошло не так...", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    Toast.makeText(ProtocolScore.this, "Не удалось обновить протокол", Toast.LENGTH_SHORT).show();
+                }
+            });
+            assignMatchData();
+        });
 
         buttonBack.setOnClickListener(v -> {
             Intent intent = new Intent();
@@ -183,6 +210,7 @@ public class ProtocolScore extends AppCompatActivity{
                 addEvent(team1.getId(), null, 4);
         });
 
+
         btnAutoGoal2.setOnClickListener(v -> {
             if (team2 != null)
                 addEvent(team2.getId(), null, 4);
@@ -212,6 +240,7 @@ public class ProtocolScore extends AppCompatActivity{
     }
 
     private void assignMatchData() {
+        eventsToSend.clear();
         if (match != null) {
             if (match.getTeamOne() != null)
                 assignTeam(match.getTeamOne().getId(), "teamOne");
@@ -223,6 +252,9 @@ public class ProtocolScore extends AppCompatActivity{
     }
 
     void setupAdapters() {
+        if (adapter1 != null) adapter1.notifyDataSetChanged();
+        if (adapter2 != null) adapter2.notifyDataSetChanged();
+
         if (team1!= null && team1.getPlayers() != null && adapter1 == null) {
             adapter1 = new RVTeamEventListAdapter(this, team1.getPlayers(), match.getPlayersList(),
                                                                 team1.getTrainer(), match.getEvents(), team1.getId(), person -> {
@@ -285,6 +317,11 @@ public class ProtocolScore extends AppCompatActivity{
                                     if (newEvent.getEventType().equals("matchEnd"))
                                         getFinishedMatch();
                                     sendEvents();
+
+                                    Log.e(TAG, "manage sending: " + eventsToSend.size());
+                                    for (int i=match.getEvents().size()-10; i<match.getEvents().size(); i++) {
+                                        Log.e(TAG, match.getEvents().get(i).toString());
+                                    }
                                 }
                             },
                             error ->
@@ -294,8 +331,7 @@ public class ProtocolScore extends AppCompatActivity{
     }
 
     @SuppressLint("SetTextI18n")
-    void calculateScore()
-    {
+    void calculateScore() {
         int goalCntTeam1 = 0;
         int goalCntTeam2 = 0;
         int foulsCntTeam1 = 0;
@@ -312,10 +348,12 @@ public class ProtocolScore extends AppCompatActivity{
         for (Event e: match.getEvents()) {
             if (e.getEventType().equals("disable") ||
                     e.getEventType().equals("enable") ||
+                    e.getEventType().equals("matchEnd") ||
+                    e.getEventType().equals("matchStart") ||
                     (e.getId() != null && disabledEvents.contains(e.getId())))
                 continue;
 
-            if (team1 != null && e.getTeam()!=null && e.getTeam().equals(team1.getId())) {
+            if (team1 != null && e.getTeam().equals(team1.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
                         e.getEventType().equals(eventTypes[3]) ||
                         e.getEventType().equals(eventTypes[6]))
@@ -331,7 +369,7 @@ public class ProtocolScore extends AppCompatActivity{
                         foulsCntTeam1++;
             }
 
-            if (team2 != null && e.getTeam()!=null && e.getTeam().equals(team2.getId())) {
+            if (team2 != null && e.getTeam().equals(team2.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
                         e.getEventType().equals(eventTypes[3]) ||
                         e.getEventType().equals(eventTypes[6]))
@@ -407,8 +445,11 @@ public class ProtocolScore extends AppCompatActivity{
             Log.d(TAG, "event list has been changed");
 
             EventList newEvents = (EventList) data.getExtras().getSerializable("EVENTS");
-            for (Event e: newEvents.getEvents())
-                eventsToSend.addLast(e);
+            if (newEvents.getEvents() != null)
+                for (Event e: newEvents.getEvents()) {
+                    eventsToSend.addLast(e);
+                    match.addEvent(e);
+                }
 
             sendEvents();
         }
