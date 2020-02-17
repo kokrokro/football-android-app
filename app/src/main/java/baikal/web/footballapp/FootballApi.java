@@ -69,7 +69,7 @@ public interface FootballApi {
     @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
     Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
 
-    @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
+    @GET("/api/crud/match?_sort=date&_populate=teamOne+teamTwo")
     Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit, @Query("_offset") String offset);
 
     //get all clubs
@@ -101,8 +101,6 @@ public interface FootballApi {
     Call<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
     @GET("/api/crud/league?_populate=matches+stages")
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
-    @GET("/api/crud/match?_sort=date")
-    Call<List<Match>> getMatchesForNews(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
     @GET("api/crud/match?_populate=teamOne+teamTwo+place")
     Call<List<MatchPopulate>> getMatches(@Query("_id") String id, @Query("referees.person") String referee);
     @GET("api/crud/match?_populate=teamOne+teamTwo+place")
@@ -201,8 +199,11 @@ public interface FootballApi {
     @GET("/api/crud/team?_populate=players")
     Call<List<Team>> getTeamById(@Query("_id") String id);
 
+    @GET("/api/crud/team?_populate=players")
+    Call<List<Team>> getTeamByLeagueId(@Query("league") String id);
+
     @GET("/api/stats/team")
-    Observable<List<TeamStats>> getTeamStats(@Query("_id") String id, @Query("onModel") String onModel, @Query("on_") String on_, @Query("team") String team);
+    Call<List<TeamStats>> getTeamStats(@Query("_id") String id, @Query("onModel") String onModel, @Query("on_") String on_, @Query("team") String team);
 
     @GET("api/stats/person")
     Call<List<PersonStats>> getPersonStats ( @Query("onModel") String onModel, @Query("person") String id , @Query("on_") String on_);

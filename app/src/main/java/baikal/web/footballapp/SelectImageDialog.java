@@ -84,7 +84,7 @@ public class SelectImageDialog extends DialogFragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         try {
             mOnImageSelectedListener = (OnImageSelectedListener) getTargetFragment();
         } catch (ClassCastException e) {

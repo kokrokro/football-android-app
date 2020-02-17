@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
@@ -100,8 +101,17 @@ public class TournamentsFragment extends Fragment {
     void loadData()
     {
         try {
-            if (SaveSharedPreference.getObject() == null)
+            if (SaveSharedPreference.getObject() == null) {
+                if (emptyFavTourneys != null)
+                    emptyFavTourneys.setVisibility(View.GONE);
+                favTourney.clear();
+                favTourney.addAll(MankindKeeper.getInstance().allTourneys);
+                favLeague.clear();
+                favLeague.addAll(MankindKeeper.getInstance().allLeagues);
+                if (swipeRefreshLayout != null)
+                    swipeRefreshLayout.setRefreshing(false);
                 return;
+            }
             String personId = SaveSharedPreference.getObject().getUser().getId();
             mainViewModel.getTeams(personId).observe(getViewLifecycleOwner(),teams -> {
                 allTeams.clear();
@@ -111,6 +121,7 @@ public class TournamentsFragment extends Fragment {
                 allStadiums.clear();
                 allStadiums.addAll(stadiums);
             });
+
 
             mainViewModel.getFavTourney(personId).observe(getViewLifecycleOwner(), tourneys -> {
                 swipeRefreshLayout.setRefreshing(false);

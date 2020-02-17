@@ -72,7 +72,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
 
     SearchTournaments() { }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ProgressDialog mProgressDialog = new ProgressDialog(getActivity(), R.style.MyProgressDialogTheme);
@@ -98,18 +97,20 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         List<Region> regions = new ArrayList<>(MankindKeeper.getInstance().regions);
         mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
 
-        String userId = null;
+        String userId;
         try {
             userId = SaveSharedPreference.getObject().getUser().getId();
+            mainViewModel.getFavTourney(userId).observe(this, tourneys -> {
+                favTourneysId.clear();
+                for(Tourney tr :tourneys)
+                    favTourneysId.add(tr.getId());
+                adapter.notifyDataSetChanged();
+            });
         } catch (Exception ignored) { }
 
-        mainViewModel.getFavTourney(userId).observe(this, tourneys -> {
-            favTourneysId.clear();
-            for(Tourney tr :tourneys)
-                favTourneysId.add(tr.getId());
+        regionsId.clear();
+        regionsNames.clear();
 
-            adapter.notifyDataSetChanged();
-        });
         for( Region reg : regions){
             regionsId.add(reg.getId());
             regionsNames.add(reg.getName());
@@ -119,12 +120,12 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
             recyclerView.setNestedScrollingEnabled(false);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             adapter = new RVTourneyAdapter(tourneyList, getActivity(), favTourneysId, (id,isChecked)-> {
-                if (isChecked)
-                    favTourneysId.add(id);
-                else
-                    favTourneysId.remove(id);
+                    if (isChecked)
+                        favTourneysId.add(id);
+                    else
+                        favTourneysId.remove(id);
 
-                Log.d("checked", isChecked+" "+id);
+                    Log.d("checked", isChecked + " " + id);
             });
             recyclerView.setAdapter(adapter);
         } catch (Exception e) {
@@ -133,7 +134,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         filter.setOnClickListener(v-> {
                     FragmentManager fm = getChildFragmentManager();
                     DialogRegion dialogRegion =  new DialogRegion(regionsNames);
-
                     dialogRegion.show(fm, "fragment_edit_name");
                 }
         );
@@ -150,12 +150,12 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                SearchTournamentss(query,null);
+                SearchTournamentsS(query,null);
                 return false;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
-                SearchTournamentss(newText,null);
+                SearchTournamentsS(newText,null);
                 return false;
             }
         });
@@ -166,12 +166,15 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     {
         FavoriteTourneys favTourneyNew = new FavoriteTourneys(favTourneysId);
 
-        String id = "";
-        String token = "";
+        String id;
+        String token;
         try {
             id = SaveSharedPreference.getObject().getUser().getId();
             token = SaveSharedPreference.getObject().getToken();
-        } catch (Exception ignored) { }
+        } catch (Exception e) {
+            Log.e("SearchTourney", e.toString());
+            return;
+        }
 
         Controller.getApi().editPlayerInfo(id, token, favTourneyNew).enqueue(new Callback<EditProfile>() {
             @Override
@@ -197,6 +200,8 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private void changeDataForTournamentFragment (String tourneyIds)
     {
         if (tourneyIds.equals("")) {
+            if (mainViewModel == null)
+                return;
             mainViewModel.setFavTourney(new ArrayList<>());
             return;
         }
@@ -221,7 +226,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     }
 
     @SuppressLint("CheckResult")
-    private void SearchTournamentss(String search, String region){
+    private void SearchTournamentsS(String search, String region){
 //        PersonalActivity.people.clear();
 //        String type = "player";
         if (search!=null && search.equals("")) {
@@ -249,6 +254,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     }
     @Override
     public void onFinishEditDialog(int pos) {
-        SearchTournamentss(null,regionsId.get(pos));
+        SearchTournamentsS(null,regionsId.get(pos));
     }
 }

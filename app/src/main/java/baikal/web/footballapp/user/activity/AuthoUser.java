@@ -136,6 +136,12 @@ public class AuthoUser extends Fragment {
 
     public AuthoUser (PersonalActivity activity) {
         this.activity = activity;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
         invitationFragment    = new InvitationFragment(this);
         addTournamentFragment = new AddTournamentFragment();
         userClubFragment      = new UserClubs();
@@ -146,16 +152,11 @@ public class AuthoUser extends Fragment {
         activeAU = invitationFragment;
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @SuppressLint("RestrictedApi")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        log.info("INFO: AuthoUser onCreateView");
+        Log.d(TAG, "onCreateView");
         View view = inflater.inflate(R.layout.user_autho, container, false);// Find our drawer view
         setSingleReferee = view.findViewById(R.id.setSingleReferee);
         cancelSetSingleReferee = view.findViewById(R.id.cancelSetSingleReferee);
@@ -216,6 +217,7 @@ public class AuthoUser extends Fragment {
         fab1.setVisibility(View.INVISIBLE);
         fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         setMenuItemListeners();
+
         showFragment(activeAU,   invitationMT, false, false, 0);
 
         try {
@@ -299,15 +301,15 @@ public class AuthoUser extends Fragment {
             }
         });
                     //{"Приглашения", "Команды", "Турниры", "Расписание", "Мои матчи"};
-        invitationBtn.setOnClickListener(v->showFragment(invitationFragment,   invitationMT, false, false, 0));
-        teamBtn.setOnClickListener      (v->showFragment(commandsFragment,     teamMT,       false, true, 1));
-        tournamentBtn.setOnClickListener(v->showFragment(addTournamentFragment, tournamentMT,false, false, 2));
+        invitationBtn.setOnClickListener(v->showFragment(invitationFragment,    invitationMT,false, false,0));
+        teamBtn.setOnClickListener      (v->showFragment(commandsFragment,      teamMT,      false, true, 1));
+        tournamentBtn.setOnClickListener(v->showFragment(addTournamentFragment, tournamentMT,false, false,2));
 
         trainerTeamBtn.setOnClickListener (v->showFragment(commandsFragment, trainerTeamMT, false, true, 1));
 
-        refereeTimeTableBtn.setOnClickListener  (v->showFragment(timeTableFragment, refTimeTableMT, true, false,3 ));
-        refereeMatchesBtn.setOnClickListener    (v->showFragment(myMatchesFragment, refMatchesMT,   false, false, 4));
-        refereeTournamentBtn.setOnClickListener (v->showFragment(addTournamentFragment, refTournamentsMT, false, false, 2));
+        refereeTimeTableBtn.setOnClickListener (v->showFragment(timeTableFragment,     refTimeTableMT,  true,  false,3 ));
+        refereeMatchesBtn.setOnClickListener   (v->showFragment(myMatchesFragment,     refMatchesMT,    false, false,4));
+        refereeTournamentBtn.setOnClickListener(v->showFragment(addTournamentFragment, refTournamentsMT,false, false,2));
 
         signOutBtn.setOnClickListener(v->{
             WebStorage.getInstance().deleteAllData();
@@ -327,6 +329,7 @@ public class AuthoUser extends Fragment {
 
             } catch (Exception e) {
                 log.error("AuthoUser: ", e);
+                Log.e("AuthoUser: ", e.toString());
                 activity.setFragmentUser(new UserPage(activity));
                 fragmentManager.beginTransaction().show(activity.getFragmentUser()).commit();
             }
@@ -338,6 +341,7 @@ public class AuthoUser extends Fragment {
     @SuppressLint("RestrictedApi")
     private void showFragment (Fragment fragmentToShow, TextView textView,
                                boolean isSingleRefVisible, boolean isFabV, int pos) {
+        Log.d("AuthoUser", fragmentToShow.toString() + " " + textView.getText());
         activeAU = fragmentToShow;
         categoryTitle.setText(appBarTitles[pos]);
         try {
@@ -347,7 +351,7 @@ public class AuthoUser extends Fragment {
             setSingleReferee.setVisibility(isSingleRefVisible ? View.VISIBLE : View.GONE);
             fab.setVisibility(isFabV ? View.VISIBLE : View.GONE);
             FragmentTransaction menuFragmentTransaction = this.getChildFragmentManager().beginTransaction();
-            menuFragmentTransaction.replace(R.id.flContent, fragmentToShow).show(fragmentToShow).commit();
+            menuFragmentTransaction.replace(R.id.flContent, fragmentToShow).commit();
         } catch (Exception e) {
             Log.e(TAG, e.toString());
             log.error(TAG, e);

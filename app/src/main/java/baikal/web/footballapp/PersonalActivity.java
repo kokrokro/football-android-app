@@ -35,7 +35,9 @@ import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
+import baikal.web.footballapp.players.activity.Player;
 import baikal.web.footballapp.players.activity.PlayersPage;
+import baikal.web.footballapp.players.adapter.PlayersAdapter;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.UserPage;
@@ -63,6 +65,8 @@ public class PersonalActivity extends AppCompatActivity {
     private Fragment autoUser      ;
     private Fragment active        ;
 
+    private int activeFragmentId;
+
     private BottomNavigationView bottomNavigationView;
     private final FragmentManager fragmentManager = this.getSupportFragmentManager();
     public static List<Team> allTeams = new ArrayList<>();
@@ -72,57 +76,82 @@ public class PersonalActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         active = mainPage;
+                        activeFragmentId = item.getItemId();
                         beginTransaction(fragmentManager, active, MAIN);
                         return true;
                     case R.id.navigation_tournament:
                         active = tournamentPage;
+                        activeFragmentId = item.getItemId();
                         beginTransaction(fragmentManager, active, TOURNAMENT);
                         return true;
                     case R.id.navigation_club:
                         active = clubPage;
+                        activeFragmentId = item.getItemId();
                         beginTransaction(fragmentManager, active, CLUB);
                         return true;
                     case R.id.navigation_players:
                         active = playersPage;
+                        activeFragmentId = item.getItemId();
                         beginTransaction(fragmentManager, active, PLAYERS);
                         return true;
                     case R.id.navigation_user:
-
+                        if (activeFragmentId == R.id.navigation_user)
+                            return true;
+                        activeFragmentId = item.getItemId();
                         boolean status = SaveSharedPreference.getLoggedStatus(getApplicationContext());
+                        Log.d(TAG, status + " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
                         if (status) {
+                            Log.d(TAG, "ЗАРЕГАН");
                             log.debug("ЗАРЕГАН");
                             log.debug(SaveSharedPreference.getObject().getToken());
                             Log.d(TAG, "User ID: " + SaveSharedPreference.getObject().getUser().getId());
 
                             active = autoUser;
+
+                            Log.d(TAG, active.toString());
+
                             beginTransaction(fragmentManager, active, USER);
                         } else {
+                            Log.d(TAG, "НЕ ЗАРЕГАН");
                             log.error("НЕ ЗАРЕГАН");
-                            active = fragmentUser = new UserPage(PersonalActivity.this);
-                            beginTransaction(fragmentManager, active, USER);
+                            moveToLogin ();
                         }
                         return true;
                 }
                 return false;
             };
 
-    private void beginTransaction (FragmentManager fragmentManager, Fragment fragment, String backStack) {
-        fragmentManager.beginTransaction().replace(R.id.pageContainer, fragment).addToBackStack(backStack).commit();
+    public void moveToLogin () {
+        active = fragmentUser = new UserPage(PersonalActivity.this);
+        beginTransaction(fragmentManager, active, USER);
+        bottomNavigationView.getMenu().getItem(4).setChecked(true);
     }
 
-    public PersonalActivity() {
-        mainPage       = new MainPage();
-        tournamentPage = new TournamentPage(PersonalActivity.this);
-        clubPage       = new ClubPage();
-        playersPage    = new PlayersPage();
-        autoUser       = new AuthoUser(PersonalActivity.this);
-        fragmentUser   = new UserPage(this);
-        active         = mainPage;
+    private void beginTransaction (FragmentManager fragmentManager, Fragment fragment, String backStack) {
+        fragmentManager.beginTransaction().replace(R.id.pageContainer, fragment).addToBackStack(backStack).show(fragment).commit();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        PlayersAdapter.OnItemListener mOnItemListener = person -> {
+            Player playerFragment = new Player();
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("PLAYERINFO", person);
+
+            playerFragment.setArguments(bundle);
+            fragmentManager.beginTransaction().replace(R.id.pageContainer, playerFragment).addToBackStack(null).commit();
+        };
+
+        mainPage       = new MainPage();
+        tournamentPage = new TournamentPage(PersonalActivity.this);
+        clubPage       = new ClubPage();
+        playersPage    = new PlayersPage(mOnItemListener);
+        autoUser       = new AuthoUser(PersonalActivity.this);
+        fragmentUser   = new UserPage(this);
+        active         = mainPage;
+
         setAnimation();
         setContentView(R.layout.activity_personal);
         ProgressDialog mProgressDialog = new ProgressDialog(this);
@@ -363,7 +392,6 @@ public class PersonalActivity extends AppCompatActivity {
                         MankindKeeper.getInstance().allTourneys.addAll(response.body());
                     }
                 }
-
             }
             @Override
             public void onFailure(@NonNull Call<List<Tourney>> call, @NonNull Throwable t) {

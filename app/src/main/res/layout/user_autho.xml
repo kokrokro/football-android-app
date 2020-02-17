@@ -12,11 +12,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".PersonalActivity">
-        <!-- The ActionBar displayed at the top -->
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/UserAppbar"
             android:layout_width="match_parent"
@@ -25,20 +20,30 @@
             android:orientation="vertical"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
             <include
-                    layout="@layout/toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll|enterAlways">
+                layout="@layout/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
             </include>
 
         </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context=".PersonalActivity">
+        <!-- The ActionBar displayed at the top -->
+
             <FrameLayout
                 android:id="@+id/flContent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/colorLightGray">
-
+                android:background="@color/colorLightGray"
+                android:layout_marginLeft="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="0dp"
+                android:layout_marginTop="0dp">
 
             </FrameLayout>
             <com.google.android.material.floatingactionbutton.FloatingActionButton

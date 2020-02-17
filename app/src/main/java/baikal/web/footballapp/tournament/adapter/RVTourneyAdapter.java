@@ -8,6 +8,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import java.util.List;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 
@@ -33,7 +35,6 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
         this.activity = (PersonalActivity) activity;
         this.favTourneys = favTourneys;
         this.mListener = mListener;
-
     }
 
     public interface MyListener {
@@ -101,9 +102,21 @@ public class RVTourneyAdapter extends RecyclerView.Adapter<RVTourneyAdapter.View
             else
                 favBtn.setChecked(false);
 
-            favBtn.setOnClickListener((v) ->
-                    mListener.onClick(tourneys.get(position).getId(), favBtn.isChecked())
-            );
+            favBtn.setOnClickListener((v) -> {
+                if (SaveSharedPreference.getObject() == null) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    builder.setTitle("Внимание")
+                            .setMessage("Войдите или зарегистрируйтесь")
+                            .setCancelable(true)
+                            .setNegativeButton("Позже", (dialog, idd) -> dialog.cancel())
+                            .setPositiveButton("Войти", (dialog, which) -> activity.moveToLogin());
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                    favBtn.setChecked(false);
+                } else {
+                    mListener.onClick(tourneys.get(position).getId(), favBtn.isChecked());
+                }
+            });
         }
     }
 }
