@@ -1,5 +1,7 @@
 package baikal.web.footballapp.model;
 
+import android.util.Log;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -23,7 +25,7 @@ public class PersonStats implements Serializable {
     private Integer matches;
     @SerializedName("goals")
     @Expose
-    private String goals;
+    private Integer goals;
     @SerializedName("parrent")
     @Expose
     private String parrent;
@@ -33,6 +35,72 @@ public class PersonStats implements Serializable {
     @SerializedName("onModel")
     @Expose
     private String onModel;
+
+    public PersonStats addPersonStats (PersonStats personStats) {
+        PersonStats ans = new PersonStats(this);
+
+        if (getPerson() == null) {
+            Log.d("PERSON STATS", "SUM EVALUATION !!!!!!!!!!!!!!!!!!!!!!!!!!! setting person");
+            setPerson(personStats.getPerson());
+            ans.setPerson(personStats.getPerson());
+        }
+
+        if (getOnModel() == null) {
+            Log.d("PERSON STATS", "SUM EVALUATION !!!!!!!!!!!!!!!!!!!!!!!!!!! setting onModel");
+            setOnModel(personStats.getOnModel());
+            ans.setOnModel(personStats.getOnModel());
+        }
+
+//        if (getOn_() == null) {
+//            setOn_(personStats.getOn_());
+//            ans.setOn_(personStats.getOn_());
+//        }
+
+        if (ans.getOnModel().equals(personStats.getOnModel()) && ans.getPerson().equals(personStats.getPerson())) {
+            Log.d("PERSON STATS", "SUM EVALUATION !!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            ans.setYellowCards(
+                    ans.getYellowCards() + personStats.getYellowCards());
+
+            ans.setRedCards(
+                    ans.getRedCards() + personStats.getRedCards());
+
+            ans.setGoals(
+                    ans.getGoals() + personStats.getGoals());
+
+            ans.setDisquals(
+                    ans.getDisquals() + personStats.getDisquals());
+
+            ans.setMatches(
+                    ans.getMatches() + personStats.getMatches());
+        }
+
+        return ans;
+    }
+
+    public PersonStats () {
+        person = null;
+        onModel = null;
+        on_ = null;
+        parrent = null;
+
+        yellowCards = 0;
+        redCards = 0;
+        goals = 0;
+        disquals = 0;
+        matches = 0;
+    }
+
+    public PersonStats (PersonStats personStats) {
+        setPerson(personStats.getPerson());
+        setYellowCards(personStats.getYellowCards());
+        setRedCards(personStats.getRedCards());
+        setGoals(personStats.getGoals());
+        setDisquals(personStats.getDisquals());
+        setMatches(personStats.getMatches());
+        setParrent(personStats.getParrent());
+        setOn_(personStats.getOn_());
+        setOnModel(personStats.getOnModel());
+    }
 
     public String getPerson() {
         return person;
@@ -74,11 +142,11 @@ public class PersonStats implements Serializable {
         this.matches = matches;
     }
 
-    public String getGoals() {
+    public Integer getGoals() {
         return goals;
     }
 
-    public void setGoals(String goals) {
+    public void setGoals(Integer goals) {
         this.goals = goals;
     }
 

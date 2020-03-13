@@ -78,12 +78,12 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
             if(tr.getId().equals(league.getTourney()))
                 tourney = tr;
 
+        if (tourney == null)
+            return;
         holder.textTournamentTitle.setText(tourney.getName() + ". " + league.getName());
 
-        DateToString dateToString = new DateToString();
-        holder.textTournamentDate.setText(date + dateToString.ChangeDate(league.getBeginDate()));
-
-        str = transfer + dateToString.ChangeDate(league.getTransferBegin()) + "-" + dateToString.ChangeDate(league.getTransferEnd());
+        holder.textTournamentDate.setText(date + DateToString.ChangeDate(league.getBeginDate()));
+        str = transfer + DateToString.ChangeDate(league.getTransferBegin()) + "-" + DateToString.ChangeDate(league.getTransferEnd());
         holder.textTransfer.setText(str);
 
         try {

@@ -89,8 +89,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
         if (tourney != null) {
             str = tourney.getName() + ". " + league.getName();
             holder.textTournamentTitle.setText(str);
-            DateToString dateToString = new DateToString();
-            str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
+            str = DateToString.ChangeDate(league.getBeginDate()) + "-" + DateToString.ChangeDate(league.getEndDate());
             holder.textTournamentDate.setText(str);
             str = "Тренер: ";
             CheckName checkName = new CheckName();
@@ -111,7 +110,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
         holder.buttonOk.setOnClickListener(v -> {
             //post
             String status = "Accepted";
-            AcceptRequest(pendingTeamInvite.get_id(), finalLeague.getId(), finalTeam.getId(), status, finalLeague, position);
+            AcceptRequest(pendingTeamInvite.get_id(), finalTeam.getId(), status, finalLeague, position);
             list.remove(position);
             notifyDataSetChanged();
         });
@@ -161,7 +160,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
         }
     }
 
-    private void AcceptRequest(String invite, String league, final String team, final String status, final League league1, final int position) {
+    private void AcceptRequest(String invite, final String team, final String status, final League league1, final int position) {
 //        Call<ServerResponse> call = Controller.getApi().playerInv(token, map);
         Call<User> call = Controller.getApi().playerInv(invite, SaveSharedPreference.getObject().getToken());
         call.enqueue(new Callback<User>() {

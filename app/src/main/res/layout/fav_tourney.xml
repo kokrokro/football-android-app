@@ -4,14 +4,14 @@
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
-    android:layout_marginTop="5sp"
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="wrap_content"
-    android:background="@color/colorWhite">
+    android:background="@color/colorLightGray3">
 
 
     <RelativeLayout
+        android:layout_marginTop="4dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/tourneyShow"
@@ -40,6 +40,7 @@
                 android:layout_marginEnd="14sp">
 
                 <TextView
+                    android:layout_marginTop="10dp"
                     android:id="@+id/tourneyTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -95,13 +96,13 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="end"
-        android:layout_marginBottom="5dp"
         android:background="@color/colorLightGray" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewFavLeagues"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="wrap_content"
+        android:background="@color/colorWhite"/>
     <!--</android.support.v7.widget.CardView>-->
 
 </LinearLayout>

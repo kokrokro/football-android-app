@@ -10,6 +10,8 @@
     <color name="colorLightGray">#e5e5e5</color>
     <color name="colorLightGray2">#EFEFF0</color>
     <color name="colorLightGrayForText">#63666F</color>
+    <color name="colorLightGray3">#CACACA</color>
+
     <color name="colorDarkGray">#1e1e1e</color>
     <color name="colorDarkGray2">#272727</color>
     <color name="colorGray">#908E8E</color>
