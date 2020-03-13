@@ -1,8 +1,6 @@
 package baikal.web.footballapp.players.adapter;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,26 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.FullScreenImage;
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.Club;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PersonTeams;
-import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.model.ServerResponse;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.players.activity.PlayerInv;
-import baikal.web.footballapp.user.activity.AuthoUser;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +29,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.FullScreenImage;
+import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Club;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonTeams;
+import baikal.web.footballapp.model.Player;
+import baikal.web.footballapp.model.ServerResponse;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.model.User;
+import baikal.web.footballapp.players.activity.PlayerInv;
+import baikal.web.footballapp.user.activity.AuthoUser;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -57,7 +57,7 @@ public class RVPlayerInvAdapter extends RecyclerView.Adapter<RVPlayerInvAdapter.
     private final Logger log = LoggerFactory.getLogger(PlayerInv.class);
     private final PlayerInv context;
     private final List<PersonTeams> leagues;
-    private String uriPic;
+
     public RVPlayerInvAdapter(PlayerInv context, List<PersonTeams> leagues){
         this.context =  context;
         this.leagues = leagues;
@@ -80,9 +80,8 @@ public class RVPlayerInvAdapter extends RecyclerView.Adapter<RVPlayerInvAdapter.
                 break;
             }
         }
-        uriPic = BASE_URL;
+        String uriPic = BASE_URL;
         final String teamId = personTeams.getTeam();
-        League league1 = null;
         Team teamLeague = null;
         for (Team team: league.getTeams()){
             if (team.getId().equals(teamId) ){
@@ -97,12 +96,12 @@ public class RVPlayerInvAdapter extends RecyclerView.Adapter<RVPlayerInvAdapter.
             }
         }
 
-        RequestOptions requestOptions = new RequestOptions();
-        requestOptions.optionalCircleCrop();
-        requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-        RequestOptions.errorOf(R.drawable.ic_logo2);
-        requestOptions.override(500, 500); // resizing
-        requestOptions.priority(Priority.HIGH);
+        RequestOptions requestOptions = RequestOptions
+                .errorOf(R.drawable.ic_logo2)
+                .optionalCircleCrop()
+                .format(DecodeFormat.PREFER_ARGB_8888)
+                .override(500, 500) // resizing
+                .priority(Priority.HIGH);
         try {
             uriPic += "/" + clubLeague.getLogo();
             URL url = new URL(uriPic);

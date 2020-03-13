@@ -2,9 +2,6 @@ package baikal.web.footballapp.user.activity;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
@@ -15,15 +12,7 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.Club;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.adapter.SpinnerTournamentAdapter;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,6 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Club;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.user.adapter.SpinnerTournamentAdapter;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -59,6 +57,7 @@ public class NewCommand extends AppCompatActivity {
         ImageButton imageClose;
         ImageButton imageSave;
         setContentView(R.layout.user_new_command);
+        allTournaments.clear();
         allTournaments.addAll(MankindKeeper.getInstance().allLeagues);
 
         log.error(String.valueOf(allClubs.size()));
@@ -77,7 +76,7 @@ public class NewCommand extends AppCompatActivity {
 
         trainer.setOnClickListener(v->{
             Intent intent = new Intent(this, ChooseTrainer.class);
-            startActivityForResult(intent, 1);
+            startActivityForResult(intent, 24128);
         });
 
        // Drawable spinnerDrawable = spinnerClubs.getBackground().getConstantState().newDrawable();
@@ -257,11 +256,12 @@ public class NewCommand extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        if (requestCode == 24128) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                newTrainerId = data.getData().toString();
-                String str  = data.getSerializableExtra("surname") +" "+data.getSerializableExtra("name");
+                Person person = (Person) data.getExtras().getSerializable("PERSON");
+                newTrainerId = person.getId();
+                String str  = person.getNameWithSurname();
                 trainer.setText(str);
             }
         }

@@ -30,6 +30,9 @@ import retrofit2.Response;
 public class InvitationFragment extends Fragment {
     private final Logger log = LoggerFactory.getLogger(InvitationFragment.class);
     private AuthoUser authoUser;
+    private List<Invite> invites = new ArrayList<>();
+    private LinearLayout linearEmpty;
+    private RVInvitationAdapter adapter;
 
     InvitationFragment (AuthoUser authoUser) {
         this.authoUser = authoUser;
@@ -38,15 +41,23 @@ public class InvitationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
         RecyclerView recyclerView;
-        LinearLayout linearEmpty;
+
         view = inflater.inflate(R.layout.user_invitations, container, false);
         linearEmpty = view.findViewById(R.id.emptyInv);
         view.findViewById(R.id.notEmptyInv);
         recyclerView = view.findViewById(R.id.recyclerViewUserInvitation);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        RVInvitationAdapter adapter;
-        List<Invite> invites = new ArrayList<>();
+
         adapter = new RVInvitationAdapter(getActivity(),getContext(), authoUser, invites);
+        recyclerView.setAdapter(adapter);
+
+        loadData();
+
+        return view;
+    }
+
+    private void loadData ()
+    {
         Controller.getApi().getInvites(SaveSharedPreference.getObject().getUser().getId(),null,"pending").enqueue(new Callback<List<Invite>>() {
             @Override
             public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
@@ -54,10 +65,10 @@ public class InvitationFragment extends Fragment {
                     if(response.body()!=null) {
                         invites.clear();
                         invites.addAll(response.body());
-                        if(invites.size()>0){
+                        if(invites.size()>0)
                             linearEmpty.setVisibility(View.GONE);
-                        }
-                        recyclerView.setAdapter(adapter);
+
+                        adapter.notifyDataSetChanged();
                         log.error(""+invites.size());
                     }
                 }
@@ -68,7 +79,6 @@ public class InvitationFragment extends Fragment {
                 log.error(t.getMessage());
             }
         });
-        return view;
     }
 
     @Override

@@ -73,7 +73,7 @@ public class TournamentPage extends Fragment {
             public void onPageSelected(int position) {
                 Log.d("TournamentPage", "onPageSelected: " + position);
                 if (position == 0) {
-                    searchTournaments.setFavTourneys();
+                    searchTournaments.setFavTourney();
                     tournamentsFragment.loadData();
                 }
             }

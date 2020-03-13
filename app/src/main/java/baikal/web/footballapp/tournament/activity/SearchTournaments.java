@@ -1,7 +1,6 @@
 package baikal.web.footballapp.tournament.activity;
 
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -14,36 +13,37 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
-import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.DataSourceUtilities.LoadStates;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.FavoriteTourneys;
 import baikal.web.footballapp.model.Region;
-import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.players.activity.PlayersPage;
-import baikal.web.footballapp.tournament.adapter.RVTourneyAdapter;
-import baikal.web.footballapp.viewmodel.MainViewModel;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import baikal.web.footballapp.tournament.adapter.TourneyAdapter;
+import baikal.web.footballapp.viewmodel.SearchTournamentPageViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -55,22 +55,59 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class SearchTournaments extends Fragment implements DialogRegion.mListener {
-//    private static final String TAG = "Search_tournaments";
-    //    private int count = 0;
-//    private int offset = 0;
-//    private final int limit = 10;
-    //    RecyclerViewPlayersAdapter adapter;
-    private final Logger log = LoggerFactory.getLogger(PlayersPage.class);
-    private static RVTourneyAdapter adapter;
-    //    private final List<League> allLeagues= new ArrayList<>();
-    private List<Tourney> tourneyList = new ArrayList<>();
-    private List<String> regionsId = new ArrayList<>();
-    private List<String> regionsNames = new ArrayList<>();
-    private List<String> favTourneysId = new ArrayList<>();
+    private static final String TAG = "Search_tournaments";
+    private final Logger log = LoggerFactory.getLogger(SearchTournaments.class);
 
-    private MainViewModel mainViewModel;
+    private SearchTournamentPageViewModel searchTournamentPageViewModel;
+    private TourneyAdapter adapter;
+
+    private HashSet<View> switchableViews;
+    private ProgressBar progressBar;
+    private TextView errorText;
+    private LinearLayout emptyText;
+
+    private RecyclerView recyclerView;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+    private Region region;
+    private HashSet<String> favTourneysId = new HashSet<>();
 
     SearchTournaments() { }
+
+    private static void showOneView(View viewToShow, Set<View> views) {
+        for (View view : views) {
+            if (view.hashCode() == viewToShow.hashCode()) {
+                view.setVisibility(View.VISIBLE);
+            } else {
+                view.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void switchViewVisible(LoadStates loadState) {
+        switch (loadState) {
+            case Loading:
+                showOneView(progressBar, switchableViews);
+                break;
+
+            case Loaded:
+                swipeRefreshLayout.setRefreshing(false);
+                showOneView(recyclerView, switchableViews);
+                break;
+
+            case Error:
+                swipeRefreshLayout.setRefreshing(false);
+                showOneView(errorText, switchableViews);
+                break;
+
+            case Empty:
+                swipeRefreshLayout.setRefreshing(false);
+                showOneView(emptyText, switchableViews);
+                break;
+        }
+    }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -78,8 +115,20 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         mProgressDialog.setIndeterminate(true);
         final View view = inflater.inflate(R.layout.fragment_search_tournaments, container, false);
 
+        progressBar = view.findViewById(R.id.FST_progress);
+        errorText = view.findViewById(R.id.FST_errorText);
+        emptyText = view.findViewById(R.id.FST_emptyText);
+        recyclerView = view.findViewById(R.id.FST_recyclerView);
+        swipeRefreshLayout = view.findViewById(R.id.FST_swipe_to_refresh);
+
 //        NestedScrollView scroller = view.findViewById(R.id.scrollerPlayersPage);
 //        ProgressBar progressBar = view.findViewById(R.id.progressSearch);
+
+        switchableViews = new HashSet<>();
+        switchableViews.add(progressBar);
+        switchableViews.add(errorText);
+        switchableViews.add(emptyText);
+        switchableViews.add(recyclerView);
 
         SearchView searchView = view.findViewById(R.id.searchView);
         ImageButton filter = view.findViewById(R.id.filterRegionButton);
@@ -93,76 +142,48 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         icon.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
         ImageView searchViewClose = searchView.findViewById(androidx.appcompat.R.id.search_close_btn);
         searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
-        tourneyList = new ArrayList<>(MankindKeeper.getInstance().allTourneys);
-        List<Region> regions = new ArrayList<>(MankindKeeper.getInstance().regions);
-        mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+        searchView.setOnCloseListener(onSearchCloseListener);
 
-        String userId;
-        try {
-            userId = SaveSharedPreference.getObject().getUser().getId();
-            mainViewModel.getFavTourney(userId).observe(this, tourneys -> {
-                favTourneysId.clear();
-                for(Tourney tr :tourneys)
-                    favTourneysId.add(tr.getId());
-                adapter.notifyDataSetChanged();
-            });
-        } catch (Exception ignored) { }
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        adapter = new TourneyAdapter((id, isChecked)-> {
+            if (isChecked)
+                favTourneysId.add(id);
+            else
+                favTourneysId.remove(id);
+        });
+        if (SaveSharedPreference.getObject() != null)
+            favTourneysId.addAll(SaveSharedPreference.getObject().getUser().getFavouriteTourney());
+        recyclerView.setAdapter(adapter);
 
-        regionsId.clear();
-        regionsNames.clear();
-
-        for( Region reg : regions){
-            regionsId.add(reg.getId());
-            regionsNames.add(reg.getName());
-        }
-        try {
-            RecyclerView recyclerView = view.findViewById(R.id.recyclerViewSearch);
-            recyclerView.setNestedScrollingEnabled(false);
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            adapter = new RVTourneyAdapter(tourneyList, getActivity(), favTourneysId, (id,isChecked)-> {
-                    if (isChecked)
-                        favTourneysId.add(id);
-                    else
-                        favTourneysId.remove(id);
-
-                    Log.d("checked", isChecked + " " + id);
-            });
-            recyclerView.setAdapter(adapter);
-        } catch (Exception e) {
-            log.error("ERROR: ", e);
-        }
         filter.setOnClickListener(v-> {
                     FragmentManager fm = getChildFragmentManager();
-                    DialogRegion dialogRegion =  new DialogRegion(regionsNames);
+                    DialogRegion dialogRegion =  new DialogRegion(MankindKeeper.getInstance().regions);
                     dialogRegion.show(fm, "fragment_edit_name");
                 }
         );
-//        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                offset++;
-//                int temp = limit*offset;
-//                if (temp<=count) {
-//                    String str = "";
-//                    GetAllTournaments(str);
-//                }
-//            }
-//        });
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                SearchTournamentsS(query,null);
-                return false;
-            }
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                SearchTournamentsS(newText,null);
-                return false;
-            }
-        });
+
+        searchTournamentPageViewModel = ViewModelProviders.of(getActivity()).get(SearchTournamentPageViewModel.class);
+        loadData();
+
+        searchView.setOnQueryTextListener(onQueryTextListener);
+
+        swipeRefreshLayout.setOnRefreshListener(this::loadData);
         return view;
     }
 
-    void setFavTourneys()
+    private void loadData () {
+        searchTournamentPageViewModel.clearSearchAndReload();
+        searchTournamentPageViewModel.getLoadDataState().observe(this, this::switchViewVisible);
+        searchTournamentPageViewModel.getTourneys().observe(this, adapter::submitList);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+        super.onCreate(savedInstanceState);
+    }
+
+    void setFavTourney()
     {
         FavoriteTourneys favTourneyNew = new FavoriteTourneys(favTourneysId);
 
@@ -179,12 +200,7 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         Controller.getApi().editPlayerInfo(id, token, favTourneyNew).enqueue(new Callback<EditProfile>() {
             @Override
             public void onResponse(@NonNull Call<EditProfile> call, @NonNull Response<EditProfile> response) {
-                if (response.isSuccessful()) {
-                    StringBuilder tourneyIds = new StringBuilder();
-                    for (String ft : favTourneysId)
-                        tourneyIds.append(",").append(ft);
-                    changeDataForTournamentFragment(tourneyIds.toString());
-                } else
+                if (!response.isSuccessful())
                     Log.d("SearchTournaments", "response is failure in \"Controller.getApi().editPlayerInfo\"");
             }
 
@@ -196,64 +212,35 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
 
     }
 
-    @SuppressLint("CheckResult")
-    private void changeDataForTournamentFragment (String tourneyIds)
-    {
-        if (tourneyIds.equals("")) {
-            if (mainViewModel == null)
-                return;
-            mainViewModel.setFavTourney(new ArrayList<>());
-            return;
+    private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
+        @Override
+        public boolean onQueryTextSubmit(String query) {
+            searchTournamentPageViewModel.onQueryTextSubmit(query, region == null?null:region.getId());
+            return false;
         }
-        //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().getTourneysById(tourneyIds)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(tourneys -> mainViewModel.setFavTourney(tourneys)
-                        , error -> {
-                            Log.d("SearchTournaments: ", "error while getting tourneys by id (207):\n\t" + error.toString());
-                            CheckError checkError = new CheckError();
-                            checkError.checkError(getActivity(), error);
-                        }
-                );
-    }
-
-    private void saveAllData(List<Tourney> tourneys) {
-//        count = tourneys.size();
-        this.tourneyList.clear();
-        this.tourneyList.addAll(tourneys);
-        adapter.notifyDataSetChanged();
-    }
-
-    @SuppressLint("CheckResult")
-    private void SearchTournamentsS(String search, String region){
-//        PersonalActivity.people.clear();
-//        String type = "player";
-        if (search!=null && search.equals("")) {
-            saveAllData(MankindKeeper.getInstance().allTourneys);
-        } else {
-
-            //noinspection ResultOfMethodCallIgnored
-            Controller.getApi().getTourneys(search,region)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(this::saveAllData,
-                            error -> {
-                                CheckError checkError = new CheckError();
-                                checkError.checkError(getActivity(), error);
-                            }
-                    );
+        @Override
+        public boolean onQueryTextChange(String newText) {
+            searchTournamentPageViewModel.onQueryTextChange(newText, region == null?null:region.getId());
+            return false;
         }
+    };
 
-    }
+    private SearchView.OnCloseListener onSearchCloseListener = new SearchView.OnCloseListener() {
+        @Override
+        public boolean onClose() {
+            searchTournamentPageViewModel.clearSearchAndReload();
+            return false;
+        }
+    };
+
     @Override
     public void onPause() {
-
         super.onPause();
-        setFavTourneys();
+        setFavTourney();
     }
+
     @Override
-    public void onFinishEditDialog(int pos) {
-        SearchTournamentsS(null,regionsId.get(pos));
+    public void onFinishEditDialog(Region region) {
+        this.region = region;
     }
 }

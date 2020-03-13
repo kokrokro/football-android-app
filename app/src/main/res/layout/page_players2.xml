@@ -7,80 +7,114 @@
     android:background="@color/colorWhite"
     tools:context=".PersonalActivity">
 
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarPlayers"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/PP_swipe_to_refresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/MyToolbar">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing_toolbarPlayers"
+        android:layout_height="wrap_content">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:fitsSystemWindows="true"
-            android:visibility="visible"
-            app:layout_scrollFlags="scroll|enterAlways"
-            app:titleEnabled="false"
-            tools:visibility="visible">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbarPlayers"
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/appbarPlayers"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:minHeight="?attr/actionBarSize"
-                android:background="@color/colorWhite"
-                app:layout_collapseMode="pin"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:title="@string/players"
-                app:titleTextAppearance="@style/ToolbarTextAppearance"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:theme="@style/MyToolbar">
+
+                <com.google.android.material.appbar.CollapsingToolbarLayout
+                    android:id="@+id/collapsing_toolbarPlayers"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:fitsSystemWindows="true"
+                    android:visibility="visible"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:titleEnabled="false"
+                    tools:visibility="visible">
+
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/toolbarPlayers"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:minHeight="?attr/actionBarSize"
+                        android:background="@color/colorWhite"
+                        app:layout_collapseMode="pin"
+                        app:layout_scrollFlags="scroll|enterAlways"
+                        app:title="@string/players"
+                        app:titleTextAppearance="@style/ToolbarTextAppearance"
+                        app:popupTheme="@style/ThemeOverlay.AppCompat.Dark" />
 
 
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
+                </com.google.android.material.appbar.CollapsingToolbarLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewPlayers"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="50dp"
-        android:visibility="visible"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            </com.google.android.material.appbar.AppBarLayout>
 
 
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:visibility="gone"
-        tools:visibility="gone" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewPlayers"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <TextView
-        android:id="@+id/errorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/network_error"
-        android:textAlignment="center"
-        android:textAppearance="@style/InfoTextAppearance"
-        android:visibility="gone"
-        tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/emptyText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical|center_horizontal"
-        android:text="@string/players_not_found"
-        android:textAlignment="center"
-        android:textAppearance="@style/InfoTextAppearance"
-        android:visibility="gone" />
+            <ProgressBar
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:visibility="gone"
+                tools:visibility="gone" />
 
+            <TextView
+                android:id="@+id/errorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/network_error"
+                android:textAlignment="center"
+                android:textAppearance="@style/InfoTextAppearance"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/PP2_emptyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_marginTop="45sp"
+                    android:layout_marginBottom="45sp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="160dp"
+                    android:layout_height="160dp"
+                    android:src="@drawable/ic_empty1"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:layout_marginBottom="15sp"
+                    android:fontFamily="@font/manrope_regular"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:text="@string/empty"
+                    android:layout_gravity="center_horizontal"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="25sp"
+                    android:paddingStart="25sp"
+                    android:gravity="center_horizontal"
+                    android:textSize="16sp"
+                    android:textAppearance="@style/InfoTextAppearance"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="@string/players_not_found"
+                    android:layout_gravity="center_horizontal"/>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

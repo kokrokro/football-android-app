@@ -1,21 +1,16 @@
 package baikal.web.footballapp.players.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.os.ConfigurationCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.paging.PagedList;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,25 +18,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.gson.internal.bind.util.ISO8601Utils;
 
-import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
+import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.players.activity.Player;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.ViewHolder> {
     private static final String TAG = "PlayersAdapter";
-    final FragmentManager fragmentManager; // this is uglyyyy
+    private final OnItemListener mOnItemListener;
+    private OnSwitchListener mOnSwitchListener = null;
+    private boolean isInvitationView = false;
 
-    public static final DiffUtil.ItemCallback<Person> DIFF_CALLBACK =
+    public interface OnSwitchListener {
+        void OnSwitch(Person person);
+    }
+
+    public interface OnItemListener {
+        void OnClick(Person person);
+    }
+
+    private static final DiffUtil.ItemCallback<Person> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<Person>() {
                 @Override
                 public boolean areItemsTheSame(
@@ -59,9 +57,16 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
                 }
             };
 
-    public PlayersAdapter(FragmentManager fragmentManager) {
+    public PlayersAdapter(OnItemListener mOnItemListener) {
         super(DIFF_CALLBACK);
-        this.fragmentManager = fragmentManager;
+        // this is uglyyyy
+        this.mOnItemListener = mOnItemListener;
+    }
+
+    public void setViewForInvites (OnSwitchListener onSwitchListener) {
+        isInvitationView = true;
+        mOnSwitchListener = onSwitchListener;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -75,9 +80,8 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Person player = getItem(position);
 
-        if (player != null) {
+        if (player != null)
             holder.bindTo(player);
-        }
     }
 
     // да, это дубликат кода ViewHolder
@@ -89,6 +93,9 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
         final TextView textDOB;
         final View line;
 
+        final Switch aSwitch;
+        final TextView teamName;
+
         final Context context;
 
         public ViewHolder(View item, Context context) {
@@ -98,28 +105,17 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
             buttonShow2 = item.findViewById(R.id.playerInfoButtonShow2);
             textName = item.findViewById(R.id.playerInfoName);
             textDOB = item.findViewById(R.id.playerInfoDOB);
+
+            aSwitch = item.findViewById(R.id.P_switch);
+            teamName = item.findViewById(R.id.P_team);
+
             this.context = context;
         }
 
         void bindTo(@NonNull Person person) {
             String name = person.getNameWithSurname();
             textName.setText(name);
-
-            Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);
-
-            String formattedBirthDateStr = "";
-            SimpleDateFormat outDateFormat = new SimpleDateFormat("dd.MM.yyyy", locale);
-
-            try {
-                Date birthDate = ISO8601Utils.parse(person.getBirthdate(), new ParsePosition(0));
-                formattedBirthDateStr = outDateFormat.format(birthDate);
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-
-            textDOB.setText(formattedBirthDateStr);
-
+            textDOB.setText(DateToString.stringDate(person.getBirthdate()));
 
             RequestOptions requestOptions = new RequestOptions()
                     .optionalCircleCrop()
@@ -138,15 +134,12 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
                         .into(imageLogo);
             }
 
-            buttonShow2.setOnClickListener(view -> {
-                Player playerFragment = new Player();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("PLAYERINFO", person);
+            buttonShow2.setOnClickListener(view -> mOnItemListener.OnClick(person));
 
-                playerFragment.setArguments(bundle);
-                fragmentManager.beginTransaction().replace(R.id.pageContainer, playerFragment).addToBackStack(null).commit();
-            });
-
+            if (isInvitationView) {
+                aSwitch.setVisibility(View.VISIBLE);
+                teamName.setVisibility(View.VISIBLE);
+            }
         }
 
 

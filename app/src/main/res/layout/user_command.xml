@@ -72,7 +72,8 @@
                     android:textColor="@color/colorGray"
                     android:paddingTop="3sp"
                     android:paddingBottom="3sp"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"
+                    />
                 <TextView
                     android:id="@+id/userCommandTournamentDate"
                     android:fontFamily="@font/manrope_regular"

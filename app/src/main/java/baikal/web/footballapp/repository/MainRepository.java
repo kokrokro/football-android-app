@@ -33,10 +33,10 @@ public class MainRepository {
         return returnNews;
     }
 
-    public void getNews(String limit, String offset, Callback<List<News_>> callback) {
+    public void getNewsByTourney(String tourneyIds,String limit, String offset, Callback<List<News_>> callback) {
         Controller
                 .getApi()
-                .getAllNewsCrud(limit, offset)
+                .getNewsByTourney(tourneyIds, limit, offset)
                 .enqueue(callback);
     }
     public void getStadiums(String tourney, String id, Callback<List<Stadium>> callback) {

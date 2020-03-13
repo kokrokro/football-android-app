@@ -4,13 +4,6 @@ import android.annotation.SuppressLint;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.fragment.app.Fragment;
-import androidx.core.widget.NestedScrollView;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +15,21 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
@@ -38,39 +46,27 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class TournamentPlayersFragment extends Fragment {
     private final Logger log = LoggerFactory.getLogger(TournamentPlayersFragment.class);
     private boolean scrollStatus;
     private final List<Player> playerList = new ArrayList<>();
     private RVTournamentPlayersAdapter adapter;
     private static List<PersonStats> personStats = new ArrayList<>();
-    @SuppressLint("RestrictedApi")
+    private League league;
+    private RecyclerView recyclerView;
+    private LinearLayout layout;
+    private RelativeLayout layout1;
+    private FloatingActionButton fab;
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         Spinner spinner;
-        LinearLayout layout;
-        RelativeLayout layout1;
-        final FloatingActionButton fab;
         NestedScrollView scroller;
-        List<String> categories = new ArrayList<>();
-        categories.add("по проведенным матчам");
-        categories.add("по забитым мячам");
-        categories.add("по количеству ЖК");
-        categories.add("по количеству КК");
 
-        RecyclerView recyclerView;
         Bundle arguments = getArguments();
-        List<Team> team = (List<Team>) arguments.getSerializable("TOURNAMENTINFOTEAMS");
-        League league = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
-        List<String> clubs = new ArrayList<>();
+        league = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
+
         view = inflater.inflate(R.layout.tournament_info_tab_players, container, false);
         layout = view.findViewById(R.id.tournamentPlayersEmpty);
         layout1 = view.findViewById(R.id.mainview);
@@ -82,51 +78,15 @@ public class TournamentPlayersFragment extends Fragment {
         spinner = view.findViewById(R.id.playersSpinner);
         scroller = view.findViewById(R.id.tournamentInfoPlayersScroll);
         recyclerView = view.findViewById(R.id.recyclerViewTournamentPlayersStats);
-        StringBuilder playersId= new StringBuilder();
-
-        for (Team team1 : team) {
-            //                if (team1.getClub().)
-            //                clubs.add(team1.getClub());
-            playerList.addAll(team1.getPlayers());
-            for(Player player : team1.getPlayers()){
-                playersId.append(",").append(player.getId());
-            }
-        }
-        Controller.getApi().getPersonStats("league",null,league.getId()).enqueue(new Callback<List<PersonStats>>() {
-            @Override
-            public void onResponse(Call<List<PersonStats>> call, Response<List<PersonStats>> response) {
-                if(response.isSuccessful()){
-                    if(response.body()!=null){
-                        personStats.clear();
-                        Log.d("RESPONSE STATs", response.body().size()+"");
-                        personStats.addAll(response.body());
-                        adapter.notifyDataSetChanged();
-                        recyclerView.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<PersonStats>> call, Throwable t) {
-
-            }
-        });
-//        Collections.sort(playerList, new PlayerMatchComparator());
 
         scrollStatus = false;
-        adapter = new RVTournamentPlayersAdapter( playerList, personStats);
+        adapter = new RVTournamentPlayersAdapter(playerList, personStats);
         recyclerView.setAdapter(adapter);
         final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setVisibility(View.INVISIBLE);
 
-        if (playerList.size() != 0) {
-            layout.setVisibility(View.GONE);
-        } else {
-            layout1.setVisibility(View.GONE);
-            fab.setVisibility(View.INVISIBLE);
-        }
-
+        loadData();
 
         final ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.spinnerItem, R.layout.spinner_item);
         try {
@@ -204,8 +164,7 @@ public class TournamentPlayersFragment extends Fragment {
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
             if (scrollY > oldScrollY) {
-//                    log.info("INFO: RecyclerView scrolled: scroll down!");
-
+                    log.info("INFO: RecyclerView scrolled: scroll down!");
             }
             if (scrollY < oldScrollY) {
 //                    log.info("INFO: RecyclerView scrolled: scroll up!");
@@ -222,35 +181,70 @@ public class TournamentPlayersFragment extends Fragment {
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 //nothing to do
             }
 
             @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-//                int currentFirstVisible = myLayoutManager.findFirstVisibleItemPosition();
-//
-//                if (currentFirstVisible > firstVisibleInListview) {
-////                    log.info("INFO: RecyclerView scrolled: scroll up!");
-//                    PersonalActivity.navigation.animate().translationY(PersonalActivity.navigation.getHeight());
-//
-//                } else {
-////                    log.info("INFO: RecyclerView scrolled: scroll down!");
-//                    PersonalActivity.navigation.animate().translationY(0);
-//                }
-//                firstVisibleInListview = currentFirstVisible;
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
                     fab.show();
-                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
                     fab.hide();
-                }
-                if (scrollStatus) {
+
+                if (scrollStatus)
                     fab.hide();
-                }
+                else
+                    fab.show();
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
         return view;
+    }
+
+    private void loadData ()
+    {
+        Controller.getApi().getTeamByLeagueId(league.getId()).enqueue(new Callback<List<Team>>() {
+            @SuppressLint("RestrictedApi")
+            @Override
+            public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    StringBuilder playersId= new StringBuilder();
+                    List<Team> team = response.body();
+                    playerList.clear();
+                    for (Team team1 : team) {
+                        playerList.addAll(team1.getPlayers());
+                        for(Player player : team1.getPlayers())
+                            playersId.append(",").append(player.getId());
+                    }
+
+                    if (playerList.size() != 0) {
+                        layout.setVisibility(View.GONE);
+                    } else {
+                        layout1.setVisibility(View.GONE);
+                        fab.setVisibility(View.INVISIBLE);
+                    }
+                    Controller.getApi().getPersonStats("league",null,league.getId()).enqueue(new Callback<List<PersonStats>>() {
+                        @Override
+                        public void onResponse(@NonNull Call<List<PersonStats>> call, @NonNull Response<List<PersonStats>> response) {
+                            if(response.isSuccessful() && response.body()!=null){
+                                personStats.clear();
+                                Log.d("RESPONSE STATs", response.body().size()+"");
+                                personStats.addAll(response.body());
+                                adapter.notifyDataSetChanged();
+                                recyclerView.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<List<PersonStats>> call, @NonNull Throwable t) { }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) { }
+        });
     }
 
     @Override

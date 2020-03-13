@@ -9,8 +9,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.paging.PagedList;
 
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.players.datasource.LoadStates;
-import baikal.web.footballapp.players.datasource.PagedListWithLoadingState;
+import baikal.web.footballapp.DataSourceUtilities.LoadStates;
+import baikal.web.footballapp.DataSourceUtilities.PagedListWithLoadingState;
 import baikal.web.footballapp.repository.PlayersPageRepository;
 
 public class PlayersPageViewModel extends ViewModel {
@@ -69,10 +69,6 @@ public class PlayersPageViewModel extends ViewModel {
 
     public void onQueryTextSubmit(String txt) {
         Log.d(TAG, "onQueryTextSubmit: " + txt);
-
-//        if (txt.equalsIgnoreCase("")) {
-//            return;
-//        }
         searchPlayers(txt);
     }
 }

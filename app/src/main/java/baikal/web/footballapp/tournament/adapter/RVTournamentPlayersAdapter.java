@@ -1,9 +1,5 @@
 package baikal.web.footballapp.tournament.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,24 +7,28 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.List;
+
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.tournament.activity.TournamentPlayersFragment;
-
-import java.util.List;
 
 
 public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamentPlayersAdapter.ViewHolder>{
     private static final String TAG = "TournamentPlayersAdap";
     private final List<Player> players;
     private final List<PersonStats> personStats;
-    public RVTournamentPlayersAdapter( List<Player> players, List<PersonStats> personStats){
+
+    public RVTournamentPlayersAdapter(List<Player> players, List<PersonStats> personStats){
         this.players = players;
         this.personStats = personStats;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -38,7 +38,6 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        PersonStats stats = personStats.get(position);
         Person player = null;
         try {
             Log.d(TAG, personStats.get(position).getPerson());
@@ -63,40 +62,13 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
             str = String.valueOf(count);
             holder.textPoint1.setText(str);
             holder.textPoint2.setText(personStats.get(position).getGoals());
-            count = personStats.get(position).getYellowCards();
-//            count = players.get(position).getActiveYellowCards();
+            count = personStats.get(position).getYellowCards();// % league.getYellowCardsToDisqual();
             str = String.valueOf(count);
             holder.textPoint3.setText(str);
-//            count = players.get(position).getActiveDisquals();
-            count = personStats.get(position).getRedCards();
+            count = personStats.get(position).getRedCards();// + personStats.get(position).getYellowCards() / league.getYellowCardsToDisqual();
             str = String.valueOf(count);
             holder.textPoint4.setText(str);
-        }catch (NullPointerException e){
-            int count = position +1;
-            str = String.valueOf(count);
-            holder.textPoint1.setText(str);
-            str = String.valueOf(count);
-            holder.textPoint2.setText(str);
-            str = String.valueOf(count);
-            holder.textPoint3.setText(str);
-            str = String.valueOf(count);
-            holder.textPoint4.setText(str);
-        }
-//        Club club = null;
-//        for (Club club1 : PersonalActivity.allClubs){
-//            try{
-//                if (club1.getId().equals(clubs.get(position))){
-//                    club = club1;
-//                }
-//            }catch (IndexOutOfBoundsException e){break;}
-//        }
-//        SetImage setImage = new SetImage();
-//        assert club != null;
-//        try {
-//            setImage.setImage(holder.image.getContext(), holder.image, club.getLogo());
-//        }catch (NullPointerException e){}
-
-
+        } catch (Exception ignored) { }
     }
 
     @Override

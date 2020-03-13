@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.SpannableStringBuilder;
 import android.transition.Slide;
 import android.util.Log;
@@ -35,6 +36,7 @@ import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
+import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.players.activity.Player;
 import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.players.adapter.PlayersAdapter;
@@ -50,6 +52,8 @@ import retrofit2.Response;
 public class PersonalActivity extends AppCompatActivity {
     private static final String TAG = "PersonalActivity";
     private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
+
+    private final Handler handler = new Handler();
 
     private static final String MAIN    = "MAIN_PAGE";
     private static final String TOURNAMENT = "TOURNAMENT_PAGE";
@@ -159,10 +163,7 @@ public class PersonalActivity extends AppCompatActivity {
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setMessage("Загрузка...");
 
-//        checkConnection();
-//        checkConnectionSingle();
         showSnack();
-//        checkConnectionSingle();
 
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);
@@ -266,30 +267,24 @@ public class PersonalActivity extends AppCompatActivity {
 //    }
 
     private void showSnack() {
-        //all allLeagues
         GetAllTournaments();
-        //all players
         GetAllPlayers();
-        //all clubs
-//        GetAllClubs();
         GetAllRegions();
         getAllTeams();
         getAllPersonStatus();
-        if (SaveSharedPreference.getLoggedStatus(getApplicationContext())) {
-            log.error("REFRESH USER");
-            RefreshUser();
-        }
+
+        if (SaveSharedPreference.getLoggedStatus(getApplicationContext()))
+            StartRefreshToken();
     }
     private void getAllPersonStatus(){
         Controller.getApi().getPersonStatus(null, null,null).enqueue(new Callback<List<PersonStatus>>() {
             @Override
             public void onResponse(@NonNull Call<List<PersonStatus>> call, @NonNull Response<List<PersonStatus>> response) {
-                if(!response.isSuccessful()){
+                if(!response.isSuccessful())
                     if(response.body()!=null){
                         MankindKeeper.getInstance().allPersonStatus.clear();
                         MankindKeeper.getInstance().allPersonStatus.addAll(response.body());
                     }
-                }
             }
 
             @Override
@@ -302,18 +297,15 @@ public class PersonalActivity extends AppCompatActivity {
         Controller.getApi().getTeams(null).enqueue(new Callback<List<Team>>() {
             @Override
             public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
-                if(response.isSuccessful()){
+                if(response.isSuccessful())
                     if(response.body()!=null){
                         allTeams.clear();
                         allTeams.addAll(response.body());
                     }
-                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {}
         });
     }
     private void GetAllRegions() {
@@ -328,26 +320,27 @@ public class PersonalActivity extends AppCompatActivity {
                 }}
 
             @Override
-            public void onFailure(@NonNull Call<List<Region>> call, @NonNull Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<List<Region>> call, @NonNull Throwable t) {}
         });
     }
-//    @SuppressLint("CheckResult")
-//    private void getAllTeamStats(){
-//        Controller.getApi().getTeamStats(null).
-//                subscribeOn(Schedulers.io()).
-//                observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(stats->{
-//                    teamStats.clear();
-//                    teamStats.addAll(stats);
-//                },error -> {
-//                    CheckError checkError = new CheckError();
-//                    checkError.checkError(this, error);
-//                });
-//    }
 
-    @SuppressLint("CheckResult")
+    public void StartRefreshToken() {
+        repeatRefreshing.run();
+    }
+
+    public void EndRefreshToken() {
+        handler.removeCallbacks(repeatRefreshing);
+    }
+
+    private Runnable repeatRefreshing = new Runnable() {
+        @Override
+        public void run() {
+            RefreshUser();
+            handler.postDelayed(repeatRefreshing, 1000 * 60 * 5);
+            Log.d(TAG, handler.toString());
+        }
+    };
+
     private void RefreshUser() {
         String token;
 
@@ -357,14 +350,18 @@ public class PersonalActivity extends AppCompatActivity {
             return;
         }
 
-        //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().refreshUser(token)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(SaveSharedPreference::editObject,
-                        error -> (new CheckError()).toastError(PersonalActivity.this, error)
-                );
+        Controller.getApi().refreshUser(token).enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
+                if (response.isSuccessful() && response.body()!=null)
+                    SaveSharedPreference.editObject(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
+                (new CheckError()).toastError(PersonalActivity.this, t);
+            }
+        });
     }
 
     private void GetAllTournaments() {
@@ -419,22 +416,6 @@ public class PersonalActivity extends AppCompatActivity {
                         (error) -> (new CheckError()).toastError(PersonalActivity.this, error)
                 );
     }
-
-//    private void GetAllClubs() {
-//        Controller.getApi().getAllClubs().enqueue(new Callback<List<Club>>() {
-//            @Override
-//            public void onResponse(@NonNull Call<List<Club>> call, @NonNull Response<List<Club>> response) {
-//                MankindKeeper.getInstance().allClubs.clear();
-//                if (response.body() != null)
-//                    MankindKeeper.getInstance().allClubs.addAll(response.body());
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<List<Club>> call, @NonNull Throwable t) {
-//                (new CheckError()).toastError(PersonalActivity.this, t);
-//            }
-//        });
-//    }
 
     public void setAnimation() {
         Slide slide = new Slide();

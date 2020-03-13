@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import baikal.web.footballapp.model.ActiveMatch;
-import baikal.web.footballapp.model.ActiveMatches;
-import baikal.web.footballapp.model.Advertisings;
 import baikal.web.footballapp.model.Announce;
-import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.DataClub;
 import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.Event;
@@ -26,7 +23,6 @@ import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.RefereeRequestList;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.ServerResponse;
-import baikal.web.footballapp.model.SetRefereeList;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
@@ -50,64 +46,67 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface FootballApi {
-    //get all news
-    @GET("/api/crud/news")
-    Call<List<News_>> getAllNewsCrud(@Query("_limit") String limit, @Query("_offset") String offset);
-
     @GET("/api/crud/news")
     Call<List<News_>> getSingleNewsCrud(@Query("_id") String id);
 
-    //get all news
-    @GET("/api/crud/announce")
-    Observable<List<Announce>> getAllAnnounce(@Query("_limit") String limit, @Query("_offset") String offset);
+    @GET("/api/crud/news?_sort=-createdAt")
+    Call<List<News_>> getNewsByTourney(@Query("tourney") String tourneyId, @Query("_limit") String limit, @Query("_offset") String offset);
 
-    //get advertising
-    @GET("/api/ads")
-    Observable<Advertisings> getAdvertising(@Query("limit") String limit, @Query("offset") String offset);
-    @GET("/api/crud/league?status=started&_select=_id")
-    Call<List<League>> getStartedLeagues();
-    @GET("/api/crud/match?played=false&_sort=date&_populate=teamOne+teamTwo")
-    Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit);
+    @GET("/api/crud/announce?_sort=-createdAt")
+    Call<List<Announce>> getAnnounceByTourney(@Query("tourney") String tourneyId, @Query("_limit") String limit, @Query("_offset") String offset);
 
-    @GET("/api/crud/match?_sort=date&_populate=teamOne+teamTwo")
+    @GET("/api/crud/match?_sort=-date&_populate=teamOne+teamTwo+place")
     Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit, @Query("_offset") String offset);
 
-    //get all clubs
-    @GET("/api/clubs")
-    Call<List<Club>> getAllClubs();
-
-    //get coming matches
-    @GET("/api/matches/upcoming")
-    Observable<ActiveMatches> getComingMatches();
-
-    //get referees type==referee
-    //get players type==player
     @GET("/api/crud/person")
     Observable<List<Person>> getAllPersons(@Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
-    @GET("/api/crud/person")
-    Observable<List<Person>> getAllPerson(@Query("_limit") String limit, @Query("_offset") String offset);
+
     @GET("/api/crud/person?_sort=-createdAt")
     Call<List<Person> >getAllPersonsWithSort(@Query("_limit") String limit, @Query("createdAt") String createdAt);
+
     @GET("/api/crud/person/or?_sort=-createdAt")
     Call<List<Person> >getFilteredPersonsWithSort(@Query("surname") String surname, @Query("name") String name, @Query("lastname") String lastname, @Query("_limit") String limit, @Query("_offset") String offset);
+
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
+
+    @GET("/api/crud/tourney?_sort=-beginDate")
+    Call<List<Tourney>> getTourneysWithSort(@Query("_limit") String limit, @Query("beginDate") String beginDate);
+
+    @GET("/api/crud/tourney?_sort=-beginDate")
+    Call<List<Tourney>> getTourneysWithSortAndFilters(@Query("name") String name, @Query("region") String region, @Query("_limit") String limit, @Query("_offset") String offset);
+
     @GET("/api/crud/tourney")
     Observable<List<Tourney>> getTourneysById(@Query("_id") String id);
+
     @GET("/api/crud/tourney")
     Call<List<Tourney>> getTourneysByCreator(@Query("creator") String id);
 
     @GET("/api/crud/league?_populate=matches+stages")
     Call<List<League>> getAllLeagues(@Query("_limit") String limit, @Query("_offset") String offset);
+
     @GET("/api/crud/league?_populate=matches+stages")
     Call<List<League>> getLeaguesByTourney(@Query("tourney") String tourney);
+
+    @GET("/api/crud/league?_select=id")
+    Call<List<League>> getLeagueIdsByTourney(@Query("tourney") String tourney);
+
     @GET("api/crud/match?_populate=teamOne+teamTwo+place")
     Call<List<MatchPopulate>> getMatches(@Query("_id") String id, @Query("referees.person") String referee);
+
     @GET("api/crud/match?_populate=teamOne+teamTwo+place")
     Call<List<MatchPopulate>> getMatchById(@Query("_id") String id);
+
+    @GET("api/crud/match")
+    Call<List<Match>> getMatchByLeagueAndTeamOne(@Query("league") String leagueId, @Query("teamOne") String id);
+
+    @GET("api/crud/match")
+    Call<List<Match>> getMatchByLeagueAndTeamTwo(@Query("league") String leagueId, @Query("teamTwo") String id);
+
     //edit web
     @PATCH("/api/crud/match/{id}")
     Call<Match> editMatch(@Path("id") String id, @Header("auth") String authorization, @Body Match match);
+
     @POST("/api/matches/addEvent/{id}")
     Observable<Event> editProtocolMatch(@Path("id") String id, @Header("auth") String authorization, @Body Event event);
 
@@ -131,17 +130,13 @@ public interface FootballApi {
     @POST("/api/matches/setreferees")
     Observable<Response<Matches>> editProtocolReferees(@Header("auth") String authorization, @Body RefereeRequestList body);
 
-    //set referee
-    @POST("/api/matches/setmultireferees")
-    Observable<Response<ServerResponse>> editMatch(@Header("auth") String authorization, @Body SetRefereeList body);
-
-    @GET("/api/person_invite?_populate=team")
+    @GET("/api/person_invite?_populate=person")
     Call<List<Invite>> getInvites(@Query("person") String person, @Query("team") String team, @Query("status") String status);
     @GET("/api/person_invite?_populate=team&status=accepted")
     Call<List<Invite>> getUsersTeams(@Query("person") String person);
     //refresh web
     @GET("/api/refresh")
-    Observable<User> refreshUser(@Header("auth") String authorization);
+    Call<User> refreshUser(@Header("auth") String authorization);
 
     //sign up web
     @Multipart
@@ -174,13 +169,16 @@ public interface FootballApi {
     //player inv
     @POST("/api/person_invite/accept/{id}")
     Call<User> playerInv(@Path("id") String id, @Header("auth") String authorization);
+
     @POST("/api/person_invite/reject/{id}")
     Call<Invite> rejectInv(@Path("id") String id, @Header("auth") String authorization);
 
     @POST("/api/person_invite/cancel/{id}")
     Call<Invite> cancelInv(@Path("id") String id, @Header("auth") String authorization);
+
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getTeams(@Query("creator") String creator);
+
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getTeamsByTrainer(@Query("trainer") String trainer);
 

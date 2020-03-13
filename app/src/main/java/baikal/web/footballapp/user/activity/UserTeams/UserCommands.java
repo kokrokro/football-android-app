@@ -53,47 +53,6 @@ public class UserCommands extends Fragment {
         teamTabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
 
-//        MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
-//        mainViewModel.getTeams(id).observe(getViewLifecycleOwner(), teamsToTrain -> {
-//            trainerTeams.clear();
-//            trainerTeams.addAll(teamsToTrain);
-//
-//            if(trainerTeams.size()==0)
-//                linearLayoutTrainerTeams.setVisibility(View.GONE);
-//            else
-//                textTrainerTeams.setVisibility(View.VISIBLE);
-//        });
-
-//        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-//            if (scrollY < oldScrollY) {
-//                scrollStatus = false;
-//            }
-//            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                scrollStatus = true;
-//                AuthoUser.fab.hide();
-//            }
-//        });
-//        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            @Override
-//            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-////nothing to do
-//            }
-//
-//            @Override
-//            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-//
-//                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-//                    AuthoUser.fab.show();
-//                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
-//                    AuthoUser.fab.hide();
-//                }
-//                if (scrollStatus) {
-//                    AuthoUser.fab.hide();
-//                }
-//                super.onScrollStateChanged(recyclerView, newState);
-//            }
-//        });
-//
         AuthoUser.fab.setOnClickListener(v -> {
             //add command
             num = AuthoUser.personOwnCommand.size();

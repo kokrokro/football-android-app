@@ -51,8 +51,7 @@ public class CommandStructureFragment extends Fragment {
         ImageView imageCoach;
         final FloatingActionButton fab;
         RecyclerView recyclerView;
-        Bundle arguments = getArguments();
-        Team team = (Team) arguments.getSerializable("TEAMSTRUCTURE");
+        Team team = (Team) getArguments().getSerializable("TEAMSTRUCTURE");
         view = inflater.inflate(R.layout.command_info_structure, container, false);
 //        fab = (FloatingActionButton) view.findViewById(R.id.commandInfoButton);
         CommandInfoActivity commandInfoActivity = (CommandInfoActivity) getActivity();
@@ -73,9 +72,6 @@ public class CommandStructureFragment extends Fragment {
         str = checkName.check(coach.getSurname(), coach.getName(), coach.getLastname());
         textCouch.setText(str);
         SetImage.setImage(getActivity(), imageCoach, coach.getPhoto());
-
-
-
 
         List<Player> players = team.getPlayers();
 //        players.sort(Comparator.comparing(Player::getDisquals));

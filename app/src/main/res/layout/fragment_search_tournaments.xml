@@ -35,7 +35,8 @@
                 android:layout_marginBottom="7dp"
                 android:layout_marginTop="7dp"
                 android:background="@drawable/ic_filter"
-                android:layout_marginRight="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="1dp"
                 >
 
             </ImageButton>
@@ -45,6 +46,10 @@
     </com.google.android.material.appbar.AppBarLayout>
 
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/FST_swipe_to_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollerPlayersPage"
         android:layout_width="match_parent"
@@ -65,18 +70,69 @@
                 android:background="@color/colorWhite">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewSearch"
+                    android:id="@+id/FST_recyclerView"
                     android:paddingTop="8sp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="?attr/actionBarSize"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
                 <ProgressBar
-                    android:id="@+id/progressSearch"
+                    android:id="@+id/FST_progress"
                     android:layout_width="match_parent"
-                    android:layout_gravity="center_vertical|center_horizontal"
                     android:layout_height="40dp"
-                    android:visibility="gone" />
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/FST_errorText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/network_error"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/InfoTextAppearance"
+                    android:visibility="gone"
+                    tools:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/FST_emptyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_marginTop="45sp"
+                        android:layout_marginBottom="45sp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
+                        android:src="@drawable/ic_empty1"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="15sp"
+                        android:fontFamily="@font/manrope_regular"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:text="@string/empty"
+                        android:layout_gravity="center_horizontal"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="25sp"
+                        android:paddingStart="25sp"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp"
+                        android:textAppearance="@style/InfoTextAppearance"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="@string/players_not_found"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

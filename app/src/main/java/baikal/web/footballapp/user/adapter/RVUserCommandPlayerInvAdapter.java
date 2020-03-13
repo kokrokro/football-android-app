@@ -1,7 +1,5 @@
 package baikal.web.footballapp.user.adapter;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,23 +12,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import baikal.web.footballapp.FullScreenImage;
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 
-import static baikal.web.footballapp.Controller.BASE_URL;
-
 public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCommandPlayerInvAdapter.ViewHolder>{
-    private final Activity context;
     private final List<String> players;
     private final RVUserCommandPlayerAdapter.Listener listener;
     private final String tag;
 
-    public RVUserCommandPlayerInvAdapter(Activity context, List<String> players, RVUserCommandPlayerAdapter.Listener listener, String tag){
-        this.context = context;
+    public RVUserCommandPlayerInvAdapter(List<String> players, RVUserCommandPlayerAdapter.Listener listener, String tag){
         this.players = players;
         this.listener = listener;
         this.tag = tag;
@@ -54,23 +48,9 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         }
         player = MankindKeeper.getInstance().getPersonById(players.get(position));
 
-        try {
-            holder.textName.setText(player.getSurnameWithInitials());
-            String uriPic = BASE_URL;
-            uriPic += "/" + player.getPhoto();
 
-            SetImage.setImage(context, holder.image, player.getPhoto());
-            final String finalUriPic = uriPic;
-            holder.image.setOnClickListener(v -> {
-                if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {
-                    Intent intent = new Intent(context, FullScreenImage.class);
-                    intent.putExtra("player_photo", finalUriPic);
-                    context.startActivity(intent);
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        holder.textName.setText(player.getSurnameWithInitials());
+        SetImage.setImage(App.getAppContext(), holder.image, player.getPhoto());
 
         if (position == (players.size() - 1)) {
             holder.line.setVisibility(View.INVISIBLE);

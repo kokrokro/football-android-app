@@ -44,7 +44,6 @@ import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.model.Club;
-import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.PendingTeamInvite;
 import baikal.web.footballapp.model.Person;
@@ -74,11 +73,7 @@ public class AuthoUser extends Fragment {
     static final List<Person> allReferees = new ArrayList<>();
     public static List<PersonTeams> personOngoingLeagues;
     public static List<PersonTeams> personOwnCommand;
-    static List<Team> createdTeams = new ArrayList<>();
-    public static List<Team> personCommand;
     public static List<PendingTeamInvite> pendingTeamInvitesList;
-    private final List<Tourney> createdTourneyList = new ArrayList<>();
-    private final List<Team> createdTeamList = new ArrayList<>();
 
     private TextView categoryTitle;
 
@@ -210,7 +205,6 @@ public class AuthoUser extends Fragment {
         activity.setSupportActionBar(toolbar);
         personOngoingLeagues = new ArrayList<>();
         personOwnCommand = new ArrayList<>();
-        personCommand = new ArrayList<>();
         pendingTeamInvitesList = new ArrayList<>();
 
         fab.setVisibility(View.INVISIBLE);
@@ -227,25 +221,11 @@ public class AuthoUser extends Fragment {
                 textName.setText(person.getName());
                 SetImage.setImage(getActivity(), buttonOpenProfile, person.getPhoto());
 
-                Controller.getApi().getUsersTeams(person.get_id()).enqueue(new Callback<List<Invite>>() {
-                    @Override
-                    public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
-                        if (response.isSuccessful())
-                            if (response.body() != null)
-                                for (Invite invite : response.body())
-                                    personCommand.add(invite.getTeam());
-                    }
-
-                    @Override
-                    public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) { }
-                });
                 Controller.getApi().getTeams(person.get_id()).enqueue(new Callback<List<Team>>() {
                     @Override
                     public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                         if (response.isSuccessful())
                             if (response.body() != null && response.body().size() > 0) {
-                                createdTeams.clear();
-                                createdTeams.addAll(response.body());
                                 openTrainerMenu();
                             }
                     }
@@ -271,8 +251,6 @@ public class AuthoUser extends Fragment {
                         if (response.isSuccessful() && response.body() != null) {
                             if (response.body().size() == 0)
                                 return;
-                            createdTourneyList.clear();
-                            createdTourneyList.addAll(response.body());
                             rvCreatedTourneyList.setVisibility(View.VISIBLE);
                         }
                     }
@@ -314,7 +292,8 @@ public class AuthoUser extends Fragment {
         signOutBtn.setOnClickListener(v->{
             WebStorage.getInstance().deleteAllData();
             SaveSharedPreference.setLoggedIn(activity.getApplicationContext(), false);
-            SaveSharedPreference.saveObject(null);
+            SaveSharedPreference.editObject(null);
+            activity.EndRefreshToken();
 //                PersonalActivity.fragmentUser.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             setSingleReferee.setVisibility(View.GONE);
             cancelSetSingleReferee.setVisibility(View.GONE);

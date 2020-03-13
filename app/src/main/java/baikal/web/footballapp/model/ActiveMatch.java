@@ -1,9 +1,10 @@
 package baikal.web.footballapp.model;
 
-import java.io.Serializable;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class ActiveMatch implements Serializable {
 
@@ -24,7 +25,7 @@ public class ActiveMatch implements Serializable {
     private String group;
     @SerializedName("place")
     @Expose
-    private String place;
+    private Stadium place;
     @SerializedName("playersList")
     @Expose
     private List<String> playersList = null;
@@ -43,6 +44,9 @@ public class ActiveMatch implements Serializable {
     @SerializedName("autoGoal")
     @Expose
     private String autoGoal;
+    @SerializedName("penalty")
+    @Expose
+    private String penalty;
     @SerializedName("teamOne")
     @Expose
     private Team teamOne;
@@ -122,11 +126,11 @@ public class ActiveMatch implements Serializable {
         this.playersList = playersList;
     }
 
-    public String getPlace() {
+    public Stadium getPlace() {
         return place;
     }
 
-    public void setPlace(String place) {
+    public void setPlace(Stadium place) {
         this.place = place;
     }
 
@@ -232,10 +236,9 @@ public class ActiveMatch implements Serializable {
 
     public void setFouls(String fouls) { this.fouls = fouls; }
 
-    public String getPenalty ()
-    {
-        String ans = "";
-
-        return ans;
+    public void setPenalty(String penalty) {
+        this.penalty = penalty;
     }
+
+    public String getPenalty () { return penalty; }
 }

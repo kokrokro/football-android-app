@@ -80,7 +80,7 @@ public class ChangePlayersForMatch extends AppCompatActivity {
         recyclerViewTeam.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewTeam.setAdapter(adapter);
 
-        adapterInv = new RVUserCommandPlayerInvAdapter(this, notPlayers, position -> {
+        adapterInv = new RVUserCommandPlayerInvAdapter(notPlayers, position -> {
             Player player = new Player();
             player.setPerson(notPlayers.get(position));
             players.add(player);

@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 public class FavoriteTourneys implements Serializable {
@@ -12,7 +13,7 @@ public class FavoriteTourneys implements Serializable {
     @Expose
     private List<String> favoriteTourney = new ArrayList<>();
 
-    public FavoriteTourneys(List<String> favoriteTourney) {
+    public FavoriteTourneys(HashSet<String> favoriteTourney) {
         this.favoriteTourney.clear();
         this.favoriteTourney.addAll(favoriteTourney);
     }

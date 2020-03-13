@@ -2,32 +2,27 @@ package baikal.web.footballapp.tournament.activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.LeagueInfo;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Tourney;
+import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
 
 public class Tournament extends Fragment {
 
@@ -66,11 +61,9 @@ public class Tournament extends Fragment {
             League league = (League) arguments.getSerializable("TOURNAMENTINFO");
 
             String str = "";
-            for(Tourney t: MankindKeeper.getInstance().allTourneys){
-                if(league.getTourney().equals(t.getId())){
+            for(Tourney t: MankindKeeper.getInstance().allTourneys)
+                if(league.getTourney().equals(t.getId()))
                     str = t.getName();
-                }
-            }
             str +=". " + league.getName();
             textTitle.setText(str);
             tabLayout.setupWithViewPager(viewPager);
@@ -98,21 +91,12 @@ public class Tournament extends Fragment {
         TournamentCommandFragment tournamentCommandFragment = new TournamentCommandFragment();
         TournamentPlayersFragment tournamentPlayersFragment = new TournamentPlayersFragment();
 
-        Bundle leagueMatch = new Bundle();
-        leagueMatch.putSerializable("TOURNAMENTINFOMATCHESLEAGUE", league);
-        tournamentTimeTableFragment.setArguments(leagueMatch);
-        Bundle teams = new Bundle();
-        List<Team> teamList = new ArrayList<>();
-        for (Team team : tournamentsFragment.allTeams){
-            if(team.getLeague().equals(league.getId())){
-                teamList.add(team);
-            }
-        }
-        teams.putSerializable("TOURNAMENTINFOTEAMS", (Serializable) teamList);
-        teams.putSerializable("TOURNAMENTINFOMATCHESLEAGUE", league);
-        tournamentCommandFragment.setArguments(teams);
-        tournamentPlayersFragment.setArguments(teams);
-//        ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(getActivity().getSupportFragmentManager());
+        Bundle leagueData = new Bundle();
+        leagueData.putSerializable("TOURNAMENTINFOMATCHESLEAGUE", league);
+        tournamentCommandFragment.setArguments(leagueData);
+        tournamentPlayersFragment.setArguments(leagueData);
+        tournamentTimeTableFragment.setArguments(leagueData);
+
         try {
             ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(this.getChildFragmentManager());
             adapter.addFragment(tournamentTimeTableFragment, "Расписание");

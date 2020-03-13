@@ -4,70 +4,29 @@
     android:layout_height="match_parent"
     android:background="@color/colorWhite">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/MPF_nested_scroll_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/MPF_swipe_to_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/MPF_RV_holder"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/MPF_news_RV"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="170dp"/>
+                android:layout_height="match_parent">
 
-            <View
-                android:id="@+id/MPF_between_RV"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorLightGray"/>
+                <FrameLayout
+                    android:id="@+id/MPF_HRV_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="170dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_alignParentTop="true"/>
 
-            <LinearLayout
-                android:id="@+id/MPF_emptyComingMatches"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="65sp"
-                android:orientation="vertical">
-                <ImageView
-                    android:layout_marginTop="45sp"
-                    android:layout_marginBottom="45sp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:src="@drawable/ic_empty1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="15sp"
-                    android:fontFamily="@font/manrope_regular"
-                    android:textColor="@color/colorBottomNavigationUnChecked"
-                    android:text="@string/empty"
-                    android:layout_gravity="center_horizontal"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="25sp"
-                    android:paddingStart="25sp"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp"
-                    android:textColor="@color/colorLightGrayForText"
-                    android:fontFamily="@font/manrope_regular"
-                    android:text="На сегодня нет матчей"
-                    android:layout_gravity="center_horizontal"/>
-            </LinearLayout>
+                <FrameLayout
+                    android:id="@+id/MPF_VRV_holder"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/MPF_HRV_holder" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/MPF_matches_RV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
-
-    </androidx.core.widget.NestedScrollView>
+            </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     
 </LinearLayout>

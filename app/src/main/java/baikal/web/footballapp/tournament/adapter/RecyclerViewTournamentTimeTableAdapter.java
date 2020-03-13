@@ -1,29 +1,15 @@
 package baikal.web.footballapp.tournament.adapter;
 
 import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Match;
-import baikal.web.footballapp.model.PersonStats;
-import baikal.web.footballapp.model.PersonStatus;
-import baikal.web.footballapp.model.Stadium;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.tournament.activity.ShowProtocol;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +17,14 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.PersonStatus;
+import baikal.web.footballapp.model.Stadium;
+import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
 import baikal.web.footballapp.tournament.activity.TournamentsFragment;
 import q.rorbin.badgeview.QBadgeView;
@@ -183,16 +177,16 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
 
             }
         }
-        if (match.getPlayed()){
-            holder.layout.setBackgroundResource(R.color.colorBadgeScale);
-            holder.layout.setOnClickListener(v -> {
-                Intent intent = new Intent(activity, ShowProtocol.class);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("SHOWPROTOCOL", match);
-                intent.putExtras(bundle);
-                activity.startActivity(intent);
-            });
-        }
+//        if (match.getPlayed()){
+//            holder.layout.setBackgroundResource(R.color.colorBadgeScale);
+//            holder.layout.setOnClickListener(v -> {
+//                Intent intent = new Intent(activity, ShowProtocol.class);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("SHOWPROTOCOL", match);
+//                intent.putExtras(bundle);
+//                activity.startActivity(intent);
+//            });
+//        }
         try {
             str = match.getPenalty();
             if (!str.equals("")) {
@@ -224,7 +218,7 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
         final TextView textPenalty;
         //        TextView textTournamentTitle;
         final TextView textScore;
-        final RelativeLayout layout;
+//        final RelativeLayout layout;
         final View line;
 
         ViewHolder(View item) {
@@ -241,7 +235,7 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
 //            textTournamentTitle = (TextView) item.findViewById(R.id.timetableLeagueTitle);
             textScore = item.findViewById(R.id.timetableGameScore);
             textPenalty = item.findViewById(R.id.timetablePenalty);
-            layout = item.findViewById(R.id.timetableLayout);
+//            layout = item.findViewById(R.id.timetableLayout);
             line = item.findViewById(R.id.timetableLine);
         }
     }

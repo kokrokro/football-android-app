@@ -1,7 +1,7 @@
 package baikal.web.footballapp.tournament.activity;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -22,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.R;
@@ -30,43 +30,40 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamStats;
 import baikal.web.footballapp.tournament.adapter.RVLeaguePlayoffCommandAdapter;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class TournamentCommandFragment extends Fragment{
     Logger log = LoggerFactory.getLogger(TournamentCommandFragment.class);
     private boolean scrollStatus;
     private FloatingActionButton fab;
     private List<TeamStats> teamStatsList = new ArrayList<>();
-    private  RVLeaguePlayoffCommandAdapter adapter;
-    @SuppressLint({"RestrictedApi", "CheckResult"})
+    private List<Team> teams = new ArrayList<>();
+    private RVLeaguePlayoffCommandAdapter adapter;
+    private League league;
+    private LinearLayout layout;
+    private LinearLayout layoutPlayoff;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         NestedScrollView scroller;
         RecyclerView recyclerView;
         RecyclerView recyclerViewPlayoff;
-        LinearLayout layout;
-        LinearLayout layoutPlayoff;
+
 
         Bundle arguments = getArguments();
-        List<Team> teams = (List<Team>) arguments.getSerializable("TOURNAMENTINFOTEAMS");
-        League leagueInfo = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
-//        HashMap<String, List<Team>> commandGroups = new HashMap<>();
-        List<String> groups = new ArrayList<>();
-//        try{
-//            for (Team team : teams){
-//                if (!groups.contains(team.getGroup())){
-//                    groups.add(team.getGroup());
-//                }
-//            }
-//        }catch (Exception e){}
+        league = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
 
         view = inflater.inflate(R.layout.tournament_info_tab_command, container, false);
         Tournament tournament = (Tournament) this.getParentFragment();
         fab = tournament.getFabCommand();
         layout = view.findViewById(R.id.tournamentInfoTabCommandEmpty);
         layoutPlayoff = view.findViewById(R.id.commandsPlayoff);
+        swipeRefreshLayout = view.findViewById(R.id.TITC_swipe_refresh_layout);
         recyclerView = view.findViewById(R.id.tournamentInfoTabCommand);
         recyclerViewPlayoff = view.findViewById(R.id.tournamentInfoTabCommandPlayoff);
         recyclerViewPlayoff.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -74,58 +71,11 @@ public class TournamentCommandFragment extends Fragment{
         scrollStatus = false;
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        if(teams.size()!=0){
-            layout.setVisibility(View.GONE);
-            layoutPlayoff.setVisibility(View.VISIBLE);
-        }
+        swipeRefreshLayout.setOnRefreshListener(this::loadData);
+        loadData();
 
-        //noinspection ResultOfMethodCallIgnored
-        Controller.getApi().getTeamStats(null, "league", leagueInfo.getId(), null)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .repeatWhen(completed -> completed.delay(5, TimeUnit.MINUTES))
-                .subscribe(teamStats -> {
-                    teamStatsList.clear();
-                    teamStatsList.addAll(teamStats);
-                    adapter.notifyDataSetChanged();
-                        },
-                        error -> {}
-                );;
-         adapter = new RVLeaguePlayoffCommandAdapter(getActivity(), teams, leagueInfo, teamStatsList);
+        adapter = new RVLeaguePlayoffCommandAdapter(getActivity(), teams, league, teamStatsList);
         recyclerViewPlayoff.setAdapter(adapter);
-
-
-//            if (groups.size()!=0){
-//                layout.setVisibility(View.GONE);
-//                if (!leagueInfo.getStatus().equals("Groups")){
-//                    layoutPlayoff.setVisibility(View.VISIBLE);
-//                    List<Team> list = new ArrayList<>(teams);
-//                    for (Team team : teams){
-////                    if (team.getPlace()!=null){
-////                    if (team.getPlayoffPlace()!=null){
-//                        if (team.getPlayoffPlace()!=null){
-//                            list.remove(team);
-//                        }
-//                    }
-//                    teams.removeAll(list);
-////                    Collections.sort(teams, new PlayoffTeamPlaceComparator());
-//                    int count = teams.size();
-////                    Collections.sort(list, new GroupTeamPlaceComparator());
-////                    Collections.sort(list, new PlayoffTeamMadeToPlayoffComparator());
-//                    teams.addAll(count, list);
-//                    RVLeaguePlayoffCommandAdapter adapter = new RVLeaguePlayoffCommandAdapter(getActivity(),this, teams, leagueInfo);
-//                    recyclerViewPlayoff.setAdapter(adapter);
-//                }
-//                else {
-//                    RVTournamentCommandAdapter adapter = new RVTournamentCommandAdapter(getActivity(),this, groups, teams, leagueInfo);
-//                    recyclerView.setAdapter(adapter);
-//                }
-//            }
-//            else {
-//                fab.setVisibility(View.INVISIBLE);
-//            }
-
-
 
 
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
@@ -166,6 +116,44 @@ public class TournamentCommandFragment extends Fragment{
         return view;
     }
 
+    private void loadData ()
+    {
+        Controller.getApi().getTeamByLeagueId(league.getId()).enqueue(new Callback<List<Team>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    teams.clear();
+                    teams.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+
+                    Log.d("TCF", response.body().get(0).toString());
+
+                    if (teams.size() != 0) {
+                        layout.setVisibility(View.GONE);
+                        layoutPlayoff.setVisibility(View.VISIBLE);
+                    }
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) { swipeRefreshLayout.setRefreshing(false); }
+        });
+        Controller.getApi().getTeamStats(null, "league", league.getId(), null).enqueue(new Callback<List<TeamStats>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<TeamStats>> call, @NonNull Response<List<TeamStats>> response) {
+                if (response.isSuccessful() && response.body()!= null) {
+                    teamStatsList.clear();
+                    teamStatsList.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                }
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<TeamStats>> call, @NonNull Throwable t) { swipeRefreshLayout.setRefreshing(false); }
+        });
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

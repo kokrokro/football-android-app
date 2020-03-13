@@ -3,12 +3,6 @@ package baikal.web.footballapp.user.activity;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,14 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.SignIn;
-import baikal.web.footballapp.model.User;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,6 +25,14 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Objects;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.PersonalActivity;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.SignIn;
+import baikal.web.footballapp.model.User;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -112,7 +110,8 @@ public class UserPage extends Fragment {
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser, "AUTHOUSERPAGE").hide(this).show(authoUser).commit();
-                authoUser.activity.setActive(authoUser);
+                activity.setActive(authoUser);
+                activity.StartRefreshToken();
             }
         } else {
             log.error("ERROR: onActivityResult");
@@ -152,7 +151,7 @@ public class UserPage extends Fragment {
                             authoUser.activity.setActive(authoUser);
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                             SaveSharedPreference.saveObject(user);
-
+                            activity.StartRefreshToken();
                             resetLoginPassEditText();
 
                         } catch (Exception e) {
@@ -189,7 +188,4 @@ public class UserPage extends Fragment {
         });
 
     }
-
-
-
 }

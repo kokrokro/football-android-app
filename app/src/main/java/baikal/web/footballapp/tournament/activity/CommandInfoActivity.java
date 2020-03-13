@@ -3,7 +3,6 @@ package baikal.web.footballapp.tournament.activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -14,12 +13,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.adapter.ViewPagerCommandInfoAdapter;
 
@@ -27,8 +21,8 @@ import baikal.web.footballapp.tournament.adapter.ViewPagerCommandInfoAdapter;
 public class CommandInfoActivity extends AppCompatActivity {
     private static final String TAG = "CommandInfoActivity";
     private Team team;
-    private List<Match>  matchList;
     private FloatingActionButton fab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,17 +36,7 @@ public class CommandInfoActivity extends AppCompatActivity {
         Intent intent;
         intent = getIntent();
         team = (Team) intent.getExtras().getSerializable("TOURNAMENTMATCHCOMMANDINFO");
-        List<Match> matches = (List<Match>) intent.getExtras().getSerializable("TOURNAMENTMATCHCOMMANDINFOMATCHES");
-        matchList = new ArrayList<>();
 
-        try {
-            for (Match match : matches)
-                if (match.getTeamOne().equals(team.getId()) || match.getTeamTwo().equals(team.getId()))
-                    matchList.add(match);
-
-        } catch (Exception e) {
-            Log.d(TAG, e.toString());
-        }
 //        String title = intent.getExtras().getString("COMMANDTITLE");
         buttonBack = findViewById(R.id.commandInfoBack);
         tabLayout = findViewById(R.id.commandInfoTab);
@@ -102,7 +86,6 @@ public class CommandInfoActivity extends AppCompatActivity {
         CommandMatchFragment commandMatchFragment = new CommandMatchFragment();
         Bundle teams = new Bundle();
         teams.putSerializable("TEAMSTRUCTURE", team);
-        teams.putSerializable("TEAMSTRUCTUREMATCHES", (Serializable) matchList);
         commandStructureFragment.setArguments(teams);
         commandMatchFragment.setArguments(teams);
         ViewPagerCommandInfoAdapter adapter = new ViewPagerCommandInfoAdapter(getSupportFragmentManager());

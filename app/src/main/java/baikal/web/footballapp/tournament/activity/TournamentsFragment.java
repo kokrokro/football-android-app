@@ -44,10 +44,6 @@ public class TournamentsFragment extends Fragment {
     private RVFavTourneyAdapter adapter;
     public static final List<Person> referees = new ArrayList<>();
     private final Logger log = LoggerFactory.getLogger(FullscreenNewsActivity.class);
-//    private ProgressBar progressBar;
-//    private int count = 0;
-//    private int offset = 0;
-//    private final int limit = 5;
 
     private SwipeRefreshLayout swipeRefreshLayout;
 

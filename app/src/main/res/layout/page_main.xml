@@ -5,74 +5,74 @@
     android:orientation="vertical"
     android:background="@color/colorWhite"
     xmlns:android="http://schemas.android.com/apk/res/android" >
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    android:layout_width="match_parent"
-    android:layout_marginBottom="50sp"
-    android:background="@color/colorWhite"
-    android:layout_height="match_parent">
-
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/PM_coordinator_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginBottom="50dp">
+        android:background="@color/colorWhite"
+        android:layout_height="match_parent">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/PM_profileAppbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="true"
-            android:orientation="vertical"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true">
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/mainPageTab"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorWhite"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                app:layout_collapseMode="pin"
-                app:tabIndicatorColor="@color/colorPrimary"
-                app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
-                app:tabTextAppearance="@style/CustomTabTextSize"
-                app:tabTextColor="@color/colorLightGrayForText">
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/mainPageMain"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/mainPageHome"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/mainPageMatches"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </com.google.android.material.tabs.TabLayout>
-        </com.google.android.material.appbar.AppBarLayout>
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/mainPageViewPager"
-            android:background="@color/colorWhite"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/PM_profileAppbar"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"/>
-    </RelativeLayout>
+            android:orientation="vertical">
 
-    <include
-        android:id="@+id/ads_bottom_sheet"
-        layout="@layout/ads_bottom_sheet" />
+            <com.google.android.material.appbar.AppBarLayout
+                android:id="@+id/PM_profileAppbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fitsSystemWindows="true"
+                android:orientation="vertical"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true">
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/mainPageTab"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@color/colorWhite"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentEnd="true"
+                    app:layout_collapseMode="pin"
+                    app:tabIndicatorColor="@color/colorPrimary"
+                    app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
+                    app:tabTextAppearance="@style/CustomTabTextSize"
+                    app:tabTextColor="@color/colorLightGrayForText">
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/mainPageMain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/mainPageHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/mainPageMatches"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </com.google.android.material.tabs.TabLayout>
+            </com.google.android.material.appbar.AppBarLayout>
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/mainPageViewPager"
+                android:background="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/PM_profileAppbar"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="70dp"/>
+        </RelativeLayout>
+
+        <include
+            android:id="@+id/PM_bottom_sheet"
+            layout="@layout/ads_bottom_sheet" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </LinearLayout>

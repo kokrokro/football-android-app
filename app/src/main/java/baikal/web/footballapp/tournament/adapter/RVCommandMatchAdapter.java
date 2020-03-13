@@ -50,8 +50,7 @@ public class RVCommandMatchAdapter extends RecyclerView.Adapter<RVCommandMatchAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Match match = matches.get(position);
         String str = match.getDate();
-        DateToString dateToString = new DateToString();
-        holder.textDate.setText(dateToString.ChangeDate(str));
+        holder.textDate.setText(DateToString.ChangeDate(str));
         try{
             holder.textTime.setText(TimeToString(str));
         }catch (Exception e){

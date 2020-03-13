@@ -16,7 +16,7 @@ public class Invite implements Serializable {
     private Team team;
     @SerializedName("person")
     @Expose
-    private String person;
+    private Person person;
     @SerializedName("status")
     @Expose
     private String status;
@@ -37,11 +37,11 @@ public class Invite implements Serializable {
         this.team = team;
     }
 
-    public String getPerson() {
+    public Person getPerson() {
         return person;
     }
 
-    public void setPerson(String person) {
+    public void setPerson(Person person) {
         this.person = person;
     }
 

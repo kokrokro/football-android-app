@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -27,7 +26,6 @@ import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.activity.CommandInfoActivity;
 import baikal.web.footballapp.user.activity.DialogTeam;
-import baikal.web.footballapp.user.activity.TeamMatches;
 import baikal.web.footballapp.user.activity.UserTeams.Adapters.RVUserCommandAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,15 +57,11 @@ public class UsersTeamListFragment extends Fragment {
             if (status.equals("creator") || status.equals("train")) {
                 DialogTeam dialogRegion = new DialogTeam(i -> {
                     if (i == 0) {
-                        Log.d("UserCommands", "это не моя вода...... 0_о");
-                        Intent intent = new Intent(getActivity(), TeamMatches.class);
+                        Intent intent = new Intent(getActivity(), CommandInfoActivity.class);
                         Bundle bundle = new Bundle();
-                        Bundle bundle1 = new Bundle();
-                        bundle.putSerializable("COMMANDEDIT", team);
-                        bundle1.putSerializable("COMMANDEDITLEAGUE", league);
+                        bundle.putSerializable("TOURNAMENTMATCHCOMMANDINFO", team);
                         intent.putExtras(bundle);
-                        intent.putExtras(bundle1);
-                        Objects.requireNonNull(getActivity()).startActivity(intent);
+                        getActivity().startActivity(intent);
                     } else {
                         Intent intent = new Intent(getActivity(), UserCommandInfoEdit.class);
                         Bundle bundle = new Bundle();
@@ -85,8 +79,7 @@ public class UsersTeamListFragment extends Fragment {
                 Intent intent = new Intent(getActivity(), CommandInfoActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("TOURNAMENTMATCHCOMMANDINFO", team);
-                bundle.putSerializable("TOURNAMENTMATCHCOMMANDINFOMATCHES", (Serializable) league.getMatches());
-                intent.putExtras( bundle);
+                intent.putExtras(bundle);
                 getActivity().startActivity(intent);
             }
         });
@@ -102,14 +95,14 @@ public class UsersTeamListFragment extends Fragment {
     {
         swipeRefreshLayout.setRefreshing(false);
         if (status.equals("creator")) {
-            Log.d("UTLF", "loading response 1");
+            Log.d("UTLF_creator", "loading response 1");
             String id = SaveSharedPreference.getObject().getUser().getId();
             Controller.getApi().getTeams(id).enqueue(new Callback<List<Team>>() {
                 @Override
                 public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
-                    Log.d("UTLF", "loaded response 2");
+                    Log.d("UTLF_creator", "loaded response 2");
                     if (response.isSuccessful() && response.body() != null) {
-                        Log.d("UTLF", "loaded response 3");
+                        Log.d("UTLF_creator", "loaded response 3");
                         teams.clear();
                         teams.addAll(response.body());
                         adapter.setData(teams);
@@ -139,7 +132,7 @@ public class UsersTeamListFragment extends Fragment {
                                 }
                         if (teams.size() > 0)
                             emptyLayout.setVisibility(View.GONE);
-                        Log.d("UTListFragment", "team size = " + teams.size());
+                        Log.d("UTListFragment_part", "team size = " + teams.size());
                         adapter.setData(teams);
                     }
                 }
@@ -159,7 +152,7 @@ public class UsersTeamListFragment extends Fragment {
                         teams.addAll(response.body());
                         if (teams.size() > 0)
                             emptyLayout.setVisibility(View.GONE);
-                        Log.d("UTListFragment", "team size = " + teams.size());
+                        Log.d("UTListFragment_train", "team size = " + teams.size());
                         adapter.setData(teams);
                     }
                 }

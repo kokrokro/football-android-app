@@ -29,8 +29,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".user.activity.ChangePlayersForMatch"></activity>
-        <activity android:name=".user.activity.TeamMatches" />
+        <activity android:name=".user.activity.ChangePlayersForMatch" />
         <activity
             android:name=".SplashScreenActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -43,7 +42,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".user.activity.ChooseTrainer" />
-        <activity android:name=".user.activity.AddTournament" />
 
         <activity
             android:name=".PersonalActivity"

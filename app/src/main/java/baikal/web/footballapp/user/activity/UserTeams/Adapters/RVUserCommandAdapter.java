@@ -94,6 +94,15 @@ public class RVUserCommandAdapter extends RecyclerView.Adapter<RVUserCommandAdap
         if (position == (list.size() - 1))
             holder.line.setVisibility(View.INVISIBLE);
 
+        switch (league.getStatus()) {
+            case "started":
+                holder.textStatus.setText("Началось");
+                break;
+            case "pending":
+                holder.textStatus.setText("В ожидании");
+                break;
+        }
+
         holder.linearLayout.setOnClickListener(v -> listener.onClick(personTeams, currentLeague));
     }
 

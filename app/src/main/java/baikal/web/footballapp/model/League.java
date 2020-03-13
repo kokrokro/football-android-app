@@ -1,9 +1,10 @@
 package baikal.web.footballapp.model;
 
-import java.io.Serializable;
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class League implements Serializable {
     @SerializedName("creator")
@@ -61,6 +62,15 @@ public class League implements Serializable {
     @Expose
     private List<Team> teams = null;
 
+
+
+    @SerializedName("yellowCardsToDisqual")
+    @Expose
+    private Integer yellowCardsToDisqual;
+
+    public Integer getYellowCardsToDisqual() {
+        return yellowCardsToDisqual;
+    }
 
     public String getStatus() {
         return status;

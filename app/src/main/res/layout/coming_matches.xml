@@ -21,13 +21,38 @@
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <LinearLayout
-                android:id="@+id/emptyComingMatches"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewComingMatches"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:layout_marginTop="65sp"
-                android:orientation="vertical">
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+            <ProgressBar
+                android:id="@+id/CM_progress"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/CM_errorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/network_error"
+                android:textAlignment="center"
+                android:textAppearance="@style/InfoTextAppearance"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/CM_emptyText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
                 <ImageView
                     android:layout_marginTop="45sp"
                     android:layout_marginBottom="45sp"
@@ -51,17 +76,11 @@
                     android:paddingStart="25sp"
                     android:gravity="center_horizontal"
                     android:textSize="16sp"
-                    android:textColor="@color/colorLightGrayForText"
+                    android:textAppearance="@style/InfoTextAppearance"
                     android:fontFamily="@font/manrope_regular"
-                    android:text="@string/not_coming_match"
+                    android:text="@string/players_not_found"
                     android:layout_gravity="center_horizontal"/>
             </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewComingMatches"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

@@ -1,8 +1,8 @@
 package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +16,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import baikal.web.footballapp.FullScreenImage;
-import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
-
-import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserCommandPlayerAdapter.ViewHolder> {
     private final List<Player> players;
@@ -49,53 +45,32 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        int count = position + 1;
-//        String str = Integer.toString(count);
-        String str = String.valueOf(count);
-        holder.textNum.setText(str);
-        Person player;
+//        Person player = players.get(position).getPerson();
+//        fillData(holder, position, player);
+    }
 
-        player = MankindKeeper.getInstance().getPersonById(players.get(position).getPerson());
-
-        holder.textName.setText(player.getSurnameWithInitials());
-        str = String.valueOf(players.get(position).getNumber());
+    private void fillData (@NonNull final ViewHolder holder, final int position, Person player)
+    {
+        holder.textNum.setText(String.valueOf(position + 1));
         try {
-            holder.editNum.setText(str);
-        } catch (Exception ignored){}
-        try {
-
-            String uriPic = BASE_URL;
-            uriPic += "/" + player.getPhoto();
-            SetImage.setImage(context, holder.image, player.getPhoto());
-            final String finalUriPic = uriPic;
-            holder.image.setOnClickListener(v -> {
-                if (finalUriPic.contains(".jpg") || finalUriPic.contains(".jpeg") || finalUriPic.contains(".png")) {
-                    Intent intent = new Intent(context, FullScreenImage.class);
-                    intent.putExtra("player_photo", finalUriPic);
-                    context.startActivity(intent);
-                }
-            });
-        } catch (Exception ignored) {
-
+            holder.textName.setText(player.getSurnameWithInitials());
+            holder.editNum.setText(String.valueOf(players.get(position).getNumber()));
+        } catch (Exception e){
+            Log.e("RVUserTeamPlayerAdapt", e.toString());
         }
 
-        if (position == (players.size() - 1)) {
+        SetImage.setImage(context, holder.image, player.getPhoto());
+
+        if (position == (players.size() - 1))
             holder.line.setVisibility(View.INVISIBLE);
-        }
-//        if (player.getId().equals(SaveSharedPreference.getObject().getUser().getId())){
-//            holder.buttonDelete.setVisibility(View.INVISIBLE);
-//        }
-        holder.buttonDelete.setOnClickListener(v -> {
-            //post
-            listener.onClick(position);
-        });
+
+        holder.buttonDelete.setOnClickListener(v -> listener.onClick(position));
         holder.editNum.getBackground().setColorFilter(context.getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
         holder.editNum.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
+            if (hasFocus)
                 holder.editNum.getBackground().clearColorFilter();
-            } else {
+            else
                 holder.editNum.getBackground().setColorFilter(context.getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
-            }
         });
     }
 
@@ -121,5 +96,7 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
             buttonDelete = item.findViewById(R.id.userCommandPlayerDelete);
             line = item.findViewById(R.id.userCommandPlayerLine);
         }
+
+//        void bindTo (Player )
     }
 }

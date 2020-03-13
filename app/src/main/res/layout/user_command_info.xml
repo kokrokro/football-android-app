@@ -68,39 +68,47 @@
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
 
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/UCI_swipe_to_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/profileAppbar">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_below="@+id/profileAppbar">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
 
         <LinearLayout
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingTop="8dp">
+            android:background="@color/colorLightGray">
             <!--android:paddingStart="18dp"-->
             <!--android:paddingEnd="18dp"-->
-
 
             <LinearLayout
                 android:id="@+id/linLayoutInformationTeam"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:background="@color/colorLightGray">
 
                 <TextView
                     android:id="@+id/editTeam"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/manrope_semibold"
-                    android:paddingBottom="8dp"
+                    android:textAlignment="viewStart"
                     android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:textColor="@color/colorBottomNavigationUnChecked"
                     android:textSize="14sp"
+                    android:background="@color/colorWhite"
+                    android:layout_marginTop="8dp"
                     android:text="@string/commandTitle" />
 
                 <EditText
@@ -111,18 +119,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:hint="@string/commandTitle2"
-                    android:inputType="text|textCapSentences" />
+                    android:inputType="text|textCapSentences"
+                    android:background="@color/colorWhite"/>
                 <TextView
                     android:id="@+id/editTeamTrainer"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/manrope_semibold"
-                    android:paddingBottom="3dp"
+                    android:layout_marginTop="8dp"
                     android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:textColor="@color/colorBottomNavigationUnChecked"
                     android:textSize="14sp"
-                    android:text="@string/editTeamTrainer" />
+                    android:text="@string/editTeamTrainer"
+                    android:background="@color/colorWhite"/>
 
                 <Button
                     android:id="@+id/newCommandTrainer"
@@ -133,56 +149,72 @@
                     android:gravity="center_vertical"
                     android:stateListAnimator="@animator/mtrl_btn_unelevated_state_list_anim"
                     android:text="Выберите тренера"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
                     android:textAllCaps="false"
                     android:textColor="@color/colorLightGrayForText"
-                    android:textSize="15sp">
+                    android:textSize="15sp"
+                    android:background="@color/colorWhite">
 
                 </Button>
                 <TextView
                     android:id="@+id/editTeamNumber"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/manrope_semibold"
-                    android:paddingBottom="8dp"
                     android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:layout_marginTop="8dp"
+                    android:paddingTop="4dp"
+                    android:paddingBottom="4dp"
                     android:textColor="@color/colorBottomNavigationUnChecked"
                     android:textSize="14sp"
-                    android:text="@string/editTeamNumber" />
+                    android:text="@string/editTeamNumber"
+                    android:background="@color/colorWhite"/>
                 <EditText
                     android:id="@+id/newCommandNumber"
                     style="@style/MyEditText"
-                    android:layout_marginEnd="18dp"
                     android:textColor="@color/colorLightGrayForText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
                     android:hint="@string/numberTrainer"
-                    android:inputType="phone" />
+                    android:inputType="phone"
+                    android:background="@color/colorWhite"/>
 
             </LinearLayout>
 
             <TextView
                 android:id="@+id/userCommandPlayersStructureText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_semibold"
-                android:paddingBottom="8dp"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
                 android:paddingStart="13dp"
+                android:paddingEnd="13dp"
                 android:textColor="@color/colorBottomNavigationUnChecked"
                 android:textSize="14sp"
-                android:text="@string/structure" />
+                android:text="@string/structure"
+                android:background="@color/colorWhite"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="end">
+                android:gravity="end"
+                android:background="@color/colorWhite">
                 <Button
                     android:id="@+id/userCommandPlayerButton"
                     style="@style/Base.Widget.AppCompat.Button.Borderless"
                     android:textColor="@color/colorPrimary"
                     android:fontFamily="@font/manrope_regular"
                     android:layout_width="wrap_content"
+                    android:layout_marginRight="14dp"
+                    android:layout_marginLeft="14dp"
                     android:textSize="13sp"
                     android:layout_height="wrap_content"
                     android:text="@string/addPlayer"/>
@@ -191,42 +223,38 @@
                 android:id="@+id/recyclerViewUserCommandPlayers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:background="@color/colorWhite"/>
 
             <View
                 android:id="@+id/userCommandPlayersLine"
                 android:layout_width="match_parent"
                 android:layout_gravity="end"
-                android:layout_marginTop="8sp"
-                android:layout_height="8sp"
-                android:visibility="gone"
-                android:background="@color/colorLightGray2" />
+                android:layout_height="8dp"
+                android:visibility="visible"
+                android:background="@color/colorLightGray"/>
 
             <TextView
                 android:id="@+id/userCommandPlayersInvText"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/manrope_semibold"
-                android:paddingBottom="8dp"
+                android:paddingBottom="4dp"
+                android:paddingTop="4dp"
                 android:paddingStart="13dp"
-                android:paddingTop="8dp"
+                android:paddingEnd="13dp"
                 android:textColor="@color/colorBottomNavigationUnChecked"
                 android:textSize="14sp"
-                android:text="@string/playersInv" />
+                android:text="@string/playersInv"
+                android:background="@color/colorWhite"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewUserCommandPlayersInv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:background="@color/colorWhite"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
-<!--    <View-->
-<!--        android:id="@+id/UCI_bar_shadow"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="5dp"-->
-<!--        android:background="@drawable/shadow_imitation"-->
-<!--        android:layout_below="@+id/profileAppbar"/>-->
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

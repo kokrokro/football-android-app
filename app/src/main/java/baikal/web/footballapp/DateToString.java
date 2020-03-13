@@ -1,22 +1,29 @@
 package baikal.web.footballapp;
+import android.content.res.Resources;
 import android.util.Log;
 
+import androidx.core.os.ConfigurationCompat;
+
+import com.google.gson.internal.bind.util.ISO8601Utils;
+
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
 public class DateToString {
-    private final SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
-    private final SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
-    private final SimpleDateFormat format3 = new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy", Locale.US);
-    private final SimpleDateFormat format4 = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-    private final SimpleDateFormat usualFormatDate = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
-    private final SimpleDateFormat usualFormatTime = new SimpleDateFormat("HH:mm", Locale.US);
-    private final SimpleDateFormat formatForServer = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+hh:mm", Locale.US);
+    private final static SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
+    private final static SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
+    private final static SimpleDateFormat format3 = new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy", Locale.US);
+    private final static SimpleDateFormat format4 = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+    private final static SimpleDateFormat usualFormatDate = new SimpleDateFormat("dd.MM.yyyy", Locale.US);
+    private final static SimpleDateFormat usualFormatTime = new SimpleDateFormat("HH:mm", Locale.US);
+    private final static SimpleDateFormat formatForServer = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS+hh:mm", Locale.US);
 
-    public String TimeForServer (String str, String inputFormat, String locale)
+    public static String TimeForServer (String str, String inputFormat, String locale)
     {
         DateFormat formatParse = new SimpleDateFormat(inputFormat, new Locale(locale));
 
@@ -24,11 +31,11 @@ public class DateToString {
             return formatForServer.format(Objects.requireNonNull(formatParse.parse(str)));
         } catch (Exception e) {
             Log.d("Time to string: ", e.toString());
-            return "";
+            return "Дата не установлена";
         }
     }
 
-    private Date tryParseStr(String str, SimpleDateFormat format) {
+    private static Date tryParseStr(String str, SimpleDateFormat format) {
         try {
             return format.parse(str);
         } catch (Exception e) {
@@ -36,7 +43,7 @@ public class DateToString {
         }
     }
 
-    public Date getDate (String str) {
+    public static Date getDate (String str) {
         Date date;
 
         if (null == (date = tryParseStr(str, format1)))
@@ -47,7 +54,7 @@ public class DateToString {
         return date;
     }
 
-    public String ChangeDate(String str)  {
+    public static String ChangeDate(String str)  {
         Date date;
 
         if (null == (date = tryParseStr(str, format1)))
@@ -56,20 +63,41 @@ public class DateToString {
                     date = tryParseStr(str, format4);
 
         if (date == null)
-            return "";
+            return "Не назначено";
 
         return usualFormatDate.format(date);
     }
 
-    public String ChangeTime(String str)  {
+    public static String ChangeTime(String str)  {
         Date date;
 
         if (null == (date = tryParseStr(str, format1)))
             date = tryParseStr(str, format2);
 
         if (date == null)
-            return "";
+            return "Не назначено";
 
         return usualFormatTime.format(date);
+    }
+
+    public static String stringDate (String targetDate)
+    {
+        Locale locale = ConfigurationCompat.getLocales(Resources.getSystem().getConfiguration()).get(0);
+
+        String formattedBirthDateStr = "Не назначено";
+        if (targetDate == null || targetDate.equals(""))
+            return formattedBirthDateStr;
+
+        SimpleDateFormat outDateFormat = new SimpleDateFormat("dd.MM.yyyy", locale);
+
+        try {
+            Date birthDate = ISO8601Utils.parse(targetDate, new ParsePosition(0));
+            formattedBirthDateStr = outDateFormat.format(birthDate);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return formattedBirthDateStr;
     }
 }

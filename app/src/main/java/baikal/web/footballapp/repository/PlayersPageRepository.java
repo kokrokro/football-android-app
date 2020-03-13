@@ -6,9 +6,9 @@ import androidx.paging.DataSource;
 import androidx.paging.PagedList;
 
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.players.datasource.DoIt;
-import baikal.web.footballapp.players.datasource.LoadStates;
-import baikal.web.footballapp.players.datasource.PagedListWithLoadingState;
+import baikal.web.footballapp.DataSourceUtilities.DoIt;
+import baikal.web.footballapp.DataSourceUtilities.LoadStates;
+import baikal.web.footballapp.DataSourceUtilities.PagedListWithLoadingState;
 import baikal.web.footballapp.players.datasource.PlayersItemDataSource;
 import baikal.web.footballapp.players.datasource.PlayersPositionalDataSource;
 

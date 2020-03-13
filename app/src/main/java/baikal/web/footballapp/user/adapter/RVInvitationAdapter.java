@@ -180,9 +180,6 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                             PersonTeams personTeams = new PersonTeams();
                             personTeams.setLeague(league1.getId());
                             personTeams.setTeam(team);
-                            int size1 = AuthoUser.personOwnCommand.size();
-                            int size2 = AuthoUser.personCommand.size();
-//                            AuthoUser.personCommand.add(personTeams);
                         }
                         if (status.equals("Rejected")) {
                             AuthoUser.pendingTeamInvitesList.remove(position);

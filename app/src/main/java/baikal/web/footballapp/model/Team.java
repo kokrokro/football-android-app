@@ -1,5 +1,7 @@
 package baikal.web.footballapp.model;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -54,6 +56,15 @@ public class Team implements Serializable {
     @SerializedName("teamStats")
     @Expose
     private TeamStats teamStats;
+
+    @NonNull
+    public String toString() {
+        String ans = "_id: " + getId() + "\n";
+        ans += "trainer: " + getTrainer() + "\n";
+        ans += "name: " + getName();
+
+        return  ans;
+    }
 
     public String getLeague(){ return league;}
     public void setLeague(String league){this.league = league;}

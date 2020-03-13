@@ -2,9 +2,6 @@ package baikal.web.footballapp.user.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,23 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.request.RequestOptions;
-import baikal.web.footballapp.CheckName;
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.FullScreenImage;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PersonTeams;
-import baikal.web.footballapp.model.ServerResponse;
-import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.activity.AuthoUser;
-import baikal.web.footballapp.user.activity.PlayerAddToTeam;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +30,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import baikal.web.footballapp.CheckName;
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.FullScreenImage;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.PersonTeams;
+import baikal.web.footballapp.model.ServerResponse;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.user.activity.AuthoUser;
+import baikal.web.footballapp.user.activity.PlayerAddToTeam;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -87,12 +87,12 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
 
                 uriPic += "/" + allPlayers.get(position).getPhoto();
                 URL url = new URL(uriPic);
-                RequestOptions requestOptions = new RequestOptions();
-                requestOptions.optionalCircleCrop();
-                requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-                requestOptions.error(R.drawable.ic_logo2);
-                requestOptions.override(500, 500);
-                requestOptions.priority(Priority.HIGH);
+                RequestOptions requestOptions = new RequestOptions()
+                        .optionalCircleCrop()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .error(R.drawable.ic_logo2)
+                        .override(500, 500)
+                        .priority(Priority.HIGH);
                 Glide.with(context)
                         .asBitmap()
                         .load(url)
@@ -108,12 +108,12 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
 
                 });
             } catch (MalformedURLException e) {
-                RequestOptions requestOptions = new RequestOptions();
-                requestOptions.optionalCircleCrop();
-                requestOptions.format(DecodeFormat.PREFER_ARGB_8888);
-                requestOptions.error(R.drawable.ic_logo2);
-                requestOptions.override(500, 500);
-                requestOptions.priority(Priority.HIGH);
+                RequestOptions requestOptions = new RequestOptions()
+                        .optionalCircleCrop()
+                        .format(DecodeFormat.PREFER_ARGB_8888)
+                        .error(R.drawable.ic_logo2)
+                        .override(500, 500)
+                        .priority(Priority.HIGH);
                 Glide.with(context)
                         .asBitmap()
                         .load(R.drawable.ic_logo2)
@@ -127,8 +127,7 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
             }
 
 
-        } catch (Exception e) {
-        }
+        } catch (Exception ignored) { }
 
     }
 
@@ -165,7 +164,7 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
         final League finalLeague = league;
         call.enqueue(new Callback<ServerResponse>() {
             @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+            public void onResponse(@NonNull Call<ServerResponse> call, @NonNull Response<ServerResponse> response) {
                 log.info("INFO: check response");
                 if (response.isSuccessful()) {
                     log.info("INFO: response isSuccessful");

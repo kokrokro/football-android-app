@@ -144,11 +144,11 @@ public class MainViewModel extends ViewModel {
         return favTourney;
     }
 
-    public LiveData<List<News_>> getNews(String limit, String offset) {
+    public LiveData<List<News_>> getNews(String tourneyIds, String limit, String offset) {
         if (newsData == null) {
             newsData = new MutableLiveData<>();
         }
-        loadFeeds(limit, offset);
+        loadFeeds(tourneyIds, limit, offset);
         return newsData;
     }
 
@@ -166,8 +166,8 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    private void loadFeeds(String limit, String offset) {
-        new MainRepository().getNews(limit, offset, new Callback<List<News_>>() {
+    private void loadFeeds(String tourneyIds,String limit, String offset) {
+        new MainRepository().getNewsByTourney(tourneyIds, limit, offset, new Callback<List<News_>>() {
             @Override
             public void onResponse(@NonNull Call<List<News_>> call, @NonNull Response<List<News_>> response) {
                 if (response.isSuccessful())

@@ -93,8 +93,7 @@ public class FullscreenNewsActivity extends AppCompatActivity {
 
     private void fillFeedData () {
         textTitle.setText(news.getCaption());
-        DateToString dateToString = new DateToString();
-        textDate.setText(dateToString.ChangeDate(news.getCreatedAt()));
+        textDate.setText(DateToString.ChangeDate(news.getCreatedAt()));
         textDesc.setText(news.getContent());
 
         if (news.getImg() != null)

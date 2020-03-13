@@ -324,8 +324,10 @@ public class ProtocolScore extends AppCompatActivity{
                                     }
                                 }
                             },
-                            error ->
-                                Log.d(TAG, error.toString())
+                            error -> {
+                                Toast.makeText(ProtocolScore.this, "что-то пошло не так...", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, error.toString());
+                            }
                     );
         }
     }

@@ -110,7 +110,7 @@
         <item name="android:textColor">@color/colorBottomNavigationUnChecked</item>
         <item name="android:gravity">center_vertical</item>
         <item name="android:textColorHint">@color/colorLightGrayForText</item>
-        <item name="android:layout_marginBottom">20sp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:fontFamily">@font/manrope_regular</item>
     </style>
 
@@ -135,6 +135,7 @@
     </style>
     <style name="CustomTabTextSize" parent="TextAppearance.Design.Tab">
         <item name="android:textColor">@color/colorLightGrayForText</item>
+        <item name="android:fontFamily">@font/manrope_regular</item>
         <item name="android:textSize">11sp</item>
     </style>
 

@@ -3,6 +3,7 @@ package baikal.web.footballapp.tournament.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.Serializable;
 import java.util.List;
 
 import baikal.web.footballapp.PersonalActivity;
@@ -39,6 +39,8 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
         this.teamStats = teamStats;
     }
 
+
+
     @NonNull
     @Override
     public RVLeaguePlayoffCommandAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -51,6 +53,7 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
     @Override
     public void onBindViewHolder(@NonNull RVLeaguePlayoffCommandAdapter.ViewHolder holder, final int position) {
 //        String str = String.valueOf(position+1);
+        holder.textNum.setText(String.valueOf(position + 1));
         String str;
 //        str = String.valueOf(teams.get(position).getGroupScore());
         try {
@@ -78,7 +81,6 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
                 }
             } catch (NullPointerException ignored){}
         }
-        holder.textNum.setText(str);
 //        holder.textTitle.setText("SomeTitle");
         str = teams.get(position).getName();
         holder.btnTitle.setText(str);
@@ -86,30 +88,24 @@ public class RVLeaguePlayoffCommandAdapter extends RecyclerView.Adapter<RVLeague
             Intent intent = new Intent(activity, CommandInfoActivity.class);
             Bundle bundle = new Bundle();
             bundle.putSerializable("TOURNAMENTMATCHCOMMANDINFO", teams.get(position));
-            bundle.putSerializable("TOURNAMENTMATCHCOMMANDINFOMATCHES", (Serializable) leagueInfo.getMatches());
+            bundle.putSerializable("TEAMLEAGUE", leagueInfo);
             intent.putExtras(bundle);
             activity.startActivity(intent);
 
         });
-        TeamStats teamStat = null;
+        TeamStats teamStat;
         try {
             teamStat = teamStats.get(position);
-        } catch (IndexOutOfBoundsException ignored){
-
-        }
-        try{
             holder.textGame.setText(String.valueOf(teamStat.getDraws()+teamStat.getDraws()+ teamStat.getLosses()));
             holder.textDifference.setText(String.valueOf(teamStat.getGoals()- teamStat.getGoalsReceived()));
-
-        } catch (NullPointerException ignored){
-
-        }
+        } catch (Exception ignored){}
 
 
     }
 
     @Override
     public int getItemCount() {
+        Log.d("RVLeaguePlayOffCA", "" + teams.size());
         return teams.size();
     }
 

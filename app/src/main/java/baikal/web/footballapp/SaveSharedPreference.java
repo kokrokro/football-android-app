@@ -3,11 +3,13 @@ package baikal.web.footballapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
-import baikal.web.footballapp.model.User;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import baikal.web.footballapp.model.User;
 
 import static baikal.web.footballapp.PreferencesUtility.LOGGED_IN_PREF;
 
