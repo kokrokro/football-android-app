@@ -1,10 +1,5 @@
 package baikal.web.footballapp.user.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SwitchCompat;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,24 +10,23 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.Match;
-import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Referee;
-import baikal.web.footballapp.model.Stadium;
-import baikal.web.footballapp.model.Team;
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Referee;
+import baikal.web.footballapp.model.Stadium;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.viewmodel.PersonViewModel;
 
 public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMatchesAdapter.ViewHolder> {
     private final Context context;
@@ -40,17 +34,21 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
     private final Person person;
     private final Activity activity;
     private final ListenerSendReferees listener;
-    public RVRefereesMatchesAdapter(Context context, List<MatchPopulate> matches, Person person, Activity activity, ListenerSendReferees listener){
+    private PersonViewModel personViewModel;
+
+    public RVRefereesMatchesAdapter(Context context, List<MatchPopulate> matches, Person person, Activity activity, PersonViewModel personViewModel, ListenerSendReferees listener){
         this.context =  context;
         this.matches =  matches;
         this.person =  person;
         this.activity = activity;
         this.listener = listener;
+        this.personViewModel = personViewModel;
     }
 
     public interface ListAdapterListener {
         void onClickSwitch(String id, String personId, Boolean check, String type, int position);
     }
+
     public interface ListenerSendReferees{
         void onClick(List<Referee> referees, Referee referee, String matchId, Boolean isChecked);
     }
@@ -65,14 +63,10 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
     public void onBindViewHolder(@NonNull RVRefereesMatchesAdapter.ViewHolder holder, int position) {
         MatchPopulate match = matches.get(position);
         String str = match.getDate();
-        DateToString dateToString = new DateToString();
 
-        try {
-            holder.textDate.setText(dateToString.ChangeDate(str));
-            holder.textTime.setText(dateToString.ChangeTime(str));
-        } catch (NullPointerException e) {
-            holder.textTime.setText(str);
-        }
+        holder.textDate.setText(DateToString.ChangeDate(str));
+        holder.textTime.setText(DateToString.ChangeTime(str));
+
         Stadium place = match.getPlace();
         try {
             holder.textStadium.setText(place.getName());
@@ -82,7 +76,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
         try {
             str = match.getTour();
             holder.textLeague.setText(str);
-        }catch (NullPointerException e){}
+        } catch (NullPointerException ignored){}
 
         Team team1 = match.getTeamOne();
         Team team2 = match.getTeamTwo();
@@ -110,6 +104,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
         }
 
         holder.textScore.setText(str);
+
         if (!str.equals("-")) {
             List<MatchPopulate> list = new ArrayList<>(matches);
             list.remove(match);
@@ -132,9 +127,7 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
                         holder.textLastScore.setVisibility(View.VISIBLE);
                         holder.textLastScore.setText(str);
                     }
-                } catch (Exception e) {
-                }
-
+                } catch (Exception ignored) { }
             }
         }
 
@@ -232,8 +225,8 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
         if (position == (matches.size() - 1)) {
             holder.line.setVisibility(View.INVISIBLE);
         }
-
     }
+
     private void setReferees (MatchPopulate match, RVRefereesMatchesAdapter.ViewHolder holder)
     {
         TreeMap<String, TextView> textViewRefs = new TreeMap<>();
@@ -244,37 +237,15 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
 
         List<Referee> referees = match.getReferees();
         for (Referee r: referees) {
-            Person p;
+            Person p = personViewModel.getPersonById(r.getPerson(),
+                    (person) ->
+                            setRefereeToTextView(textViewRefs.get(r.getType()), person));
 
-            try {
-                p = MankindKeeper.getInstance().getPersonById(r.getPerson());
-            } catch (Exception e) {
-                p = null;
-            }
-
-            if (p == null) {
-                Controller.getApi().getPerson(r.getPerson()).enqueue(new Callback<List<Person>>() {
-                    @Override
-                    public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                        if (response.isSuccessful())
-                            if (response.body() != null && response.body().size()>0) {
-                                Person pp = response.body().get(0);
-                                MankindKeeper.getInstance().addPerson(pp);
-                                setRefereeToTextView(textViewRefs.get(r.getType()), pp);
-                            }
-
-                    }
-                    @Override
-                    public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) { }
-                });
-            }
-            else
-                setRefereeToTextView(textViewRefs.get(r.getType()), p);
+            setRefereeToTextView(textViewRefs.get(r.getType()), p);
         }
-
     }
 
-    private void setRefereeToTextView (TextView textView, Person referee) {
+    private void setRefereeToTextView(TextView textView, Person referee) {
         try {
             textView.setText(referee.getSurnameWithInitials());
             textView.setTextColor(ContextCompat.getColor(activity, R.color.colorBottomNavigationUnChecked));
@@ -336,8 +307,9 @@ public class RVRefereesMatchesAdapter extends RecyclerView.Adapter<RVRefereesMat
             switch2 = item.findViewById(R.id.refereesMatchSwitch2);
             switch3 = item.findViewById(R.id.refereesMatchSwitch3);
             switch4 = item.findViewById(R.id.refereesMatchSwitch4);
-
         }
+
+
     }
 
     public void dataChanged(List<MatchPopulate> allPlayers1) {

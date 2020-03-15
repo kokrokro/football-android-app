@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -42,6 +43,7 @@ import baikal.web.footballapp.tournament.PlayerMatchComparator;
 import baikal.web.footballapp.tournament.PlayerRCComparator;
 import baikal.web.footballapp.tournament.PlayerYCComparator;
 import baikal.web.footballapp.tournament.adapter.RVTournamentPlayersAdapter;
+import baikal.web.footballapp.viewmodel.PersonViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,6 +59,7 @@ public class TournamentPlayersFragment extends Fragment {
     private LinearLayout layout;
     private RelativeLayout layout1;
     private FloatingActionButton fab;
+    private PersonViewModel personViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,8 +82,10 @@ public class TournamentPlayersFragment extends Fragment {
         scroller = view.findViewById(R.id.tournamentInfoPlayersScroll);
         recyclerView = view.findViewById(R.id.recyclerViewTournamentPlayersStats);
 
+        personViewModel = ViewModelProviders.of(getActivity()).get(PersonViewModel.class);
+
         scrollStatus = false;
-        adapter = new RVTournamentPlayersAdapter(playerList, personStats);
+        adapter = new RVTournamentPlayersAdapter(playerList, personStats, personViewModel);
         recyclerView.setAdapter(adapter);
         final RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -90,7 +95,6 @@ public class TournamentPlayersFragment extends Fragment {
 
         final ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.spinnerItem, R.layout.spinner_item);
         try {
-//            adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             adapter1.setDropDownViewResource(R.layout.spinner_dropdown);
         } catch (Exception t) {
             log.error("ERROR: from TournamentPlayersFragment", t);
@@ -167,14 +171,11 @@ public class TournamentPlayersFragment extends Fragment {
                     log.info("INFO: RecyclerView scrolled: scroll down!");
             }
             if (scrollY < oldScrollY) {
-//                    log.info("INFO: RecyclerView scrolled: scroll up!");
                 scrollStatus = false;
             }
 
             if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                    log.info("INFO: RecyclerView scrolled: bottom scroll!");
                 scrollStatus = true;
-//                    fab.hide();
             }
         });
 

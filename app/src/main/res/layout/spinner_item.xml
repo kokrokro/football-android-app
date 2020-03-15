@@ -10,7 +10,8 @@
     android:textColor="@color/colorLightGrayForText"
     android:textSize="17sp"
     android:background="@color/colorWhite"
-    android:paddingLeft="8dp"
+    android:paddingEnd="8dp"
+    android:paddingStart="2dp"
     android:paddingTop="4dp"/>
 
     <!--</LinearLayout>-->

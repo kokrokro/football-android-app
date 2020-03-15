@@ -101,12 +101,12 @@
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Left" />
+                    android:text="СОСТАВ" />
 
                 <com.google.android.material.tabs.TabItem
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:text="Center" />
+                    android:text="МАТЧИ" />
             </com.google.android.material.tabs.TabLayout>
         </com.google.android.material.appbar.AppBarLayout>
 

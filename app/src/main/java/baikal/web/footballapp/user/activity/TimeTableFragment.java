@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +37,7 @@ import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.user.adapter.RVRefereesMatchesAdapter;
 import baikal.web.footballapp.user.adapter.RVTimeTableAdapter;
+import baikal.web.footballapp.viewmodel.PersonViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -51,6 +53,8 @@ public class TimeTableFragment extends Fragment {
     private SetRefereesBottomSheet bottomSheet;
     private List<Match> editedMatches ;
     private RecyclerView recyclerView;
+
+    private PersonViewModel personViewModel;
 
     private AuthoUser authoUser;
 
@@ -78,6 +82,8 @@ public class TimeTableFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewTimeTable);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        personViewModel = ViewModelProviders.of(getActivity()).get(PersonViewModel.class);
 
         try {
             adapter = new RVTimeTableAdapter(getActivity(), this, matches);
@@ -111,6 +117,7 @@ public class TimeTableFragment extends Fragment {
 
                  recyclerViewSetReferee.setAdapter( new RVRefereesMatchesAdapter(getActivity(), matches, person,
                          getActivity(),
+                         personViewModel,
                          (refereesList, referee, id, isChecked) -> {
 
                      Log.d("Checked", isChecked+" "+ id);

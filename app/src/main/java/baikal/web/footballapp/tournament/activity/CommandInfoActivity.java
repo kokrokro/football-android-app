@@ -17,9 +17,8 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.tournament.adapter.ViewPagerCommandInfoAdapter;
 
-
 public class CommandInfoActivity extends AppCompatActivity {
-    private static final String TAG = "CommandInfoActivity";
+//    private static final String TAG = "CommandInfoActivity";
     private Team team;
     private FloatingActionButton fab;
 
@@ -46,11 +45,9 @@ public class CommandInfoActivity extends AppCompatActivity {
         dialogFragment = new AbbreviationDialogFragment();
         fab.setOnClickListener(v -> dialogFragment.show(getSupportFragmentManager(), "abbrev2"));
         buttonBack.setOnClickListener(v -> finish());
-        String str;
-        str = team.getName();
         viewPager.addOnPageChangeListener(onPageChangeListener);
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
-        textView.setText(str);
+        textView.setText(team.getName());
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 //        setCustomFont();
@@ -92,7 +89,6 @@ public class CommandInfoActivity extends AppCompatActivity {
         adapter.addFragment(commandStructureFragment, "СОСТАВ");
         adapter.addFragment(commandMatchFragment, "МАТЧИ");
         viewPager.setAdapter(adapter);
-
     }
 
     @Override
@@ -100,18 +96,11 @@ public class CommandInfoActivity extends AppCompatActivity {
         this.finish();
     }
 
-
     private void animateFab(int position) {
-        switch (position) {
-            case 0:
-                fab.show();
-                break;
-            case 1:
-                fab.hide();
-                break;
-            default:
-                fab.show();
-                break;
+        if (position == 1) {
+            fab.hide();
+        } else {
+            fab.show();
         }
     }
 
@@ -122,21 +111,15 @@ public class CommandInfoActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onTabUnselected(TabLayout.Tab tab) {
-
-        }
+        public void onTabUnselected(TabLayout.Tab tab) { }
 
         @Override
-        public void onTabReselected(TabLayout.Tab tab) {
-
-        }
+        public void onTabReselected(TabLayout.Tab tab) { }
     };
 
     private final ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
         @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-        }
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) { }
 
         @Override
         public void onPageSelected(int position) {
@@ -144,9 +127,7 @@ public class CommandInfoActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onPageScrollStateChanged(int state) {
-
-        }
+        public void onPageScrollStateChanged(int state) { }
     };
 
     public FloatingActionButton getFab() {

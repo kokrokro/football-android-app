@@ -79,37 +79,25 @@ public class TournamentCommandFragment extends Fragment{
 
 
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
-
-            if (scrollY > oldScrollY) {
-//                    PersonalActivity.navigation.animate().translationY(PersonalActivity.navigation.getHeight());
-
-            }
-            if (scrollY < oldScrollY) {
-//                    PersonalActivity.navigation.animate().translationY(0);
+            if (scrollY < oldScrollY)
                 scrollStatus = false;
-            }
-            if (scrollY == ( v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight() )) {
+            if (scrollY == ( v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight() ))
                 scrollStatus = true;
-            }
         });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-//nothing to do
-            }
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) { }
 
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-
-                if (newState == RecyclerView.SCROLL_STATE_IDLE ) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE )
                     fab.show();
-                } else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL) {
+                else if (newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL)
                     fab.hide();
-                }
-                if (scrollStatus){
+                if (scrollStatus)
                     fab.hide();
-                }
+
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
@@ -126,12 +114,15 @@ public class TournamentCommandFragment extends Fragment{
                     teams.addAll(response.body());
                     adapter.notifyDataSetChanged();
 
-                    Log.d("TCF", response.body().get(0).toString());
-
                     if (teams.size() != 0) {
+                        Log.d("TCF", response.body().get(0).toString());
                         layout.setVisibility(View.GONE);
                         layoutPlayoff.setVisibility(View.VISIBLE);
                     }
+//                    else {
+//                        layout.setVisibility(View.VISIBLE);
+//                        layoutPlayoff.setVisibility(View.GONE);
+//                    }
                 }
                 swipeRefreshLayout.setRefreshing(false);
             }

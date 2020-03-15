@@ -10,30 +10,43 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
+import baikal.web.footballapp.tournament.PlayerComparator;
+import baikal.web.footballapp.viewmodel.PersonViewModel;
 
 
 public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamentPlayersAdapter.ViewHolder>{
     private static final String TAG = "TournamentPlayersAdap";
     private final List<Player> players;
     private final HashMap<String, PersonStats> mapStats;
+    private PersonViewModel personViewModel;
 
-    public RVTournamentPlayersAdapter(List<Player> players, List<PersonStats> personStats){
+    public RVTournamentPlayersAdapter(List<Player> players, List<PersonStats> personStats, PersonViewModel personViewModel){
         this.players = players;
         this.mapStats = new HashMap<>();
+        this.personViewModel = personViewModel;
 
         for (Player p: players)
             mapStats.put(p.getPerson(), new PersonStats());
 
         for (PersonStats p: personStats)
-            mapStats.put(p.getPerson(), mapStats.get(p.getPerson()).addPersonStats(p));
+            if (mapStats.get(p.getPerson()) != null)
+                mapStats.put(p.getPerson(), mapStats.get(p.getPerson()).addPersonStats(p));
+
+        try {
+            Collections.sort(players, new PlayerComparator());
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
     }
 
     @NonNull
@@ -76,18 +89,18 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
 
         void bindTo (Player player) {
             PersonStats personStat = mapStats.get(player.getPerson());
-            Person person = null;
-            try {
-                person = MankindKeeper.getInstance().getPersonById(player.getPerson());
-            } catch (Exception e) {
-                Log.e(TAG, e.toString());
-            }
+            Person person = personViewModel.getPersonById(player.getPerson(), (p) -> {
+                textName.setText(p.getSurnameAndName());
+                SetImage.setImage(App.getAppContext(), image, p.getPhoto());
+            });
 
-            textName.setText(person.getSurnameAndName());
-            textPoint1.setText(String.valueOf(personStat.getMatches()));
-            textPoint2.setText(String.valueOf(personStat.getGoals()));
-            textPoint3.setText(String.valueOf(personStat.getYellowCards()));
-            textPoint4.setText(String.valueOf(personStat.getRedCards()));
+            textName.setText(person==null?"":person.getSurnameAndName());
+            SetImage.setImage(App.getAppContext(), image, person==null?"":person.getPhoto());
+
+            textPoint1.setText(personStat==null?"":String.valueOf(personStat.getMatches()));
+            textPoint2.setText(personStat==null?"":String.valueOf(personStat.getGoals()));
+            textPoint3.setText(personStat==null?"":String.valueOf(personStat.getYellowCards()));
+            textPoint4.setText(personStat==null?"":String.valueOf(personStat.getRedCards()));
         }
     }
     public void dataChanged(List<Player> allPlayers1){
