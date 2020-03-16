@@ -140,7 +140,7 @@ public class ClubPage extends Fragment {
 
                 User user = SaveSharedPreference.getObject();
                 user.setUser(person1);
-                SaveSharedPreference.editObject(user);
+                SaveSharedPreference.saveObject(user);
                 MankindKeeper.getInstance().allClubs.add(result);
                 List<Club> list = new ArrayList<>(MankindKeeper.getInstance().allClubs);
                 ClubPage.adapter.dataChanged(list);

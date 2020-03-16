@@ -7,11 +7,9 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.List;
 
-import baikal.web.footballapp.model.Invite;
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.PersonPopulate;
-import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
@@ -21,42 +19,32 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainViewModel extends ViewModel {
-    private MutableLiveData<List<News_>> newsData = null;
+
     private MutableLiveData<List<Tourney>> favTourney = null;
     private MutableLiveData<List<League>> favLeagues= null;
     private MutableLiveData<List<String>> favTourneysId = null;
-    private MutableLiveData<List<Invite>> allInvites = null;
     private MutableLiveData<List<Stadium>> allStadiums = null;
     private MutableLiveData<List<Team>> allTeams = null;
-    private MutableLiveData<List<PersonStatus>> allPersonStatus =null;
 
-    public LiveData<List<Team>> getTeams(String id){
+    public interface OnTeamLoaded {
+        void onTeamLoaded (Team team);
+    }
+
+    public Team getTeamById (String id, OnTeamLoaded onTeamLoaded) {
+        for (Team t: allTeams.getValue())
+            if (t.getId().equals(id))
+                return t;
+
+        loadTeamById(id, onTeamLoaded);
+        return null;
+    }
+
+    public LiveData<List<Team>> getTeams(String creatorId){
         if(allTeams==null){
             allTeams = new MutableLiveData<>();
         }
-        loadTeams(id);
+        loadTeams(creatorId);
         return allTeams;
-    }
-    public LiveData<List<PersonStatus>> getPersonStatus(){
-        if(allPersonStatus == null){
-            allPersonStatus = new MutableLiveData<>();
-        }
-        loadPersonStatus();
-
-        return allPersonStatus;
-    }
-    private void loadPersonStatus(){
-        new MainRepository().getPersonStatus(null, null, null, new Callback<List<PersonStatus>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<PersonStatus>> call, @NonNull Response<List<PersonStatus>> response) {
-                if(response.isSuccessful())
-                    if(response.body()!=null)
-                        allPersonStatus.setValue(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<PersonStatus>> call, @NonNull Throwable t) { }
-        });
     }
 
     public LiveData<List<Stadium>> getAllStadiums(){
@@ -66,8 +54,35 @@ public class MainViewModel extends ViewModel {
         loadStadiums();
         return allStadiums;
     }
-    private void loadTeams(String id) {
-        new MainRepository().getTeams(id, new Callback<List<Team>>() {
+
+    public Stadium getStadiumById (String id) {
+        for (Stadium s: allStadiums.getValue())
+            if (s.get_id().equals(id))
+                return s;
+
+        loadStadiums();
+        return new Stadium();
+    }
+
+    private void loadTeamById(String id, OnTeamLoaded onTeamLoaded) {
+        Callback<List<Team>> responseCallback = new Callback<List<Team>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
+                if (response.isSuccessful() &&
+                        response.body()!=null &&
+                        response.body().size() > 0) {
+                    onTeamLoaded.onTeamLoaded(response.body().get(0));
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) { }
+        };
+        Controller.getApi().getTeamById(id).enqueue(responseCallback);
+    }
+
+    private void loadTeams(String creatorId) {
+        new MainRepository().getTeams(creatorId, new Callback<List<Team>>() {
             @Override
             public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
                 if (response.isSuccessful())
@@ -93,27 +108,6 @@ public class MainViewModel extends ViewModel {
             public void onFailure(@NonNull Call<List<Stadium>> call, @NonNull Throwable t) { }
         });
     }
-    public LiveData<List<Invite>> getAllInvites(){
-        if(allInvites==null){
-            allInvites = new MutableLiveData<>();
-        }
-        loadInvites();
-        return allInvites;
-    }
-
-    private void loadInvites() {
-        new MainRepository().getInvites(null, null, new Callback<List<Invite>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
-                if (response.isSuccessful())
-                    if (response.body() != null )
-                        allInvites.setValue(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) { }
-        });
-    }
 
 
     public LiveData<List<League>> getFavLeagues(String tourney){
@@ -129,12 +123,7 @@ public class MainViewModel extends ViewModel {
         }
         this.favTourneysId.setValue(favTourney);
     }
-    public void setFavTourney(List<Tourney> favTourney) {
-        if (this.favTourney==null) {
-            this.favTourney = new MutableLiveData<>();
-        }
-        this.favTourney.setValue(favTourney);
-    }
+
     public LiveData<List<Tourney>> getFavTourney(String id){
         if(favTourney == null){
             favTourney = new MutableLiveData<>();
@@ -142,14 +131,6 @@ public class MainViewModel extends ViewModel {
         loadTourneys(id);
 
         return favTourney;
-    }
-
-    public LiveData<List<News_>> getNews(String tourneyIds, String limit, String offset) {
-        if (newsData == null) {
-            newsData = new MutableLiveData<>();
-        }
-        loadFeeds(tourneyIds, limit, offset);
-        return newsData;
     }
 
     private void loadTourneys(String id){
@@ -166,19 +147,6 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-    private void loadFeeds(String tourneyIds,String limit, String offset) {
-        new MainRepository().getNewsByTourney(tourneyIds, limit, offset, new Callback<List<News_>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<News_>> call, @NonNull Response<List<News_>> response) {
-                if (response.isSuccessful())
-                    if (response.body() != null)
-                        newsData.setValue(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<News_>> call, @NonNull Throwable t) { }
-        });
-    }
     private void loadFavLeagues(String tourney){
         new MainRepository().getLeagues(tourney, new Callback<List<League>>() {
             @Override

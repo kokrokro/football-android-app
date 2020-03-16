@@ -16,6 +16,9 @@ public class PersonStatus implements Serializable {
     @SerializedName("activeYellowCards")
     @Expose
     private Integer activeYellowCards;
+    @SerializedName("matchYellowCards")
+    @Expose
+    private Integer matchYellowCards;
     @SerializedName("activeDisquals")
     @Expose
     private Integer activeDisquals;
@@ -31,6 +34,25 @@ public class PersonStatus implements Serializable {
     @SerializedName("league")
     @Expose
     private String league;
+    @SerializedName("disqualsReason")
+    @Expose
+    private String disqualsReason;
+
+    public Integer getMatchYellowCards() {
+        return matchYellowCards;
+    }
+
+    public void setMatchYellowCards(Integer matchYellowCards) {
+        this.matchYellowCards = matchYellowCards;
+    }
+
+    public String getDisqualsReason() {
+        return disqualsReason;
+    }
+
+    public void setDisqualsReason(String disqualsReason) {
+        this.disqualsReason = disqualsReason;
+    }
 
     public Integer getNumber() {
         return number;

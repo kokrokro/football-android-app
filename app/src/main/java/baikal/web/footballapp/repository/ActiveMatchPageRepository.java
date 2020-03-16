@@ -9,7 +9,7 @@ import baikal.web.footballapp.DataSourceUtilities.DoIt;
 import baikal.web.footballapp.DataSourceUtilities.LoadStates;
 import baikal.web.footballapp.DataSourceUtilities.PagedListWithLoadingState;
 import baikal.web.footballapp.home.datasource.UpcomingMatchesPositionalDataSource;
-import baikal.web.footballapp.model.ActiveMatch;
+import baikal.web.footballapp.model.MatchPopulate;
 
 public class ActiveMatchPageRepository {
     private static final PagedList.Config config = new PagedList.Config.Builder()
@@ -17,9 +17,9 @@ public class ActiveMatchPageRepository {
             .setPageSize(10)
             .build();
 
-    public PagedListWithLoadingState<ActiveMatch> getMatches(String leaguesIds, String date) {
+    public PagedListWithLoadingState<MatchPopulate> getMatches(String leaguesIds, String date) {
         MutableLiveData<LoadStates> loadStatesLiveData = new MutableLiveData<>(LoadStates.Loading);
-        MutableLiveData<PagedList<ActiveMatch>> pagedListLiveData = new MutableLiveData<>();
+        MutableLiveData<PagedList<MatchPopulate>> pagedListLiveData = new MutableLiveData<>();
 
         final DoIt errorCallback = () -> loadStatesLiveData.postValue(LoadStates.Error);
         final DoIt goodCallback = () -> loadStatesLiveData.postValue(LoadStates.Loaded);

@@ -15,33 +15,54 @@ public class MatchPopulate implements Serializable {
     @SerializedName("date")
     @Expose
     private String date;
-    @SerializedName("stage")
+    @SerializedName("round")
     @Expose
-    private String stage;
-    @SerializedName("played")
-    @Expose
-    private Boolean played;
+    private String round;
     @SerializedName("tour")
     @Expose
     private String tour;
-    @SerializedName("playersList")
+    @SerializedName("group")
     @Expose
-    private List<String> playersList = null;
+    private String group;
     @SerializedName("place")
     @Expose
     private Stadium place;
-    @SerializedName("league")
+    @SerializedName("playersList")
     @Expose
-    private String league;
+    private List<String> playersList = null;
+    @SerializedName("played")
+    @Expose
+    private Boolean played;
+    @SerializedName("winner")
+    @Expose
+    private String winner;
+    @SerializedName("score")
+    @Expose
+    private String score;
+    @SerializedName("fouls")
+    @Expose
+    private String fouls;
+    @SerializedName("autoGoal")
+    @Expose
+    private String autoGoal;
     @SerializedName("teamOne")
     @Expose
     private Team teamOne;
     @SerializedName("teamTwo")
     @Expose
     private Team teamTwo;
+    @SerializedName("stage")
+    @Expose
+    private String stage;
+    @SerializedName("league")
+    @Expose
+    private String league;
     @SerializedName("events")
     @Expose
     final private List<Event> events = new ArrayList<>();
+    @SerializedName("referees")
+    @Expose
+    private List<Referee> referees = null;
     @SerializedName("createdAt")
     @Expose
     private String createdAt;
@@ -51,30 +72,9 @@ public class MatchPopulate implements Serializable {
     @SerializedName("__v")
     @Expose
     private Integer v;
-    @SerializedName("referees")
-    @Expose
-    private List<Referee> referees = null;
-    @SerializedName("score")
-    @Expose
-    private String score;
-    @SerializedName("autoGoal")
-    @Expose
-    private String autoGoal;
     @SerializedName("penalty")
     @Expose
     private String penalty;
-    @SerializedName("winner")
-    @Expose
-    private String winner;
-    @SerializedName("round")
-    @Expose
-    private String round;
-    @SerializedName("group")
-    @Expose
-    private String group;
-    @SerializedName("fouls")
-    @Expose
-    private String fouls;
 
     public void assignNewMatchData (Match match)
     {

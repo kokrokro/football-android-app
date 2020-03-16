@@ -223,7 +223,7 @@ final ImageButton button;
                         }
                         person.setParticipation(list);
                         user.setUser(person);
-                        SaveSharedPreference.editObject(user);
+                        SaveSharedPreference.saveObject(user);
 
                         for (int i=0; i<AuthoUser.personOwnCommand.size(); i++){
                             if (AuthoUser.personOwnCommand.get(i).getLeague().equals(personTeams.getLeague())){

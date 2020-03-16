@@ -3,7 +3,6 @@ package baikal.web.footballapp;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
@@ -61,12 +60,5 @@ public class SaveSharedPreference {
         String json = gson.toJson(myobject);
         editor.putString("MyObject", json);
         editor.commit();
-    }
-    public static void editObject(User myobject){
-        user = myobject;
-        Gson gson = new Gson();
-        String json = gson.toJson(myobject);
-        editor.putString("MyObject", json);
-        editor.apply();
     }
 }

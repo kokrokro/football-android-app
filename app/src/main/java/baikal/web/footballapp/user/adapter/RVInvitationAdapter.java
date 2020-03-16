@@ -169,7 +169,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
                         User user = response.body();
-                        SaveSharedPreference.editObject(user);
+                        SaveSharedPreference.saveObject(user);
 //                        String result = response.body().getMessage();
 //                        if (status.equals("Accepted") && result.equals("ok")) {
                         if (status.equals("Accepted")) {

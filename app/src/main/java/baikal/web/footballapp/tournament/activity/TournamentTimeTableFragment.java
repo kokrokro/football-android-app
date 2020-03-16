@@ -7,8 +7,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
-import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,22 +21,18 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.tournament.adapter.RecyclerViewTournamentTimeTableAdapter;
+import baikal.web.footballapp.viewmodel.MainViewModel;
 
 public class TournamentTimeTableFragment extends Fragment {
     private final Logger log = LoggerFactory.getLogger(TournamentTimeTableFragment.class);
 //    private boolean scrollStatus;
 
-    private TournamentsFragment tournamentsFragment;
-
-    TournamentTimeTableFragment(TournamentsFragment tournamentsFragment) {
-        this.tournamentsFragment = tournamentsFragment;
-    }
+    TournamentTimeTableFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         RecyclerView recyclerView;
-        NestedScrollView scroller;
         LinearLayout layout;
         Bundle arguments = getArguments();
         League league = (League) arguments.getSerializable("TOURNAMENTINFOMATCHESLEAGUE");
@@ -44,32 +40,21 @@ public class TournamentTimeTableFragment extends Fragment {
         view = inflater.inflate(R.layout.tournament_info_tab_timetable, container, false);
         recyclerView = view.findViewById(R.id.tournamentInfoTabTimetable);
         recyclerView.setNestedScrollingEnabled(false);
-        scroller = view.findViewById(R.id.tournamentInfoTimetableScroll);
         layout = view.findViewById(R.id.tournamentInfoTabTimetableEmpty);
         if ( matches!=null && matches.size()!=0)
             layout.setVisibility(View.GONE);
 
-//        scrollStatus = false;
+        MainViewModel mainViewModel = ViewModelProviders.of(getActivity()).get(MainViewModel.class);
+
         try {
-            RecyclerViewTournamentTimeTableAdapter adapter = new RecyclerViewTournamentTimeTableAdapter(getActivity(),league, tournamentsFragment);
+            RecyclerViewTournamentTimeTableAdapter adapter = new RecyclerViewTournamentTimeTableAdapter(league, mainViewModel);
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         }
         catch (NullPointerException ignored){ }
-        scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
-            //                    PersonalActivity.navigation.animate().translationY(PersonalActivity.navigation.getHeight());
-//            if (scrollY < oldScrollY) {
-////                    PersonalActivity.navigation.animate().translationY(0);
-//                scrollStatus = false;
-//            }
-//            if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                scrollStatus = true;
-//            }
-        });
         return view;
     }
-
 
     @Override
     public void onPause() {
@@ -80,7 +65,6 @@ public class TournamentTimeTableFragment extends Fragment {
     @Override
     public void onDestroy() {
         log.info("INFO: TournamentTimeTableFragment onDestroy 1");
-//        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         super.onDestroy();
     }
 }

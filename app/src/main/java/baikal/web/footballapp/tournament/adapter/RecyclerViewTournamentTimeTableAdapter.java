@@ -1,6 +1,5 @@
 package baikal.web.footballapp.tournament.adapter;
 
-import android.app.Activity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,190 +13,46 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
-import baikal.web.footballapp.model.PersonStatus;
-import baikal.web.footballapp.model.Stadium;
+import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.tournament.activity.TournamentPage;
-import baikal.web.footballapp.tournament.activity.TournamentsFragment;
+import baikal.web.footballapp.viewmodel.MainViewModel;
 import q.rorbin.badgeview.QBadgeView;
 
 public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter<RecyclerViewTournamentTimeTableAdapter.ViewHolder> {
     Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
-    private final PersonalActivity activity;
     private final List<Match> matches;
-    private TournamentsFragment tournamentsFragment;
+    private MainViewModel mainViewModel;
 
-    public RecyclerViewTournamentTimeTableAdapter(Activity activity, League league, TournamentsFragment tournamentsFragment) {
-        this.activity = (PersonalActivity) activity;
+    public RecyclerViewTournamentTimeTableAdapter(League league, MainViewModel mainViewModel) {
         this.matches = league.getMatches();
-        this.tournamentsFragment = tournamentsFragment;
+        this.mainViewModel = mainViewModel;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.timetable_fragment, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-//        new QBadgeView(activity).bindTarget(holder.imgCommandLogo1).setBadgeBackground(activity.getDrawable(R.drawable.ic_circle)).setBadgeNumber(3);
         Match match = matches.get(position);
-        String str;
-        str = match.getDate();
-        DateToString dateToString = new DateToString();
-        holder.textDate.setText(dateToString.ChangeDate(str));
-        try {
-            holder.textTime.setText(dateToString.ChangeTime(str));
-        } catch (NullPointerException e) {
-            holder.textTime.setText(str);
-        }
-        str = match.getPlace();
-        if(str!=null){
-            for(Stadium stadium : tournamentsFragment.allStadiums){
-                if(stadium.get_id().equals(str)){
-                    holder.textStadium.setText(stadium.getName());
-                    break;
-                }
-            }
-        }
-        else {
-            holder.textStadium.setText("Не назначен");
-        }
 
+        if (match != null)
+            holder.bindTo(match);
 
-        str = match.getTour();
-        holder.textTour.setText(str);
-//        int score1 = 0;
-//        int score2 = 0;
-        String team1 = match.getTeamOne();
-        String team2 = match.getTeamTwo();
-        Team teamOne = null, teamTwo = null;
-        try{
-            for(Team team: tournamentsFragment.allTeams){
-                if(team1.equals(team.getId())){
-                    teamOne = team;
-                    continue;
-                }
-                if(team2.equals(team.getId())){
-                    teamTwo = team;
-                }
-            }
-        }catch (NullPointerException ignored){
-
-        }
-        int i = 0;
-        for(PersonStatus personStatus : TournamentPage.personStatus){
-            if(i==2) break;
-            if(personStatus.getTeam().equals(team1) && personStatus.getActiveDisquals()>0){
-                i++;
-                new QBadgeView(activity)
-                        .bindTarget(holder.imgCommandLogo1)
-                        .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                        .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                        .setBadgeTextSize(5, true)
-                        .setBadgePadding(5, true)
-                        .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                        .setGravityOffset(-3, 1, true)
-                        .setBadgeNumber(3);
-            }
-            else if(personStatus.getTeam().equals(team2) && personStatus.getActiveDisquals()>0){
-                i++;
-                new QBadgeView(activity)
-                        .bindTarget(holder.imgCommandLogo2)
-                        .setBadgeBackground(activity.getDrawable(R.drawable.ic_circle))
-                        .setBadgeTextColor(activity.getResources().getColor(R.color.colorBadge))
-                        .setBadgeTextSize(5, true)
-                        .setBadgePadding(5, true)
-                        .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
-                        .setGravityOffset(-3, 1, true)
-                        .setBadgeNumber(3);
-            }
-        }
-
-        if( teamOne!=null){
-            holder.textCommandTitle1.setText(teamOne.getName());
-
-        }
-        else {
-            holder.textCommandTitle1.setText("Неизвестно");
-        }
-        if( teamTwo!=null){
-            holder.textCommandTitle2.setText(teamTwo.getName());
-        }
-        else {
-            holder.textCommandTitle2.setText("Неизвестно");
-        }
-
-        try {
-            str = match.getScore();
-            if (str.equals("")) {
-                str = "-";
-            }
-        } catch (NullPointerException e) {
-            str = "-";
-        }
-        holder.textScore.setText(str);
-
-        if (!str.equals("-")) {
-            List<Match> list = new ArrayList<>(matches);
-            list.remove(match);
-            for (Match match1 : list) {
-                try {
-                    str = match1.getScore();
-                    if (!str.equals("")
-                            && match1.getTeamOne().equals(match.getTeamOne())
-                            && match1.getTeamOne().equals(match.getTeamTwo())) {
-                        str = match1.getScore();
-                        holder.textLastScore.setVisibility(View.VISIBLE);
-                        holder.textLastScore.setText(str);
-                    }
-                    if (!str.equals("")
-                            && match1.getTeamOne().equals(match.getTeamTwo())
-                            && match1.getTeamOne().equals(match.getTeamOne())) {
-                        str = match1.getScore();
-                        String[] strArray = str.split(":");
-                        str = strArray[1] + ":" + strArray[0];
-                        holder.textLastScore.setVisibility(View.VISIBLE);
-                        holder.textLastScore.setText(str);
-                    }
-                } catch (Exception ignored) {
-                }
-
-            }
-        }
-//        if (match.getPlayed()){
-//            holder.layout.setBackgroundResource(R.color.colorBadgeScale);
-//            holder.layout.setOnClickListener(v -> {
-//                Intent intent = new Intent(activity, ShowProtocol.class);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("SHOWPROTOCOL", match);
-//                intent.putExtras(bundle);
-//                activity.startActivity(intent);
-//            });
-//        }
-        try {
-            str = match.getPenalty();
-            if (!str.equals("")) {
-                holder.textPenalty.setText(str);
-                holder.textPenalty.setVisibility(View.VISIBLE);
-            }
-        } catch (NullPointerException ignored) {
-        }
-        if (position == (matches.size() - 1)) {
+        if (position == (matches.size() - 1))
             holder.line.setVisibility(View.INVISIBLE);
-        }
     }
 
     @Override
@@ -237,6 +92,62 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
             textPenalty = item.findViewById(R.id.timetablePenalty);
 //            layout = item.findViewById(R.id.timetableLayout);
             line = item.findViewById(R.id.timetableLine);
+        }
+
+        void bindTo (Match match) {
+            textDate.setText(DateToString.ChangeDate(match.getDate()));
+            textTime.setText(DateToString.ChangeTime(match.getDate()));
+            textTour.setText(match.getTour());
+
+            textStadium.setText(
+                    match.getPlace()==null ?
+                            "Не назначен" :
+                            mainViewModel.getStadiumById(match.getPlace()).getName()
+            );
+
+            textScore.setText(match.getScore()==null?"-":match.getScore());
+
+            textPenalty.setText(match.getPenalty()==null?"":match.getPenalty());
+            if (match.getPenalty()!=null && !match.getPenalty().equals(""))
+                textPenalty.setVisibility(View.VISIBLE);
+            else
+                textPenalty.setVisibility(View.GONE);
+
+            Team teamOne = mainViewModel.getTeamById(match.getTeamOne(), team -> {
+                textCommandTitle1.setText(team.getName());
+                initBadge(team, imgCommandLogo1);
+            });
+
+            Team teamTwo = mainViewModel.getTeamById(match.getTeamTwo(), team -> {
+                textCommandTitle2.setText(team.getName());
+                initBadge(team, imgCommandLogo2);
+            });
+
+            textCommandTitle1.setText(teamOne.getName()==null?"Неизвестно":teamOne.getName());
+            textCommandTitle2.setText(teamTwo.getName()==null?"Неизвестно":teamTwo.getName());
+
+            initBadge(teamOne, imgCommandLogo1);
+            initBadge(teamTwo, imgCommandLogo2);
+        }
+
+        private void initBadge (Team team, ImageView imageView) {
+            if (team == null)
+                return;
+            List<Player> players = team.getPlayers();
+
+            for (Player p: players)
+                if (p.getActiveDisquals() > 0) {
+                    new QBadgeView(App.getAppContext())
+                            .bindTarget(imageView)
+                            .setBadgeBackground(App.getAppContext().getDrawable(R.drawable.ic_circle))
+                            .setBadgeTextColor(App.getAppContext().getResources().getColor(R.color.colorBadge))
+                            .setBadgeTextSize(5, true)
+                            .setBadgePadding(5, true)
+                            .setBadgeGravity(Gravity.END | Gravity.BOTTOM)
+                            .setGravityOffset(-3, 1, true)
+                            .setBadgeNumber(3);
+                    break;
+                }
         }
     }
 }

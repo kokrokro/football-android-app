@@ -11,7 +11,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -22,13 +21,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -39,9 +33,10 @@ import baikal.web.footballapp.DataSourceUtilities.LoadStates;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.FavoriteTourneys;
+import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
+import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.tournament.adapter.TourneyAdapter;
 import baikal.web.footballapp.viewmodel.SearchTournamentPageViewModel;
 import retrofit2.Call;
@@ -55,8 +50,8 @@ import retrofit2.Response;
  * A simple {@link Fragment} subclass.
  */
 public class SearchTournaments extends Fragment implements DialogRegion.mListener {
-    private static final String TAG = "Search_tournaments";
-    private final Logger log = LoggerFactory.getLogger(SearchTournaments.class);
+//    private static final String TAG = "Search_tournaments";
+//    private final Logger log = LoggerFactory.getLogger(SearchTournaments.class);
 
     private SearchTournamentPageViewModel searchTournamentPageViewModel;
     private TourneyAdapter adapter;
@@ -72,7 +67,9 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     private Region region;
     private HashSet<String> favTourneysId = new HashSet<>();
 
-    SearchTournaments() { }
+    SearchTournaments(SearchTournamentPageViewModel searchTournamentPageViewModel) {
+        this.searchTournamentPageViewModel = searchTournamentPageViewModel;
+    }
 
     private static void showOneView(View viewToShow, Set<View> views) {
         for (View view : views) {
@@ -107,8 +104,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         }
     }
 
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ProgressDialog mProgressDialog = new ProgressDialog(getActivity(), R.style.MyProgressDialogTheme);
@@ -131,7 +126,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         switchableViews.add(recyclerView);
 
         SearchView searchView = view.findViewById(R.id.searchView);
-        ImageButton filter = view.findViewById(R.id.filterRegionButton);
         Typeface tf = Typeface.createFromAsset(Objects.requireNonNull(getActivity()).getAssets(), "fonts/manrope_regular.otf");
         SearchView.SearchAutoComplete theTextArea = searchView.findViewById(R.id.search_src_text);
         theTextArea.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
@@ -144,28 +138,30 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
         searchViewClose.setColorFilter(getResources().getColor(R.color.colorLightGrayForText), PorterDuff.Mode.SRC_ATOP);
         searchView.setOnCloseListener(onSearchCloseListener);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new TourneyAdapter((id, isChecked)-> {
-            if (isChecked)
-                favTourneysId.add(id);
-            else
-                favTourneysId.remove(id);
-        });
-        if (SaveSharedPreference.getObject() != null)
-            favTourneysId.addAll(SaveSharedPreference.getObject().getUser().getFavouriteTourney());
-        recyclerView.setAdapter(adapter);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        adapter = new TourneyAdapter((id, isChecked)-> {
+//            if (isChecked)
+//                favTourneysId.add(id);
+//            else
+//                favTourneysId.remove(id);
+//
+//            setFavTourney();
+//        });
+//        if (SaveSharedPreference.getObject() != null)
+//            favTourneysId.addAll(SaveSharedPreference.getObject().getUser().getFavouriteTourney());
+//
+//        recyclerView.setAdapter(adapter);
 
-        filter.setOnClickListener(v-> {
+        view.findViewById(R.id.filterRegionButton).setOnClickListener(v-> {
                     FragmentManager fm = getChildFragmentManager();
                     DialogRegion dialogRegion =  new DialogRegion(MankindKeeper.getInstance().regions);
                     dialogRegion.show(fm, "fragment_edit_name");
                 }
         );
 
-        searchTournamentPageViewModel = ViewModelProviders.of(getActivity()).get(SearchTournamentPageViewModel.class);
-        loadData();
+//        loadData();
 
-        searchView.setOnQueryTextListener(onQueryTextListener);
+//        searchView.setOnQueryTextListener(onQueryTextListener);
 
         swipeRefreshLayout.setOnRefreshListener(this::loadData);
         return view;
@@ -181,9 +177,10 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     public void onCreate(@Nullable Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
+//        searchTournamentPageViewModel = ViewModelProviders.of(getActivity()).get(SearchTournamentPageViewModel.class);
     }
 
-    void setFavTourney()
+    private void setFavTourney()
     {
         FavoriteTourneys favTourneyNew = new FavoriteTourneys(favTourneysId);
 
@@ -197,19 +194,23 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
             return;
         }
 
-        Controller.getApi().editPlayerInfo(id, token, favTourneyNew).enqueue(new Callback<EditProfile>() {
+        Controller.getApi().editPlayerInfo(id, token, favTourneyNew).enqueue(new Callback<Person>() {
             @Override
-            public void onResponse(@NonNull Call<EditProfile> call, @NonNull Response<EditProfile> response) {
-                if (!response.isSuccessful())
-                    Log.d("SearchTournaments", "response is failure in \"Controller.getApi().editPlayerInfo\"");
+            public void onResponse(@NonNull Call<Person> call, @NonNull Response<Person> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    User user = SaveSharedPreference.getObject();
+                    user.setUser(response.body());
+                    SaveSharedPreference.saveObject(user);
+                    favTourneysId.clear();
+                    favTourneysId.addAll(user.getUser().getFavouriteTourney());
+                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<EditProfile> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<Person> call, @NonNull Throwable t) {
                 Log.d("SearchTournaments: ", "can\'t edit player info...");
             }
         });
-
     }
 
     private SearchView.OnQueryTextListener onQueryTextListener = new SearchView.OnQueryTextListener() {
@@ -236,7 +237,6 @@ public class SearchTournaments extends Fragment implements DialogRegion.mListene
     @Override
     public void onPause() {
         super.onPause();
-        setFavTourney();
     }
 
     @Override

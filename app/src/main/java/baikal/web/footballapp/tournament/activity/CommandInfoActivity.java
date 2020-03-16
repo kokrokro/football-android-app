@@ -3,8 +3,8 @@ package baikal.web.footballapp.tournament.activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.widget.ImageButton;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,14 +21,14 @@ public class CommandInfoActivity extends AppCompatActivity {
 //    private static final String TAG = "CommandInfoActivity";
     private Team team;
     private FloatingActionButton fab;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_command_info);
-        final TabLayout tabLayout;
-        ImageButton buttonBack;
+
         ViewPager viewPager;
         TextView textView;
         final AbbreviationDialogFragment dialogFragment;
@@ -37,26 +37,21 @@ public class CommandInfoActivity extends AppCompatActivity {
         team = (Team) intent.getExtras().getSerializable("TOURNAMENTMATCHCOMMANDINFO");
 
 //        String title = intent.getExtras().getString("COMMANDTITLE");
-        buttonBack = findViewById(R.id.commandInfoBack);
         tabLayout = findViewById(R.id.commandInfoTab);
         viewPager = findViewById(R.id.commandInfoViewPager);
         textView = findViewById(R.id.commandInfoTitle);
         fab = findViewById(R.id.commandInfoButton);
         dialogFragment = new AbbreviationDialogFragment();
         fab.setOnClickListener(v -> dialogFragment.show(getSupportFragmentManager(), "abbrev2"));
-        buttonBack.setOnClickListener(v -> finish());
+        findViewById(R.id.commandInfoBack).setOnClickListener(v -> finish());
         viewPager.addOnPageChangeListener(onPageChangeListener);
         tabLayout.addOnTabSelectedListener(onTabSelectedListener);
         textView.setText(team.getName());
-        setupViewPager(viewPager);
+
         tabLayout.setupWithViewPager(viewPager);
-//        setCustomFont();
-        Typeface tf = Typeface.createFromAsset(this.getAssets(), "fonts/manrope_regular.otf");
-        for (int i = 0; i < tabLayout.getTabCount(); i++) {
-            TextView tv = (TextView) LayoutInflater.from(this).inflate(R.layout.custom_tab_text,null);
-            tv.setTypeface(tf);
-            tabLayout.getTabAt(i).setCustomView(tv);
-        }
+        setupViewPager(viewPager);
+        setCustomFont();
+
         TabLayout.Tab tab = tabLayout.getTabAt(0);
         TextView selectedText = (TextView) tab.getCustomView();
         selectedText.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
@@ -89,6 +84,24 @@ public class CommandInfoActivity extends AppCompatActivity {
         adapter.addFragment(commandStructureFragment, "СОСТАВ");
         adapter.addFragment(commandMatchFragment, "МАТЧИ");
         viewPager.setAdapter(adapter);
+    }
+
+    private void setCustomFont() {
+
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+
+            int tabChildsCount = vgTab.getChildCount();
+
+            for (int i = 0; i < tabChildsCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView)
+                    ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/manrope_regular.otf"));
+            }
+        }
     }
 
     @Override

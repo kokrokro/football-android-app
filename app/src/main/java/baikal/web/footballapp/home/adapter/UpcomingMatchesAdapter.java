@@ -14,25 +14,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.model.ActiveMatch;
+import baikal.web.footballapp.model.MatchPopulate;
 
-public class UpcomingMatchesAdapter extends PagedListAdapter<ActiveMatch, UpcomingMatchesAdapter.ViewHolder> {
+public class UpcomingMatchesAdapter extends PagedListAdapter<MatchPopulate, UpcomingMatchesAdapter.ViewHolder> {
     private static final String TAG = "UpcomingMatchesAdapter";
     private final OnItemListener mOnItemListener;
 
     public interface OnItemListener {
-        void OnClick(ActiveMatch feed);
+        void OnClick(MatchPopulate feed);
     }
 
-    private static final DiffUtil.ItemCallback<ActiveMatch> DIFF_CALLBACK =
-            new DiffUtil.ItemCallback<ActiveMatch>() {
+    private static final DiffUtil.ItemCallback<MatchPopulate> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<MatchPopulate>() {
                 @Override
-                public boolean areItemsTheSame(@NonNull ActiveMatch oldItem, @NonNull ActiveMatch newItem) {
+                public boolean areItemsTheSame(@NonNull MatchPopulate oldItem, @NonNull MatchPopulate newItem) {
                     return newItem.getId().equals(oldItem.getId());
                 }
 
                 @Override
-                public boolean areContentsTheSame(@NonNull ActiveMatch oldItem, @NonNull ActiveMatch newItem) {
+                public boolean areContentsTheSame(@NonNull MatchPopulate oldItem, @NonNull MatchPopulate newItem) {
                     return newItem.getId().equals(oldItem.getId());
                 }
             };
@@ -51,7 +51,7 @@ public class UpcomingMatchesAdapter extends PagedListAdapter<ActiveMatch, Upcomi
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        ActiveMatch match = getItem(position);
+        MatchPopulate match = getItem(position);
 
         if (match != null)
             holder.bindTo(match);
@@ -92,7 +92,7 @@ public class UpcomingMatchesAdapter extends PagedListAdapter<ActiveMatch, Upcomi
             line = item.findViewById(R.id.timetableLine);
         }
 
-        void bindTo (ActiveMatch match) {
+        void bindTo (MatchPopulate match) {
             textDate.setText(DateToString.stringDate(match.getDate()));
             textTime.setText(DateToString.ChangeTime(match.getDate()));
             textTour.setText(match.getTour()!=null?match.getTour():"");

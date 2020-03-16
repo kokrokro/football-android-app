@@ -110,7 +110,6 @@ public class UserPage extends Fragment {
                 SaveSharedPreference.saveObject(user);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.pageContainer, authoUser, "AUTHOUSERPAGE").hide(this).show(authoUser).commit();
-                activity.setActive(authoUser);
                 activity.StartRefreshToken();
             }
         } else {
@@ -148,7 +147,6 @@ public class UserPage extends Fragment {
                                     .hide(authoUser.activity.getActive())
                                     .show(authoUser)
                                     .commit();
-                            authoUser.activity.setActive(authoUser);
                             SaveSharedPreference.setLoggedIn(getActivity().getApplicationContext(), true);
                             SaveSharedPreference.saveObject(user);
                             activity.StartRefreshToken();

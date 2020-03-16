@@ -19,6 +19,13 @@ public class Stadium implements Serializable {
     @Expose
     private String address;
 
+    public Stadium () {
+        tourney = "";
+        _id = "";
+        name = "";
+        address = "";
+    }
+
     public String getTourney() {
         return tourney;
     }

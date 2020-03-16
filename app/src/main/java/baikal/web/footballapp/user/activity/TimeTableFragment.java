@@ -282,7 +282,7 @@ public class TimeTableFragment extends Fragment {
                 log.error("edit save shared preferences...");
                 User user = SaveSharedPreference.getObject();
                 user.setRecentReferees(recentReferee);
-                SaveSharedPreference.editObject(user);
+                SaveSharedPreference.saveObject(user);
 
                 matches.get(matchIndx).setReferees(match.getReferees());
                 adapter.notifyDataSetChanged();

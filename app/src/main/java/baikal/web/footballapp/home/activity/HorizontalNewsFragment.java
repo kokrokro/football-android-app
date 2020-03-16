@@ -107,7 +107,7 @@ public class HorizontalNewsFragment extends Fragment {
         newsPageViewModel = ViewModelProviders.of(getActivity()).get(NewsPageViewModel.class);
 
 //        if (!isDataLoaded)
-            loadData();
+        loadData();
 
         return view;
     }

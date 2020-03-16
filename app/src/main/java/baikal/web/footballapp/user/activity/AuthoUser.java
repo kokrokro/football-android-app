@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import baikal.web.footballapp.CheckError;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
@@ -292,7 +291,7 @@ public class AuthoUser extends Fragment {
         signOutBtn.setOnClickListener(v->{
             WebStorage.getInstance().deleteAllData();
             SaveSharedPreference.setLoggedIn(activity.getApplicationContext(), false);
-            SaveSharedPreference.editObject(null);
+            SaveSharedPreference.saveObject(null);
             activity.EndRefreshToken();
 //                PersonalActivity.fragmentUser.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             setSingleReferee.setVisibility(View.GONE);
@@ -312,8 +311,6 @@ public class AuthoUser extends Fragment {
                 activity.setFragmentUser(new UserPage(activity));
                 fragmentManager.beginTransaction().show(activity.getFragmentUser()).commit();
             }
-            activity.setActive(activity.getFragmentUser());
-            refreshTournaments();
         });
     }
 
@@ -344,28 +341,6 @@ public class AuthoUser extends Fragment {
         textView.setTextColor(activity.getResources().getColor(R.color.colorAccent));
     }
 
-    @SuppressLint("CheckResult")
-    private void refreshTournaments() {
-        Controller.getApi().getAllLeagues("10", "0").enqueue(new Callback<List<League>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
-                if (response.body() != null)
-                    for (League l: response.body())
-                        if (!MankindKeeper.getInstance().allLeagues.contains(l))
-                            MankindKeeper.getInstance().allLeagues.add(l);
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) {
-                CheckError checkError = new CheckError();
-                try {
-                    checkError.checkError(getActivity(), t);
-                } catch (Exception ignored) { }
-
-            }
-        });
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
@@ -377,7 +352,7 @@ public class AuthoUser extends Fragment {
 //                SaveSharedPreference.getObject().setUser(person1);
                 User user = SaveSharedPreference.getObject();
                 user.setUser(person1);
-                SaveSharedPreference.editObject(user);
+                SaveSharedPreference.saveObject(user);
                 try {
                     if (MankindKeeper.getInstance().allClubs.size() == 1) {
                         MankindKeeper.getInstance().allClubs.clear();

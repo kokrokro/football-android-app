@@ -18,7 +18,7 @@ public class SearchTournamentPageViewModel extends ViewModel {
 
     private final TourneyPageRepository tourneyPageRepository;
     private final MutableLiveData<PagedList<Tourney>> tourneys;
-    public PagedListWithLoadingState<Tourney> tourneysList;
+    private PagedListWithLoadingState<Tourney> tourneysList;
     private MutableLiveData<LoadStates> loadDataState;
 
     public SearchTournamentPageViewModel() {
@@ -29,7 +29,7 @@ public class SearchTournamentPageViewModel extends ViewModel {
         initPlayersPageList(null, null);
     }
 
-    public void initPlayersPageList(String searchStr, String region) {
+    private void initPlayersPageList(String searchStr, String region) {
         tourneysList = tourneyPageRepository.getTourneys(searchStr, region);
         tourneysList.loadState.observeForever(new Observer<LoadStates>() {
             @Override
@@ -45,7 +45,7 @@ public class SearchTournamentPageViewModel extends ViewModel {
         });
     }
 
-    public void searchPlayers(String searchString, String region) {
+    private void searchPlayers(String searchString, String region) {
         initPlayersPageList(searchString, region);
     }
 

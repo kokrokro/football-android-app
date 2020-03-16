@@ -13,7 +13,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class PersonViewModel extends ViewModel {
-    private TreeMap<String, Person> allPerson = new TreeMap<>();
+    private final TreeMap<String, Person> allPerson = new TreeMap<>();
 
     public interface OnPersonLoad {
         void PersonLoaded(Person person);

@@ -96,18 +96,12 @@ public class TournamentPlayersFragment extends Fragment {
         final ArrayAdapter<CharSequence> adapter1 = ArrayAdapter.createFromResource(getActivity(), R.array.spinnerItem, R.layout.spinner_item);
         try {
             adapter1.setDropDownViewResource(R.layout.spinner_dropdown);
-        } catch (Exception t) {
-            log.error("ERROR: from TournamentPlayersFragment", t);
-        }
-
-        try {
             spinner.setAdapter(adapter1);
         } catch (Exception t) {
             log.error("ERROR: from TournamentPlayersFragment set Adapter", t);
         }
 
         Drawable spinnerDrawable = spinner.getBackground().getConstantState().newDrawable();
-
 
         spinnerDrawable.setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
 
@@ -168,7 +162,7 @@ public class TournamentPlayersFragment extends Fragment {
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
 
             if (scrollY > oldScrollY) {
-                    log.info("INFO: RecyclerView scrolled: scroll down!");
+                log.info("INFO: RecyclerView scrolled: scroll down!");
             }
             if (scrollY < oldScrollY) {
                 scrollStatus = false;
@@ -220,10 +214,13 @@ public class TournamentPlayersFragment extends Fragment {
                     }
 
                     if (playerList.size() != 0) {
+                        layout1.setVisibility(View.VISIBLE);
                         layout.setVisibility(View.GONE);
                     } else {
                         layout1.setVisibility(View.GONE);
+                        layout.setVisibility(View.VISIBLE);
                         fab.setVisibility(View.INVISIBLE);
+                        return;
                     }
                     Controller.getApi().getPersonStats("league",null,league.getId()).enqueue(new Callback<List<PersonStats>>() {
                         @Override

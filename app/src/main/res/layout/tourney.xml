@@ -21,12 +21,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="4dp"
+            android:layout_toStartOf="@+id/T_switch"
             android:background="@color/colorWhite"
             android:orientation="horizontal">
-            <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@color/colorWhite">-->
 
 
             <LinearLayout
@@ -34,29 +32,18 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="14sp"
+                android:layout_marginEnd="4dp"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tourneyTitle"
-                    android:layout_width="256dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/manrope_regular"
                     android:text="@string/tournamentTitle"
                     android:textColor="@color/colorBottomNavigationUnChecked"
                     android:textSize="14sp" />
-
-                <TextView
-                    android:id="@+id/tourneyFinish"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/manrope_regular"
-                    android:paddingTop="3sp"
-                    android:paddingBottom="3sp"
-                    android:text="@string/tournamentStatusFinish"
-                    android:textColor="@color/colorGray"
-                    android:textSize="10sp"
-                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tourneyDate"
@@ -85,20 +72,13 @@
 
         </LinearLayout>
 
-
-        <CheckBox
-            android:id="@+id/like_button_cb"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_alignParentRight="true"
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/T_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
-            android:background="@drawable/like_button_background"
-            android:button="@null"
-            android:checked="false"
-            android:foregroundGravity="center_vertical"
-            android:gravity="center"
-            android:visibility="visible" />
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="15dp"/>
 
     </RelativeLayout>
 

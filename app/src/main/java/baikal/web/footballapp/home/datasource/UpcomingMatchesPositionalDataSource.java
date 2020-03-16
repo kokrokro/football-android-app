@@ -7,12 +7,12 @@ import java.util.List;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DataSourceUtilities.DoIt;
-import baikal.web.footballapp.model.ActiveMatch;
+import baikal.web.footballapp.model.MatchPopulate;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class UpcomingMatchesPositionalDataSource extends PositionalDataSource<ActiveMatch> {
+public class UpcomingMatchesPositionalDataSource extends PositionalDataSource<MatchPopulate> {
     private static final String TAG = "UpcomingMatchesPosDS";
 
     private final DoIt doItSoGood;
@@ -31,10 +31,10 @@ public class UpcomingMatchesPositionalDataSource extends PositionalDataSource<Ac
     }
 
     @Override
-    public void loadInitial(@NonNull LoadInitialParams params, @NonNull LoadInitialCallback<ActiveMatch> callback) {
-        Callback<List<ActiveMatch>> responseCallback = new Callback<List<ActiveMatch>>() {
+    public void loadInitial(@NonNull LoadInitialParams params, @NonNull LoadInitialCallback<MatchPopulate> callback) {
+        Callback<List<MatchPopulate>> responseCallback = new Callback<List<MatchPopulate>>() {
             @Override
-            public void onResponse(@NonNull Call<List<ActiveMatch>> call, @NonNull Response<List<ActiveMatch>> response) {
+            public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
                 if (response.body()==null || response.body().size() == 0)
                     feelEmpty.doIt();
                 else
@@ -45,7 +45,7 @@ public class UpcomingMatchesPositionalDataSource extends PositionalDataSource<Ac
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<ActiveMatch>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
                 dontFeelSoGood.doIt();
             }
         };
@@ -57,17 +57,17 @@ public class UpcomingMatchesPositionalDataSource extends PositionalDataSource<Ac
     }
 
     @Override
-    public void loadRange(@NonNull LoadRangeParams params, @NonNull LoadRangeCallback<ActiveMatch> callback) {
-        Callback<List<ActiveMatch>> responseCallback = new Callback<List<ActiveMatch>>() {
+    public void loadRange(@NonNull LoadRangeParams params, @NonNull LoadRangeCallback<MatchPopulate> callback) {
+        Callback<List<MatchPopulate>> responseCallback = new Callback<List<MatchPopulate>>() {
             @Override
-            public void onResponse(@NonNull Call<List<ActiveMatch>> call, @NonNull Response<List<ActiveMatch>> response) {
+            public void onResponse(@NonNull Call<List<MatchPopulate>> call, @NonNull Response<List<MatchPopulate>> response) {
                 doItSoGood.doIt();
                 if (response.body() != null)
                     callback.onResult(response.body());
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<ActiveMatch>> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<List<MatchPopulate>> call, @NonNull Throwable t) {
                 dontFeelSoGood.doIt();
             }
         };

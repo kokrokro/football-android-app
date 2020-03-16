@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -30,17 +30,12 @@ public class TourneyAdapter extends PagedListAdapter<Tourney, TourneyAdapter.Vie
     private static final DiffUtil.ItemCallback<Tourney> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<Tourney>() {
                 @Override
-                public boolean areItemsTheSame(
-                        @NonNull Tourney oldPerson, @NonNull Tourney newPerson) {
-                    // Person properties may have changed if reloaded from the DB, but ID is fixed
+                public boolean areItemsTheSame(@NonNull Tourney oldPerson, @NonNull Tourney newPerson) {
                     return oldPerson.getId().equals(newPerson.getId());
                 }
 
                 @Override
-                public boolean areContentsTheSame(
-                        @NonNull Tourney oldPerson, @NonNull Tourney newPerson) {
-                    // NOTE: if you use equals, your object must properly override Object#equals()
-                    // Incorrectly returning false here will result in too many animations.
+                public boolean areContentsTheSame(@NonNull Tourney oldPerson, @NonNull Tourney newPerson) {
                     return oldPerson.getId().equals(newPerson.getId());
                 }
             };
@@ -72,19 +67,16 @@ public class TourneyAdapter extends PagedListAdapter<Tourney, TourneyAdapter.Vie
         final TextView textCommandNum;
         final TextView textStatusFinish;
         final View view;
-        final CheckBox favBtn;
+        final Switch favBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
             view = itemView.findViewById(R.id.tourneyLine);
-            favBtn = itemView.findViewById(R.id.like_button_cb);
+            favBtn = itemView.findViewById(R.id.T_switch);
             textCommandNum = itemView.findViewById(R.id.tourneyTeamNumber);
             textDate = itemView.findViewById(R.id.tourneyDate);
             textTitle = itemView.findViewById(R.id.tourneyTitle);
             textStatusFinish = itemView.findViewById(R.id.tourneyFinish);
-
-
-//            mProgressDialog.setIndeterminate(true);
         }
 
         @SuppressLint("SetTextI18n")

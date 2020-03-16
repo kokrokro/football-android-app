@@ -74,7 +74,6 @@ public class RecyclerViewClubAdapter extends RecyclerView.Adapter<RecyclerViewCl
                 club.setArguments(bundle);
                 FragmentManager fragmentManager = activity.getSupportFragmentManager();
                 fragmentManager.beginTransaction().add(R.id.pageContainer, club).hide(activity.getActive()).show(club).commit();
-                activity.setActive(club);
             });
             if (position == (allClubs.size() - 1)){
                 holder.line.setVisibility(View.INVISIBLE);

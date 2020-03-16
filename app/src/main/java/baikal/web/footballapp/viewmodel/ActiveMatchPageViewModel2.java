@@ -18,8 +18,8 @@ import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DataSourceUtilities.LoadStates;
 import baikal.web.footballapp.DataSourceUtilities.PagedListWithLoadingState;
 import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.League;
+import baikal.web.footballapp.model.MatchPopulate;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.repository.ActiveMatchPageRepository;
 import retrofit2.Call;
@@ -30,8 +30,8 @@ public class ActiveMatchPageViewModel2 extends ViewModel {
     private final static String TAG = "ActiveMatchPageVM2";
 
     private final ActiveMatchPageRepository activeMatchPageRepository;
-    private final MutableLiveData<PagedList<ActiveMatch>> matches;
-    public PagedListWithLoadingState<ActiveMatch> matchesList;
+    private final MutableLiveData<PagedList<MatchPopulate>> matches;
+    public PagedListWithLoadingState<MatchPopulate> matchesList;
     private MutableLiveData<LoadStates> loadDataState;
     private String leagueIds;
 
@@ -66,7 +66,7 @@ public class ActiveMatchPageViewModel2 extends ViewModel {
         initNewsPageList(tourneyIds);
     }
 
-    public LiveData<PagedList<ActiveMatch>> getMatches() {
+    public LiveData<PagedList<MatchPopulate>> getMatches() {
         return matches;
     }
 

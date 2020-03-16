@@ -1,6 +1,5 @@
 package baikal.web.footballapp.tournament.adapter;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 
@@ -22,12 +21,10 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
 //    private final Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
     private final List<League> tournaments;
-    private final PersonalActivity activity;
     private final Listener mListener;
 
-    RecyclerViewTournamentAdapter(Activity activity, List<League> tournaments, Listener mListener){
+    RecyclerViewTournamentAdapter(List<League> tournaments, Listener mListener){
         this.tournaments = tournaments;
-        this.activity = (PersonalActivity) activity;
         this.mListener = mListener;
     }
 
@@ -45,13 +42,12 @@ public class RecyclerViewTournamentAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final League league = tournaments.get(position);
-        DateToString dateToString = new DateToString();
-        String str = dateToString.ChangeDate(league.getBeginDate()) + "-" + dateToString.ChangeDate(league.getEndDate());
+        String str = DateToString.ChangeDate(league.getBeginDate()) + "-" + DateToString.ChangeDate(league.getEndDate());
         holder.textDate.setText(str);
 
         str =  league.getName();
         holder.textTitle.setText(str);
-        str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + league.getMaxTeams();
+        str = App.getAppContext().getString(R.string.tournamentFilterCommandNum) + ": " + league.getMaxTeams();
         holder.textCommandNum.setText(str);
         holder.bind(league,mListener);
     }

@@ -49,26 +49,16 @@ public class NewsAdsAndUpcomingMatches extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.MPF_swipe_to_refresh);
 
         swipeRefreshLayout.setOnRefreshListener(this::loadData);
-        return view;
-    }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
         FragmentManager fragmentManager = getChildFragmentManager();
-
-//        horizontalNewsFragment = (HorizontalNewsFragment) fragmentManager.findFragmentById(R.id.MPF_HRV_holder);
-//
-//        if (horizontalNewsFragment == null) {
-//            horizontalNewsFragment = new HorizontalNewsFragment(onFeedListener);
-//            fragmentManager.beginTransaction().replace(R.id.MPF_HRV_holder, horizontalNewsFragment).commit();
-//        }
 
         horizontalNewsFragment = new HorizontalNewsFragment(onFeedListener);
         fragmentManager.beginTransaction().add(R.id.MPF_HRV_holder, horizontalNewsFragment).commit();
 
         comingMatches = new ComingMatches(onMatchListener, true);
         fragmentManager.beginTransaction().add(R.id.MPF_VRV_holder, comingMatches).commit();
+
+        return view;
     }
 
     private void loadData() {

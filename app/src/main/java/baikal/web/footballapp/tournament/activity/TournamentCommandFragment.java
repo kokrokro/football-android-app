@@ -77,7 +77,6 @@ public class TournamentCommandFragment extends Fragment{
         adapter = new RVLeaguePlayoffCommandAdapter(getActivity(), teams, league, teamStatsList);
         recyclerViewPlayoff.setAdapter(adapter);
 
-
         scroller.setOnScrollChangeListener((NestedScrollView.OnScrollChangeListener) (v, scrollX, scrollY, oldScrollX, oldScrollY) -> {
             if (scrollY < oldScrollY)
                 scrollStatus = false;

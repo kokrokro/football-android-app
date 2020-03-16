@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.home.activity.MainPage;
 import baikal.web.footballapp.model.League;
@@ -38,10 +37,8 @@ import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.players.activity.Player;
-import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.players.adapter.PlayersAdapter;
 import baikal.web.footballapp.tournament.activity.TournamentPage;
-import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.UserPage;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -149,11 +146,11 @@ public class PersonalActivity extends AppCompatActivity {
         };
 
         mainPage       = new MainPage();
-        tournamentPage = new TournamentPage(PersonalActivity.this);
-        clubPage       = new ClubPage();
-        playersPage    = new PlayersPage(mOnItemListener);
-        autoUser       = new AuthoUser(PersonalActivity.this);
-        fragmentUser   = new UserPage(this);
+        tournamentPage = new TournamentPage();
+//        clubPage       = new ClubPage();
+//        playersPage    = new PlayersPage(mOnItemListener);
+//        autoUser       = new AuthoUser(PersonalActivity.this);
+//        fragmentUser   = new UserPage(this);
         active         = mainPage;
 
         setAnimation();
@@ -230,41 +227,6 @@ public class PersonalActivity extends AppCompatActivity {
         }
 
     }
-
-//    @SuppressLint("CheckResult")
-//    private void checkConnectionSingle() {
-//        Single<Boolean> single = ReactiveNetwork.checkInternetConnectivity();
-//        //noinspection ResultOfMethodCallIgnored
-//        single
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(isConnectedToInternet -> GetAdvertising());
-//    }
-
-//    @SuppressLint("CheckResult")
-//    private void GetAdvertising() {
-//        //noinspection ResultOfMethodCallIgnored
-//        Controller.getApi().getAdvertising("1", "0")
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(this::showAds
-//                        ,
-//                        error -> {
-//                            CheckError checkError = new CheckError();
-//                            checkError.checkError(this, error);
-//                        }
-//                );
-//    }
-
-//    private void showAds(Advertisings news) {
-//        if (news.getAds().size() != 0) {
-//            AdvertisingFragment dialogFragment = AdvertisingFragment.newInstance();
-//            Bundle args = new Bundle();
-//            args.putSerializable("ADVERTISING", (Serializable) news.getAds());
-//            dialogFragment.setArguments(args);
-//            dialogFragment.show(this.getSupportFragmentManager(), "dialogFragment");
-//        }
-//    }
 
     private void showSnack() {
         GetAllTournaments();
@@ -354,7 +316,7 @@ public class PersonalActivity extends AppCompatActivity {
             @Override
             public void onResponse(@NonNull Call<User> call, @NonNull Response<User> response) {
                 if (response.isSuccessful() && response.body()!=null)
-                    SaveSharedPreference.editObject(response.body());
+                    SaveSharedPreference.saveObject(response.body());
             }
 
             @Override

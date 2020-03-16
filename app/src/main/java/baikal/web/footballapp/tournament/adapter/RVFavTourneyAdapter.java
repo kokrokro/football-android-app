@@ -1,6 +1,5 @@
 package baikal.web.footballapp.tournament.adapter;
 
-import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,23 +16,20 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.activity.TournamentPage;
 
 public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapter.ViewHolder> {
     private List<Tourney> tourneys;
-    private PersonalActivity activity;
     private List<League> favLeagues;
     private RecyclerViewTournamentAdapter.Listener mListener;
-    final Logger log = LoggerFactory.getLogger(TournamentPage.class);
+    final Logger log = LoggerFactory.getLogger(RVFavTourneyAdapter.class);
 
-    public RVFavTourneyAdapter(List<Tourney> tourneys, Activity activity, List<League> favLeagues, RecyclerViewTournamentAdapter.Listener mListener){
+    public RVFavTourneyAdapter(List<Tourney> tourneys, List<League> favLeagues, RecyclerViewTournamentAdapter.Listener mListener){
         this.tourneys = tourneys;
-        this.activity = (PersonalActivity) activity;
         this.favLeagues = favLeagues;
         this.mListener = mListener;
     }
@@ -48,15 +44,12 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
     @Override
     public void onBindViewHolder(@NonNull RVFavTourneyAdapter.ViewHolder holder, int position) {
         final Tourney tourney = tourneys.get(position);
-        //final String id = tourney.getId();
-        DateToString dateToString = new DateToString();
-        String str = dateToString.ChangeDate(tourney.getBeginDate()) + "-" + dateToString.ChangeDate(tourney.getEndDate());
+        String str = DateToString.ChangeDate(tourney.getBeginDate()) + "-" + DateToString.ChangeDate(tourney.getEndDate());
         holder.textDate.setText(str);
         str = tourney.getName();
         holder.textTitle.setText(str);
-        str = activity.getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
+        str = App.getAppContext().getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
         holder.textCommandNum.setText(str);
-
 
         holder.leagueList.clear();
         for (League l : favLeagues)
@@ -93,8 +86,8 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             linearLayout = itemView.findViewById(R.id.tourneyShow);
 
             leagueList = new ArrayList<>();
-            rvLeagues.setLayoutManager(new LinearLayoutManager(activity));
-            adapter = new RecyclerViewTournamentAdapter(activity, leagueList, mListener);
+            rvLeagues.setLayoutManager(new LinearLayoutManager(App.getAppContext()));
+            adapter = new RecyclerViewTournamentAdapter(leagueList, mListener);
             rvLeagues.setAdapter(adapter);
         }
     }

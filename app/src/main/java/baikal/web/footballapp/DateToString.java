@@ -15,6 +15,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class DateToString {
+    private final static String TAG = "DateToString";
     private final static SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US);
     private final static SimpleDateFormat format2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.US);
     private final static SimpleDateFormat format3 = new SimpleDateFormat("EEE MMM d HH:mm:ss Z yyyy", Locale.US);
@@ -65,7 +66,12 @@ public class DateToString {
         if (date == null)
             return "Не назначено";
 
-        return usualFormatDate.format(date);
+        try {
+            return usualFormatDate.format(date);
+        } catch (Exception e) {
+            Log.e (TAG, e.toString());
+            return "";
+        }
     }
 
     public static String ChangeTime(String str)  {
@@ -77,7 +83,12 @@ public class DateToString {
         if (date == null)
             return "Не назначено";
 
-        return usualFormatTime.format(date);
+        try {
+            return usualFormatTime.format(date);
+        } catch (Exception e) {
+            Log.e (TAG, e.toString());
+            return "";
+        }
     }
 
     public static String stringDate (String targetDate)

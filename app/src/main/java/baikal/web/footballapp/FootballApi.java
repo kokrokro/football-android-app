@@ -3,10 +3,8 @@ package baikal.web.footballapp;
 import java.util.List;
 import java.util.Map;
 
-import baikal.web.footballapp.model.ActiveMatch;
 import baikal.web.footballapp.model.Announce;
 import baikal.web.footballapp.model.DataClub;
-import baikal.web.footballapp.model.EditProfile;
 import baikal.web.footballapp.model.Event;
 import baikal.web.footballapp.model.FavoriteTourneys;
 import baikal.web.footballapp.model.Invite;
@@ -56,7 +54,7 @@ public interface FootballApi {
     Call<List<Announce>> getAnnounceByTourney(@Query("tourney") String tourneyId, @Query("_limit") String limit, @Query("_offset") String offset);
 
     @GET("/api/crud/match?_sort=-date&_populate=teamOne+teamTwo+place")
-    Call<List<ActiveMatch>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit, @Query("_offset") String offset);
+    Call<List<MatchPopulate>> getUpcomingMatches(@Query("date") String date, @Query("league") String league, @Query("_limit") String limit, @Query("_offset") String offset);
 
     @GET("/api/crud/person")
     Observable<List<Person>> getAllPersons(@Query("surname") String surname,@Query("_limit") String limit, @Query("_offset") String offset);
@@ -115,7 +113,7 @@ public interface FootballApi {
     Call<Person> editProfile(@Path("id") String id, @Header("auth") String authorization, @PartMap Map<String, RequestBody> params, @Part MultipartBody.Part file);
 
     @PATCH("/api/crud/person/{id}")
-    Call<EditProfile> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Body FavoriteTourneys favoriteTourneys);
+    Call<Person> editPlayerInfo(@Path("id") String id, @Header("auth") String authorization, @Body FavoriteTourneys favoriteTourneys);
 
     @GET("/api/crud/person?_populate=favoriteTourney&_select=favoriteTourney")
     Call<List<PersonPopulate> >getFavTourneysByPerson(@Query("_id") String id);

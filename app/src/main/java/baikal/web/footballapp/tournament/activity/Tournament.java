@@ -87,7 +87,7 @@ public class Tournament extends Fragment {
 
 
     private void setupViewPager(ViewPager viewPager, League league) {
-        TournamentTimeTableFragment tournamentTimeTableFragment = new TournamentTimeTableFragment(tournamentsFragment);
+        TournamentTimeTableFragment tournamentTimeTableFragment = new TournamentTimeTableFragment();
         TournamentCommandFragment tournamentCommandFragment = new TournamentCommandFragment();
         TournamentPlayersFragment tournamentPlayersFragment = new TournamentPlayersFragment();
 
@@ -112,7 +112,6 @@ public class Tournament extends Fragment {
 
 
     private void setCustomFont() {
-
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
         int tabsCount = vg.getChildCount();
 
@@ -124,8 +123,6 @@ public class Tournament extends Fragment {
             for (int i = 0; i < tabChildsCount; i++) {
                 View tabViewChild = vgTab.getChildAt(i);
                 if (tabViewChild instanceof TextView) {
-                    //Put your font in assests folder
-                    //assign name of the font here (Must be case sensitive)
                     ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf"));
                 }
             }

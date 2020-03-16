@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +49,6 @@ public class MainPage extends Fragment {
         view = inflater.inflate(R.layout.page_main, container, false);
         tabLayout = view.findViewById(R.id.mainPageTab);
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.PM_bottom_sheet));
-        CoordinatorLayout coordinatorLayout = view.findViewById(R.id.PM_coordinator_layout);
         ViewPager viewPager = view.findViewById(R.id.mainPageViewPager);
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
@@ -58,19 +56,6 @@ public class MainPage extends Fragment {
 
         RecyclerView recyclerViewAds = view.findViewById(R.id.recyclerViewMainAds);
         bottomSheetBehavior.setHideable(false);
-//        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-//            @Override
-//            public void onStateChanged(@NonNull View view, int i) {
-//                Rect rect = new Rect();
-//                bottomSheetBehavior.getInsetDodgeRect(coordinatorLayout, recyclerViewAds, rect);
-//                Log.d(TAG, rect + " ***********************************************");
-//            }
-//
-//            @Override
-//            public void onSlide(@NonNull View view, float v) {
-//
-//            }
-//        });
 
         try {
             recyclerViewAds.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -82,6 +67,7 @@ public class MainPage extends Fragment {
 
         GetAllAds();
 
+//        CoordinatorLayout coordinatorLayout = view.findViewById(R.id.PM_coordinator_layout);
 //        ViewCompat.postOnAnimation(coordinatorLayout, () -> ViewCompat.postInvalidateOnAnimation(coordinatorLayout));
 
         return view;
