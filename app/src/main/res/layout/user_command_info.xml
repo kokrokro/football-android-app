@@ -84,7 +84,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/colorLightGray">
+            android:background="@color/colorLightGray"
+            android:paddingTop="8dp">
             <!--android:paddingStart="18dp"-->
             <!--android:paddingEnd="18dp"-->
 
@@ -108,7 +109,6 @@
                     android:textColor="@color/colorBottomNavigationUnChecked"
                     android:textSize="14sp"
                     android:background="@color/colorWhite"
-                    android:layout_marginTop="8dp"
                     android:text="@string/commandTitle" />
 
                 <EditText
@@ -187,73 +187,79 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/userCommandPlayersStructureText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_semibold"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:paddingStart="13dp"
-                android:paddingEnd="13dp"
-                android:textColor="@color/colorBottomNavigationUnChecked"
-                android:textSize="14sp"
-                android:text="@string/structure"
-                android:background="@color/colorWhite"/>
-
             <LinearLayout
+                android:id="@+id/UCI_command_structure_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="end"
-                android:background="@color/colorWhite">
-                <Button
-                    android:id="@+id/userCommandPlayerButton"
-                    style="@style/Base.Widget.AppCompat.Button.Borderless"
-                    android:textColor="@color/colorPrimary"
-                    android:fontFamily="@font/manrope_regular"
-                    android:layout_width="wrap_content"
-                    android:layout_marginRight="14dp"
-                    android:layout_marginLeft="14dp"
-                    android:textSize="13sp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/userCommandPlayersStructureText"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/addPlayer"/>
+                    android:fontFamily="@font/manrope_semibold"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp"
+                    android:text="@string/structure"
+                    android:background="@color/colorWhite"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:background="@color/colorWhite">
+                    <Button
+                        android:id="@+id/userCommandPlayerButton"
+                        style="@style/Base.Widget.AppCompat.Button.Borderless"
+                        android:textColor="@color/colorPrimary"
+                        android:fontFamily="@font/manrope_regular"
+                        android:layout_width="wrap_content"
+                        android:layout_marginRight="14dp"
+                        android:layout_marginLeft="14dp"
+                        android:textSize="13sp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/addPlayer"/>
+                </LinearLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewUserCommandPlayers"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    android:background="@color/colorWhite"/>
+
+                <View
+                    android:id="@+id/userCommandPlayersLine"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_height="8dp"
+                    android:visibility="visible"
+                    android:background="@color/colorLightGray"/>
+
+                <TextView
+                    android:id="@+id/userCommandPlayersInvText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/manrope_semibold"
+                    android:paddingBottom="4dp"
+                    android:paddingTop="4dp"
+                    android:paddingStart="13dp"
+                    android:paddingEnd="13dp"
+                    android:textColor="@color/colorBottomNavigationUnChecked"
+                    android:textSize="14sp"
+                    android:text="@string/playersInv"
+                    android:background="@color/colorWhite"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewUserCommandPlayersInv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    android:background="@color/colorWhite"/>
             </LinearLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewUserCommandPlayers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:background="@color/colorWhite"/>
-
-            <View
-                android:id="@+id/userCommandPlayersLine"
-                android:layout_width="match_parent"
-                android:layout_gravity="end"
-                android:layout_height="8dp"
-                android:visibility="visible"
-                android:background="@color/colorLightGray"/>
-
-            <TextView
-                android:id="@+id/userCommandPlayersInvText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/manrope_semibold"
-                android:paddingBottom="4dp"
-                android:paddingTop="4dp"
-                android:paddingStart="13dp"
-                android:paddingEnd="13dp"
-                android:textColor="@color/colorBottomNavigationUnChecked"
-                android:textSize="14sp"
-                android:text="@string/playersInv"
-                android:background="@color/colorWhite"/>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewUserCommandPlayersInv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:background="@color/colorWhite"/>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

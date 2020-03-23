@@ -39,9 +39,8 @@ import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
-import baikal.web.footballapp.model.ServerResponse;
+import baikal.web.footballapp.model.ResponseInvite;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.PlayerAddToTeam;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
@@ -77,8 +76,7 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
         try {
             String uriPic = BASE_URL;
             String DOB = allPlayers.get(position).getBirthdate();
-            DateToString dateToString = new DateToString();
-            holder.textDOB.setText(dateToString.ChangeDate(DOB));
+            holder.textDOB.setText(DateToString.ChangeDate(DOB));
             String str;
             CheckName checkName = new CheckName();
             str = checkName.check(allPlayers.get(position).getSurname(), allPlayers.get(position).getName(), allPlayers.get(position).getLastname());
@@ -159,12 +157,13 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
         map.put("person", request);
         request = RequestBody.create(MediaType.parse("text/plain"), team.getId());
         map.put("team", request);
-        Call<ServerResponse> call = Controller.getApi().addPlayerToTeam(SaveSharedPreference.getObject().getToken(), map);
+
+        Call<ResponseInvite> call = Controller.getApi().addPlayerToTeam(SaveSharedPreference.getObject().getToken(), map);
         log.info("INFO: load and parse json-file");
         final League finalLeague = league;
-        call.enqueue(new Callback<ServerResponse>() {
+        call.enqueue(new Callback<ResponseInvite>() {
             @Override
-            public void onResponse(@NonNull Call<ServerResponse> call, @NonNull Response<ServerResponse> response) {
+            public void onResponse(@NonNull Call<ResponseInvite> call, @NonNull Response<ResponseInvite> response) {
                 log.info("INFO: check response");
                 if (response.isSuccessful()) {
                     log.info("INFO: response isSuccessful");
@@ -174,15 +173,14 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
                         PersonTeams personTeams = new PersonTeams();
                         personTeams.setLeague(finalLeague.getId());
                         personTeams.setTeam(team.getId());
-                        AuthoUser.personOngoingLeagues.add(personTeams);
 
 
-                        for (PersonTeams teams : AuthoUser.personOwnCommand) {
-                            if (teams.getTeam().equals(team.getId())) {
-                                personTeams = teams;
-                                break;
-                            }
-                        }
+//                        for (PersonTeams teams : AuthoUser.personOwnCommand) {
+//                            if (teams.getTeam().equals(team.getId())) {
+//                                personTeams = teams;
+//                                break;
+//                            }
+//                        }
                         baikal.web.footballapp.model.Player player = new baikal.web.footballapp.model.Player();
 //                        player.setId("000");
                         player.setPlayerId(personId);
@@ -207,11 +205,11 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
 //                            }
 //                        }
 
-                        for (int i=0; i<AuthoUser.personOwnCommand.size(); i++){
-                            if (AuthoUser.personOwnCommand.get(i).getLeague().equals(personTeams2.getLeague())){
-                                AuthoUser.personOwnCommand.set(i, personTeams2);
-                            }
-                        }
+//                        for (int i=0; i<AuthoUser.personOwnCommand.size(); i++){
+//                            if (AuthoUser.personOwnCommand.get(i).getLeague().equals(personTeams2.getLeague())){
+//                                AuthoUser.personOwnCommand.set(i, personTeams2);
+//                            }
+//                        }
 
 //                        UserCommandInfoEdit.playersInv.add(player);
 ////                        UserCommandInfoEdit.adapterInv.notifyDataSetChanged();
@@ -235,7 +233,7 @@ public class RVPlayerAddToTeamAdapter extends RecyclerView.Adapter<RVPlayerAddTo
             }
 
             @Override
-            public void onFailure(@NonNull Call<ServerResponse> call, @NonNull Throwable t) {
+            public void onFailure(@NonNull Call<ResponseInvite> call, @NonNull Throwable t) {
                 log.error("ERROR: onResponse");
                 Toast.makeText(context, "Ошибка сервера.", Toast.LENGTH_LONG).show();
                 context.finish();

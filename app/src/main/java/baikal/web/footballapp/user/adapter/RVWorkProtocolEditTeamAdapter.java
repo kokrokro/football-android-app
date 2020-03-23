@@ -1,7 +1,7 @@
 package baikal.web.footballapp.user.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,29 +15,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.user.activity.StructureCommand1;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import baikal.web.footballapp.viewmodel.PersonViewModel;
 
 public class RVWorkProtocolEditTeamAdapter extends RecyclerView.Adapter<RVWorkProtocolEditTeamAdapter.ViewHolder>{
-    private final StructureCommand1 context;
     private final List<Player> players;
     private final MatchPopulate match;
     private boolean isEditable;
+    private PersonViewModel personViewModel;
 
-    public RVWorkProtocolEditTeamAdapter(Activity context, List<Player> players, MatchPopulate match, boolean isEditable){
-        this.context = (StructureCommand1) context;
+    public RVWorkProtocolEditTeamAdapter(PersonViewModel personViewModel, List<Player> players, MatchPopulate match, boolean isEditable){
         this.players = players;
         this.match = match;
         this.isEditable = isEditable;
+        this.personViewModel = personViewModel;
+
+        Log.d("RVWorkProtocolEditTeamA", "" + isEditable);
     }
 
     @NonNull
@@ -52,34 +49,31 @@ public class RVWorkProtocolEditTeamAdapter extends RecyclerView.Adapter<RVWorkPr
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Player player = players.get(position);
 
-        if (MankindKeeper.getInstance().getPersonById(player.getPerson()) == null) {
-            getPerson(player.getPerson());
-            return;
-        }
+        personViewModel.getPersonById(player.getPerson(), p -> {
+            SetImage.setImage(App.getAppContext(), holder.image, p.getPhoto());
+            holder.textName.setText(p.getSurnameAndName());
+        });
 
-        Person person = MankindKeeper.getInstance().getPersonById(player.getPerson());
-        SetImage.setImage(context, holder.image, person.getPhoto());
-        holder.textName.setText(person.getSurnameAndName());
         holder.textNum.setText(player.getNumber().toString());
 
-        if (!match.getPlayersList().contains(person.getId())){
-            holder.textName.setTextColor(ContextCompat.getColor(context, R.color.colorLightGrayForText));
-            holder.textNum.setTextColor(ContextCompat.getColor(context, R.color.colorLightGrayForText));
+        if (!match.getPlayersList().contains(player.getPerson())){
+            holder.textName.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorLightGrayForText));
+            holder.textNum.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorLightGrayForText));
             holder.aSwitch.setChecked(false);
         } else {
-            holder.textName.setTextColor(ContextCompat.getColor(context, R.color.colorBottomNavigationUnChecked));
-            holder.textNum.setTextColor(ContextCompat.getColor(context, R.color.colorBottomNavigationUnChecked));
+            holder.textName.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorBottomNavigationUnChecked));
+            holder.textNum.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorBottomNavigationUnChecked));
             holder.aSwitch.setChecked(true);
         }
 
         holder.aSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                holder.textName.setTextColor(ContextCompat.getColor(context, R.color.colorBottomNavigationUnChecked));
-                holder.textNum.setTextColor(ContextCompat.getColor(context, R.color.colorBottomNavigationUnChecked));
+                holder.textName.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorBottomNavigationUnChecked));
+                holder.textNum.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorBottomNavigationUnChecked));
                 match.getPlayersList().add(player.getPerson());
             } else {
-                holder.textName.setTextColor(ContextCompat.getColor(context, R.color.colorLightGrayForText));
-                holder.textNum.setTextColor(ContextCompat.getColor(context, R.color.colorLightGrayForText));
+                holder.textName.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorLightGrayForText));
+                holder.textNum.setTextColor(ContextCompat.getColor(App.getAppContext(), R.color.colorLightGrayForText));
                 try {
                     match.getPlayersList().remove(player.getPerson());
                 } catch (Exception ignored) {
@@ -113,24 +107,5 @@ public class RVWorkProtocolEditTeamAdapter extends RecyclerView.Adapter<RVWorkPr
             line = item.findViewById(R.id.playerCommandFirstLine);
             aSwitch = item.findViewById(R.id.PFC_switch);
         }
-    }
-
-    private void getPerson (String personId)
-    {
-        Controller.getApi().getPerson(personId).enqueue(new Callback<List<Person>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Person>> call, @NonNull Response<List<Person>> response) {
-                if (response.body() != null && response.body().size() > 0) {
-                    Person person = response.body().get(0);
-                    MankindKeeper.getInstance().addPerson(person);
-                    notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Person>> call, @NonNull Throwable t) {
-
-            }
-        });
     }
 }

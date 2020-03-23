@@ -14,18 +14,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -35,15 +33,13 @@ import com.bumptech.glide.request.RequestOptions;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.Dialogs.DialogRegion;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SelectImageDialog;
@@ -51,10 +47,6 @@ import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Region;
 import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.user.adapter.SpinnerRegionAdapter;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageSelectedListener {
     private static final String TAG = "Personal Info: ";
@@ -62,25 +54,20 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
 
     private Uri picUri;
 
-
-    private List<Region> regions = new ArrayList<>();
-    List<String> regionsId = new ArrayList<>();
-    int selectedRegionIndex = 0;
-
     private ImageButton buttonPhoto;
+    private TextView regionDialogSummoner;
+
+    Region region = null;
     Bitmap myBitmap;
     EditText textSurname;
     EditText textName;
     EditText textPatronymic;
-    Spinner spinnerRegion;
     EditText textLogin;
     EditText textPassword;
     TextView textDOB;
 
     private Context context;
-    private SpinnerRegionAdapter adapterRegion;
     private DatePickerDialog.OnDateSetListener mDateSetListener;
-
     private Person person;
 
     private boolean isPasswordHidden;
@@ -103,62 +90,26 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         textSurname = view.findViewById(R.id.registrationInfoSurname);
         textPatronymic = view.findViewById(R.id.registrationInfoPatronymic);
         textDOB = view.findViewById(R.id.registrationInfoDOB);
-        spinnerRegion = view.findViewById(R.id.regionEditSpinner);
+        regionDialogSummoner = view.findViewById(R.id.PI_regionEdit);
         textLogin = view.findViewById(R.id.registrationInfoLogin);
         TextView titlePassword = view.findViewById(R.id.registrationInfoPasswordTitle);
         textPassword = view.findViewById(R.id.registrationInfoPassword);
 
-        Region r = new Region();
-        r.setName("Регион");
-        r.setId("-1");
-        regions.add(r);
-        regionsId.add("-1");
-
-        adapterRegion = new SpinnerRegionAdapter (Objects.requireNonNull(this.getContext()), R.layout.spinner_item, regions);
-        adapterRegion.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        spinnerRegion.setBackgroundColor(Color.rgb(245,245,245));
-        spinnerRegion.setAdapter(adapterRegion);
+        regionDialogSummoner.setBackgroundColor(Color.rgb(245,245,245));
+        regionDialogSummoner.setOnClickListener(v -> {
+            FragmentManager fm = getChildFragmentManager();
+            DialogRegion dialogRegion =  new DialogRegion(r -> {
+                region = r;
+                regionDialogSummoner.setText(r==null?"Не выбрано":r.getName());
+            });
+            dialogRegion.show(fm, "personal_info");
+        });
 
         if (isPasswordHidden) {
-            textPassword.setVisibility(View.INVISIBLE);
-            titlePassword.setVisibility(View.INVISIBLE);
+            textPassword.setVisibility(View.GONE);
+            titlePassword.setVisibility(View.GONE);
             fillPersonData();
         }
-
-        Controller.getApi().getRegions().enqueue(new Callback<List<Region>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<Region>> call, @NonNull Response<List<Region>> response) {
-                if (response.isSuccessful())
-                    if (response.body() != null) {
-                        regions.clear();
-                        regions.addAll(response.body());
-                        for (Region rr: regions)
-                            regionsId.add(rr.getId());
-                        adapterRegion.notifyDataSetChanged();
-
-                        if (isPasswordHidden)
-                            setRegionData();
-                    }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<Region>> call, @NonNull Throwable t) {
-                Log.e("ERROR: ", Objects.requireNonNull(t.getMessage()));
-                Toast.makeText(context, "Ошибка при загрузке регионов", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        spinnerRegion.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                selectedRegionIndex = position;
-                parent.getItemAtPosition(position);
-             }
-
-             @Override
-             public void onNothingSelected(AdapterView<?> parent) {
-             }
-        });
 
 
         textDOB.setOnClickListener(v -> {
@@ -197,15 +148,6 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
         return view;
     }
 
-    private void setRegionData ()
-    {
-        for (int i=0; i<regionsId.size(); i++)
-            if (regionsId.get(i).equals(person.getRegion())) {
-                spinnerRegion.setSelection(i);
-                Log.d(TAG, "position = " + spinnerRegion.getSelectedItemPosition());
-            }
-    }
-
     private void fillPersonData ()
     {
         try {
@@ -213,7 +155,7 @@ public class PersonalInfo extends Fragment implements SelectImageDialog.OnImageS
             textSurname.setText(person.getSurname());
             textPatronymic.setText(person.getLastname());
             textLogin.setText(person.getLogin());
-            textDOB.setText((new DateToString()).ChangeDate(person.getBirthdate()));
+            textDOB.setText(DateToString.ChangeDate(person.getBirthdate()));
 
             SetImage.setImage(getContext(), buttonPhoto, person.getPhoto());
 

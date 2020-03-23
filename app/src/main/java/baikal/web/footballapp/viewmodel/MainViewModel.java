@@ -5,14 +5,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.PersonPopulate;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
-import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.repository.MainRepository;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,29 +19,37 @@ import retrofit2.Response;
 
 public class MainViewModel extends ViewModel {
 
-    private MutableLiveData<List<Tourney>> favTourney = null;
-    private MutableLiveData<List<League>> favLeagues= null;
-    private MutableLiveData<List<String>> favTourneysId = null;
     private MutableLiveData<List<Stadium>> allStadiums = null;
+    private TreeMap<String, Stadium> stadiumTreeMap = null;
     private MutableLiveData<List<Team>> allTeams = null;
+
+    public interface OnObjectLoaded {
+        void onObjectLoaded (Object o);
+    }
 
     public interface OnTeamLoaded {
         void onTeamLoaded (Team team);
     }
 
     public Team getTeamById (String id, OnTeamLoaded onTeamLoaded) {
+        if(allTeams == null)
+            allTeams = new MutableLiveData<>();
+        if (allTeams.getValue() == null)
+            allTeams.setValue(new ArrayList<>());
         for (Team t: allTeams.getValue())
-            if (t.getId().equals(id))
+            if (t.getId().equals(id)) {
+                onTeamLoaded.onTeamLoaded(t);
                 return t;
+            }
 
         loadTeamById(id, onTeamLoaded);
         return null;
     }
 
     public LiveData<List<Team>> getTeams(String creatorId){
-        if(allTeams==null){
+        if(allTeams==null)
             allTeams = new MutableLiveData<>();
-        }
+
         loadTeams(creatorId);
         return allTeams;
     }
@@ -55,13 +62,22 @@ public class MainViewModel extends ViewModel {
         return allStadiums;
     }
 
-    public Stadium getStadiumById (String id) {
-        for (Stadium s: allStadiums.getValue())
-            if (s.get_id().equals(id))
-                return s;
+    public Stadium getStadiumById (String id, OnObjectLoaded onObjectLoaded) {
+        if (id == null || id.equals(""))
+            return null;
+        if (allStadiums==null) {
+            loadStadiums(id, onObjectLoaded);
+            return null;
+        }
+        if (stadiumTreeMap == null) {
+            stadiumTreeMap = new TreeMap<>();
+            return null;
+        }
+        if (stadiumTreeMap.get(id)!=null)
+            return stadiumTreeMap.get(id);
 
-        loadStadiums();
-        return new Stadium();
+        loadStadiums(id, onObjectLoaded);
+        return null;
     }
 
     private void loadTeamById(String id, OnTeamLoaded onTeamLoaded) {
@@ -100,8 +116,13 @@ public class MainViewModel extends ViewModel {
             @Override
             public void onResponse(@NonNull Call<List<Stadium>> call, @NonNull Response<List<Stadium>> response) {
                 if (response.isSuccessful())
-                    if (response.body() != null )
+                    if (response.body() != null ) {
+                        if (stadiumTreeMap == null)
+                            stadiumTreeMap = new TreeMap<>();
                         allStadiums.setValue(response.body());
+                        for (Stadium s: response.body())
+                            stadiumTreeMap.put(s.get_id(), s);
+                    }
             }
 
             @Override
@@ -109,55 +130,22 @@ public class MainViewModel extends ViewModel {
         });
     }
 
-
-    public LiveData<List<League>> getFavLeagues(String tourney){
-        if(favLeagues==null) {
-            favLeagues = new MutableLiveData<>();
-        }
-        loadFavLeagues(tourney);
-        return favLeagues;
-    }
-    public void setFavTourneysId(List<String> favTourney){
-        if(favTourneysId==null){
-            favTourneysId = new MutableLiveData<>();
-        }
-        this.favTourneysId.setValue(favTourney);
-    }
-
-    public LiveData<List<Tourney>> getFavTourney(String id){
-        if(favTourney == null){
-            favTourney = new MutableLiveData<>();
-        }
-        loadTourneys(id);
-
-        return favTourney;
-    }
-
-    private void loadTourneys(String id){
-        new MainRepository().getFavTourneys(id, new Callback<List<PersonPopulate>>() {
+    private void loadStadiums(String id, OnObjectLoaded onObjectLoaded) {
+        new MainRepository().getStadiums(null, id, new Callback<List<Stadium>>() {
             @Override
-            public void onResponse(@NonNull Call<List<PersonPopulate>> call, @NonNull Response<List<PersonPopulate>> response) {
-                if (response.isSuccessful())
-                    if (response.body() != null && response.body().size()>0)
-                        favTourney.setValue(response.body().get(0).getFavouriteTourney());
+            public void onResponse(@NonNull Call<List<Stadium>> call, @NonNull Response<List<Stadium>> response) {
+                if (response.isSuccessful() && response.body()!=null && response.body().size() > 0) {
+                    if (stadiumTreeMap == null)
+                        stadiumTreeMap = new TreeMap<>();
+
+                    for (Stadium s: response.body())
+                        stadiumTreeMap.put(s.get_id(), s);
+                    onObjectLoaded.onObjectLoaded(id);
+                }
             }
 
             @Override
-            public void onFailure(@NonNull Call<List<PersonPopulate>> call, @NonNull Throwable t) { }
-        });
-    }
-
-    private void loadFavLeagues(String tourney){
-        new MainRepository().getLeagues(tourney, new Callback<List<League>>() {
-            @Override
-            public void onResponse(@NonNull Call<List<League>> call, @NonNull Response<List<League>> response) {
-                if(response.isSuccessful())
-                    if(response.body()!=null)
-                        favLeagues.setValue(response.body());
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<List<League>> call, @NonNull Throwable t) { }
+            public void onFailure(@NonNull Call<List<Stadium>> call, @NonNull Throwable t) { }
         });
     }
 }

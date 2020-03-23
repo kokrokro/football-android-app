@@ -1,8 +1,6 @@
 package baikal.web.footballapp.user.adapter;
 
-import android.app.Activity;
 import android.graphics.PorterDuff;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,25 +14,25 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.Player;
+import baikal.web.footballapp.viewmodel.PersonViewModel;
 
-public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserCommandPlayerAdapter.ViewHolder> {
+public class EditTeamPlayersAdapter extends RecyclerView.Adapter<EditTeamPlayersAdapter.ViewHolder> {
     private final List<Player> players;
-    private final Activity context;
-    private final Listener listener;
+    private final OnPlayerDelete listener;
+    private PersonViewModel personViewModel;
 
-
-
-    public RVUserCommandPlayerAdapter(Activity context, List<Player> players, Listener listener) {
-        this.context = context;
+    public EditTeamPlayersAdapter(PersonViewModel personViewModel, List<Player> players, OnPlayerDelete listener) {
         this.players = players;
         this.listener = listener;
+        this.personViewModel = personViewModel;
     }
-    public interface Listener{
-        void onClick(int position);
+    public interface OnPlayerDelete {
+        void onClick(Player player);
     }
     @NonNull
     @Override
@@ -45,33 +43,13 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-//        Person player = players.get(position).getPerson();
-//        fillData(holder, position, player);
-    }
-
-    private void fillData (@NonNull final ViewHolder holder, final int position, Person player)
-    {
         holder.textNum.setText(String.valueOf(position + 1));
-        try {
-            holder.textName.setText(player.getSurnameWithInitials());
-            holder.editNum.setText(String.valueOf(players.get(position).getNumber()));
-        } catch (Exception e){
-            Log.e("RVUserTeamPlayerAdapt", e.toString());
-        }
-
-        SetImage.setImage(context, holder.image, player.getPhoto());
-
         if (position == (players.size() - 1))
             holder.line.setVisibility(View.INVISIBLE);
 
-        holder.buttonDelete.setOnClickListener(v -> listener.onClick(position));
-        holder.editNum.getBackground().setColorFilter(context.getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
-        holder.editNum.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus)
-                holder.editNum.getBackground().clearColorFilter();
-            else
-                holder.editNum.getBackground().setColorFilter(context.getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
-        });
+        Player player = players.get(position);
+        if (player != null)
+            holder.bindTo(player);
     }
 
     @Override
@@ -97,6 +75,28 @@ public class RVUserCommandPlayerAdapter extends RecyclerView.Adapter<RVUserComma
             line = item.findViewById(R.id.userCommandPlayerLine);
         }
 
-//        void bindTo (Player )
+        void bindTo (Player player) {
+            editNum.setText(String.valueOf(player.getNumber()));
+
+            Person person = personViewModel.getPersonById(player.getPerson(), person1 -> {
+                SetImage.setImage(App.getAppContext(), image, person1.getPhoto());
+                textName.setText(person1.getSurnameAndName());
+            });
+
+            if (person != null) {
+                SetImage.setImage(App.getAppContext(), image, person.getPhoto());
+                textName.setText(person.getSurnameAndName());
+            }
+
+            buttonDelete.setOnClickListener(v -> listener.onClick(player));
+            editNum.getBackground().setColorFilter(App.getAppContext().getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+            editNum.setOnFocusChangeListener((v, hasFocus) -> {
+                if (hasFocus)
+                    editNum.getBackground().clearColorFilter();
+                else
+                    editNum.getBackground().setColorFilter(App.getAppContext().getResources().getColor(R.color.colorLightGray), PorterDuff.Mode.SRC_IN);
+            });
+
+        }
     }
 }

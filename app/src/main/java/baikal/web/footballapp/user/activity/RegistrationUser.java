@@ -63,15 +63,14 @@ public class RegistrationUser extends AppCompatActivity {
         String patronymic = personalInfo.textPatronymic.getText().toString();
         String login = personalInfo.textLogin.getText().toString();
         String password = personalInfo.textPassword.getText().toString();
-        String DOB = (new DateToString()).TimeForServer(personalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
+        String DOB = DateToString.TimeForServer(personalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
 
-        String region = "";
+        String region = personalInfo.region==null?null:personalInfo.region.getId();
 
-        if (personalInfo.spinnerRegion.getSelectedItemPosition() == -1)
+        if (region == null) {
             showAlertDialogButtonClicked();
-        else
-            region = personalInfo.regionsId.get(personalInfo.spinnerRegion.getSelectedItemPosition());
-
+            return;
+        }
 
         String type = "player";
         Map<String, RequestBody> map = new HashMap<>();

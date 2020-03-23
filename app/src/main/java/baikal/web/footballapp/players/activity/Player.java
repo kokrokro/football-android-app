@@ -26,10 +26,10 @@ import org.slf4j.LoggerFactory;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.FullScreenImage;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.players.adapter.RVPlayersTournamentAdapter;
-import baikal.web.footballapp.user.activity.AuthoUser;
 
 import static android.app.Activity.RESULT_OK;
 import static baikal.web.footballapp.Controller.BASE_URL;
@@ -72,19 +72,18 @@ public class Player extends Fragment {
             } catch (Exception ignored) { }
 
             fab.setOnClickListener(v -> {
-                try {
-                    if (AuthoUser.personOngoingLeagues.size() == 0) {
-                        Toast.makeText(getActivity(), "Ошибка! У вас нет ни одной команды", Toast.LENGTH_LONG).show();
-                    } else {
-                        Intent intent = new Intent(getActivity(), PlayerInv.class);
-                        Bundle bundle1 = new Bundle();
-                        bundle1.putSerializable("PLAYERINV", person);
-                        intent.putExtras(bundle1);
-                        startActivityForResult(intent, REQUEST_CODE_PLAYERINV);
-
-                    }
-                } catch (Exception e) {
+                if (SaveSharedPreference.getObject() == null) {
                     Toast.makeText(getActivity(), "Необходимо авторизоваться", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                try {
+                    Intent intent = new Intent(getActivity(), PlayerInv.class);
+                    Bundle bundle1 = new Bundle();
+                    bundle1.putSerializable("PLAYERINV", person);
+                    intent.putExtras(bundle1);
+                    startActivityForResult(intent, REQUEST_CODE_PLAYERINV);
+                } catch (Exception e) {
+                    Toast.makeText(getActivity(), "Что-то пошло не так ...", Toast.LENGTH_SHORT).show();
                 }
 
             });

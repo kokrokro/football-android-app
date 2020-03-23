@@ -26,11 +26,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.players.adapter.PlayersAdapter;
 import baikal.web.footballapp.DataSourceUtilities.LoadStates;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Team;
+import baikal.web.footballapp.players.adapter.PlayersAdapter;
 import baikal.web.footballapp.viewmodel.PlayersPageViewModel;
 
 public class PlayersPage extends Fragment {
@@ -48,9 +50,16 @@ public class PlayersPage extends Fragment {
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
     private PlayersAdapter.OnItemListener mOnItemListener;
+    private PlayersAdapter.OnSwitchListener mOnSwitchListener;
 
-    public PlayersPage (PlayersAdapter.OnItemListener mOnItemListener) {
+    private Team team;
+    private List<String> teamIds;
+
+    public PlayersPage (Team team, List<String> teamIds, PlayersAdapter.OnItemListener mOnItemListener, PlayersAdapter.OnSwitchListener mOnSwitchListener) {
         this.mOnItemListener = mOnItemListener;
+        this.mOnSwitchListener = mOnSwitchListener;
+        this.team = team;
+        this.teamIds = teamIds;
     }
 
     private static void showOneView(View viewToShow, Set<View> views) {
@@ -104,9 +113,10 @@ public class PlayersPage extends Fragment {
         switchableViews.add(emptyText);
         switchableViews.add(recyclerView);
 
-        playersAdapter = new PlayersAdapter(mOnItemListener);
+        playersAdapter = new PlayersAdapter(mOnItemListener, mOnSwitchListener, team, teamIds);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(null); // вырубил ради индикатора загрузки (анимация смены списка выглядит плохо)
+//        recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(playersAdapter);
 
         playersPageViewModel = ViewModelProviders.of(getActivity()).get(PlayersPageViewModel.class);

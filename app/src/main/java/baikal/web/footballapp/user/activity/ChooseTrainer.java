@@ -14,14 +14,14 @@ public class ChooseTrainer extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.page_players);
-        PlayersPage playersPage = new PlayersPage(person -> {
+        PlayersPage playersPage = new PlayersPage(null, null, person -> {
             Intent data = new Intent();
             Bundle bundle = new Bundle();
             bundle.putSerializable("PERSON", person);
             data.putExtras(bundle);
             setResult(RESULT_OK, data);
             finish();
-        });
+        }, null);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.PP_personToChoose, playersPage).commit();
     }

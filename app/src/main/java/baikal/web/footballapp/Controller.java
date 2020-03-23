@@ -18,13 +18,14 @@ public class Controller {
 
     public Logger log = LoggerFactory.getLogger(Controller.class);
 
-    public static FootballApi getApi() {
-        OkHttpClient client = new OkHttpClient.Builder()
+    private static OkHttpClient client = new OkHttpClient.Builder()
 //                .addInterceptor(chain -> )
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .build();
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build();
+
+    public static FootballApi getApi() {
 
         Gson gson = new GsonBuilder()
                 .setLenient()

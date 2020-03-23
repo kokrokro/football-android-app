@@ -1,5 +1,7 @@
 package baikal.web.footballapp.tournament.datasource;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.paging.ItemKeyedDataSource;
 
@@ -17,11 +19,13 @@ public class TourneyItemDataSource extends ItemKeyedDataSource<String, Tourney> 
     private final DoIt doItSoGood;
     private final DoIt dontFeelSoGood;
     private final DoIt feelEmpty;
+    private String ids;
 
-    public TourneyItemDataSource(DoIt doItSoGood, DoIt dontFeelSoGood, DoIt feelEmpty) {
+    public TourneyItemDataSource(DoIt doItSoGood, DoIt dontFeelSoGood, DoIt feelEmpty, String ids) {
         this.doItSoGood = doItSoGood;
         this.dontFeelSoGood = dontFeelSoGood;
         this.feelEmpty = feelEmpty;
+        this.ids = ids;
     }
 
     @Override
@@ -44,7 +48,9 @@ public class TourneyItemDataSource extends ItemKeyedDataSource<String, Tourney> 
                 dontFeelSoGood.doIt();
             }
         };
+
         Controller.getApi().getTourneysWithSort(
+                ids,
                 String.valueOf(params.requestedLoadSize), null)
                 .enqueue(responseCallback);
     }
@@ -69,7 +75,9 @@ public class TourneyItemDataSource extends ItemKeyedDataSource<String, Tourney> 
                 dontFeelSoGood.doIt();
             }
         };
+
         Controller.getApi().getTourneysWithSort(
+                ids,
                 String.valueOf(params.requestedLoadSize),
                 "<" + params.key)
                 .enqueue(responseCallback);

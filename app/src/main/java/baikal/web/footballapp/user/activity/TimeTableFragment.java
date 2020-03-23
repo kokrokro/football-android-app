@@ -171,14 +171,10 @@ public class TimeTableFragment extends Fragment {
                          Controller.getApi().editMatch(id,SaveSharedPreference.getObject().getToken(), match)
                                  .enqueue(new Callback<Match>() {
                                      @Override
-                                     public void onResponse(@NonNull Call<Match> call,@NonNull  Response<Match> response) {
-
-                                     }
+                                     public void onResponse(@NonNull Call<Match> call,@NonNull  Response<Match> response) { }
 
                                      @Override
-                                     public void onFailure(@NonNull Call<Match> call, @NonNull Throwable t) {
-
-                                     }
+                                     public void onFailure(@NonNull Call<Match> call, @NonNull Throwable t) { }
                                  });
                          for(MatchPopulate matchPopulate : matches){
                              if(matchPopulate.getId().equals(id)){

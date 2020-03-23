@@ -29,14 +29,11 @@ import retrofit2.Response;
 
 public class InvitationFragment extends Fragment {
     private final Logger log = LoggerFactory.getLogger(InvitationFragment.class);
-    private AuthoUser authoUser;
     private List<Invite> invites = new ArrayList<>();
     private LinearLayout linearEmpty;
     private RVInvitationAdapter adapter;
 
-    InvitationFragment (AuthoUser authoUser) {
-        this.authoUser = authoUser;
-    }
+    InvitationFragment() {}
 
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view;
@@ -48,7 +45,7 @@ public class InvitationFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewUserInvitation);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        adapter = new RVInvitationAdapter(getActivity(),getContext(), authoUser, invites);
+        adapter = new RVInvitationAdapter(invites);
         recyclerView.setAdapter(adapter);
 
         loadData();

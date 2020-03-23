@@ -18,7 +18,7 @@ public class TourneyPageRepository {
             .setPageSize(7)
             .build();
 
-    public PagedListWithLoadingState<Tourney> getTourneys (String searchStr, String region) {
+    public PagedListWithLoadingState<Tourney> getTourneys (String searchStr, String region, String ids) {
         MutableLiveData<LoadStates> loadStatesLiveData = new MutableLiveData<>(LoadStates.Loading);
         MutableLiveData<PagedList<Tourney>> pagedListLiveData = new MutableLiveData<>();
 
@@ -30,15 +30,16 @@ public class TourneyPageRepository {
             TourneyItemDataSource tourneyItemDataSource= new TourneyItemDataSource (
                     goodCallback,
                     errorCallback,
-                    emptyCallback);
+                    emptyCallback,
+                    ids);
 
             executeBuildPagedList(pagedListLiveData, tourneyItemDataSource);
         } else {
-            TourneyPositionalDataSource playersPositionalDataSource = new TourneyPositionalDataSource(
+            TourneyPositionalDataSource tourneyPositionalDataSource = new TourneyPositionalDataSource(
                     goodCallback,
                     errorCallback, emptyCallback, searchStr, region);
 
-            executeBuildPagedList(pagedListLiveData, playersPositionalDataSource);
+            executeBuildPagedList(pagedListLiveData, tourneyPositionalDataSource);
         }
 
         return new PagedListWithLoadingState<>(loadStatesLiveData, pagedListLiveData);

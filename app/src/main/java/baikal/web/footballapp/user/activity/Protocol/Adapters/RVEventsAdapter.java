@@ -1,9 +1,7 @@
 package baikal.web.footballapp.user.activity.Protocol.Adapters;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Typeface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
@@ -31,9 +30,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHolder> {
-    private static final String TAG = "RVEventsAdapter";
-//    private Logger log = LoggerFactory.getLogger(MatchEvents.class);
-    private Context context;
     private final List<Event> events;
     private final List<Event> eventsForTime;
     private String eventTime;
@@ -42,13 +38,12 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
     private Team team1;
     private Team team2;
     private HashMap<String, Integer> eventIconIds;
-    private HashMap<String, String> eventTypeToShow;
     final private Set<Integer> eventsToDelete;
     final private TreeSet<String> disabledEvents;
     private boolean isEditable;
 
     RVEventsAdapter(List<Event> events, Team team1, Team team2,
-                    boolean isEditable, Set<Integer> eventsToDelete, Context context) {
+                    boolean isEditable, Set<Integer> eventsToDelete) {
         this.events = events;
         this.teamId1 = team1.getId();
         this.teamId2 = team2.getId();
@@ -56,7 +51,6 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
         this.team2 = team2;
         this.isEditable = isEditable;
         this.eventsToDelete = eventsToDelete;
-        this.context = context;
 
         disabledEvents = new TreeSet<>();
         eventsForTime = new ArrayList<>();
@@ -75,11 +69,11 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
         this.eventIconIds.put(eventTypes[6], R.drawable.ic_event_penalty_series_success);
         this.eventIconIds.put(eventTypes[7], R.drawable.ic_event_penalty_series_failure);
 
-        this.eventTypeToShow = new HashMap<>();
-        this.eventTypeToShow.put(eventTypes[4], "Автогол");
-        this.eventTypeToShow.put(eventTypes[5], "Фол");
-        this.eventTypeToShow.put(eventTypes[6], "Гол");
-        this.eventTypeToShow.put(eventTypes[7], "Не гол");
+//        HashMap<String, String> eventTypeToShow = new HashMap<>();
+//        eventTypeToShow.put(eventTypes[4], "Автогол");
+//        eventTypeToShow.put(eventTypes[5], "Фол");
+//        eventTypeToShow.put(eventTypes[6], "Гол");
+//        eventTypeToShow.put(eventTypes[7], "Не гол");
     }
 
     @NonNull
@@ -178,7 +172,7 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
                     (events.get(i).getId()==null || !disabledEvents.contains(events.get(i).getId())))
                 eventsForTime.add(events.get(i));
 
-        Log.d(TAG, String.valueOf(eventsForTime.size()));
+//        Log.d(TAG, String.valueOf(eventsForTime.size()));
         return eventsForTime.size();
     }
 
@@ -217,13 +211,13 @@ public class RVEventsAdapter extends RecyclerView.Adapter<RVEventsAdapter.ViewHo
         }
 
         void setBoldFont() {
-            Typeface font = ResourcesCompat.getFont(context, R.font.manrope_semibold);
+            Typeface font = ResourcesCompat.getFont(App.getAppContext(), R.font.manrope_semibold);
             playerNameLeft.setTypeface(font);
             playerNameRight.setTypeface(font);
         }
 
         void setRegularFont() {
-            Typeface font = ResourcesCompat.getFont(context, R.font.manrope_regular);
+            Typeface font = ResourcesCompat.getFont(App.getAppContext(), R.font.manrope_regular);
             playerNameLeft.setTypeface(font);
             playerNameRight.setTypeface(font);
         }

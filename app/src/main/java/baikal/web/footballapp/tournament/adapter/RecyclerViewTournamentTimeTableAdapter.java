@@ -1,5 +1,6 @@
 package baikal.web.footballapp.tournament.adapter;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +23,13 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.Player;
+import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.viewmodel.MainViewModel;
 import q.rorbin.badgeview.QBadgeView;
 
 public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter<RecyclerViewTournamentTimeTableAdapter.ViewHolder> {
+    private final static String TAG = "RVTourneyTimeTableAd";
     Logger log = LoggerFactory.getLogger(PersonalActivity.class);
 
     private final List<Match> matches;
@@ -99,35 +102,41 @@ public class RecyclerViewTournamentTimeTableAdapter extends RecyclerView.Adapter
             textTime.setText(DateToString.ChangeTime(match.getDate()));
             textTour.setText(match.getTour());
 
-            textStadium.setText(
-                    match.getPlace()==null ?
-                            "Не назначен" :
-                            mainViewModel.getStadiumById(match.getPlace()).getName()
+            Stadium s = mainViewModel.getStadiumById(
+                    match.getPlace()==null?"":match.getPlace(),
+                    (o) -> {
+                        Log.d(TAG, o.toString());
+                    }
             );
 
+            textStadium.setText(s==null ? "Не назначен" : s.getName());
             textScore.setText(match.getScore()==null?"-":match.getScore());
-
             textPenalty.setText(match.getPenalty()==null?"":match.getPenalty());
+
             if (match.getPenalty()!=null && !match.getPenalty().equals(""))
                 textPenalty.setVisibility(View.VISIBLE);
             else
                 textPenalty.setVisibility(View.GONE);
 
-            Team teamOne = mainViewModel.getTeamById(match.getTeamOne(), team -> {
-                textCommandTitle1.setText(team.getName());
-                initBadge(team, imgCommandLogo1);
-            });
+            if (match.getTeamOne() != null) {
+                Team teamOne = mainViewModel.getTeamById(match.getTeamOne(), team -> {
+                    textCommandTitle1.setText(team.getName());
+                    initBadge(team, imgCommandLogo1);
+                });
+                textCommandTitle1.setText(teamOne==null?"":teamOne.getName());
+                initBadge(teamOne, imgCommandLogo1);
+            } else
+                textCommandTitle1.setText("Неизвестно");
 
-            Team teamTwo = mainViewModel.getTeamById(match.getTeamTwo(), team -> {
-                textCommandTitle2.setText(team.getName());
-                initBadge(team, imgCommandLogo2);
-            });
-
-            textCommandTitle1.setText(teamOne.getName()==null?"Неизвестно":teamOne.getName());
-            textCommandTitle2.setText(teamTwo.getName()==null?"Неизвестно":teamTwo.getName());
-
-            initBadge(teamOne, imgCommandLogo1);
-            initBadge(teamTwo, imgCommandLogo2);
+            if (match.getTeamTwo() != null) {
+                Team teamTwo = mainViewModel.getTeamById(match.getTeamTwo(), team -> {
+                    textCommandTitle2.setText(team.getName());
+                    initBadge(team, imgCommandLogo2);
+                });
+                textCommandTitle2.setText(teamTwo==null?"":teamTwo.getName());
+                initBadge(teamTwo, imgCommandLogo2);
+            } else
+                textCommandTitle2.setText("Неизвестно");
         }
 
         private void initBadge (Team team, ImageView imageView) {

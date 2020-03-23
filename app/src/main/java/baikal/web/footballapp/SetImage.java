@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
@@ -27,6 +28,7 @@ public class SetImage {
     public static void setImage(Context context, ImageView imageView, String logo){
         RequestOptions requestOptions = RequestOptions
                     .errorOf(R.drawable.ic_logo2)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .override(500, 500)
                     .priority(Priority.HIGH)
                     .optionalCircleCrop()
@@ -66,6 +68,30 @@ public class SetImage {
         }
     }
 
+    public static void setImage(Context context, ImageView imageView, int logo){
+        RequestOptions requestOptions = RequestOptions
+                .errorOf(R.drawable.ic_logo2)
+                .override(500, 500)
+                .priority(Priority.HIGH)
+                .optionalCircleCrop()
+                .format(DecodeFormat.PREFER_ARGB_8888);
+
+        try {
+            Glide.with(context)
+                    .asBitmap()
+                    .load(logo)
+                    .apply(requestOptions)
+                    .into(imageView);
+        } catch (Exception e) {
+            Toast.makeText(context, "Ошибка при загрузке изображения", Toast.LENGTH_SHORT).show();
+            Glide.with(context)
+                    .asBitmap()
+                    .load(R.drawable.ic_logo2)
+                    .apply(requestOptions)
+                    .into(imageView);
+        }
+    }
+
     @SuppressLint("CheckResult")
     public static void setImage(Context context, ImageView imageView, RelativeLayout holder, ProgressBar progressBar, String logo){
         RequestOptions requestOptions = RequestOptions
@@ -74,8 +100,10 @@ public class SetImage {
                 .format(DecodeFormat.PREFER_ARGB_8888);
 
         try {
-            if (logo == null || logo.equals("R.drawable.ic_logo2"))
-                holder.setVisibility(View.GONE);
+            if (logo == null || logo.equals("R.drawable.ic_logo2")) {
+                if (holder != null)
+                    holder.setVisibility(View.GONE);
+            }
             else
                 Glide.with(context)
                         .asBitmap()
@@ -83,13 +111,15 @@ public class SetImage {
                         .listener(new RequestListener<Bitmap>() {
                             @Override
                             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Bitmap> target, boolean isFirstResource) {
-                                progressBar.setTop(0);
+                                if (progressBar != null)
+                                    progressBar.setTop(0);
                                 return false;
                             }
 
                             @Override
                             public boolean onResourceReady(Bitmap resource, Object model, Target<Bitmap> target, DataSource dataSource, boolean isFirstResource) {
-                                progressBar.setVisibility(View.GONE);
+                                if (progressBar != null)
+                                    progressBar.setVisibility(View.GONE);
                                 return false;
                             }
                         })

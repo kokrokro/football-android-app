@@ -24,7 +24,8 @@
                     android:id="@+id/MPF_VRV_holder"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_below="@+id/MPF_HRV_holder" />
+                    android:layout_below="@+id/MPF_HRV_holder"
+                    android:layout_marginBottom="38dp"/>
 
             </RelativeLayout>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

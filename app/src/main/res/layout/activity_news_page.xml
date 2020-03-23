@@ -45,11 +45,10 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:fontFamily="@font/manrope_regular"
-                android:gravity="left"
                 android:paddingBottom="10dp"
                 android:text="@string/newsSomeDate"
                 android:textColor="@color/colorNewsDate"
-                android:textSize="12dp" />
+                android:textSize="12sp" />
 
             <RelativeLayout
                 android:id="@+id/newsInfoImgHolder"

@@ -53,20 +53,20 @@ public class CommandInfoActivity extends AppCompatActivity {
         setCustomFont();
 
         TabLayout.Tab tab = tabLayout.getTabAt(0);
-        TextView selectedText = (TextView) tab.getCustomView();
-        selectedText.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
+//        TextView selectedText = (TextView) tab.getCustomView();
+//        selectedText.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                TextView selectedText = (TextView) tab.getCustomView();
-                selectedText.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
+//                TextView selectedText = (TextView) tab.getCustomView();
+//                selectedText.setTextColor(getResources().getColor(R.color.colorBottomNavigationUnChecked));
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                TextView selectedText = (TextView) tab.getCustomView();
-                selectedText.setTextColor(getResources().getColor(R.color.colorLightGrayForText));
+//                TextView selectedText = (TextView) tab.getCustomView();
+//                selectedText.setTextColor(getResources().getColor(R.color.colorLightGrayForText));
             }
 
             @Override

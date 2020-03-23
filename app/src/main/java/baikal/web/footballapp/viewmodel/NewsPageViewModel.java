@@ -51,8 +51,9 @@ public class NewsPageViewModel extends ViewModel {
         });
     }
 
-    public void getNewsByTourneys(String tourneyIds) {
+    public LiveData<PagedList<News_>> getNewsByTourneys(String tourneyIds) {
         initNewsPageList(tourneyIds);
+        return news;
     }
 
     public LiveData<PagedList<News_>> getNews() {
@@ -61,6 +62,10 @@ public class NewsPageViewModel extends ViewModel {
 
     public LiveData<LoadStates> getLoadDataState() {
         return loadDataState;
+    }
+
+    public void reloadForSingleTourney(String id) {
+        initNewsPageList(id);
     }
 
     public void reload() {

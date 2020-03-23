@@ -65,11 +65,10 @@ public class UsersTeamListFragment extends Fragment {
                     } else {
                         Intent intent = new Intent(getActivity(), UserCommandInfoEdit.class);
                         Bundle bundle = new Bundle();
-                        Bundle bundle1 = new Bundle();
                         bundle.putSerializable("COMMANDEDIT", team);
-                        bundle1.putSerializable("COMMANDEDITLEAGUE", league);
+                        bundle.putSerializable("COMMANDEDITLEAGUE", league);
+                        bundle.putString("STATUS", status);
                         intent.putExtras(bundle);
-                        intent.putExtras(bundle1);
                         Objects.requireNonNull(getActivity()).startActivity(intent);
                     }
                 });

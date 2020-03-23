@@ -1,6 +1,5 @@
 package baikal.web.footballapp.home.activity;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -30,14 +28,16 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.home.adapter.AnnounceAdapter;
 import baikal.web.footballapp.model.Announce;
+import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.News_;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
+import baikal.web.footballapp.tournament.adapter.CustomViewPagerAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainPage extends Fragment {
-    private final static String TAG = "MainPage";
+//    private final static String TAG = "MainPage";
     private TabLayout tabLayout;
 
     private final List<Announce> announces = new ArrayList<>();
@@ -48,14 +48,12 @@ public class MainPage extends Fragment {
         final View view;
         view = inflater.inflate(R.layout.page_main, container, false);
         tabLayout = view.findViewById(R.id.mainPageTab);
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.PM_bottom_sheet));
         ViewPager viewPager = view.findViewById(R.id.mainPageViewPager);
         tabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
         setCustomFont();
 
         RecyclerView recyclerViewAds = view.findViewById(R.id.recyclerViewMainAds);
-        bottomSheetBehavior.setHideable(false);
 
         try {
             recyclerViewAds.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -66,37 +64,17 @@ public class MainPage extends Fragment {
         }
 
         GetAllAds();
-
-//        CoordinatorLayout coordinatorLayout = view.findViewById(R.id.PM_coordinator_layout);
-//        ViewCompat.postOnAnimation(coordinatorLayout, () -> ViewCompat.postInvalidateOnAnimation(coordinatorLayout));
-
         return view;
     }
 
 
     private void setupViewPager(ViewPager viewPager) {
-        NewsAndAds newsAndAds = new NewsAndAds((feed)->{
-            Intent intent = new Intent(getActivity(), FullscreenNewsActivity.class);
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("NEWS", feed);
-            intent.putExtras(bundle);
-            getContext().startActivity(intent);
-        });
-        ComingMatches comingMatches = new ComingMatches((x)->{}, false);
-        NewsAdsAndUpcomingMatches newsAdsAndUpcomingMatches = new NewsAdsAndUpcomingMatches(
-                (x)->{
-
-                },
-                (feed)->{
-                    Intent intent = new Intent(getActivity(), FullscreenNewsActivity.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("NEWS", feed);
-                    intent.putExtras(bundle);
-                    getContext().startActivity(intent);
-                });
+        NewsAndAds newsAndAds = new NewsAndAds(null, this::showSingleFeed);
+        ComingMatches comingMatches = new ComingMatches(this::showMatchDetails, false);
+        NewsAdsAndUpcomingMatches newsAdsAndUpcomingMatches = new NewsAdsAndUpcomingMatches(this::showMatchDetails, this::showSingleFeed);
 
         try {
-            ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(this.getChildFragmentManager());
+            CustomViewPagerAdapter adapter = new CustomViewPagerAdapter(this.getChildFragmentManager());
             adapter.addFragment(newsAdsAndUpcomingMatches, "Главная");
             adapter.addFragment(newsAndAds, "Новости");
             adapter.addFragment(comingMatches, "Ближайшие матчи");
@@ -128,7 +106,6 @@ public class MainPage extends Fragment {
         }
     }
 
-    @SuppressLint("CheckResult")
     private void GetAllAds() {
         if (SaveSharedPreference.getObject() == null)
             return;
@@ -160,5 +137,17 @@ public class MainPage extends Fragment {
         announces.addAll(announces.size(), matches);
         List<Announce> list = new ArrayList<>(announces);
         announceAdapter.dataChanged(list);
+    }
+
+    private void showSingleFeed (News_ feed) {
+        Intent intent = new Intent(getActivity(), FullscreenNewsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("NEWS", feed);
+        intent.putExtras(bundle);
+        getContext().startActivity(intent);
+    }
+
+    private void showMatchDetails (MatchPopulate match) {
+
     }
 }

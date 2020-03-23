@@ -11,22 +11,27 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Match;
 import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.Player;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.user.adapter.RVWorkProtocolEditTeamAdapter;
+import baikal.web.footballapp.viewmodel.MainViewModel;
+import baikal.web.footballapp.viewmodel.PersonViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,36 +43,45 @@ public class StructureCommand1 extends AppCompatActivity {
     private MatchPopulate match;
     private RVWorkProtocolEditTeamAdapter adapter;
     private LinearLayout emptyTeam;
-    private RecyclerView recyclerView;
-    private boolean isEditable;
+    private final List<Player> players = new ArrayList<>();
+
+    private MainViewModel mainViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.structure_command1);
-
         emptyTeam = findViewById(R.id.SC_emptyEvents);
         ImageButton buttonBack = findViewById(R.id.editProtocolCommand1Back);
         ImageButton buttonSave = findViewById(R.id.SC_WorkProtocolTeamSave);
         TextView textCommandTitle = findViewById(R.id.command1Title);
-        recyclerView = findViewById(R.id.recyclerViewConfirmProtocolCommand1);
-
+        RecyclerView recyclerView = findViewById(R.id.recyclerViewConfirmProtocolCommand1);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        isEditable = getIntent().getExtras().getBoolean("IS_EDITABLE", false);
+        mainViewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+
+        String status = getIntent().getExtras().getString("STATUS", "");
+        boolean isEditable = status.equals("thirdReferee") || status.equals("mainReferee");// || status.equals("trainer");
+
+        Log.d(TAG, status + " " + isEditable);
+
         if (isEditable)
             buttonSave.setVisibility(View.VISIBLE);
+
+        PersonViewModel personViewModel = ViewModelProviders.of(this).get(PersonViewModel.class);
 
         try{
             match = (MatchPopulate) getIntent().getExtras().getSerializable("MATCH_EDIT_TEAM");
             team = (Team) getIntent().getExtras().getSerializable("TEAM");
-            textCommandTitle.setText(team.getName());
 
-            getTeamById(team.getId());
-            Log.d(TAG, team.getPlayers().toString());
-            adapter = new RVWorkProtocolEditTeamAdapter(this, team.getPlayers(), match, isEditable);
+            textCommandTitle.setText(team.getName());
+            getPlayersByTeamId(team.getId());
+
+            players.clear();
+            players.addAll(team.getPlayers());
+            adapter = new RVWorkProtocolEditTeamAdapter(personViewModel, players, match, isEditable);
             recyclerView.setAdapter(adapter);
-        } catch (NullPointerException ignored){}
+        } catch (NullPointerException ignored){ }
 
         buttonSave.setOnClickListener(v -> {
             Match newMatch = new Match(match);
@@ -89,56 +103,27 @@ public class StructureCommand1 extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<Match> call, @NonNull Throwable t) {
-
+                    Toast.makeText(App.getAppContext(), "Что-то пошло не так ...", Toast.LENGTH_LONG).show();
                 }
             });
         });
         buttonBack.setOnClickListener(v -> finish());
     }
 
-    private void getTeamById (String id)
+    private void getPlayersByTeamId(String id)
     {
-        if (MankindKeeper.getInstance().getTeamById(id) == null ||
-                (MankindKeeper.getInstance().getTeamById(id) != null &&
-                 MankindKeeper.getInstance().getTeamById(id).getPlayers().size() == 0)) {
-            Log.d(TAG, "getTeamById from server");
-            Controller.getApi().getTeamById(id).enqueue(new Callback<List<Team>>() {
-                @Override
-                public void onResponse(@NonNull Call<List<Team>> call, @NonNull Response<List<Team>> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        MankindKeeper.getInstance().addTeam(response.body().get(0));
-                        team.setPlayers(response.body().get(0).getPlayers());
-
-                        if (team.getPlayers().size() == 0)
-                            emptyTeam.setVisibility(View.VISIBLE);
-                        else
-                            emptyTeam.setVisibility(View.GONE);
-                        adapter.notifyDataSetChanged();
-                        Log.d(TAG, "getTeamById loaded");
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<List<Team>> call, @NonNull Throwable t) {
-                    if (team.getPlayers().size() == 0)
-                        emptyTeam.setVisibility(View.VISIBLE);
-                    Toast.makeText(StructureCommand1.this, "не удалось сохранить, попробуйте снова", Toast.LENGTH_LONG).show();
-                }
-            });
-        }
-        else {
-            team = MankindKeeper.getInstance().getTeamById(id);
-
+        mainViewModel.getTeamById(id, team -> {
+            this.team = team;
+            players.clear();
+            players.addAll(team.getPlayers());
             if (team.getPlayers().size() == 0)
                 emptyTeam.setVisibility(View.VISIBLE);
             else
                 emptyTeam.setVisibility(View.GONE);
 
-//            Log.d(TAG, "getTeamById: " + MankindKeeper.getInstance().allTeams.toString());
-//            Log.d(TAG, "id: " + id);
-//            Log.d(TAG, "players: " + team.getPlayers().toString());
-//            Log.d(TAG, "players cnt: " + team.getPlayers().size());
-        }
+            if (adapter != null)
+                adapter.notifyDataSetChanged();
+        });
     }
 }
 

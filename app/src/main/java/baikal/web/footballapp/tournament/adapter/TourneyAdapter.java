@@ -1,14 +1,12 @@
 package baikal.web.footballapp.tournament.adapter;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +18,7 @@ import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Tourney;
 
 public class TourneyAdapter extends PagedListAdapter<Tourney, TourneyAdapter.ViewHolder> {
-    private static final String TAG = "TourneyAdapter";
+//    private static final String TAG = "TourneyAdapter";
     private ChooseTourneyListener mListener;
 
     public interface ChooseTourneyListener {
@@ -67,7 +65,7 @@ public class TourneyAdapter extends PagedListAdapter<Tourney, TourneyAdapter.Vie
         final TextView textCommandNum;
         final TextView textStatusFinish;
         final View view;
-        final Switch favBtn;
+        final SwitchCompat favBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -79,7 +77,6 @@ public class TourneyAdapter extends PagedListAdapter<Tourney, TourneyAdapter.Vie
             textStatusFinish = itemView.findViewById(R.id.tourneyFinish);
         }
 
-        @SuppressLint("SetTextI18n")
         void bindTo(Tourney tourney) {
             if (SaveSharedPreference.getObject() != null) {
                 if (SaveSharedPreference.getObject().getUser().getFavouriteTourney().contains(tourney.getId()))
@@ -87,27 +84,23 @@ public class TourneyAdapter extends PagedListAdapter<Tourney, TourneyAdapter.Vie
                 else
                     favBtn.setChecked(false);
             }
-            else
+            else {
                 favBtn.setChecked(false);
+            }
 
-            textCommandNum.setText(App.getAppContext().getString(R.string.tournamentFilterCommandNum) + tourney.getMaxTeams());
+            String str = App.getAppContext().getString(R.string.tournamentFilterCommandNum) + tourney.getMaxTeams();
+            textCommandNum.setText(str);
+            str = DateToString.ChangeDate(tourney.getBeginDate()) + " - " + DateToString.ChangeDate(tourney.getEndDate());
+            textDate.setText(str);
             textTitle.setText(tourney.getName());
-            textDate.setText(DateToString.ChangeDate(tourney.getBeginDate()) + " - " + DateToString.ChangeDate(tourney.getEndDate()));
 
-            favBtn.setOnClickListener((v) -> {
-                if (SaveSharedPreference.getObject() == null) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(App.getAppContext());
-                    builder.setTitle("Внимание")
-                            .setMessage("Войдите или зарегистрируйтесь")
-                            .setCancelable(true)
-                            .setNegativeButton("Позже", (dialog, idd) -> dialog.cancel())
-                            .setPositiveButton("Войти", (dialog, which) -> {});
-                    AlertDialog alert = builder.create();
-                    alert.show();
+
+            favBtn.setOnDragListener((v, e)-> true);
+            favBtn.setOnClickListener(v -> {
+                mListener.onClick(tourney.getId(), favBtn.isChecked());
+
+                if (SaveSharedPreference.getObject() == null)
                     favBtn.setChecked(false);
-                } else {
-                    mListener.onClick(tourney.getId(), favBtn.isChecked());
-                }
             });
         }
     }

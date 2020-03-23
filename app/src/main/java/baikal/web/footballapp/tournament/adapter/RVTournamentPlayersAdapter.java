@@ -14,9 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-import baikal.web.footballapp.App;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.Player;
@@ -91,11 +89,13 @@ public class RVTournamentPlayersAdapter extends RecyclerView.Adapter<RVTournamen
             PersonStats personStat = mapStats.get(player.getPerson());
             Person person = personViewModel.getPersonById(player.getPerson(), (p) -> {
                 textName.setText(p.getSurnameAndName());
-                SetImage.setImage(App.getAppContext(), image, p.getPhoto());
+//                SetImage.setImage(App.getAppContext(), image, p.getPhoto());
             });
 
             textName.setText(person==null?"":person.getSurnameAndName());
-            SetImage.setImage(App.getAppContext(), image, person==null?"":person.getPhoto());
+//            SetImage.setImage(App.getAppContext(), image, person==null?"":person.getPhoto());
+
+//            image.setVisibility(View.GONE);
 
             textPoint1.setText(personStat==null?"":String.valueOf(personStat.getMatches()));
             textPoint2.setText(personStat==null?"":String.valueOf(personStat.getGoals()));

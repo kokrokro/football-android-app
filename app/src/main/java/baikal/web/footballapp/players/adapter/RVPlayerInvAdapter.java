@@ -39,11 +39,10 @@ import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Player;
-import baikal.web.footballapp.model.ServerResponse;
+import baikal.web.footballapp.model.ResponseInvite;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.players.activity.PlayerInv;
-import baikal.web.footballapp.user.activity.AuthoUser;
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -179,27 +178,26 @@ final ImageButton button;
         request = RequestBody.create(MediaType.parse("text/plain"), league.getId());        map.put("_id", request);
         request = RequestBody.create(MediaType.parse("text/plain"), team.getId());          map.put("teamId", request);
 
-        Call<ServerResponse> call = Controller.getApi().addPlayerToTeam(SaveSharedPreference.getObject().getToken(), map);
+        Call<ResponseInvite> call = Controller.getApi().addPlayerToTeam(SaveSharedPreference.getObject().getToken(), map);
 
         final League finalLeague = league;
-        call.enqueue(new Callback<ServerResponse>() {
+        call.enqueue(new Callback<ResponseInvite>() {
             @Override
-            public void onResponse(Call<ServerResponse> call, Response<ServerResponse> response) {
+            public void onResponse(Call<ResponseInvite> call, Response<ResponseInvite> response) {
                 if (response.isSuccessful()) {
                     if (response.body() != null){
                         PersonTeams personTeams = new PersonTeams();
 //                        personTeams.setId("000");
                         personTeams.setLeague(finalLeague.getId());
                         personTeams.setTeam(team.getId());
-                        AuthoUser.personOngoingLeagues.add(personTeams);
 
 
-                        for (PersonTeams teams : AuthoUser.personOwnCommand){
-                            if (teams.getTeam().equals(team.getId())){
-                                personTeams = teams;
-                                break;
-                            }
-                        }
+//                        for (PersonTeams teams : AuthoUser.personOwnCommand){
+//                            if (teams.getTeam().equals(team.getId())){
+//                                personTeams = teams;
+//                                break;
+//                            }
+//                        }
                         Player player = new Player();
 //                        player.setId("000");
                         player.setPlayerId(personId);
@@ -209,8 +207,8 @@ final ImageButton button;
                         personTeams2.setId(personTeams.getId());
                         personTeams2.setLeague(finalLeague.getId());
                         personTeams2.setTeam(team.getId());
-                        AuthoUser.personOwnCommand.remove(personTeams);
-                        AuthoUser.personOwnCommand.add(personTeams2);
+//                        AuthoUser.personOwnCommand.remove(personTeams);
+//                        AuthoUser.personOwnCommand.add(personTeams2);
 
 
                         User user = SaveSharedPreference.getObject();
@@ -225,15 +223,14 @@ final ImageButton button;
                         user.setUser(person);
                         SaveSharedPreference.saveObject(user);
 
-                        for (int i=0; i<AuthoUser.personOwnCommand.size(); i++){
-                            if (AuthoUser.personOwnCommand.get(i).getLeague().equals(personTeams.getLeague())){
-                                AuthoUser.personOwnCommand.set(i, personTeams2);
-                            }
-                        }
+//                        for (int i=0; i<AuthoUser.personOwnCommand.size(); i++){
+//                            if (AuthoUser.personOwnCommand.get(i).getLeague().equals(personTeams.getLeague())){
+//                                AuthoUser.personOwnCommand.set(i, personTeams2);
+//                            }
+//                        }
 
 
-                        List<PersonTeams> result = new ArrayList<>(AuthoUser.personOwnCommand);
-                        AuthoUser.adapterOwnCommand.dataChanged(result);
+//                        List<PersonTeams> result = new ArrayList<>(AuthoUser.personOwnCommand);
                         Intent intent = new Intent();
                         context.setResult(RESULT_OK, intent);
                         context.finish();
@@ -253,7 +250,7 @@ final ImageButton button;
             }
 
             @Override
-            public void onFailure(Call<ServerResponse> call, Throwable t) {
+            public void onFailure(Call<ResponseInvite> call, Throwable t) {
                 log.error("ERROR: onResponse");
                 Toast.makeText(context, "Ошибка сервера.", Toast.LENGTH_LONG).show();
                 context.finish();

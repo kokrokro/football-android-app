@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ViewPagerTournamentInfoAdapter extends FragmentPagerAdapter {
+public class CustomViewPagerAdapter extends FragmentPagerAdapter {
 
     private final List<Fragment> mFragmentList = new ArrayList<>();
     private final List<String> mFragmentTitleList = new ArrayList<>();
 
-    public ViewPagerTournamentInfoAdapter(@NonNull FragmentManager fm) {
+    public CustomViewPagerAdapter(@NonNull FragmentManager fm) {
         //noinspection deprecation
         super(fm);
     }

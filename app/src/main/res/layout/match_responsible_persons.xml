@@ -6,10 +6,9 @@
     android:id="@+id/editProtocolCoordinatorLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@color/colorLightGray"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    tools:context=".user.activity.StructureCommand1">
+    android:focusableInTouchMode="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
@@ -21,11 +20,11 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_gravity="top"
-            android:background="@color/colorLightGray2"
             android:minHeight="?attr/actionBarSize"
             app:layout_collapseMode="pin"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:background="@color/colorWhite">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -84,8 +83,9 @@
                 android:layout_marginBottom="8sp"
                 android:orientation="vertical"
                 android:paddingEnd="18dp"
-                android:paddingStart="18dp">
-
+                android:paddingStart="18dp"
+                android:background="@color/colorWhite"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -120,6 +120,7 @@
                         android:layout_marginStart="14dp"
                         android:fontFamily="@font/manrope_regular"
                         android:paddingEnd="15sp"
+                        android:paddingStart="1dp"
                         android:text="@string/empty2"
                         android:textColor="@color/colorBottomNavigationUnChecked"
                         android:textSize="14sp" />
@@ -128,19 +129,14 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="8sp"
-                android:layout_gravity="end"
-                android:background="@color/colorLightGray2" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8sp"
                 android:orientation="vertical"
                 android:paddingEnd="18dp"
-                android:paddingStart="18dp">
+                android:paddingStart="18dp"
+                android:background="@color/colorWhite">
 
 
                 <TextView
@@ -176,17 +172,14 @@
                         android:layout_marginStart="14dp"
                         android:fontFamily="@font/manrope_regular"
                         android:paddingEnd="15sp"
+                        android:paddingStart="1dp"
                         android:text="@string/empty2"
                         android:textColor="@color/colorBottomNavigationUnChecked"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="8sp"
-                android:layout_gravity="end"
-                android:background="@color/colorLightGray2" />
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -194,7 +187,8 @@
                 android:layout_marginBottom="8sp"
                 android:orientation="vertical"
                 android:paddingEnd="18dp"
-                android:paddingStart="18dp">
+                android:paddingStart="18dp"
+                android:background="@color/colorWhite">
 
 
                 <TextView
@@ -230,18 +224,12 @@
                         android:layout_marginStart="14dp"
                         android:fontFamily="@font/manrope_regular"
                         android:paddingEnd="15sp"
+                        android:paddingStart="1dp"
                         android:text="@string/empty2"
                         android:textColor="@color/colorBottomNavigationUnChecked"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="8sp"
-                android:layout_gravity="end"
-                android:background="@color/colorLightGray2" />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -249,7 +237,8 @@
                 android:layout_marginBottom="8sp"
                 android:orientation="vertical"
                 android:paddingEnd="18dp"
-                android:paddingStart="18dp">
+                android:paddingStart="18dp"
+                android:background="@color/colorWhite">
 
 
                 <TextView
@@ -285,17 +274,12 @@
                         android:layout_marginStart="14dp"
                         android:fontFamily="@font/manrope_regular"
                         android:paddingEnd="15sp"
+                        android:paddingStart="1dp"
                         android:text="@string/empty2"
                         android:textColor="@color/colorBottomNavigationUnChecked"
                         android:textSize="14sp" />
                 </LinearLayout>
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="8sp"
-                android:layout_gravity="end"
-                android:background="@color/colorLightGray2" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -303,7 +287,8 @@
                 android:layout_marginBottom="10sp"
                 android:orientation="vertical"
                 android:paddingEnd="18dp"
-                android:paddingStart="18dp">
+                android:paddingStart="18dp"
+                android:background="@color/colorWhite">
 
 
                 <TextView
@@ -339,6 +324,7 @@
                         android:layout_marginStart="14dp"
                         android:fontFamily="@font/manrope_regular"
                         android:paddingEnd="15sp"
+                        android:paddingStart="1dp"
                         android:text="@string/empty2"
                         android:textColor="@color/colorBottomNavigationUnChecked"
                         android:textSize="14sp" />

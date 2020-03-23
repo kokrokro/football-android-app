@@ -8,13 +8,13 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="wrap_content"
-    android:background="@color/colorWhite">
+    android:background="@color/fullTransparent">
 
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorWhite"
+        android:background="@color/fullTransparent"
         android:paddingBottom="13sp">
 
 
@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
             android:layout_toStartOf="@+id/T_switch"
-            android:background="@color/colorWhite"
+            android:background="@color/fullTransparent"
             android:orientation="horizontal">
 
 

@@ -2,13 +2,17 @@ package baikal.web.footballapp.tournament.activity;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -17,12 +21,22 @@ import com.google.android.material.tabs.TabLayout;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.home.adapter.AnnounceAdapter;
+import baikal.web.footballapp.model.Announce;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
-import baikal.web.footballapp.tournament.adapter.ViewPagerTournamentInfoAdapter;
+import baikal.web.footballapp.tournament.activity.MainPage.TournamentFeeds;
+import baikal.web.footballapp.tournament.adapter.CustomViewPagerAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Tournament extends Fragment {
 
@@ -32,11 +46,12 @@ public class Tournament extends Fragment {
     private FloatingActionButton fabCommand;
     private FloatingActionButton fabPlayers;
 
-    private TournamentsFragment tournamentsFragment;
+    private League league;
 
-    public Tournament (TournamentsFragment tournamentsFragment) {
-        this.tournamentsFragment = tournamentsFragment;
-    }
+    private final List<Announce> announces = new ArrayList<>();
+    private AnnounceAdapter announceAdapter;
+
+    public Tournament() { }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -58,7 +73,7 @@ public class Tournament extends Fragment {
         textTitle = view.findViewById(R.id.tournamentInfoTitle);
         try {
             Bundle arguments = getArguments();
-            League league = (League) arguments.getSerializable("TOURNAMENTINFO");
+            league = (League) arguments.getSerializable("TOURNAMENTINFO");
 
             String str = "";
             for(Tourney t: MankindKeeper.getInstance().allTourneys)
@@ -82,6 +97,17 @@ public class Tournament extends Fragment {
         fabCommand.hide();
         fabPlayers.hide();
 
+        RecyclerView recyclerViewAds = view.findViewById(R.id.recyclerViewMainAds);
+
+        try {
+            recyclerViewAds.setLayoutManager(new LinearLayoutManager(getActivity()));
+            announceAdapter = new AnnounceAdapter(announces);
+            recyclerViewAds.setAdapter(announceAdapter);
+        } catch (Exception e) {
+            Log.e("ERROR: ", e.toString());
+        }
+
+        GetAllAds();
         return view;
     }
 
@@ -90,6 +116,7 @@ public class Tournament extends Fragment {
         TournamentTimeTableFragment tournamentTimeTableFragment = new TournamentTimeTableFragment();
         TournamentCommandFragment tournamentCommandFragment = new TournamentCommandFragment();
         TournamentPlayersFragment tournamentPlayersFragment = new TournamentPlayersFragment();
+        TournamentFeeds tournamentFeeds = new TournamentFeeds(league.getTourney());
 
         Bundle leagueData = new Bundle();
         leagueData.putSerializable("TOURNAMENTINFOMATCHESLEAGUE", league);
@@ -98,11 +125,13 @@ public class Tournament extends Fragment {
         tournamentTimeTableFragment.setArguments(leagueData);
 
         try {
-            ViewPagerTournamentInfoAdapter adapter = new ViewPagerTournamentInfoAdapter(this.getChildFragmentManager());
+            CustomViewPagerAdapter adapter = new CustomViewPagerAdapter(this.getChildFragmentManager());
             adapter.addFragment(tournamentTimeTableFragment, "Расписание");
             adapter.addFragment(tournamentCommandFragment, "Команды");
             adapter.addFragment(tournamentPlayersFragment, "Игроки");
+            adapter.addFragment(tournamentFeeds, "Новости");
 
+            viewPager.addOnPageChangeListener(onPageChangeListener);
             viewPager.setAdapter(adapter);
         } catch (IllegalStateException e) {
             log.error("ERROR: ", e);
@@ -126,29 +155,6 @@ public class Tournament extends Fragment {
                     ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(getActivity().getAssets(), "fonts/manrope_regular.otf"));
                 }
             }
-        }
-    }
-
-    private void animateFab(int position) {
-        switch (position) {
-            case 0:
-                fabCommand.hide();
-                fabPlayers.hide();
-                break;
-            case 1:
-                fabCommand.show();
-                fabPlayers.hide();
-                break;
-
-            case 2:
-                fabPlayers.show();
-                fabCommand.hide();
-                break;
-
-            default:
-                fabCommand.hide();
-                fabPlayers.hide();
-                break;
         }
     }
 
@@ -199,12 +205,58 @@ public class Tournament extends Fragment {
         }
     };
 
-    public FloatingActionButton getFabCommand() {
+    private void animateFab(int position) {
+        switch (position) {
+            case 0:
+                fabCommand.hide();
+                fabPlayers.hide();
+                break;
+            case 1:
+                fabCommand.show();
+                fabPlayers.hide();
+                break;
+
+            case 2:
+                fabPlayers.show();
+                fabCommand.hide();
+                break;
+
+            default:
+                fabCommand.hide();
+                fabPlayers.hide();
+                break;
+        }
+    }
+
+    FloatingActionButton getFabCommand() {
         return fabCommand;
     }
 
-    public FloatingActionButton getFabPlayers() {
+    FloatingActionButton getFabPlayers() {
         return fabPlayers;
     }
 
+    private void GetAllAds() {
+        Callback<List<Announce>> responseCallback = new Callback<List<Announce>>() {
+            @Override
+            public void onResponse(@NonNull Call<List<Announce>> call, @NonNull Response<List<Announce>> response) {
+                if (response.isSuccessful() && response.body() != null)
+                    saveAds(response.body());
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<List<Announce>> call, @NonNull Throwable t) { }
+        };
+
+        Controller.getApi().getAnnounceByTourney(
+                league.getTourney(),
+                "120", "0")
+                .enqueue(responseCallback);
+    }
+
+    private void saveAds(List<Announce> matches) {
+        announces.addAll(announces.size(), matches);
+        List<Announce> list = new ArrayList<>(announces);
+        announceAdapter.dataChanged(list);
+    }
 }

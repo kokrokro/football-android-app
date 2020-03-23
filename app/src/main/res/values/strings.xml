@@ -56,6 +56,7 @@
     <string name="title_activity_command_info">CommandInfoActivity</string>
     <string name="allNewsButton">Все новости</string>
     <string name="search">Поиск по игрокам …</string>
+    <string name="searchTourneys">Поиск по турнирам …</string>
     <string name="back">Назад</string>
     <string name="changeProfile">Редактировать профиль</string>
     <string name="changeCommand">Редактировать команду</string>
@@ -168,12 +169,15 @@
     <string name="region">Регион</string>
     <string name="trainer">Тренер</string>
     <string name="numberTrainer">Номер тренера</string>
-    <string name="searchTourneys">Поиск по турнирам</string>
     <string name="ChoosePhotoFromGalary">Выбрать фото</string>
     <string name="OpenCamera">Открыть камеру</string>
     <string name="ProtocolToSend">Протокол</string>
     <string name="editTeamTrainer">Тренер:</string>
-    <string name="editTeamNumber">Номер тренера:</string>
+    <string name="editTeamNumber">Контактные данные:</string>
     <string name="content_description_image">Изображение</string>
     <string name="content_description_button_add">Кнопка добавить игрока</string>
+    <string name="allTourneys">Все турниры</string>
+
+    <string name="someDescription">SomeDescription</string>
+    <string name="Not_chosen">Не выбрано</string>
 </resources>

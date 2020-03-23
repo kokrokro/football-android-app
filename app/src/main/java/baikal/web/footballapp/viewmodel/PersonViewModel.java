@@ -26,6 +26,7 @@ public class PersonViewModel extends ViewModel {
             return null;
         }
 
+        onPersonLoad.PersonLoaded(allPerson.get(id));
         return allPerson.get(id);
     }
 

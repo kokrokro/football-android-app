@@ -4,98 +4,96 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorWhite"
+    android:background="@color/colorLightGray"
     android:orientation="vertical">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/AMP_swipe_to_refresh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <RelativeLayout
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/AMP_tournamentInfoCommandScroll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_centerInParent="true">
+                <ProgressBar
+                    android:id="@+id/AMP_progress"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:id="@+id/AMP_errorText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/network_error"
+                    android:textAlignment="center"
+                    android:textAppearance="@style/InfoTextAppearance"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:id="@+id/AMP_emptyText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+                    <ImageView
+                        android:layout_marginTop="45sp"
+                        android:layout_marginBottom="45sp"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_width="160dp"
+                        android:layout_height="160dp"
+                        android:src="@drawable/ic_empty1"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:layout_marginBottom="15sp"
+                        android:fontFamily="@font/manrope_regular"
+                        android:textColor="@color/colorBottomNavigationUnChecked"
+                        android:text="@string/empty"
+                        android:layout_gravity="center_horizontal"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="25sp"
+                        android:paddingStart="25sp"
+                        android:gravity="center_horizontal"
+                        android:textSize="16sp"
+                        android:textAppearance="@style/InfoTextAppearance"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="Новостей нет"
+                        android:layout_gravity="center_horizontal"/>
+                </LinearLayout>
+            </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerViewMainNews"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ProgressBar
-                android:id="@+id/AMP_progress"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:visibility="visible"/>
-
-            <TextView
-                android:id="@+id/AMP_errorText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/network_error"
-                android:textAlignment="center"
-                android:textAppearance="@style/InfoTextAppearance"
-                android:visibility="gone" />
-
-            <LinearLayout
-                android:id="@+id/AMP_emptyText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:orientation="vertical"
-                android:visibility="gone">
-                <ImageView
-                    android:layout_marginTop="45sp"
-                    android:layout_marginBottom="45sp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="160dp"
-                    android:layout_height="160dp"
-                    android:src="@drawable/ic_empty1"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="18sp"
-                    android:layout_marginBottom="15sp"
-                    android:fontFamily="@font/manrope_regular"
-                    android:textColor="@color/colorBottomNavigationUnChecked"
-                    android:text="@string/empty"
-                    android:layout_gravity="center_horizontal"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="25sp"
-                    android:paddingStart="25sp"
-                    android:gravity="center_horizontal"
-                    android:textSize="16sp"
-                    android:textAppearance="@style/InfoTextAppearance"
-                    android:fontFamily="@font/manrope_regular"
-                    android:text="Новостей нет"
-                    android:layout_gravity="center_horizontal"/>
-            </LinearLayout>
+                android:background="@color/fullTransparent"
+                android:paddingBottom="30dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"/>
         </RelativeLayout>
+        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-    <View
-        android:id="@+id/divider1"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorLightGray2"/>
-
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:background="@color/colorLightGray2"/>
-
 </LinearLayout>

@@ -1,7 +1,6 @@
 package baikal.web.footballapp.user.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,15 +43,12 @@ import baikal.web.footballapp.SetImage;
 import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.model.Club;
 import baikal.web.footballapp.model.League;
-import baikal.web.footballapp.model.PendingTeamInvite;
 import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.user.activity.UserTeams.Adapters.RVUserCommandAdapter;
 import baikal.web.footballapp.user.activity.UserTeams.UserCommands;
-import baikal.web.footballapp.user.adapter.RVOwnCommandAdapter;
+import baikal.web.footballapp.user.adapter.TourneyListInMenuAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -62,17 +58,12 @@ import static android.app.Activity.RESULT_OK;
 public class AuthoUser extends Fragment {
     private static final String TAG = "AuthoUser";
     private static final Logger log = LoggerFactory.getLogger(AuthoUser.class);
+    private static final int REQUEST_CODE_PROFILE_DATA_EDIT = 4214;
 
     private Person person;
-    public static FloatingActionButton fab;
-    //adapters
-    public static RVUserCommandAdapter adapterCommand;
-    public static RVOwnCommandAdapter adapterOwnCommand;
+    public FloatingActionButton fab;
 
     static final List<Person> allReferees = new ArrayList<>();
-    public static List<PersonTeams> personOngoingLeagues;
-    public static List<PersonTeams> personOwnCommand;
-    public static List<PendingTeamInvite> pendingTeamInvitesList;
 
     private TextView categoryTitle;
 
@@ -121,7 +112,7 @@ public class AuthoUser extends Fragment {
     ImageButton cancelSetSingleReferee;
     ImageButton saveSingleReferee;
 
-    private final int REQUEST_CODE_PROFILE_DATA_EDIT = 4214;
+    private List<Tourney> createdTourneys = new ArrayList<>();
 
     public PersonalActivity activity;
     private FragmentManager fragmentManager;
@@ -136,7 +127,7 @@ public class AuthoUser extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
-        invitationFragment    = new InvitationFragment(this);
+        invitationFragment    = new InvitationFragment();
         addTournamentFragment = new AddTournamentFragment();
         userClubFragment      = new UserClubs();
         timeTableFragment     = new TimeTableFragment(this);
@@ -195,19 +186,23 @@ public class AuthoUser extends Fragment {
 
         rvCreatedTeamList.setLayoutManager(new LinearLayoutManager(getContext()));
         rvCreatedTourneyList.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        TourneyListInMenuAdapter tourneyListInMenuAdapter = new TourneyListInMenuAdapter(createdTourneys, this::openTourneyFragment);
+        rvCreatedTourneyList.setAdapter(tourneyListInMenuAdapter);
 //**************************************************************************************************
 
         categoryTitle = view.findViewById(R.id.categoryType);
         fab = view.findViewById(R.id.addCommandButton);
-        FloatingActionButton fab1 = view.findViewById(R.id.buttonEditClub);
+//        FloatingActionButton fab1 = view.findViewById(R.id.buttonEditClub);
         Toolbar toolbar = view.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
-        personOngoingLeagues = new ArrayList<>();
-        personOwnCommand = new ArrayList<>();
-        pendingTeamInvitesList = new ArrayList<>();
 
         fab.setVisibility(View.INVISIBLE);
-        fab1.setVisibility(View.INVISIBLE);
+        fab.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), NewCommand.class);
+            startActivityForResult(intent, UserCommands.REQUEST_CODE_NEW_COMMAND);
+        });
+
         fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         setMenuItemListeners();
 
@@ -248,16 +243,20 @@ public class AuthoUser extends Fragment {
                     @Override
                     public void onResponse(@NonNull Call<List<Tourney>> call, @NonNull Response<List<Tourney>> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            if (response.body().size() == 0)
+                            if (response.body().size() == 0) {
+                                rvCreatedTourneyList.setVisibility(View.GONE);
                                 return;
+                            }
+                            Log.d(TAG, "tourneys count: " + response.body().size());
+                            createdTourneys.clear();
+                            createdTourneys.addAll(response.body());
                             rvCreatedTourneyList.setVisibility(View.VISIBLE);
+                            tourneyListInMenuAdapter.notifyDataSetChanged();
                         }
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call<List<Tourney>> call, @NonNull Throwable t) {
-
-                    }
+                    public void onFailure(@NonNull Call<List<Tourney>> call, @NonNull Throwable t) { }
                 });
             }
         } catch (Exception e) {
@@ -344,8 +343,8 @@ public class AuthoUser extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
-            int REQUEST_CODE_CLUBEDIT = 276;
-            if (requestCode == REQUEST_CODE_CLUBEDIT) {
+            int REQUEST_CODE_CLUB_EDIT = 276;
+            if (requestCode == REQUEST_CODE_CLUB_EDIT) {
                 Club result = (Club) Objects.requireNonNull(data.getExtras()).getSerializable("CREATECLUBRESULT");
                 Person person1 = SaveSharedPreference.getObject().getUser();
                 person1.setClub(Objects.requireNonNull(result).getId());
@@ -377,11 +376,6 @@ public class AuthoUser extends Fragment {
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    public void SetInvNum(Activity activity, int position) {
-
-    }
-
     private void openTrainerMenu()
     {
         trainerMenu.setVisibility(View.VISIBLE);
@@ -392,5 +386,10 @@ public class AuthoUser extends Fragment {
     {
         refereeMenu.setVisibility(View.VISIBLE);
         tournamentBtn.setVisibility(View.GONE);
+    }
+
+    private void openTourneyFragment (Tourney tourney) {
+        addTournamentFragment = new AddTournamentFragment(tourney.getId());
+        showFragment(addTournamentFragment, tournamentMT,false, false,2);
     }
 }

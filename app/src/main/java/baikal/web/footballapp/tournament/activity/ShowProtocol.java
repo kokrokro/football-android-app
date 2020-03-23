@@ -33,13 +33,12 @@ import baikal.web.footballapp.model.PlayerEvent;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.TeamTitleClubLogoMatchEvents;
 import baikal.web.footballapp.user.activity.MatchResponsiblePersons;
-import baikal.web.footballapp.user.activity.Protocol.ConfirmProtocol;
 import baikal.web.footballapp.user.activity.Protocol.MatchEvents;
 import baikal.web.footballapp.user.activity.Protocol.ProtocolScore;
 import baikal.web.footballapp.user.activity.StructureCommand1;
 
 public class ShowProtocol extends AppCompatActivity {
-    private final Logger log = LoggerFactory.getLogger(ConfirmProtocol.class);
+    private final Logger log = LoggerFactory.getLogger(ShowProtocol.class);
     private List<PlayerEvent> playerEvents;
     private String clubOne;
     private String clubTwo;

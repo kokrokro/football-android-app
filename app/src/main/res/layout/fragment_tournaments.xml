@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/tournamentLayout"
     android:layout_width="match_parent"
@@ -11,68 +10,81 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/FT_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scrollerLeague"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
-                <!-- scrolling content -->
-                <LinearLayout
-                    android:id="@+id/emptyFavTourneys"
+                android:background="@color/colorLightGray">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewTournament"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="65sp"
-                    android:visibility="gone"
+                    android:background="@color/colorLightGray"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:orientation="vertical">
-                    <ImageView
-                        android:layout_marginTop="45sp"
-                        android:layout_marginBottom="45sp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_width="160dp"
-                        android:layout_height="160dp"
-                        android:src="@drawable/ic_empty1"/>
+                    <ProgressBar
+                        android:id="@+id/FT_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:visibility="gone"
+                        tools:visibility="gone" />
+
                     <TextView
+                        android:id="@+id/FT_errorText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:layout_marginBottom="15sp"
-                        android:fontFamily="@font/manrope_regular"
-                        android:textColor="@color/colorBottomNavigationUnChecked"
-                        android:text="@string/empty"
-                        android:layout_gravity="center_horizontal"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingEnd="25sp"
-                        android:paddingStart="25sp"
-                        android:gravity="center_horizontal"
-                        android:textSize="16sp"
-                        android:textColor="@color/colorLightGrayForText"
-                        android:fontFamily="@font/manrope_regular"
-                        android:text="@string/no_fav_tourneys"
-                        android:layout_gravity="center_horizontal"/>
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/colorWhite">
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerViewTournament"
-                        android:paddingTop="8sp"
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="16dp"
+                        android:text="@string/network_error"
+                        android:textAlignment="center"
+                        android:textAppearance="@style/InfoTextAppearance"
+                        android:visibility="gone"
+                        tools:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/FT_emptyText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                        android:layout_gravity="center_vertical|center_horizontal"
+                        android:orientation="vertical">
+                        <ImageView
+                            android:layout_marginTop="45sp"
+                            android:layout_marginBottom="45sp"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_width="160dp"
+                            android:layout_height="160dp"
+                            android:src="@drawable/ic_empty1"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="18sp"
+                            android:layout_marginBottom="15sp"
+                            android:fontFamily="@font/manrope_regular"
+                            android:textColor="@color/colorBottomNavigationUnChecked"
+                            android:text="@string/empty"
+                            android:layout_gravity="center_horizontal"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:paddingEnd="25sp"
+                            android:paddingStart="25sp"
+                            android:gravity="center_horizontal"
+                            android:textSize="16sp"
+                            android:textAppearance="@style/InfoTextAppearance"
+                            android:fontFamily="@font/manrope_regular"
+                            android:text="@string/players_not_found"
+                            android:layout_gravity="center_horizontal"/>
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

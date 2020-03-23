@@ -20,7 +20,7 @@ import baikal.web.footballapp.model.PersonStats;
 import baikal.web.footballapp.model.PersonStatus;
 import baikal.web.footballapp.model.RefereeRequestList;
 import baikal.web.footballapp.model.Region;
-import baikal.web.footballapp.model.ServerResponse;
+import baikal.web.footballapp.model.ResponseInvite;
 import baikal.web.footballapp.model.SignIn;
 import baikal.web.footballapp.model.Stadium;
 import baikal.web.footballapp.model.Team;
@@ -69,15 +69,15 @@ public interface FootballApi {
     Observable<List<Tourney>> getTourneys(@Query("name") String name, @Query("region") String region);
 
     @GET("/api/crud/tourney?_sort=-beginDate")
-    Call<List<Tourney>> getTourneysWithSort(@Query("_limit") String limit, @Query("beginDate") String beginDate);
+    Call<List<Tourney>> getTourneysWithSort(@Query("_id") String ids, @Query("_limit") String limit, @Query("beginDate") String beginDate);
 
     @GET("/api/crud/tourney?_sort=-beginDate")
     Call<List<Tourney>> getTourneysWithSortAndFilters(@Query("name") String name, @Query("region") String region, @Query("_limit") String limit, @Query("_offset") String offset);
 
     @GET("/api/crud/tourney")
-    Observable<List<Tourney>> getTourneysById(@Query("_id") String id);
+    Call<List<Tourney>> getTourneysById(@Query("_id") String id);
 
-    @GET("/api/crud/tourney")
+    @GET("/api/crud/tourney?_sort=-beginDate")
     Call<List<Tourney>> getTourneysByCreator(@Query("creator") String id);
 
     @GET("/api/crud/league?_populate=matches+stages")
@@ -89,10 +89,12 @@ public interface FootballApi {
     @GET("/api/crud/league?_select=id")
     Call<List<League>> getLeagueIdsByTourney(@Query("tourney") String tourney);
 
-    @GET("api/crud/match?_populate=teamOne+teamTwo+place")
+
+
+    @GET("api/crud/match?_populate=teamOne+teamTwo+place&_sort=-date&date=>0")
     Call<List<MatchPopulate>> getMatches(@Query("_id") String id, @Query("referees.person") String referee);
 
-    @GET("api/crud/match?_populate=teamOne+teamTwo+place")
+    @GET("api/crud/match?_populate=teamOne+teamTwo+place&_sort=-date&date=>0")
     Call<List<MatchPopulate>> getMatchById(@Query("_id") String id);
 
     @GET("api/crud/match")
@@ -128,10 +130,10 @@ public interface FootballApi {
     @POST("/api/matches/setreferees")
     Observable<Response<Matches>> editProtocolReferees(@Header("auth") String authorization, @Body RefereeRequestList body);
 
-    @GET("/api/person_invite?_populate=person")
+    @GET("/api/person_invite?_populate=person+team")
     Call<List<Invite>> getInvites(@Query("person") String person, @Query("team") String team, @Query("status") String status);
-    @GET("/api/person_invite?_populate=team&status=accepted")
-    Call<List<Invite>> getUsersTeams(@Query("person") String person);
+    @GET("/api/person_invite?_populate=person+team&status=accepted")
+    Call<List<Invite>> getInvitesByPerson (@Query("person") String person);
     //refresh web
     @GET("/api/refresh")
     Call<User> refreshUser(@Header("auth") String authorization);
@@ -149,7 +151,7 @@ public interface FootballApi {
     //add player to team
     @Multipart
     @POST("/api/person_invite")
-    Call<ServerResponse> addPlayerToTeam(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
+    Call<ResponseInvite> addPlayerToTeam(@Header("auth") String authorization, @PartMap Map<String, RequestBody> params);
 
     //create new team
     @Multipart
@@ -172,7 +174,7 @@ public interface FootballApi {
     Call<Invite> rejectInv(@Path("id") String id, @Header("auth") String authorization);
 
     @POST("/api/person_invite/cancel/{id}")
-    Call<Invite> cancelInv(@Path("id") String id, @Header("auth") String authorization);
+    Call<ResponseInvite> cancelInv(@Path("id") String id, @Header("auth") String authorization);
 
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getTeams(@Query("creator") String creator);
@@ -182,6 +184,9 @@ public interface FootballApi {
 
     @GET("api/crud/team?_populate=players")
     Call<List<Team>> getAllTeams();
+
+    @GET("api/crud/team?_select=_id")
+    Call<List<Team>> getTeamsIdsByLeague(@Query("league") String league);
 
     @GET("/api/participation_request")
     Call<List<ParticipationRequest>> getParticipation(@Query("team") String id);

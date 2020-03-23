@@ -1,12 +1,9 @@
 package baikal.web.footballapp.user.adapter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,11 +18,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 
+import baikal.web.footballapp.App;
 import baikal.web.footballapp.CheckName;
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.PersonalActivity;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Invite;
@@ -35,7 +32,6 @@ import baikal.web.footballapp.model.PersonTeams;
 import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
-import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.InvitationFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,17 +39,11 @@ import retrofit2.Response;
 
 public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapter.ViewHolder> {
     private final Logger log = LoggerFactory.getLogger(InvitationFragment.class);
-    private final Context context;
-    private final PersonalActivity activity;
     private final List<Invite> list;
-    private AuthoUser authoUser;
 
-    public RVInvitationAdapter(Activity activity, Context context, AuthoUser authoUser, List<Invite> list ) {
+    public RVInvitationAdapter(List<Invite> list) {
 //    public RVInvitationAdapter(Activity activity,  List<PendingTeamInvite> list) {
-        this.activity = (PersonalActivity) activity;
         this.list = list;
-        this.context = context;
-        this.authoUser = authoUser;
     }
 
     @NonNull
@@ -121,13 +111,13 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                 @Override
                 public void onResponse(@NonNull Call<Invite> call, @NonNull Response<Invite> response) {
                     if(response.isSuccessful()){
-                        Toast.makeText(context, "Вы отклонили приглашение", Toast.LENGTH_LONG).show();
+                        Toast.makeText(App.getAppContext(), "Вы отклонили приглашение", Toast.LENGTH_LONG).show();
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<Invite> call, @NonNull Throwable t) {
-                    Toast.makeText(context, "Не удалось отклонить приглашение", Toast.LENGTH_LONG).show();
+                    Toast.makeText(App.getAppContext(), "Не удалось отклонить приглашение", Toast.LENGTH_LONG).show();
                 }
             });
             list.remove(position);
@@ -173,16 +163,14 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
 //                        String result = response.body().getMessage();
 //                        if (status.equals("Accepted") && result.equals("ok")) {
                         if (status.equals("Accepted")) {
-                            Toast.makeText(activity, "Вы приняли приглашение", Toast.LENGTH_LONG).show();
-                            AuthoUser.pendingTeamInvitesList.remove(position);
-                            authoUser.SetInvNum(activity, (list.size()));
+                            Toast.makeText(App.getAppContext(), "Вы приняли приглашение", Toast.LENGTH_LONG).show();
+//                            AuthoUser.pendingTeamInvitesList.remove(position);
                             PersonTeams personTeams = new PersonTeams();
                             personTeams.setLeague(league1.getId());
                             personTeams.setTeam(team);
                         }
                         if (status.equals("Rejected")) {
-                            AuthoUser.pendingTeamInvitesList.remove(position);
-                            authoUser.SetInvNum(activity, (list.size()));
+//                            AuthoUser.pendingTeamInvitesList.remove(position);
                         }
 
 
@@ -193,20 +181,20 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
                         }
 
                         notifyDataSetChanged();
-                        if (AuthoUser.pendingTeamInvitesList.size() == 0) {
-                            LayoutInflater layoutInflater = (LayoutInflater)
-                                    activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                            View newRow = layoutInflater.inflate(R.layout.user_invitations, null,   false);
-                            LinearLayout layout = newRow.findViewById(R.id.emptyInv);
-                            layout.setVisibility(View.VISIBLE);
-                        }
+//                        if (AuthoUser.pendingTeamInvitesList.size() == 0) {
+//                            LayoutInflater layoutInflater = (LayoutInflater)
+//                                    activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                            View newRow = layoutInflater.inflate(R.layout.user_invitations, null,   false);
+//                            LinearLayout layout = newRow.findViewById(R.id.emptyInv);
+//                            layout.setVisibility(View.VISIBLE);
+//                        }
                     }
                 } else {
                     try {
                         JSONObject jsonObject = new JSONObject(response.errorBody().string());
                         String str = "Ошибка! ";
                         str += jsonObject.getString("message");
-                        Toast.makeText(context, str, Toast.LENGTH_LONG).show();
+                        Toast.makeText(App.getAppContext(), str, Toast.LENGTH_LONG).show();
                     } catch (IOException | JSONException e) {
                         e.printStackTrace();
                     }
@@ -218,7 +206,7 @@ public class RVInvitationAdapter extends RecyclerView.Adapter<RVInvitationAdapte
             @Override
             public void onFailure(@NonNull Call<User> call, @NonNull Throwable t) {
                 log.error("ERROR: onResponse", t);
-                Toast.makeText(activity, "Ошибка", Toast.LENGTH_LONG).show();
+                Toast.makeText(App.getAppContext(), "Ошибка", Toast.LENGTH_LONG).show();
             }
         });
     }

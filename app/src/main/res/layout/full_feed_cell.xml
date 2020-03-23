@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/fullTransparent"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/colorWhite">
+        <TextView
+            android:id="@+id/FFC_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:fontFamily="@font/manrope_bold"
+            android:textSize="16sp"
+            android:textColor="@color/colorNewsTitle"
+            android:text="@string/newsSomeTitle"/>
+
+        <TextView
+            android:id="@+id/FFC_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:fontFamily="@font/manrope_regular"
+            android:text="@string/newsSomeDate"
+            android:textColor="@color/colorNewsDate"
+            android:textSize="12sp"/>
+
+        <ImageView
+            android:id="@+id/FFC_image"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="5dp"/>
+
+        <TextView
+            android:id="@+id/FFC_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:fontFamily="@font/manrope_regular"
+            android:textSize="14sp"
+            android:textColor="@color/colorNewsTitle"
+            android:text="@string/newsSomeTitle"/>
+    </LinearLayout>
+</LinearLayout>

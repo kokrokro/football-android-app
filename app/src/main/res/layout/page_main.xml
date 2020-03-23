@@ -20,21 +20,21 @@
                 android:id="@+id/PM_profileAppbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
                 android:fitsSystemWindows="true"
                 android:orientation="vertical"
-                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true">
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/mainPageTab"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:background="@color/colorWhite"
-                    android:layout_alignParentTop="true"
                     android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
+                    android:background="@color/colorWhite"
                     app:layout_collapseMode="pin"
                     app:tabIndicatorColor="@color/colorPrimary"
                     app:tabSelectedTextColor="@color/colorBottomNavigationUnChecked"
@@ -44,30 +44,31 @@
                     <com.google.android.material.tabs.TabItem
                         android:id="@+id/mainPageMain"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
                     <com.google.android.material.tabs.TabItem
                         android:id="@+id/mainPageHome"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
                     <com.google.android.material.tabs.TabItem
                         android:id="@+id/mainPageMatches"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
                 </com.google.android.material.tabs.TabLayout>
             </com.google.android.material.appbar.AppBarLayout>
+
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/mainPageViewPager"
-                android:background="@color/colorWhite"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/PM_profileAppbar"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginBottom="70dp"/>
+                android:layout_marginBottom="95dp"
+                android:background="@color/fullTransparent" />
         </RelativeLayout>
 
         <include

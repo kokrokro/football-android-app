@@ -94,7 +94,7 @@ public class RVMatchEventsAdapter extends RecyclerView.Adapter<RVMatchEventsAdap
             recyclerView = item.findViewById(R.id.recyclerViewHalfEvents);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
             events = new ArrayList<>();
-            adapter = new RVEventsAdapter(events, team1, team2, isEditable, eventsToDelete, context);
+            adapter = new RVEventsAdapter(events, team1, team2, isEditable, eventsToDelete);
             recyclerView.setAdapter(adapter);
         }
     }

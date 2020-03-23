@@ -16,9 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,7 +26,7 @@ import baikal.web.footballapp.viewmodel.NewsPageViewModel;
 
 public class NewsAndAds extends Fragment {
     final private static String TAG = "NewsAndAds";
-    private final Logger log = LoggerFactory.getLogger(NewsAndAds.class);
+//    private final Logger log = LoggerFactory.getLogger(NewsAndAds.class);
 
     private NewsPageViewModel newsPageViewModel;
     private NewsAdapter newsAdapter;
@@ -45,8 +42,11 @@ public class NewsAndAds extends Fragment {
 
     private boolean isDataLoaded = false;
 
-    NewsAndAds(NewsAdapter.OnItemListener onItemListener) {
+    private String tourneyId;
+
+    NewsAndAds(String tourneyId, NewsAdapter.OnItemListener onItemListener) {
         this.onItemListener = onItemListener;
+        this.tourneyId = tourneyId;
     }
 
     private static void showOneView(View viewToShow, Set<View> views) {
@@ -124,6 +124,13 @@ public class NewsAndAds extends Fragment {
 
     private void loadData()
     {
+        if (tourneyId != null) {
+            newsPageViewModel.reloadForSingleTourney(tourneyId);
+            newsPageViewModel.getLoadDataState().observe(this, this::switchViewVisible);
+            newsPageViewModel.getNewsByTourneys(tourneyId).observe(this, newsAdapter::submitList);
+            return;
+        }
+
         isDataLoaded = true;
         newsPageViewModel.reload();
         newsPageViewModel.getLoadDataState().observe(this, this::switchViewVisible);

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+import baikal.web.footballapp.club.activity.ClubPage;
 import baikal.web.footballapp.controller.CustomTypefaceSpan;
 import baikal.web.footballapp.home.activity.MainPage;
 import baikal.web.footballapp.model.League;
@@ -37,8 +38,10 @@ import baikal.web.footballapp.model.Team;
 import baikal.web.footballapp.model.Tourney;
 import baikal.web.footballapp.model.User;
 import baikal.web.footballapp.players.activity.Player;
+import baikal.web.footballapp.players.activity.PlayersPage;
 import baikal.web.footballapp.players.adapter.PlayersAdapter;
-import baikal.web.footballapp.tournament.activity.TournamentPage;
+import baikal.web.footballapp.tournament.activity.MainPage.TournamentPage;
+import baikal.web.footballapp.user.activity.AuthoUser;
 import baikal.web.footballapp.user.activity.UserPage;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -136,32 +139,35 @@ public class PersonalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        PlayersAdapter.OnItemListener mOnItemListener = person -> {
-            Player playerFragment = new Player();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("PLAYERINFO", person);
+        try {
+            PlayersAdapter.OnItemListener mOnItemListener = person -> {
+                Player playerFragment = new Player();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("PLAYERINFO", person);
 
-            playerFragment.setArguments(bundle);
-            fragmentManager.beginTransaction().replace(R.id.pageContainer, playerFragment).addToBackStack(null).commit();
-        };
+                playerFragment.setArguments(bundle);
+                fragmentManager.beginTransaction().replace(R.id.pageContainer, playerFragment).addToBackStack(null).commit();
+            };
 
-        mainPage       = new MainPage();
-        tournamentPage = new TournamentPage();
-//        clubPage       = new ClubPage();
-//        playersPage    = new PlayersPage(mOnItemListener);
-//        autoUser       = new AuthoUser(PersonalActivity.this);
-//        fragmentUser   = new UserPage(this);
-        active         = mainPage;
+            mainPage = new MainPage();
+            tournamentPage = new TournamentPage(this::moveToLogin);
+            clubPage = new ClubPage();
+            playersPage = new PlayersPage(null, null, mOnItemListener, null);
+            autoUser = new AuthoUser(PersonalActivity.this);
+            fragmentUser = new UserPage(this);
+            active = mainPage;
 
-        setAnimation();
-        setContentView(R.layout.activity_personal);
-        ProgressDialog mProgressDialog = new ProgressDialog(this);
+            setAnimation();
+            setContentView(R.layout.activity_personal);
+            ProgressDialog mProgressDialog = new ProgressDialog(this);
 
-        mProgressDialog.setIndeterminate(true);
-        mProgressDialog.setMessage("Загрузка...");
+            mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setMessage("Загрузка...");
 
-        showSnack();
-
+            showSnack();
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
         try {
             bottomNavigationView = findViewById(R.id.bottom_navigation_view);
 //                        BottomNavigationViewHelper helper = new BottomNavigationViewHelper();

@@ -100,18 +100,19 @@
                 android:textSize="12sp"
                 android:text="@string/region"/>
 
-            <Spinner
-                android:id="@+id/regionEditSpinner"
+            <TextView
+                android:id="@+id/PI_regionEdit"
                 android:layout_width="match_parent"
                 android:layout_height="34dp"
                 android:dropDownWidth="wrap_content"
                 android:fontFamily="@font/manrope_regular"
                 android:paddingStart="4sp"
                 android:paddingEnd="4sp"
-                android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-                android:spinnerMode="dropdown"
-                android:touchscreenBlocksFocus="false"
-                android:popupBackground="@color/colorWhite"/>
+                android:textColor="@color/colorLightGrayForText"
+                android:gravity="center|start"
+                android:textSize="15sp"
+                android:text="@string/Not_chosen"
+                android:background="@color/colorWhite"/>
 
             <View
                 android:id="@+id/viewRegion"
@@ -186,7 +187,6 @@
                 style="@style/MyEditText"
                 android:hint="@string/pass"
                 android:inputType="textPassword"/>
-
 
             <View
                 android:layout_width="match_parent"

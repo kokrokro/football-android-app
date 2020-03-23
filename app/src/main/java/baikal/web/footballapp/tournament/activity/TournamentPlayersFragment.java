@@ -12,7 +12,6 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
@@ -57,9 +56,8 @@ public class TournamentPlayersFragment extends Fragment {
     private League league;
     private RecyclerView recyclerView;
     private LinearLayout layout;
-    private RelativeLayout layout1;
+    private LinearLayout layout1;
     private FloatingActionButton fab;
-    private PersonViewModel personViewModel;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,7 +80,7 @@ public class TournamentPlayersFragment extends Fragment {
         scroller = view.findViewById(R.id.tournamentInfoPlayersScroll);
         recyclerView = view.findViewById(R.id.recyclerViewTournamentPlayersStats);
 
-        personViewModel = ViewModelProviders.of(getActivity()).get(PersonViewModel.class);
+        PersonViewModel personViewModel = ViewModelProviders.of(getActivity()).get(PersonViewModel.class);
 
         scrollStatus = false;
         adapter = new RVTournamentPlayersAdapter(playerList, personStats, personViewModel);

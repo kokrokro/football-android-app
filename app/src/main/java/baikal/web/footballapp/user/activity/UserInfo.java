@@ -2,21 +2,14 @@ package baikal.web.footballapp.user.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.DateToString;
-import baikal.web.footballapp.PersonalActivity;
-
-import baikal.web.footballapp.R;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +20,9 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.DateToString;
+import baikal.web.footballapp.R;
 import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.model.Person;
 import baikal.web.footballapp.model.User;
@@ -82,10 +78,10 @@ public class UserInfo extends AppCompatActivity {
         String surName = personalInfo.textSurname.getText().toString();
         String patronymic = personalInfo.textPatronymic.getText().toString();
         String login = personalInfo.textLogin.getText().toString();
-        String DOB = (new DateToString()).TimeForServer(personalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
-        String region = personalInfo.regionsId.get(personalInfo.selectedRegionIndex);
+        String DOB = DateToString.TimeForServer(personalInfo.textDOB.getText().toString(), "dd.MM.yyyy", "ru");
+        String region = personalInfo.region==null?null:personalInfo.region.getId();
 
-        Log.d(TAG, region);
+//        Log.d(TAG, region==null?"NULL":region);
 
         Map<String, RequestBody> map = new HashMap<>();
         RequestBody requestName = RequestBody.create(MediaType.parse("text/plain"), name);

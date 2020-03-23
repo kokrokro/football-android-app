@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:openDrawer="start"
+    tools:openDrawer="end"
     android:background="@color/colorWhite">
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="25dp"
                 android:layout_marginEnd="25dp"
                 android:src="@drawable/ic_add"
                 app:backgroundTint="@color/colorPrimary" />
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_marginBottom="70dp"
+                android:layout_marginBottom="25dp"
                 android:layout_marginEnd="25dp"
                 android:visibility="invisible"
                 android:src="@drawable/ic_edit"
@@ -79,7 +79,6 @@
         android:layout_width="290dp"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:paddingBottom="45dp"
         android:layout_gravity="end"
         android:orientation="vertical">
 
@@ -125,119 +124,53 @@
                 />
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/UA_inv_button"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <ImageView
-                android:id="@+id/UA_ic_inv"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/menu_icon_height"
-                android:src="@drawable/ic_inv"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                />
-
-            <TextView
-                android:id="@+id/UA_inv_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/UA_ic_inv"
-                android:fontFamily="@font/manrope_regular"
-                android:text="Приглашения"
-                android:textSize="18sp"
-                android:textAlignment="viewStart"
-                android:textColor="@color/Black"
-                android:layout_centerVertical="true"/>
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/UA_team_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <ImageView
-                android:id="@+id/UA_ic_team"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/menu_icon_height"
-                android:src="@drawable/ic_commands"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                />
-
-            <TextView
-                android:id="@+id/UA_team_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/UA_ic_team"
-                android:fontFamily="@font/manrope_regular"
-                android:text="Создать команду"
-                android:textSize="18sp"
-                android:textAlignment="viewStart"
-                android:textColor="@color/Black"
-                android:layout_centerVertical="true"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/UA_tournament_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
-            <ImageView
-                android:id="@+id/UA_ic_tournament"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/menu_icon_height"
-                android:src="@drawable/ic_trophy"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"
-                />
-
-            <TextView
-                android:id="@+id/UA_tournament_TV"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/UA_ic_tournament"
-                android:fontFamily="@font/manrope_regular"
-                android:text="Создать турнир"
-                android:textSize="18sp"
-                android:textAlignment="viewStart"
-                android:textColor="@color/Black"
-                android:layout_centerVertical="true"/>
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/UA_trainer_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <View
+            android:layout_height="match_parent">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorGray"/>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
             <RelativeLayout
-                android:id="@+id/UA_trainer_team_button"
+                android:id="@+id/UA_inv_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
+                android:layout_height="wrap_content"
+                >
                 <ImageView
-                    android:id="@+id/UA_ic_trainer_team"
+                    android:id="@+id/UA_ic_inv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/menu_icon_height"
+                    android:src="@drawable/ic_inv"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/UA_inv_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/UA_ic_inv"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="Приглашения"
+                    android:textSize="18sp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/Black"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/UA_team_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <ImageView
+                    android:id="@+id/UA_ic_team"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/menu_icon_height"
                     android:src="@drawable/ic_commands"
@@ -245,107 +178,30 @@
                     android:layout_centerVertical="true"
                     android:padding="10dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="10dp"
+                    />
 
                 <TextView
-                    android:id="@+id/UA_trainer_team_TV"
+                    android:id="@+id/UA_team_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_toEndOf="@+id/UA_ic_trainer_team"
+                    android:layout_toEndOf="@+id/UA_ic_team"
                     android:fontFamily="@font/manrope_regular"
-                    android:text="Мои команды"
+                    android:text="Создать команду"
                     android:textSize="18sp"
                     android:textAlignment="viewStart"
                     android:textColor="@color/Black"
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/UA_teamList"
+            <RelativeLayout
+                android:id="@+id/UA_tournament_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
-                android:visibility="gone"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/UA_referee_menu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:orientation="vertical"
-            android:visibility="gone">
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/colorGray"/>
-
-            <RelativeLayout
-                android:id="@+id/UA_ref_timeTable_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                >
                 <ImageView
-                    android:id="@+id/UA_ic_ref_timeTable"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/menu_icon_height"
-                    android:src="@drawable/ic_timetable"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:padding="10dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"/>
-
-                <TextView
-                    android:id="@+id/UA_ref_timeTable_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_toEndOf="@+id/UA_ic_ref_timeTable"
-                    android:fontFamily="@font/manrope_regular"
-                    android:text="Расписание"
-                    android:textSize="18sp"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/Black"
-                    android:layout_centerVertical="true"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/UA_ref_matches_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/UA_ic_ref_matches"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/menu_icon_height"
-                    android:src="@drawable/ic_whistle"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:padding="10dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"/>
-
-                <TextView
-                    android:id="@+id/UA_ref_matches_TV"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_toEndOf="@+id/UA_ic_ref_matches"
-                    android:fontFamily="@font/manrope_regular"
-                    android:text="Мои матчи"
-                    android:textSize="18sp"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/Black"
-                    android:layout_centerVertical="true"/>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/UA_ref_tournament_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:id="@+id/UA_ic_ref_tournament"
+                    android:id="@+id/UA_ic_tournament"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/menu_icon_height"
                     android:src="@drawable/ic_trophy"
@@ -353,14 +209,15 @@
                     android:layout_centerVertical="true"
                     android:padding="10dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"/>
+                    android:layout_marginEnd="10dp"
+                    />
 
                 <TextView
-                    android:id="@+id/UA_ref_tournament_TV"
+                    android:id="@+id/UA_tournament_TV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_toEndOf="@+id/UA_ic_ref_tournament"
+                    android:layout_toEndOf="@+id/UA_ic_tournament"
                     android:fontFamily="@font/manrope_regular"
                     android:text="Создать турнир"
                     android:textSize="18sp"
@@ -369,50 +226,203 @@
                     android:layout_centerVertical="true"/>
             </RelativeLayout>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/UA_tournamentList"
+            <LinearLayout
+                android:id="@+id/UA_trainer_menu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="60dp"
-                android:visibility="gone"/>
+                android:orientation="vertical"
+                android:visibility="visible">
 
-        </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLightGray"/>
 
-        <View
-            android:id="@+id/UA_quit_divider"
-            android:layout_width="wrap_content"
-            android:layout_height="1dp"
-            android:background="@color/colorGray"/>
+                <RelativeLayout
+                    android:id="@+id/UA_trainer_team_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/UA_quit_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/UA_ic_quit"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/menu_icon_height"
-                android:src="@drawable/ic_sign_out2"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
-                android:padding="10dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="10dp"/>
+                    <ImageView
+                        android:id="@+id/UA_ic_trainer_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/menu_icon_height"
+                        android:src="@drawable/ic_commands"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:padding="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="10dp"/>
 
-            <TextView
-                android:id="@+id/UA_quit_TV"
-                android:layout_width="wrap_content"
+                    <TextView
+                        android:id="@+id/UA_trainer_team_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/UA_ic_trainer_team"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="Мои команды"
+                        android:textSize="18sp"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/Black"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/UA_teamList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="60dp"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/UA_referee_menu"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@+id/UA_ic_quit"
-                android:fontFamily="@font/manrope_regular"
-                android:text="Выйти"
-                android:textSize="18sp"
-                android:textAlignment="viewStart"
-                android:textColor="@color/Black"
-                android:layout_centerVertical="true"/>
-        </RelativeLayout>
+                android:layout_marginTop="4dp"
+                android:orientation="vertical"
+                android:visibility="visible">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorLightGray"/>
 
+                <RelativeLayout
+                    android:id="@+id/UA_ref_timeTable_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/UA_ic_ref_timeTable"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/menu_icon_height"
+                        android:src="@drawable/ic_timetable"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:padding="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/UA_ref_timeTable_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/UA_ic_ref_timeTable"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="Расписание"
+                        android:textSize="18sp"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/Black"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/UA_ref_matches_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/UA_ic_ref_matches"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/menu_icon_height"
+                        android:src="@drawable/ic_whistle"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:padding="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/UA_ref_matches_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/UA_ic_ref_matches"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="Мои матчи"
+                        android:textSize="18sp"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/Black"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/UA_ref_tournament_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:id="@+id/UA_ic_ref_tournament"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/menu_icon_height"
+                        android:src="@drawable/ic_trophy"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:padding="10dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="10dp"/>
+
+                    <TextView
+                        android:id="@+id/UA_ref_tournament_TV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_toEndOf="@+id/UA_ic_ref_tournament"
+                        android:fontFamily="@font/manrope_regular"
+                        android:text="Создать турнир"
+                        android:textSize="18sp"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/Black"
+                        android:layout_centerVertical="true"/>
+                </RelativeLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/UA_tournamentList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="60dp"
+                    android:background="@color/fullTransparent"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/UA_quit_divider"
+                android:layout_width="wrap_content"
+                android:layout_height="1dp"
+                android:background="@color/colorLightGray"/>
+
+            <RelativeLayout
+                android:id="@+id/UA_quit_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:id="@+id/UA_ic_quit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/menu_icon_height"
+                    android:src="@drawable/ic_sign_out2"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:padding="10dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="10dp"/>
+
+                <TextView
+                    android:id="@+id/UA_quit_TV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toEndOf="@+id/UA_ic_quit"
+                    android:fontFamily="@font/manrope_regular"
+                    android:text="Выйти"
+                    android:textSize="18sp"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/Black"
+                    android:layout_centerVertical="true"/>
+            </RelativeLayout>
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
     </LinearLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
 <!--</android.support.design.widget.CoordinatorLayout>-->

@@ -7,6 +7,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.paging.PagedListAdapter;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,16 +24,32 @@ import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.League;
 import baikal.web.footballapp.model.Tourney;
 
-public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapter.ViewHolder> {
-    private List<Tourney> tourneys;
-    private List<League> favLeagues;
-    private RecyclerViewTournamentAdapter.Listener mListener;
+public class RVFavTourneyAdapter extends PagedListAdapter<Tourney, RVFavTourneyAdapter.ViewHolder> {
     final Logger log = LoggerFactory.getLogger(RVFavTourneyAdapter.class);
+    private RecyclerViewTournamentAdapter.Listener mListener;
+    private LoadLeagueByTourney loadLeagueByTourney;
 
-    public RVFavTourneyAdapter(List<Tourney> tourneys, List<League> favLeagues, RecyclerViewTournamentAdapter.Listener mListener){
-        this.tourneys = tourneys;
-        this.favLeagues = favLeagues;
+    public interface LoadLeagueByTourney {
+        void loadLeague(String tourneyId, RecyclerViewTournamentAdapter adapter, List<League> leagueList);
+    }
+
+    private static final DiffUtil.ItemCallback<Tourney> DIFF_CALLBACK =
+            new DiffUtil.ItemCallback<Tourney>() {
+                @Override
+                public boolean areItemsTheSame(@NonNull Tourney oldPerson, @NonNull Tourney newPerson) {
+                    return oldPerson.getId().equals(newPerson.getId());
+                }
+
+                @Override
+                public boolean areContentsTheSame(@NonNull Tourney oldPerson, @NonNull Tourney newPerson) {
+                    return oldPerson.getId().equals(newPerson.getId());
+                }
+            };
+
+    public RVFavTourneyAdapter(LoadLeagueByTourney loadLeagueByTourney, RecyclerViewTournamentAdapter.Listener mListener){
+        super(DIFF_CALLBACK);
         this.mListener = mListener;
+        this.loadLeagueByTourney = loadLeagueByTourney;
     }
 
     @NonNull
@@ -43,25 +61,10 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
 
     @Override
     public void onBindViewHolder(@NonNull RVFavTourneyAdapter.ViewHolder holder, int position) {
-        final Tourney tourney = tourneys.get(position);
-        String str = DateToString.ChangeDate(tourney.getBeginDate()) + "-" + DateToString.ChangeDate(tourney.getEndDate());
-        holder.textDate.setText(str);
-        str = tourney.getName();
-        holder.textTitle.setText(str);
-        str = App.getAppContext().getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
-        holder.textCommandNum.setText(str);
+        final Tourney tourney = getItem(position);
 
-        holder.leagueList.clear();
-        for (League l : favLeagues)
-            if(l.getTourney().equals(tourney.getId()))
-                holder.leagueList.add(l);
-
-        holder.adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public int getItemCount() {
-        return tourneys.size();
+        if (tourney != null)
+            holder.bindTo(tourney);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -90,10 +93,16 @@ public class RVFavTourneyAdapter extends RecyclerView.Adapter<RVFavTourneyAdapte
             adapter = new RecyclerViewTournamentAdapter(leagueList, mListener);
             rvLeagues.setAdapter(adapter);
         }
-    }
-    public void dataChanged(List<Tourney> tourneys){
-        this.tourneys.clear();
-        this.tourneys.addAll(tourneys);
-        notifyDataSetChanged();
+
+        void bindTo (Tourney tourney) {
+            String str = DateToString.ChangeDate(tourney.getBeginDate()) + "-" + DateToString.ChangeDate(tourney.getEndDate());
+            textDate.setText(str);
+            textTitle.setText(tourney.getName());
+
+            str = App.getAppContext().getString(R.string.tournamentFilterCommandNum) + ": " + tourney.getMaxTeams();
+            textCommandNum.setText(str);
+
+            loadLeagueByTourney.loadLeague(tourney.getId(), adapter, leagueList);
+        }
     }
 }

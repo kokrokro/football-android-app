@@ -13,7 +13,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
@@ -24,8 +23,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.user.activity.AuthoUser;
-import baikal.web.footballapp.user.activity.NewCommand;
 import baikal.web.footballapp.user.activity.UserTeams.Adapters.VPUserCommandTabAdapter;
 
 import static android.app.Activity.RESULT_OK;
@@ -33,8 +30,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class UserCommands extends Fragment {
     private final Logger log = LoggerFactory.getLogger(UserCommands.class);
-    private final int REQUEST_CODE_NEWCOMMAND = 286;
-    private int num;
+    public final static int REQUEST_CODE_NEW_COMMAND = 286;
 
     private TabLayout teamTabLayout;
 
@@ -53,13 +49,6 @@ public class UserCommands extends Fragment {
         teamTabLayout.setupWithViewPager(viewPager);
         setupViewPager(viewPager);
 
-        AuthoUser.fab.setOnClickListener(v -> {
-            //add command
-            num = AuthoUser.personOwnCommand.size();
-            Intent intent = new Intent(getActivity(), NewCommand.class);
-            startActivityForResult(intent, REQUEST_CODE_NEWCOMMAND);
-        });
-
         setCustomFont();
         return view;
     }
@@ -70,9 +59,9 @@ public class UserCommands extends Fragment {
         UsersTeamListFragment createdTeamList       = new UsersTeamListFragment("creator");
 
         VPUserCommandTabAdapter adapter = new VPUserCommandTabAdapter(getChildFragmentManager());
-        adapter.addFragment(participationTeamList, "Участие");
-        adapter.addFragment(teamToTrainList      , "Тренерство");
-        adapter.addFragment(createdTeamList      , "Созданные");
+        adapter.addFragment(participationTeamList, "Игрок");
+        adapter.addFragment(teamToTrainList      , "Тренер");
+        adapter.addFragment(createdTeamList      , "Менеджер");
 
         viewPager.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -100,17 +89,8 @@ public class UserCommands extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK)
-            if (requestCode == REQUEST_CODE_NEWCOMMAND) {
-                if (num == 0){
-                    FragmentTransaction ft = Objects.requireNonNull(getActivity()).getSupportFragmentManager().beginTransaction();
-//                    FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
-                    try {
-                        ft.detach(this).attach(this).commit();
-                    } catch (Exception ignored) { }
-                } else {
-                    AuthoUser.adapterCommand.notifyDataSetChanged();
-                    Toast.makeText(getContext(), "Команда добавлена", Toast.LENGTH_LONG).show();
-                }
+            if (requestCode == REQUEST_CODE_NEW_COMMAND) {
+                Toast.makeText(getContext(), "Команда добавлена", Toast.LENGTH_LONG).show();
             }
         else
             log.error("ERROR: onActivityResult");

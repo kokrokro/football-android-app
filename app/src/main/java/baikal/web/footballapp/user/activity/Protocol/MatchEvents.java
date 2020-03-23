@@ -2,6 +2,7 @@ package baikal.web.footballapp.user.activity.Protocol;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -26,10 +27,10 @@ import baikal.web.footballapp.user.activity.Protocol.Adapters.RVMatchEventsAdapt
 
 
 public class MatchEvents extends AppCompatActivity {
+    private static final String TAG = "MatchEvents";
     Logger log = LoggerFactory.getLogger(MatchEvents.class);
     private boolean isEditable = false;
     MatchPopulate match;
-    RecyclerView recyclerView;
     LinearLayout emptyEvents;
     Set<Integer> eventsToDelete;
     ImageButton saveEvents;
@@ -41,6 +42,8 @@ public class MatchEvents extends AppCompatActivity {
             isEditable = getIntent().getExtras().getBoolean("IS_EDITABLE", false);
             match = (MatchPopulate) getIntent().getExtras().getSerializable("MATCH");
         }
+
+        Log.d(TAG, "STATUS = " + isEditable);
         ImageButton buttonBack;
         RecyclerView recyclerView;
         super.onCreate(savedInstanceState);

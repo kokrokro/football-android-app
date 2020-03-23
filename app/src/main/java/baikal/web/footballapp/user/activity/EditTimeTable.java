@@ -2,11 +2,6 @@ package baikal.web.footballapp.user.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,14 +10,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import baikal.web.footballapp.Controller;
-import baikal.web.footballapp.MankindKeeper;
-import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
-import baikal.web.footballapp.model.Match;
-import baikal.web.footballapp.model.MatchPopulate;
-import baikal.web.footballapp.model.Person;
-import baikal.web.footballapp.model.Referee;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +25,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.TreeMap;
 
+import baikal.web.footballapp.Controller;
+import baikal.web.footballapp.MankindKeeper;
+import baikal.web.footballapp.R;
+import baikal.web.footballapp.SaveSharedPreference;
+import baikal.web.footballapp.model.Match;
+import baikal.web.footballapp.model.MatchPopulate;
+import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Referee;
 import baikal.web.footballapp.user.activity.Protocol.ConfirmProtocol;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -125,9 +124,8 @@ public class EditTimeTable extends AppCompatActivity {
             fab.setOnClickListener(v -> {
                 Intent intent = new Intent(EditTimeTable.this, ConfirmProtocol.class);
                 Bundle bundle = new Bundle();
-//                boolean isProtocolAvailable = getIntent().getExtras().getBoolean("STATUS");
-                bundle.putBoolean("IS_EDITABLE", true);
                 bundle.putSerializable("CONFIRMPROTOCOL", match);
+                bundle.putString("STATUS", "mainReferee");
                 intent.putExtras(bundle);
                 startActivity(intent);
             });

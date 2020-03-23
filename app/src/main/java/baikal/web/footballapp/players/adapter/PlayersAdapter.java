@@ -7,10 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.paging.PagedListAdapter;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,17 +19,31 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.List;
+import java.util.TreeMap;
+
+import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
 import baikal.web.footballapp.R;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
+import baikal.web.footballapp.model.Team;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import static baikal.web.footballapp.Controller.BASE_URL;
 
 public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.ViewHolder> {
-    private static final String TAG = "PlayersAdapter";
+//    private static final String TAG = "PlayersAdapter";
     private final OnItemListener mOnItemListener;
-    private OnSwitchListener mOnSwitchListener = null;
-    private boolean isInvitationView = false;
+    private OnSwitchListener mOnSwitchListener;
+
+    private TreeMap<String, Invite> accepted = new TreeMap<>();
+    private TreeMap<String, Invite> pending = new TreeMap<>();
+
+    private Team team;
+    private String teamIds = null;
 
     public interface OnSwitchListener {
         void OnSwitch(Person person);
@@ -57,16 +71,19 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
                 }
             };
 
-    public PlayersAdapter(OnItemListener mOnItemListener) {
+    public PlayersAdapter(OnItemListener mOnItemListener, OnSwitchListener mOnSwitchListener, Team team, List<String> teamIds) {
         super(DIFF_CALLBACK);
         // this is uglyyyy
         this.mOnItemListener = mOnItemListener;
-    }
+        this.mOnSwitchListener = mOnSwitchListener;
+        this.team = team;
 
-    public void setViewForInvites (OnSwitchListener onSwitchListener) {
-        isInvitationView = true;
-        mOnSwitchListener = onSwitchListener;
-        notifyDataSetChanged();
+        if (teamIds != null) {
+            StringBuilder ids = new StringBuilder();
+            for (String id : teamIds)
+                ids.append(",").append(id);
+            this.teamIds = ids.toString();
+        }
     }
 
     @NonNull
@@ -93,7 +110,7 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
         final TextView textDOB;
         final View line;
 
-        final Switch aSwitch;
+        final SwitchCompat aSwitch;
         final TextView teamName;
 
         final Context context;
@@ -134,11 +151,85 @@ public class PlayersAdapter extends PagedListAdapter<Person, PlayersAdapter.View
                         .into(imageLogo);
             }
 
-            buttonShow2.setOnClickListener(view -> mOnItemListener.OnClick(person));
+            if (mOnItemListener != null) buttonShow2.setOnClickListener(view -> mOnItemListener.OnClick(person));
 
-            if (isInvitationView) {
+            if (mOnSwitchListener != null) {
+                aSwitch.setOnClickListener(view -> {
+                    if (aSwitch.isChecked()) {
+                        aSwitch.setEnabled(false);
+                        mOnSwitchListener.OnSwitch(person);
+                    }
+                });
                 aSwitch.setVisibility(View.VISIBLE);
-                teamName.setVisibility(View.VISIBLE);
+                teamName.setVisibility(View.GONE);
+
+                aSwitch.setEnabled(true);
+                aSwitch.setChecked(false);
+
+                Callback<List<Invite>> responseCallbackAC = new Callback<List<Invite>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
+                        if (response.isSuccessful() && response.body()!=null) {
+                            if(response.body().size() > 0) {
+                                Invite invite = response.body().get(0);
+
+                                accepted.put(person.getId(), invite);
+                                teamName.setText(invite.getTeam().getName());
+                                aSwitch.setEnabled(false);
+                                teamName.setVisibility(View.VISIBLE);
+                            }
+                            else
+                                accepted.put(person.getId(), new Invite());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) { }
+                };
+
+                Invite acceptedInv = accepted.get(person.getId());
+                if (acceptedInv == null)
+                    Controller.getApi().getInvites(person.get_id(), teamIds, "accepted").enqueue(responseCallbackAC);
+                else {
+                    if (acceptedInv.getTeam() != null) {
+                        teamName.setText(acceptedInv.getTeam().getName());
+                        teamName.setVisibility(View.VISIBLE);
+                        aSwitch.setEnabled(false);
+                    }
+                }
+
+                Callback<List<Invite>> responseCallbackPE = new Callback<List<Invite>>() {
+                    @Override
+                    public void onResponse(@NonNull Call<List<Invite>> call, @NonNull Response<List<Invite>> response) {
+                        if (response.isSuccessful() && response.body()!=null) {
+                            if(response.body().size() > 0) {
+                                Invite invite = response.body().get(0);
+                                pending.put(person.getId(), invite);
+                                aSwitch.setChecked(true);
+                                aSwitch.setEnabled(false);
+                            }
+                            else
+                                pending.put(person.getId(), new Invite());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(@NonNull Call<List<Invite>> call, @NonNull Throwable t) { }
+                };
+
+                Invite pendingInv = pending.get(person.getId());
+                if (pendingInv == null)
+                    Controller.getApi().getInvites(person.get_id(), team.getId(), "pending").enqueue(responseCallbackPE);
+                else {
+                    if (pendingInv.getTeam() != null) {
+                        aSwitch.setChecked(true);
+                        aSwitch.setEnabled(false);
+                    }
+                }
+
+            } else {
+                aSwitch.setVisibility(View.GONE);
+                teamName.setVisibility(View.GONE);
             }
         }
 

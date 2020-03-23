@@ -13,21 +13,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import baikal.web.footballapp.App;
-import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
-import baikal.web.footballapp.SaveSharedPreference;
 import baikal.web.footballapp.SetImage;
+import baikal.web.footballapp.model.Invite;
 import baikal.web.footballapp.model.Person;
 
-public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCommandPlayerInvAdapter.ViewHolder>{
-    private final List<String> players;
-    private final RVUserCommandPlayerAdapter.Listener listener;
-    private final String tag;
+public class EditTeamPlayersInvAdapter extends RecyclerView.Adapter<EditTeamPlayersInvAdapter.ViewHolder>{
+    private final List<Invite> invites;
+    private final OnInvitationCancel listener;
 
-    public RVUserCommandPlayerInvAdapter(List<String> players, RVUserCommandPlayerAdapter.Listener listener, String tag){
-        this.players = players;
+    public interface OnInvitationCancel {
+        void onClick(Invite invite);
+    }
+
+    public EditTeamPlayersInvAdapter(List<Invite> invites, OnInvitationCancel listener){
+        this.invites = invites;
         this.listener = listener;
-        this.tag = tag;
     }
     @NonNull
     @Override
@@ -39,34 +40,18 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        int count = position + 1;
-        String str = String.valueOf(count);
-        holder.textNum.setText(str);
-        Person player;
-        if(tag.equals("ChangePlayersForMatch")){
-            holder.buttonDelete.setImageResource(R.drawable.ic_plus);
-        }
-        player = MankindKeeper.getInstance().getPersonById(players.get(position));
-
-
-        holder.textName.setText(player.getSurnameWithInitials());
-        SetImage.setImage(App.getAppContext(), holder.image, player.getPhoto());
-
-        if (position == (players.size() - 1)) {
+        holder.textNum.setText(String.valueOf(position + 1));
+        if (position == (invites.size() - 1))
             holder.line.setVisibility(View.INVISIBLE);
-        }
-        if (player.getId().equals(SaveSharedPreference.getObject().getUser().getId())){
-            holder.buttonDelete.setVisibility(View.INVISIBLE);
-        }
-        holder.buttonDelete.setOnClickListener(v -> {
-            //post
-           listener.onClick(position);
-        });
+
+        Invite invite = invites.get(position);
+        if (invite != null)
+            holder.bindTo(invite);
     }
 
     @Override
     public int getItemCount() {
-        return players.size();
+        return invites.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -75,6 +60,7 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
         final TextView textName;
         final ImageButton buttonDelete;
         final View line;
+
         ViewHolder(View item) {
             super(item);
             textNum = item.findViewById(R.id.userCommandPlayerInvTextNum);
@@ -83,11 +69,15 @@ public class RVUserCommandPlayerInvAdapter extends RecyclerView.Adapter<RVUserCo
             buttonDelete = item.findViewById(R.id.userCommandInvPlayerDelete);
             line = item.findViewById(R.id.userCommandPlayerInvLine);
         }
-    }
-    public void dataChanged(List<String> allPlayers1){
-        players.clear();
-        players.addAll(allPlayers1);
-        notifyDataSetChanged();
-//        this.notifyDataSetChanged();
+
+        void bindTo (Invite invite) {
+            Person person = invite.getPerson();
+            SetImage.setImage(App.getAppContext(), image, person.getPhoto());
+            textName.setText(person.getSurnameAndName());
+
+            buttonDelete.setOnClickListener(v ->
+                listener.onClick(invite)
+            );
+        }
     }
 }

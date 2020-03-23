@@ -385,25 +385,13 @@ public class ProtocolPenalty extends AppCompatActivity {
                     (e.getId() != null && disabledEvents.contains(e.getId())))
                 continue;
 
-            if (teamIds[0] != null && e.getTeam()!=null && e.getTeam().equals(teamIds[0])) {
-                if (e.getEventType().equals(eventTypes[0])     ||
-                        e.getEventType().equals(eventTypes[3]) ||
-                        e.getEventType().equals(eventTypes[6]))
+            if (teamIds[0] != null && e.getTeam()!=null && e.getTeam().equals(teamIds[0]))
+                if (e.getEventType().equals(eventTypes[6]))
                     goalCntTeam1++;
 
-                if (e.getEventType().equals(eventTypes[4]))
+            if (teamIds[1] != null && e.getTeam()!=null && e.getTeam().equals(teamIds[1]))
+                if (e.getEventType().equals(eventTypes[6]))
                     goalCntTeam2++;
-            }
-
-            if (teamIds[1] != null && e.getTeam()!=null && e.getTeam().equals(teamIds[1])) {
-                if (e.getEventType().equals(eventTypes[0])     ||
-                        e.getEventType().equals(eventTypes[3]) ||
-                        e.getEventType().equals(eventTypes[6]))
-                    goalCntTeam2++;
-
-                if (e.getEventType().equals(eventTypes[4]))
-                    goalCntTeam1++;
-            }
         }
 
         scoreTeam1.setText(String.valueOf(goalCntTeam1));

@@ -47,7 +47,6 @@ public class ComingMatches extends Fragment {
     private UpcomingMatchesAdapter.OnItemListener onItemListener;
 
     private boolean useSecondViewModel;
-    private boolean isDataLoaded = false;
 
     ComingMatches(UpcomingMatchesAdapter.OnItemListener onItemListener, boolean useSecondViewModel){
         this.onItemListener = onItemListener;
@@ -129,7 +128,6 @@ public class ComingMatches extends Fragment {
     }
 
     public void loadData () {
-        isDataLoaded = true;
         if (useSecondViewModel) {
             activeMatchPageViewModel2.reload();
             activeMatchPageViewModel2.getLoadDataState().observe(this, this::switchViewVisible);

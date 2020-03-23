@@ -1,4 +1,4 @@
-package baikal.web.footballapp.tournament.activity;
+package baikal.web.footballapp.Dialogs;
 
 
 import android.app.AlertDialog;
@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import baikal.web.footballapp.MankindKeeper;
 import baikal.web.footballapp.R;
 import baikal.web.footballapp.model.Region;
 
@@ -23,24 +24,20 @@ import baikal.web.footballapp.model.Region;
  */
 public class DialogRegion extends DialogFragment {
     private List<Region> regions;
-    private int pos = -1;
+    private OnRegionListener mListener;
 
-    public interface mListener {
+    public interface OnRegionListener {
         void onFinishEditDialog(Region region);
     }
-    DialogRegion(List<Region> listItems) {
-        this.regions = listItems;
+    public DialogRegion(OnRegionListener mListener) {
+        this.regions = MankindKeeper.getInstance().regions;
+        this.mListener = mListener;
     }
-    private void sendBackResult() {
-        mListener listener = (mListener) getParentFragment();
-        listener.onFinishEditDialog(regions.get(pos));
-        dismiss();
-    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-
 
     @NonNull
     @Override
@@ -51,11 +48,13 @@ public class DialogRegion extends DialogFragment {
         for (Region r: regions)
             regionNames.add(r.getName());
 
+        regionNames.add("Не выбирать");
+
         alertDialogBuilder.setItems(regionNames.toArray(new CharSequence[0]), (dialogInterface, i) -> {
-            pos = i;
-            sendBackResult();
+            mListener.onFinishEditDialog(i==regions.size()?null:regions.get(i));
             dialogInterface.dismiss();
         });
+
         return alertDialogBuilder.create();
     }
 }

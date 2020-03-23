@@ -155,9 +155,7 @@ public class Match implements Serializable {
         this.playersList = playersList;
     }
 
-    public String getPlace() {
-        return place;
-    }
+    public String getPlace() { return place; }
 
     public void setPlace(String place) {
         this.place = place;

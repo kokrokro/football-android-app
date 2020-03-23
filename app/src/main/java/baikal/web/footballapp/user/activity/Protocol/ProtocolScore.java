@@ -357,8 +357,7 @@ public class ProtocolScore extends AppCompatActivity{
 
             if (team1 != null && e.getTeam().equals(team1.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
-                        e.getEventType().equals(eventTypes[3]) ||
-                        e.getEventType().equals(eventTypes[6]))
+                        e.getEventType().equals(eventTypes[3]))
                     goalCntTeam1++;
 
                 if (e.getEventType().equals(eventTypes[4]))
@@ -373,8 +372,7 @@ public class ProtocolScore extends AppCompatActivity{
 
             if (team2 != null && e.getTeam().equals(team2.getId())) {
                 if (e.getEventType().equals(eventTypes[0])     ||
-                        e.getEventType().equals(eventTypes[3]) ||
-                        e.getEventType().equals(eventTypes[6]))
+                        e.getEventType().equals(eventTypes[3]))
                     goalCntTeam2++;
 
                 if (e.getEventType().equals(eventTypes[4]))

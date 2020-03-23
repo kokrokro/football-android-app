@@ -3,16 +3,23 @@ package baikal.web.footballapp.user.adapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 import baikal.web.footballapp.Controller;
 import baikal.web.footballapp.DateToString;
@@ -29,13 +36,6 @@ import baikal.web.footballapp.user.activity.TimeTableFragment;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeMap;
 
 public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.ViewHolder> {
     private static final String TAG = "RVTimeTableAdapter: ";
@@ -61,10 +61,9 @@ public class RVTimeTableAdapter extends RecyclerView.Adapter<RVTimeTableAdapter.
     public void onBindViewHolder(@NonNull RVTimeTableAdapter.ViewHolder holder, int position) {
         MatchPopulate match = matches.get(position);
         String str = match.getDate();
-        DateToString dateToString = new DateToString();
-        holder.textDate.setText(dateToString.ChangeDate(str));
+        holder.textDate.setText(DateToString.ChangeDate(str));
         try {
-            holder.textTime.setText(dateToString.ChangeTime(str));
+            holder.textTime.setText(DateToString.ChangeTime(str));
         } catch (NullPointerException e) {
             holder.textTime.setText(str);
         }

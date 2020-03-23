@@ -51,7 +51,6 @@ public class TournamentCommandFragment extends Fragment{
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view;
         NestedScrollView scroller;
-        RecyclerView recyclerView;
         RecyclerView recyclerViewPlayoff;
 
 
@@ -64,12 +63,10 @@ public class TournamentCommandFragment extends Fragment{
         layout = view.findViewById(R.id.tournamentInfoTabCommandEmpty);
         layoutPlayoff = view.findViewById(R.id.commandsPlayoff);
         swipeRefreshLayout = view.findViewById(R.id.TITC_swipe_refresh_layout);
-        recyclerView = view.findViewById(R.id.tournamentInfoTabCommand);
         recyclerViewPlayoff = view.findViewById(R.id.tournamentInfoTabCommandPlayoff);
         recyclerViewPlayoff.setLayoutManager(new LinearLayoutManager(getActivity()));
         scroller = view.findViewById(R.id.tournamentInfoCommandScroll);
         scrollStatus = false;
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         swipeRefreshLayout.setOnRefreshListener(this::loadData);
         loadData();
@@ -84,7 +81,7 @@ public class TournamentCommandFragment extends Fragment{
                 scrollStatus = true;
         });
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerViewPlayoff.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) { }
 
